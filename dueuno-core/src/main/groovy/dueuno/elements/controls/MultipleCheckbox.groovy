@@ -54,6 +54,7 @@ class MultipleCheckbox extends Control {
         } else if (args.optionsFromList) {
             options = Select.optionsFromList(
                     list: args.optionsFromList,
+                    exclude: args.exclude,
                     forEachOption: args.forEachOption,
                     textPrefix: prettyPrinterProperties.textPrefix,
                     locale: locale,
@@ -62,6 +63,7 @@ class MultipleCheckbox extends Control {
         } else if (args.optionsFromEnum) {
             options = Select.optionsFromEnum(
                     enum: args.optionsFromEnum,
+                    exclude: args.exclude,
                     forEachOption: args.forEachOption,
                     textPrefix: prettyPrinterProperties.textPrefix,
                     locale: locale,

@@ -80,6 +80,7 @@ class Select extends Control {
             allowClear = (args.allowClear == null) ? false : args.allowClear
             options = optionsFromList(
                     list: args.optionsFromList,
+                    exclude: args.exclude,
                     prettyPrinter: prettyPrinter,
                     transformer: args.transformer,
                     forEachOption: args.forEachOption,
@@ -93,6 +94,7 @@ class Select extends Control {
             allowClear = (args.allowClear == null) ? false : args.allowClear
             options = optionsFromEnum(
                     enum: args.optionsFromEnum,
+                    exclude: args.exclude,
                     prettyPrinter: prettyPrinter,
                     transformer: args.transformer,
                     forEachOption: args.forEachOption,
@@ -190,7 +192,7 @@ class Select extends Control {
         String keysSeparator = args.keysSeparator ?: ','
         Closure forEachOption = args.forEachOption as Closure ?: null
 
-        PrettyPrinterProperties prettyPrinterProperties = createItemPrettyPrinterProperties(args, recordset.getAt(0))
+        PrettyPrinterProperties prettyPrinterProperties = initializePrettyPrinterProperties(args, recordset.getAt(0))
 
         List<Map<String, String>> results = []
 
@@ -225,11 +227,16 @@ class Select extends Control {
 
     static List<Map<String, String>> optionsFromList(Map args) {
         List list = args.list as List ?: []
+        List exclude = args.exclude as List ?: []
         Closure forEachOption = args.forEachOption as Closure ?: null
-        PrettyPrinterProperties prettyPrinterProperties = createItemPrettyPrinterProperties(args, list.getAt(0))
+        PrettyPrinterProperties prettyPrinterProperties = initializePrettyPrinterProperties(args, list.getAt(0))
 
         List<Map<String, String>> results = []
         for (value in list) {
+            if (exclude.contains(value)) {
+                continue
+            }
+
             if (forEachOption) {
                 forEachOption.call(value)
             }
@@ -250,7 +257,7 @@ class Select extends Control {
     static List<Map<String, String>> options(Map args) {
         Map options = args.options as Map ?: [:]
         Closure forEachOption = args.forEachOption as Closure ?: null
-        PrettyPrinterProperties prettyPrinterProperties = createItemPrettyPrinterProperties(args, options.keySet().getAt(0))
+        PrettyPrinterProperties prettyPrinterProperties = initializePrettyPrinterProperties(args, options.keySet().getAt(0))
 
         List<Map<String, String>> results = []
         for (entry in options) {
@@ -265,7 +272,7 @@ class Select extends Control {
         return results
     }
 
-    private static PrettyPrinterProperties createItemPrettyPrinterProperties(Map args, Object firstItem) {
+    private static PrettyPrinterProperties initializePrettyPrinterProperties(Map args, Object firstItem) {
         PrettyPrinterProperties result = new PrettyPrinterProperties()
         result.textPrefix = args.textPrefix
         result.renderTextPrefix = args.renderTextPrefix
