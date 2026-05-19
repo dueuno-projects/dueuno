@@ -26,6 +26,8 @@ dependencies {
     api "com.google.zxing:core:3.5.4"
     api "com.google.zxing:javase:3.5.4"
 
+    testImplementation "org.apache.groovy:groovy-test:${groovyVersion}"
+
     // PDF Generation (Use 2.x version)
     api "org.apache.pdfbox:pdfbox:2.0.35"
     implementation "com.github.jai-imageio:jai-imageio-core:1.4.0"
