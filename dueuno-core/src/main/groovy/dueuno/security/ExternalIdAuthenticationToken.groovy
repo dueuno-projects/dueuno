@@ -11,7 +11,7 @@ class ExternalIdAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal
 
     ExternalIdAuthenticationToken(Object principal) {
-        super(null)
+        super([])
         this.principal = principal
         setAuthenticated(false)
     }

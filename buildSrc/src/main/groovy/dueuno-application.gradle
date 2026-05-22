@@ -43,6 +43,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-starter-tomcat"
     implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-tomcat"
     console "org.apache.grails:grails-console"
     runtimeOnly "cloud.wondrify:asset-pipeline-grails"
     runtimeOnly "com.h2database:h2"
@@ -51,6 +52,7 @@ dependencies {
     integrationTestImplementation testFixtures("org.apache.grails:grails-geb")
     testImplementation "org.apache.grails:grails-testing-support-datamapping"
     testImplementation "org.apache.grails:grails-testing-support-web"
+    testImplementation "org.mockito:mockito-core"
     testImplementation "org.spockframework:spock-core"
 }
 

@@ -9,7 +9,7 @@ dependencies {
     api "org.apache.groovy:groovy-contracts"
 
     // Security (to use the @Secured annotation)
-    api "org.apache.grails:grails-spring-security:7.0.1"
+    api "org.apache.grails:grails-spring-security:8.0.0-M1"
 
     // Quartz (to schedule jobs when no Scheduler solution is in use)
     api "org.apache.grails:grails-quartz:4.0.1"
@@ -17,8 +17,9 @@ dependencies {
     // Websockets
     api "io.github.zyro23:grails-spring-websocket:2.7.1"
 
+
     // System monitoring
-    implementation "net.bull.javamelody:javamelody-spring-boot-starter:2.6.0"
+    implementation "net.bull.javamelody:javamelody-spring-boot4-starter:2.7.0"
 
     // Database drivers
     runtimeOnly "com.h2database:h2:2.4.240"

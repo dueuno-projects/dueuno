@@ -36,6 +36,7 @@ dependencies {
     implementation "org.apache.grails:grails-layout"
     implementation "org.apache.grails:grails-logging"
     implementation "org.apache.grails:grails-rest-transforms"
+    implementation "org.apache.grails:grails-scaffolding"
     implementation "org.apache.grails:grails-services"
     implementation "org.apache.grails:grails-url-mappings"
     implementation "org.apache.grails:grails-web-boot"
@@ -45,6 +46,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-starter-tomcat"
     implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-tomcat"
     console "org.apache.grails:grails-console"
     runtimeOnly "cloud.wondrify:asset-pipeline-grails"
     runtimeOnly "com.h2database:h2"
@@ -52,6 +54,7 @@ dependencies {
     runtimeOnly "org.fusesource.jansi:jansi"
     testImplementation "org.apache.grails:grails-testing-support-datamapping"
     testImplementation "org.apache.grails:grails-testing-support-web"
+    testImplementation "org.mockito:mockito-core"
     testImplementation "org.spockframework:spock-core"
 }
 
