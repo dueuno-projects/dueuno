@@ -65,8 +65,6 @@ class TextField extends Control {
         onChangeAsync = args.onChangeAsync == null ? false : args.onChangeAsync
         //onChangeMinChars = args.onChangeMinChars ?: 0 // forse in futuro
 
-        setTextStyle(args.textStyle)
-
         actions = createControl(
                 class: Button,
                 id: 'actions',

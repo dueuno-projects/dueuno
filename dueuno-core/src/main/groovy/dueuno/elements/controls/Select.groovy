@@ -56,8 +56,6 @@ class Select extends Control {
         forEachOption = args.forEachOption as Closure ?: null
         placeholder = args.placeholder ? message(args.placeholder as String) : message('control.select.placeholder')
 
-        setTextStyle(args.textStyle)
-
         searchMinInputLength = (args.searchMinInputLength == null) ? 0 : args.searchMinInputLength as Integer
 
         if (args.optionsFromRecordset) {

@@ -27,6 +27,13 @@ class Checkbox extends Control {
         $element.prop('disabled', value);
     }
 
+    static setText($element, value) {
+        let $text = $element.closest('.input-group').find('.text-wrapper');
+        if ($text.exists()) {
+            $text.html(value);
+        }
+    }
+
 }
 
 Control.register(Checkbox);

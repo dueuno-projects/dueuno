@@ -14,6 +14,7 @@
  */
 package dueuno.elements.controls
 
+import dueuno.core.PrettyPrinterProperties
 import dueuno.elements.Component
 import dueuno.elements.Control
 import dueuno.types.Type
@@ -28,6 +29,7 @@ import groovy.transform.CompileStatic
 class Checkbox extends Control {
 
     String text
+    List textArgs
     Boolean simple
     Object optionKey
     Object optionValue
@@ -37,7 +39,8 @@ class Checkbox extends Control {
 
         valueType = Type.BOOL
 
-        text = args.text == null ? buildLabel(id + ".text") : args.text
+        textArgs = args.textArgs as List ?: []
+        text = args.text == null ? buildLabel(id + ".text", new PrettyPrinterProperties(textArgs: textArgs)) : args.text
         simple = (args.simple == null) ? false : args.simple
         if (args.option) {
             setOption(args.option as Map ?: [:])

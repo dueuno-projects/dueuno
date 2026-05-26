@@ -14,6 +14,8 @@
  */
 package test
 
+import dueuno.core.PrettyPrinter
+import dueuno.core.PrettyPrinterProperties
 import dueuno.elements.components.*
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.controls.*
@@ -21,6 +23,7 @@ import dueuno.core.ApplicationService
 import dueuno.elements.ElementsController
 import dueuno.elements.style.Color
 import dueuno.elements.style.TextAlign
+import dueuno.elements.style.TextStyle
 import dueuno.elements.style.TextTransform
 import dueuno.elements.style.TextWrap
 import dueuno.types.QuantityService
@@ -91,7 +94,8 @@ class FormController implements ElementsController {
                     class: Select,
                     id: 'animate',
                     optionsFromList: ['fade', 'next', 'back'],
-                    defaultValue: ['fade'],
+                    textStyle: [TextStyle.BOLD, TextStyle.MONOSPACE],
+                    defaultValue: 'fade',
                     displayLabel: false,
                     cols: 6,
             )
@@ -180,6 +184,7 @@ class FormController implements ElementsController {
                     id: 'userTrans',
                     optionsFromRecordset: personService.list(),
                     transformer: 'T_PERSON',
+                    textStyle: [TextStyle.LINE_THROUGH, TextStyle.MONOSPACE],
             )
             addField(
                     class: Select,
@@ -211,6 +216,7 @@ class FormController implements ElementsController {
                     class: TextField,
                     id: 'textfieldActions',
                     prefix: 'PIPPO',
+                    textStyle: [TextStyle.LINE_THROUGH, TextStyle.MONOSPACE],
             )
             textfieldActions.component.addAction(
                     action: 'index',
@@ -335,7 +341,9 @@ class FormController implements ElementsController {
             addField(
                     class: Checkbox,
                     id: 'checkbox',
+                    textArgs: ['ARG_1'],
                     help: 'Questo è un messaggio di aiuto per te che non sai cosa diavolo fare',
+                    onChange: 'onChangeCheckbox',
                     cols: 6,
             )
             addField(
@@ -498,6 +506,16 @@ class FormController implements ElementsController {
         }
 
         display content: c, modal: modal, wide: wide, fullscreen: fullscreen, animate: animate, closeButton: closeButton
+    }
+
+    def onChangeCheckbox() {
+        def t = createTransition()
+        if (params.checkbox) {
+            t.set('checkbox', 'text', message('form.checkbox.text', ['SELECTED']))
+        } else {
+            t.set('checkbox', 'text', message('form.checkbox.text', ['NOT SELECTED']))
+        }
+        display transition: t
     }
 
     def onConfirm() {
