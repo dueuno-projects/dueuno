@@ -82,7 +82,7 @@ When modifying this template, please update also:
                     <g:if test="${label.html}">${raw(label.html)}</g:if>
                     <g:else>
                         <% text = label.text %>
-                        <g:if test="${label.tooltip}"><span ${raw('data-bs-custom-class="tooltip" data-bs-toggle="tooltip" data-bs-title="' + label.message(label.tooltip) + '"')}></g:if>
+                        <g:if test="${label.tooltip}"><span ${raw('data-bs-custom-class="tooltip" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="' + label.message(label.tooltip) + '"')}></g:if>
                         <g:if test="${label.image}"><i><asset:image src="${label.image}" class="image-icon ${label.imageClass}"/></i></g:if>
                         <g:elseif test="${label.icon}"><render:icon icon="${label.icon}"/></g:elseif>
                         <g:if test="${label.url}"><a href="${label.url}" target="_blank"></g:if><span class="text ${label.verticalAlign}">${text}${label.tag && !label.icon && !text ? raw('&nbsp;') : ''}</span><g:if test="${label.url}"></a></g:if>
@@ -109,7 +109,7 @@ When modifying this template, please update also:
                 <g:if test="${label.html}">${raw(label.html)}</g:if>
                 <g:else>
                     <% text = label.text %>
-                    <g:if test="${label.tooltip}"><span ${raw('data-bs-custom-class="tooltip" data-bs-toggle="tooltip" data-bs-title="' + label.message(label.tooltip) + '"')}></g:if>
+                    <g:if test="${label.tooltip}"><span ${raw('data-bs-custom-class="tooltip" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="' + label.message(label.tooltip) + '"')}></g:if>
                     <g:if test="${label.image}"><i><asset:image src="${label.image}" class="image-icon ${label.imageClass}"/></i></g:if>
                     <g:elseif test="${label.icon}"><render:icon icon="${label.icon}"/></g:elseif>
                     <g:if test="${label.url}"><a href="${label.url}" target="_blank"></g:if><span class="text ${label.verticalAlign}">${text}${label.tag && !label.icon && !text ? raw('&nbsp;') : ''}</span><g:if test="${label.url}"></a></g:if>
