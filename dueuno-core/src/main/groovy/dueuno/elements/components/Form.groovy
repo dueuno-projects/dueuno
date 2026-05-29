@@ -93,7 +93,7 @@ class Form extends Component {
         if (!args.primaryBackgroundColor) args.primaryBackgroundColor = primaryBackgroundColor
 
         // Add control/component. We add them to the components to be able to address
-        // them directly instead of passing through the FormField (Eg. form.controlName)
+        // them directly instead of passing through the FormField (Eg. form['controlName'])
         Component component
         if (clazz in Control) {
             component = addControl(args)
@@ -215,6 +215,20 @@ class Form extends Component {
     }
 
     private void setValue(Control control, Object obj = null) {
+        if (control.value == control.defaultValue) {
+            // If value == defaultValue then the default value was applied when the control
+            // was added to the form. That covers the case when setValues() is not called
+            // (eg: form is displayed to create a new object with default values)
+            //
+            // If we are here then we want to set the default value only if the corresponding
+            // property is null in the obj
+            control.value = null
+        }
+
+        if (control.value != null) {
+            return
+        }
+
         Object value = ObjectUtils.getValue(obj, control.id)
         if (value != null) {
             control.value = value
