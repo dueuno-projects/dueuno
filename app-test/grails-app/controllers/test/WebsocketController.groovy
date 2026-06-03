@@ -92,7 +92,7 @@ class WebsocketController implements ElementsController {
                 modal: params.moda,
         )
         t.setValue('form.modal', true)
-        t.setValue('form.wide', true)
+        t.setValue('form.large', true)
         t.setValue('form.closeButton', true)
 
         if (params.queue == 'user')

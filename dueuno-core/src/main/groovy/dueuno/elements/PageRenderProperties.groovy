@@ -23,7 +23,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class PageRenderProperties implements Serializable {
     Boolean modal
-    Boolean wide
+    Boolean large
+    Boolean small
     Boolean fullscreen
     Boolean closeButton
     Boolean updateUrl
@@ -32,7 +33,8 @@ class PageRenderProperties implements Serializable {
 
     PageRenderProperties(Map args = [:]) {
         modal = args.modal
-        wide = args.wide
+        large = args.large
+        small = args.small
         fullscreen = args.fullscreen
         closeButton = args.closeButton
         updateUrl = args.updateUrl
@@ -43,7 +45,8 @@ class PageRenderProperties implements Serializable {
     Map asMap() {
         return [
                 modal: modal,
-                wide: wide,
+                large: large,
+                small: small,
                 fullscreen: fullscreen,
                 closeButton: closeButton,
                 updateUrl: updateUrl,

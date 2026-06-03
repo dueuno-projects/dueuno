@@ -331,7 +331,7 @@ class CrudCustomController implements ElementsController {
         c.form['name'].readonly = true
         c.form['name'].value = 'Test Name'
 
-        display content: c, modal: true, wide: true
+        display content: c, modal: true, large: true
     }
 
     def onCreate() {
@@ -352,7 +352,7 @@ class CrudCustomController implements ElementsController {
         def c = buildForm(create: false)
         def obj = personService.get(params.id)
         c.form.values = obj
-        display content: c, modal: true, wide: true
+        display content: c, modal: true, large: true
     }
 
     def onEdit() {

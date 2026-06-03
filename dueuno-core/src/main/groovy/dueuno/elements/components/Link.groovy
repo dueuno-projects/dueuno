@@ -177,12 +177,21 @@ class Link extends Label {
         setOnEvent()
     }
 
-    Boolean getWide() {
-        return linkDefinition.renderProperties.wide
+    Boolean getSmall() {
+        return linkDefinition.renderProperties.small
     }
 
-    void setWide(Boolean value) {
-        linkDefinition.renderProperties.wide = value
+    void setSmall(Boolean value) {
+        linkDefinition.renderProperties.small = value
+        setOnEvent()
+    }
+
+    Boolean getLarge() {
+        return linkDefinition.renderProperties.large
+    }
+
+    void setLarge(Boolean value) {
+        linkDefinition.renderProperties.large = value
         setOnEvent()
     }
 

@@ -382,12 +382,20 @@ class Menu extends Component {
         link.modal = value
     }
 
-    Boolean getWide() {
-        return link.wide
+    Boolean getSmall() {
+        return link.small
     }
 
-    void setWide(Boolean value) {
-        link.wide = value
+    void setSmall(Boolean value) {
+        link.small = value
+    }
+
+    Boolean getLarge() {
+        return link.large
+    }
+
+    void setLarge(Boolean value) {
+        link.large = value
     }
 
     String getAnimate() {

@@ -679,11 +679,11 @@ Grails application running at http://localhost:9992/test in environment: develop
     }
 
     def onMessage() {
-        display message: 'You will be redirected to "CRUD View"', controller: 'crud', modal: true, wide: true
+        display message: 'You will be redirected to "CRUD View"', controller: 'crud', modal: true, large: true
     }
 
     def onConfirmMessage() {
-        display confirmMessage: 'sandbox.message.with.params', messageArgs: [params.name], controller: 'table', modal: true, wide: true
+        display confirmMessage: 'sandbox.message.with.params', messageArgs: [params.name], controller: 'table', modal: true, large: true
     }
 
     def onTextChange() {

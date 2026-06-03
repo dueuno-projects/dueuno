@@ -102,14 +102,18 @@ class PageModal extends Component {
         PageModal.dialog._config.keyboard = PageModal.hasCloseButton;
 
         // Size
-        PageModal.$self.find('.modal-dialog').removeClass('modal-lg modal-xl modal-fullscreen');
-        if (componentEvent.renderProperties['wide']) {
+        PageModal.$self.find('.modal-dialog').removeClass('modal-sm modal-lg modal-xl modal-fullscreen');
+        if (componentEvent.renderProperties['fullscreen']) {
+            PageModal.$self.children().addClass('modal-fullscreen');
+            PageModal.$self.children().children().removeClass('rounded-4');
+
+        } else if (componentEvent.renderProperties['large']) {
             PageModal.$self.children().addClass('modal-xl');
             PageModal.$self.children().children().addClass('rounded-4');
 
-        } else if (componentEvent.renderProperties['fullscreen']) {
-            PageModal.$self.children().addClass('modal-fullscreen');
-            PageModal.$self.children().children().removeClass('rounded-4');
+        } else if (componentEvent.renderProperties['small']) {
+            PageModal.$self.children().addClass('modal-sm');
+            PageModal.$self.children().children().addClass('rounded-4');
 
         } else {
             PageModal.$self.children().addClass('modal-lg');

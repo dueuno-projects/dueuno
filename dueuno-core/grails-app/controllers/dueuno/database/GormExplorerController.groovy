@@ -423,7 +423,7 @@ class GormExplorerController implements ElementsController {
             )
         }
 
-        display content: c, modal: true, wide: true
+        display content: c, modal: true, large: true
     }
 
     @Transactional

@@ -14,18 +14,12 @@
  */
 package test
 
-import dueuno.core.PrettyPrinter
-import dueuno.core.PrettyPrinterProperties
+import dueuno.core.ApplicationService
+import dueuno.elements.ElementsController
 import dueuno.elements.components.*
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.controls.*
-import dueuno.core.ApplicationService
-import dueuno.elements.ElementsController
-import dueuno.elements.style.Color
-import dueuno.elements.style.TextAlign
-import dueuno.elements.style.TextStyle
-import dueuno.elements.style.TextTransform
-import dueuno.elements.style.TextWrap
+import dueuno.elements.style.*
 import dueuno.types.QuantityService
 import dueuno.types.QuantityUnit
 
@@ -64,11 +58,17 @@ class FormController implements ElementsController {
                     id: 'modal',
                     displayLabel: false,
                     help: 'Questo è un messaggio di aiuto in una bottiglia',
-                    cols: 6,
+                    cols: 3,
             )
             addField(
                     class: Checkbox,
-                    id: 'wide',
+                    id: 'small',
+                    displayLabel: false,
+                    cols: 3,
+            )
+            addField(
+                    class: Checkbox,
+                    id: 'large',
                     displayLabel: false,
                     cols: 3,
             )
@@ -106,7 +106,8 @@ class FormController implements ElementsController {
 
     def edit() {
         def modal = requireParam('modal')
-        def wide = requireParam('wide')
+        def small = requireParam('small')
+        def large = requireParam('large')
         def fullscreen = requireParam('fullscreen')
         def closeButton = requireParam('closeButton')
         def isReadonly = requireParam('isReadonly')
@@ -152,7 +153,7 @@ class FormController implements ElementsController {
                     action: 'create',
                     modal: modal,
                     animate: (animate ? 'next' : null),
-                    wide: wide,
+                    large: large,
                     params: [
                             embedded: true,
                     ],
@@ -172,7 +173,7 @@ class FormController implements ElementsController {
                     icon: 'fa-plus',
                     modal: modal,
                     animate: animate,
-                    wide: wide,
+                    large: large,
                     fullscreen: fullscreen,
                     params: [
                             embedded: true,
@@ -505,7 +506,7 @@ class FormController implements ElementsController {
             paginate = personService.count()
         }
 
-        display content: c, modal: modal, wide: wide, fullscreen: fullscreen, animate: animate, closeButton: closeButton
+        display content: c, modal: modal, small: small, large: large, fullscreen: fullscreen, animate: animate, closeButton: closeButton
     }
 
     def onChangeCheckbox() {

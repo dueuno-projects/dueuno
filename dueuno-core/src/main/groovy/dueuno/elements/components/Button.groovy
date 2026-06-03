@@ -129,12 +129,20 @@ class Button extends Component {
         defaultAction.modal = value
     }
 
-    Boolean getWide() {
-        return defaultAction.wide
+    Boolean getSmall() {
+        return defaultAction.small
     }
 
-    void setWide(Boolean value) {
-        defaultAction.wide = value
+    void setSmall(Boolean value) {
+        defaultAction.small = value
+    }
+
+    Boolean getLarge() {
+        return defaultAction.large
+    }
+
+    void setLarge(Boolean value) {
+        defaultAction.large = value
     }
 
     String getAnimate() {
