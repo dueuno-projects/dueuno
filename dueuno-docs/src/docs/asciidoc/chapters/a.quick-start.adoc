@@ -102,7 +102,7 @@ image::images/quick-start/basics-content.png[Content]
 
 Contents can be displayed as modals. A modal content is rendered inside a dialog window. This lets the user focus on a specific part of the Feature to accomplish subtasks like editing a specific object.
 
-Modals can be displayed in three sizes: `normal` (default), `wide` and `fullscreen`.
+Modals can be displayed in three sizes: `normal` (default), `small`, `large` and `fullscreen`.
 
 image::images/quick-start/basics-content-modal.png[Modal Content]
 

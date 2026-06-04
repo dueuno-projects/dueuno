@@ -978,7 +978,12 @@ You can call `display` with one or more of the following parameters:
 |
 |Whether to display the content in a modal dialog or not
 
-|`wide`
+|`small`
+|`Boolean`
+|
+|When displaying the content as `modal` the dialog will be tighter.
+
+|`large`
 |`Boolean`
 |
 |When displaying the content as `modal` the dialog will be wider.
