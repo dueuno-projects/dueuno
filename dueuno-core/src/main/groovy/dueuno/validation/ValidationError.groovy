@@ -12,8 +12,6 @@ class ValidationError {
     static final String RANGE_TOO_SMALL = 'range.toosmall'
     static final String RANGE_TOO_BIG = 'range.toobig'
 
-    static final String MATCHES_INVALID = 'matches.invalid'
-
     static final String NOT_EQUAL = 'notEqual'
     static final String NOT_IN_LIST = 'not.inList'
 
@@ -23,8 +21,9 @@ class ValidationError {
     static final String MIN_NOT_MET = 'min.notmet'
     static final String MIN_SIZE_NOT_MET = 'minSize.notmet'
 
-    static final String URL_INVALID = 'url.invalid'
-    static final String EMAIL_INVALID = 'email.invalid'
-    static final String CREDIT_CARD_INVALID = 'creditCard.invalid'
+    static final String INVALID_URL = 'url.invalid'
+    static final String INVALID_EMAIL = 'email.invalid'
+    static final String INVALID_CREDIT_CARD = 'creditCard.invalid'
+    static final String INVALID_MATCH = 'matches.invalid'
 
 }

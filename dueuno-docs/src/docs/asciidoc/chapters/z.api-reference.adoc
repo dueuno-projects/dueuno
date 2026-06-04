@@ -766,41 +766,56 @@ class BookValidator implements Validateable {
 }
 ----
 
-When rejecting values you can use the following default messages:
-[cols="2,8a"]
+When rejecting values you can use the following `ValidationError` default messages:
+[cols="3,2,7a"]
 |===
-|Code|Message
+|Enum|Code|Message
 
-|`range.toosmall`
-|Value between {3} and {4}
-|`range.toobig`
-|Value between {3} and {4}
-|`matches.invalid`
-|Does not match pattern [{3}]
-|`notEqual`
-|Cannot be {3}
-|`not.inList`
-|Choose one of {3}
-|`max.exceeded`
-|Maximum value {3}
-|`maxSize.exceeded`
-|Maximum size {3}
-|`min.notmet`
-|Minimum value {3}
-|`minSize.notmet`
-|Minimum size {3}
-|`url.invalid`
-|Not a valid URL
-|`email.invalid`
-|Invalid e-mail
-|`creditCard.invalid`
-|Invalid card number
-|`unique`
-|Already exists
+|`ValidationError.IS_REQUIRED`
 |`nullable`
 |Required
+|`ValidationError.IS_NOT_UNIQUE`
+|`unique`
+|Already exists
+|`ValidationError.IS_BLANK`
 |`blank`
 |Required
+|`ValidationError.RANGE_TOO_SMALL`
+|`range.toosmall`
+|Value between {3} and {4}
+|`ValidationError.RANGE_TOO_BIG`
+|`range.toobig`
+|Value between {3} and {4}
+|`ValidationError.NOT_EQUAL`
+|`notEqual`
+|Must not be [{3}]
+|`ValidationError.NOT_IN_LIST`
+|`not.inList`
+|Choose one of {3}
+|`ValidationError.MAX_EXCEEDED`
+|`max.exceeded`
+|Maximum value {3}
+|`ValidationError.MAX_SIZE_EXCEEDED`
+|`maxSize.exceeded`
+|Maximum size {3}
+|`ValidationError.MIN_NOT_MET`
+|`min.notmet`
+|Minimum value {3}
+|`ValidationError.MIN_SIZE_NOT_MET`
+|`minSize.notmet`
+|Minimum size {3}
+|`ValidationError.INVALID_URL`
+|`url.invalid`
+|Invalid URL
+|`ValidationError.INVALID_EMAIL`
+|`email.invalid`
+|Invalid valid e-mail
+|`ValidationError.INVALID_CREDIT_CARD`
+|`creditCard.invalid`
+|Invalid card number
+|`ValidationError.INVALID_MATCH`
+|`matches.invalid`
+|Does not match pattern [{3}]
 |===
 
 We can now implement the whole CRUD interface:
