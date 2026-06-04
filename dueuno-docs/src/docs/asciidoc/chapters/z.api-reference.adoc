@@ -1171,6 +1171,9 @@ The `Table` component is configured to present and _Edit_ and a _Delete_ `Button
 
 [[components]]
 == Components
+
+=== Component (abstract)
+
 Everything in Dueuno is a `Component`. A component is itself a tiny web application. Each component is built with at least an HTML view, a CSS styling and a JavaScript logic. A Component can provide a supporting `Service` or `Controller`.
 
 Unless we want to create a new component there is no need to know HTML, CSS or JavaScript to develop a Dueuno application.
@@ -2352,6 +2355,9 @@ c.addComponent(
 
 [[controls]]
 == Controls
+
+=== Control (abstract)
+
 Controls are Components that can hold a value. Controls are the main way to interact with the application. We mainly use controls in forms to easily submit their values.
 
 Each control extends the base class `Control`, so each control shares the following properties and methods.
