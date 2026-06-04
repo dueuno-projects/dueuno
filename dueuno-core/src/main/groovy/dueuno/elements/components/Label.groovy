@@ -36,7 +36,6 @@ class Label extends Component {
     /** Icon that graphically represents the Link. Choose one from Font Awesome icons */
     String icon
     String iconClass
-    Boolean iconFixedWidth
 
     /** An SVG image that graphically represents the Link.
      * If specified it must be present in the Grails asset folder.
@@ -79,7 +78,6 @@ class Label extends Component {
         url = args.url
         icon = args.icon
         iconClass = args.iconClass
-        iconFixedWidth = args.iconFixedWidth == null ? false : args.iconFixedWidth
         image = args.image
         imageClass = args.imageClass
         tooltip = args.tooltip

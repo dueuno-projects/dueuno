@@ -226,7 +226,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
                     throw new Exception("Wrong use of the 'errors' feature.")
                 }
             } catch (Exception ignore) {
-                t.errorMessage("Cannot display errors, please refer to the Dueuno Elements user guide.")
+                t.errorMessage("Cannot display errors, please refer to the Dueuno user guide.")
             }
 
         } else if (args.controller || args.action) {

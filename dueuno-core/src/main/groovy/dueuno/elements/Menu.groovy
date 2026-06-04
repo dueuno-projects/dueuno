@@ -231,7 +231,6 @@ class Menu extends Component {
         menuItemArgs.id = f.getId()
         menuItemArgs.text = f.text
         menuItemArgs.icon = f.icon
-        menuItemArgs.iconFixedWidth = true
         menuItemArgs.tooltip = f.tooltip
         menuItemArgs.image = f.image
         menuItemArgs.separator = f.controller ? false : true
