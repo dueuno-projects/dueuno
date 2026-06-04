@@ -14,7 +14,7 @@
  */
 package dueuno
 
-import dueuno.elements.validation.ErrorCode
+import dueuno.validation.ValidationError
 import grails.validation.Validateable
 import grails.validation.ValidationErrors
 
@@ -28,7 +28,7 @@ class BookValidator implements Validateable {
     static constraints = {
         title validator: { Object val, BookValidator obj, ValidationErrors errors ->
             if (obj.bookService.getByTitle(val)) {
-                errors.rejectValue('title', ErrorCode.IS_NOT_UNIQUE)
+                errors.rejectValue('title', ValidationError.IS_NOT_UNIQUE)
             }
         }
     }
