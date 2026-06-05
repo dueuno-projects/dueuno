@@ -24,8 +24,6 @@ Edit `~/demo/grails-app/conf/application.yml` and add the following properties:
 [source,yaml,subs="attributes+"]
 ----
 spring:
-  main:
-    banner-mode: 'log'
   devtools:
     restart:
       additional-exclude:
@@ -49,30 +47,33 @@ The following is a default configuration that may make sense in many production 
 
 IMPORTANT: The following configuration is not a _silver bullet_. Please take a look at the https://logback.qos.ch/manual/configuration.html[Logback documentation,window=_blank] to configure logging to fit your needs.
 
-.Edit `~/demo/grails-app/conf/logback.xml` and copy the following:
+.Edit `~/demo/grails-app/conf/logback-spring.xml` and copy the following:
 [source,xml,subs="attributes+"]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <conversionRule conversionWord="highlightLogLevel" class="dueuno.commons.logs.HighlightLogLevel"/>
 
-    <conversionRule conversionWord="highlightLogLevel" class="dueuno.commons.logs.HighlightLogLevel" />
-
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${CONSOLE_LOG_THRESHOLD}</level>
+        </filter>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %highlightLogLevel(%-5level) [%thread] %-40.40logger{36} : %highlightLogLevel(%msg%n)</pattern>
+            <charset>${CONSOLE_LOG_CHARSET}</charset>
         </encoder>
     </appender>
 
-    <property resource="application.yml" />
+    <springProperty scope="local" name="appName" source="info.app.name"/>
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${info.app.name}/logs/${info.app.name}.log</file>
-
+        <file>${appName}/logs/${appName}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${info.app.name}/logs/archive/${info.app.name}.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <fileNamePattern>${appName}/logs/archive/${appName}.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
             <maxHistory>10</maxHistory>
             <maxFileSize>10MB</maxFileSize>
-            <totalSizeCap>100GB</totalSizeCap>
+            <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>
 
         <encoder>
@@ -81,13 +82,37 @@ IMPORTANT: The following configuration is not a _silver bullet_. Please take a l
     </appender>
 
     <root level="ERROR">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
     </root>
 
-    <logger name="org.springframework.boot.SpringApplication" level="INFO" />
-    <logger name="dueuno" level="INFO" />
-    <logger name="demo" level="DEBUG" />
+    <!-- DEVELOPMENT -->
+    <springProfile name="development">
+        <logger name="dueuno" level="INFO"/>
+        <logger name="demo" level="DEBUG"/>
+
+        <!-- DUEUNO -->
+        <!--    <logger name="dueuno.commons.utils.SqlUtils" level="TRACE" />-->
+        <!--    <logger name="dueuno.ImportUtils" level="TRACE" />-->
+
+        <!-- GORM -->
+        <!--    <logger name="org.grails.datastore" level="DEBUG" />-->
+        <!--    <logger name="org.hibernate.SQL" level="DEBUG" />-->
+        <!--    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" />-->
+
+        <!-- SPRING SECURITY-->
+        <!--    <logger name="org.springframework.security" level="DEBUG" />-->
+        <!--    <logger name="grails.plugin.springsecurity.web.filter.DebugFilter" level="INFO" />-->
+
+        <!-- HTTP REST-->
+        <!--    <logger name="sun.net.www.protocol.http.HttpURLConnection" level="ALL" />-->
+    </springProfile>
+
+    <!-- PRODUCTION -->
+    <springProfile name="production">
+        <logger name="dueuno" level="INFO"/>
+        <logger name="demo" level="DEBUG"/>
+    </springProfile>
 
 </configuration>
 ----
