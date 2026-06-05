@@ -21,7 +21,6 @@ Add the following code to initialize the application:
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {
@@ -68,7 +67,6 @@ We can set up our application to be accessible from a specific URL path. For exa
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
     TenantPropertyService tenantPropertyService
 
@@ -115,7 +113,6 @@ Gets executed only the first time the application is run.
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {
@@ -136,7 +133,6 @@ Installs the tenant. This closure gets called only once when the application is 
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {
@@ -160,7 +156,6 @@ This closure will NOT be executed when the application is run as JAR, WAR or whe
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {
@@ -183,7 +178,6 @@ These closures get executed only once when the application starts up. The execut
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = { // <1>
@@ -216,7 +210,6 @@ Initializes the application. This closure gets called each time the application 
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService // <1>
 
     def init = {
@@ -239,7 +232,6 @@ Gets executed after the user logged in. The session is active, you can set sessi
 ----
 class BootStrap {
 
-    ServletContext servletContext
     SecurityService securityService // <1>
 
     def init = {
@@ -261,7 +253,6 @@ Gets executed after the user logged in. The session is NOT active, you can NOT m
 ----
 class BootStrap {
 
-    ServletContext servletContext
     SecurityService securityService // <1>
 
     def init = {
@@ -287,7 +278,6 @@ Gets executed only the first time the application is run or when a new Dueuno Pl
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {
@@ -310,7 +300,6 @@ NOTE: This method is executed only when configured in a plugin, it does not get 
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {
@@ -333,7 +322,6 @@ NOTE: This method is executed only when configured in a plugin, it does not get 
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {
@@ -361,7 +349,6 @@ Registers a Feature.
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {
@@ -487,7 +474,6 @@ Registers a Feature in the _User Menu_. For the available options see: <<registe
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {
@@ -512,7 +498,6 @@ Registers a string template to render an instance of a specific _Class_. A prett
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {
@@ -542,7 +527,6 @@ IMPORTANT: Be careful when using transformers since it may impact performances w
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
     SecurityService securityService
 
@@ -566,7 +550,6 @@ Registers a role along with the people who took that role during the development
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {
@@ -1100,7 +1083,6 @@ To finish it up we register a Pretty Printer for the book record and tell the 'S
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {

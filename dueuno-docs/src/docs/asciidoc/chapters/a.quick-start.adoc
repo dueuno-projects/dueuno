@@ -191,7 +191,6 @@ To configure the application Features we register them in the `BootStrap.groovy`
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService // <1>
 
     def init = {
@@ -324,7 +323,6 @@ Each application has a `DEFAULT` database connection defined in the `grails-app/
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService // <1>
     ConnectionSourceService connectionSourceService // <2>
 
@@ -383,7 +381,6 @@ Applications are made of features, we register one to work with movies (See <<fe
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService // <1>
 
     def init = {

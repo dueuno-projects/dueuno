@@ -56,7 +56,6 @@ import java.time.LocalDate
 
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
     PersonService personService
 
