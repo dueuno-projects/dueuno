@@ -24,6 +24,7 @@ import groovy.text.SimpleTemplateEngine
 import groovy.text.Template
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.validation.ObjectError
 
 import java.text.DecimalFormatSymbols
@@ -87,6 +88,10 @@ class PrettyPrinter {
     }
 
     static String print(Object object, PrettyPrinterProperties properties = new PrettyPrinterProperties()) {
+        if (!properties.locale) {
+            properties.locale = LocaleContextHolder.locale
+        }
+
         Object value = transform(object, properties)
 
         switch (value) {
