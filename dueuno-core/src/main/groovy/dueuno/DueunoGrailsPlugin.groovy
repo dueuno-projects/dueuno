@@ -37,7 +37,7 @@ class DueunoGrailsPlugin extends Plugin {
 
     static final String NAME = 'dueuno-core'
 
-    def version = '3.x-SNAPSHOT'
+    def version = '3.2.1'
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "7.0.0  > *"
     // resources that are excluded from plugin packaging
