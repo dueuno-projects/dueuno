@@ -32,6 +32,21 @@ import org.slf4j.LoggerFactory
 import org.springframework.validation.Errors
 
 /**
+ * Grails controller trait that provides the core Elements action lifecycle to every
+ * controller that mixes it in.
+ * <p>
+ * {@code ElementsController} is automatically applied to all Grails controllers in an
+ * Elements application via the {@code @Enhances("Controller")} annotation. It adds the
+ * following capabilities:
+ * </p>
+ * <ul>
+ *     <li>Rendering {@link Transition} responses for AJAX requests ({@link #display}).</li>
+ *     <li>Rendering full {@link Page} responses for direct browser requests ({@link #display}).</li>
+ *     <li>Factory methods for creating {@link Page}, {@link PageContent}, and {@link Transition} instances.</li>
+ *     <li>File download helpers ({@link #download}, {@link #getDownloadOutputStream}).</li>
+ *     <li>Keyboard input access ({@link #getKeyPressed}).</li>
+ * </ul>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
@@ -43,6 +58,14 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
     private Logger log = LoggerFactory.getLogger(ElementsController)
     private String DISPLAY_EXCEPTION_MESSAGE = "'display()' must be the last statement of an action"
 
+    /**
+     * Property-style shorthand for {@link #display(Map)} with no arguments.
+     * Renders the current {@link Transition} and returns {@code true}.
+     * Throws {@link dueuno.exceptions.ElementsException} if called more than once per action.
+     *
+     * @return {@code true} after the transition has been rendered
+     * @throws dueuno.exceptions.ElementsException if {@code display} has already been rendered in this action
+     */
     @CompileDynamic
     Boolean getDisplay() {
         if (requestParams._21TransitionRendered) {
@@ -59,6 +82,33 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         return true
     }
 
+    /**
+     * Renders the response for the current action, choosing between a {@link Transition}
+     * (AJAX) or a full {@link Page} depending on whether the request carries the
+     * {@code _21Transition} flag.
+     * <p>
+     * Supported {@code args} keys:
+     * </p>
+     * <ul>
+     *     <li>{@code page} — a {@link Page} instance to render directly (forces a full-page render)</li>
+     *     <li>{@code content} — a {@link PageContent} to inject into the transition or page</li>
+     *     <li>{@code message} / {@code messageArgs} — show an info message in the message box</li>
+     *     <li>{@code confirmMessage} / {@code messageArgs} — show a confirmation dialog</li>
+     *     <li>{@code errorMessage} / {@code messageArgs} — show an error message</li>
+     *     <li>{@code exception} — log and display the exception message as an error</li>
+     *     <li>{@code errors} — display field-level or global validation errors on a submitted component</li>
+     *     <li>{@code controller} / {@code action} — redirect the browser</li>
+     *     <li>{@code loading} — show or hide the loading indicator</li>
+     *     <li>{@code transition} — use an explicit {@link Transition} instance instead of creating a new one</li>
+     * </ul>
+     * <p>
+     * This method must be the last statement of a controller action; calling it more than
+     * once throws {@link dueuno.exceptions.ElementsException}.
+     * </p>
+     *
+     * @param args optional map of display arguments (see above)
+     * @throws dueuno.exceptions.ElementsException if {@code display} has already been rendered in this action
+     */
     @CompileDynamic
     void display(Map args = [:]) {
         if (requestParams._21TransitionRendered) {
@@ -99,62 +149,93 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         }
     }
 
+    /**
+     * Returns the name of the key that was pressed by the user in the current request,
+     * as reported by the main page's key-press component.
+     *
+     * @return the pressed key name, or {@code null} if no key was pressed
+     */
     String getKeyPressed() {
         return getMainPage().keyPress.keyPressed
     }
 
+    /** Returns the application-scoped {@link PageService} bean. */
     private PageService getPageService() {
         return Elements.getBean('pageService') as PageService
     }
 
+    /** Returns the main {@link Page} for the current session, falling back to a blank page. */
     private Page getMainPage() {
         return getPageService().mainPage ?: createPage(PageBlank)
     }
 
     /**
-     * Returns an instance of a specific Page class.
+     * Creates and returns a new instance of the specified {@link Page} subclass.
      *
-     * @classOrName Class to instantiate
-     * @return an instance of a Page
+     * @param clazz the {@link Page} subclass to instantiate
+     * @param args  optional map of constructor/property arguments
+     * @return the newly created page instance
      */
     public <T> T createPage(Class<T> clazz, Map args = [:]) {
         return getPageService().createPage(clazz, args)
     }
 
     /**
-     * Creates a ContentBase
-     * @return an instance of a ContentBase
+     * Creates and returns the default {@link ContentHeader} for the current page.
+     *
+     * @return a new {@link ContentHeader} instance
      */
     ContentHeader createContent() {
         return getPageService().createContent()
     }
 
     /**
-     * Returns an instance of a specific PageContent class.
+     * Creates and returns a new instance of the specified {@link PageContent} subclass.
      *
-     * @classOrName PageContent class to instantiate
-     * @return an instance of a Content
+     * @param clazz the {@link PageContent} subclass to instantiate
+     * @param args  optional map of constructor/property arguments
+     * @return the newly created content instance
      */
     public <T> T createContent(Class<T> clazz, Map args = [:]) {
         return getPageService().createContent(clazz, args)
     }
 
     /**
-     * Creates a Transition
-     * @return a Transition instance
+     * Creates and returns a new {@link Transition} scoped to the current request.
+     *
+     * @return a new {@link Transition} instance
      */
     Transition createTransition() {
         return getPageService().createTransition()
     }
 
+    /**
+     * Returns an {@link OutputStream} that streams a file to the browser.
+     *
+     * @param pathname the server-side path of the file to stream
+     * @param inline   {@code true} to suggest inline display (e.g. PDF preview);
+     *                 {@code false} (default) to force a download prompt
+     * @return the output stream to write the file content to
+     */
     OutputStream getDownloadOutputStream(String pathname, Boolean inline = false) {
         return getPageService().getDownloadOutputStream(pathname, inline)
     }
 
+    /**
+     * Streams a file from the server to the browser as a download (or inline display).
+     *
+     * @param pathname the server-side path of the file to send
+     * @param inline   {@code true} to suggest inline display; {@code false} (default) to force download
+     */
     void download(String pathname, Boolean inline = false) {
         getPageService().download(pathname, inline)
     }
 
+    /**
+     * Builds the Grails render model for a {@link Transition} response, interpreting
+     * the {@code args} map to populate the transition with the appropriate commands
+     * (content render, messages, errors, redirect, loading indicator, etc.).
+     */
     private Map transition(Map args = [:]) {
         Transition t = args.transition as Transition ?: createTransition()
 
@@ -226,7 +307,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
                     throw new Exception("Wrong use of the 'errors' feature.")
                 }
             } catch (Exception ignore) {
-                t.errorMessage("Cannot display errors, please refer to the Dueuno user guide.")
+                t.errorMessage("Cannot display errors, please refer to the user guide.")
             }
 
         } else if (args.controller || args.action) {
@@ -239,6 +320,14 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         ]
     }
 
+    /**
+     * Converts a plain {@code fieldName → errorMessage} map into the structured error list
+     * format expected by the Elements frontend component.
+     *
+     * @param componentName the identifier of the target component (used for debug logging)
+     * @param errorsMap     a map of field names to i18n error message keys or literal messages
+     * @return a map with an {@code errors} key holding a list of {@code {field, message}} maps
+     */
     private Map getErrorsFromMap(String componentName, Map errorsMap) {
         List<Map> errors = []
 
@@ -255,6 +344,14 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         return [errors: errors]
     }
 
+    /**
+     * Extracts the Spring {@link org.springframework.validation.Errors} object from a
+     * Grails {@link grails.validation.Validateable} (or GORM domain) instance and logs each error.
+     *
+     * @param componentName the identifier of the target component (used for debug logging)
+     * @param validateable  a Grails {@link grails.validation.Validateable} or GORM domain instance
+     * @return the {@link org.springframework.validation.Errors} object from the validateable
+     */
     private Errors getErrorsFromValidatable(String componentName, Object validateable) {
         Errors errors = validateable['errors'] as Errors
         for (error in errors.allErrors) {
@@ -263,6 +360,20 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         return errors
     }
 
+    /**
+     * Resolves the error representation for a single component, dispatching to the
+     * appropriate helper based on the type of {@code componentErrors}:
+     * <ul>
+     *     <li>{@link Map} — delegates to {@link #getErrorsFromMap}</li>
+     *     <li>Object with an {@code errors} property ({@link grails.validation.Validateable} / GORM) — delegates to {@link #getErrorsFromValidatable}</li>
+     *     <li>Anything else — adds an error message to {@code t} and returns an empty map</li>
+     * </ul>
+     *
+     * @param t               the current {@link Transition} (used to display an error message on unsupported types)
+     * @param componentName   the identifier of the target component
+     * @param componentErrors the errors object (a {@link Map}, a validateable, or a GORM domain instance)
+     * @return the resolved error structure to set on the component
+     */
     private Object getComponentErrors(Transition t, String componentName, Object componentErrors) {
         if (componentErrors in Map) {
             // display errors: [field1: 'Some error']
@@ -279,6 +390,14 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         }
     }
 
+    /**
+     * Builds the Grails render model for a full {@link Page} response (used when the browser
+     * refreshes or when {@code args.page} is explicitly set). Injects a {@link PageContent}
+     * into the page if {@code args.content} is provided.
+     *
+     * @param args the display arguments; may contain {@code page} and/or {@code content} keys
+     * @return the Grails render model map with {@code template} and {@code model} keys
+     */
     private Map page(Map args) {
         Page p
 

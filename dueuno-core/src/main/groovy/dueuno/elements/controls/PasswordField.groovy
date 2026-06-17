@@ -17,13 +17,27 @@ package dueuno.elements.controls
 import groovy.transform.CompileStatic
 
 /**
+ * A password text-input control that masks the entered characters.
+ * <p>
+ * Extends {@link TextField} with the HTML input type set to {@link TextFieldInputType#PASSWORD},
+ * a lock icon ({@code fa-lock}) displayed inside the input, and browser autocomplete disabled.
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class PasswordField extends TextField {
 
+    /**
+     * Creates a {@code PasswordField} instance configured from the supplied argument map.
+     * Sets the input type to {@link TextFieldInputType#PASSWORD}, applies a default lock icon,
+     * and disables browser autocomplete.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code icon} ({@link String}, default {@code "fa-lock"}),
+     *             plus all keys accepted by {@link TextField#TextField(Map)}
+     */
     PasswordField(Map args) {
         super(args)
 

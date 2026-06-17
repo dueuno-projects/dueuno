@@ -20,12 +20,29 @@ import dueuno.types.Types
 import groovy.transform.CompileStatic
 
 /**
+ * An invisible form control used to carry typed values across AJAX form submissions
+ * without rendering any visible UI element.
+ * <p>
+ * {@code HiddenField} is used internally by {@link dueuno.elements.components.Form#addKeyField}
+ * to transmit primary-key and surrogate-key values. The value type is inferred from the
+ * supplied value via {@link Types#serializeValue(Object)} when not specified explicitly, and
+ * defaults to {@link Type#TEXT} when no value is present.
+ * </p>
+ *
  * @author Gianluca Sartori
  */
-
 @CompileStatic
 class HiddenField extends Control {
 
+    /**
+     * Creates a {@code HiddenField} instance configured from the supplied argument map.
+     * The field is hidden from both the UI and the form layout.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code value} — the value to carry (type is auto-detected if not specified),
+     *             {@code valueType} ({@link String} or {@link Type}) — explicit type override,
+     *             plus all keys accepted by {@link Control#Control(Map)}
+     */
     HiddenField(Map args) {
         super(args)
 

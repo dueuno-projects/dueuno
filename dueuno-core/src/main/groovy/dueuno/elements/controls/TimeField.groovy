@@ -18,19 +18,38 @@ import dueuno.types.Type
 import groovy.transform.CompileStatic
 
 /**
+ * A time picker control backed by {@link java.time.LocalTime}.
+ * <p>
+ * Extends {@link DateTimeField} with the value type fixed to {@link dueuno.types.Type#TIME}
+ * and an input validation pattern that restricts entry to digits and colons
+ * ({@code ^[0-9:]*$}), suitable for time input in the format {@code HH:mm}.
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class TimeField extends DateTimeField {
 
+    /**
+     * Creates a {@code TimeField} instance configured from the supplied argument map.
+     * Sets the value type to {@link dueuno.types.Type#TIME}.
+     *
+     * @param args initialisation arguments forwarded to {@link DateTimeField#DateTimeField(Map)}
+     */
     TimeField(Map args) {
         super(args)
 
         valueType = Type.TIME
     }
 
+    /**
+     * Serialises this field's properties to JSON, adding the time input validation
+     * pattern ({@code ^[0-9:]*$}) to restrict entry to digits and colons.
+     *
+     * @param properties additional properties to merge before serialisation
+     * @return the JSON string representation of this field's properties
+     */
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [

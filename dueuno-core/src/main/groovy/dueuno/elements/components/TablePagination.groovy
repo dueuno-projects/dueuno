@@ -20,24 +20,59 @@ import groovy.contracts.Requires
 import groovy.transform.CompileStatic
 
 /**
+ * The pagination bar rendered below a {@link Table}, providing navigation links and
+ * page-size selectors.
+ * <p>
+ * Manages the current {@link #offset} and {@link #max} values, persisting them in the
+ * action session so they survive page reloads. Navigation {@link Link} controls
+ * ({@link #goFirst}, {@link #goPrev}, {@link #goNext}) and page-size selectors
+ * ({@link #goMax20}, {@link #goMax50}) are created automatically. The component is
+ * hidden ({@link #display} is {@code false}) when the total record count is zero.
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class TablePagination extends Component {
 
+    /** The {@link Table} this pagination bar belongs to. */
     Table table
+
+    /** Navigation link that jumps to the first page (offset = 0). */
     Link goFirst
+
+    /** Navigation link that moves to the previous page. */
     Link goPrev
+
+    /** Navigation link that moves to the next page. */
     Link goNext
+
+    /** Page-size selector link that sets the page size to 20 records. */
     Link goMax20
+
+    /** Page-size selector link that sets the page size to 50 records. */
     Link goMax50
 
+    /** The current page size (number of records per page). */
     Number max
+
+    /** The current zero-based record offset (index of the first displayed record). */
     Number offset
+
+    /** The total number of records across all pages. */
     Number total
 
+    /**
+     * Creates a {@code TablePagination} instance configured from the supplied argument map.
+     * Builds all navigation and page-size {@link Link} controls, then restores the last
+     * known offset and max from the action session.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code table} ({@link Table}, required),
+     *             {@code total} ({@link Integer}),
+     *             plus all keys accepted by {@link Component#Component(Map)}
+     */
     @Requires({ args.table })
     TablePagination(Map args) {
         super(args)
@@ -113,14 +148,28 @@ class TablePagination extends Component {
         initializeDefaultParams()
     }
 
+    /**
+     * Returns the action-session key used to persist the current page offset for this table.
+     *
+     * @return the session key string for the requested offset
+     */
     private String getRequestedOffsetName() {
         return table.id + 'RequestedOffset'
     }
 
+    /**
+     * Returns the action-session key used to persist the current page size for this table.
+     *
+     * @return the session key string for the requested max
+     */
     private String getRequestedMaxName() {
         return table.id + 'RequestedMax'
     }
 
+    /**
+     * Restores the offset and max from the action session, or applies the defaults
+     * ({@code offset = 0}, {@code max = 20}) if no session values are present.
+     */
     private void initializeDefaultParams() {
         if (actionSession[requestedOffsetName] != null) {
             setOffset(actionSession[requestedOffsetName] as Integer)
@@ -135,6 +184,12 @@ class TablePagination extends Component {
         }
     }
 
+    /**
+     * Sets the current page offset, honouring any {@code _21TableOffset} request parameter
+     * for this table. Updates the action session and the table's fetch params accordingly.
+     *
+     * @param value the fallback offset to use when no request parameter is present
+     */
     void setOffset(Integer value) {
         Integer currentOffset = actionSession[requestedOffsetName] as Integer ?: value
         Integer requestedOffset = requestParams._21TableOffset != null
@@ -155,6 +210,13 @@ class TablePagination extends Component {
         requestParams.offset = offset
     }
 
+    /**
+     * Sets the current page size, honouring any {@code _21TableMax} request parameter
+     * for this table. Updates the action session, the table's fetch params, and recalculates
+     * the prev/next link params.
+     *
+     * @param value the fallback page size to use when no request parameter is present
+     */
     void setMax(Integer value) {
         Integer currentMax = actionSession[requestedMaxName] as Integer ?: value ?: null
         Integer requestedMax = requestParams._21TableMax as Integer ?: currentMax
@@ -181,6 +243,10 @@ class TablePagination extends Component {
         requestParams.max = max
     }
 
+    /**
+     * Resets the pagination to the first page (offset = 0) unless an explicit
+     * {@code _21TableOffset} request parameter is already present.
+     */
     void reset() {
         if (requestParams._21TableOffset != null) {
             return
@@ -196,30 +262,64 @@ class TablePagination extends Component {
         ]
     }
 
+    /**
+     * Sets the total record count and hides the pagination bar when the total is zero.
+     *
+     * @param value the total number of records
+     */
     void setTotal(Number value) {
         total = value
         display = total > 0
     }
 
+    /**
+     * Returns {@code true} if the total number of records exceeds the current page size,
+     * meaning multiple pages exist.
+     *
+     * @return {@code true} when pagination is needed
+     */
     Boolean hasPages() {
         if (max == null) return false
         if (!total) return false
         return total > (max ?: 0)
     }
 
+    /**
+     * Returns {@code true} if there is a previous page (i.e. the current offset is greater than zero).
+     *
+     * @return {@code true} when a previous page exists
+     */
     Boolean requiresPrev() {
         return offset > 0
     }
 
+    /**
+     * Returns {@code true} if there is a next page (i.e. the end of the current page does not
+     * reach the total record count).
+     *
+     * @return {@code true} when a next page exists
+     */
     Boolean requiresNext() {
         return offset + (max ?: 0) < total
     }
 
+    /**
+     * Returns the total record count formatted as a localised string, or an empty string
+     * when the total is zero or null.
+     *
+     * @return the pretty-printed total, or {@code ""}
+     */
     String getPrettyTotal() {
         if (!total) return ''
         return prettyPrint(total)
     }
 
+    /**
+     * Returns a localised pagination summary in the form {@code "first–last of total"}
+     * (e.g. {@code "1–20 of 157"}), or an empty string when the total is zero or null.
+     *
+     * @return the formatted pagination summary string, or {@code ""}
+     */
     String getPrettyPagination() {
         if (!total) return ''
 

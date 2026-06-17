@@ -20,18 +20,50 @@ import dueuno.types.Type
 import groovy.transform.CompileStatic
 
 /**
+ * A control that renders a group of {@link Checkbox} instances from a list of options,
+ * storing the selected keys as a {@link List}.
+ * <p>
+ * Options can be supplied in four ways (checked in order):
+ * </p>
+ * <ul>
+ *   <li>{@code optionsFromRecordset} — built from a GORM/collection result set.</li>
+ *   <li>{@code optionsFromList} — built from a plain list of values.</li>
+ *   <li>{@code optionsFromEnum} — built from an enum class.</li>
+ *   <li>{@code options} — a pre-built list of {@code [id: …, text: …]} maps.</li>
+ * </ul>
+ * <p>
+ * The value type is {@link dueuno.types.Type#LIST}. Each individual checkbox is accessible
+ * via the {@link #checkboxes} map, keyed by option ID.
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class MultipleCheckbox extends Control {
 
+    /** The resolved list of option maps ({@code id} → key, {@code text} → display label). */
     List<Map<String, String>> options
+
+    /** When {@code true}, all child checkboxes render without the toggle-switch style. */
     Boolean simple
 
+    /** Map of option ID → {@link Checkbox} instance for each rendered checkbox. */
     Map<String, Checkbox> checkboxes
 
+    /**
+     * Creates a {@code MultipleCheckbox} instance configured from the supplied argument map.
+     * Resolves options from one of {@code optionsFromRecordset}, {@code optionsFromList},
+     * {@code optionsFromEnum}, or {@code options}, then creates a {@link Checkbox} for each.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code simple} ({@link Boolean}, default {@code false}),
+     *             {@code textPrefix} ({@link String}, default: controller name),
+     *             {@code optionsFromRecordset}, {@code optionsFromList}, {@code optionsFromEnum},
+     *             {@code options}, {@code keys}, {@code keysSeparator}, {@code exclude},
+     *             {@code forEachOption} ({@link Closure}),
+     *             plus all keys accepted by {@link Control#Control(Map)}
+     */
     MultipleCheckbox(Map args) {
         super(args)
 
@@ -99,6 +131,20 @@ class MultipleCheckbox extends Control {
         containerSpecs.nullable = true
     }
 
+    /**
+     * Sets the selected values for this control.
+     * <ul>
+     *   <li>A {@link String} is wrapped in a single-element list.</li>
+     *   <li>A {@link Set} or {@link List} is normalised to a list of ID strings (using the
+     *       element's {@code id} property when present, otherwise its string representation).</li>
+     * </ul>
+     * After setting the value, {@link #renderValue()} is called to update the individual
+     * checkbox states.
+     *
+     * @param value the selected option key(s); accepts {@code null}, {@link String},
+     *              {@link Set}, or {@link List}
+     * @throws dueuno.exceptions.ElementsException if {@code value} is of an unsupported type
+     */
     @Override
     void setValue(Object value) {
         if (value == null) {
@@ -123,6 +169,11 @@ class MultipleCheckbox extends Control {
         renderValue()
     }
 
+    /**
+     * Synchronises the checked state of each {@link Checkbox} in {@link #checkboxes} with
+     * the current {@link #value} list. Clears all checkboxes first, then marks those whose
+     * option key appears in the value list as checked.
+     */
     void renderValue() {
         if (!checkboxes)
             return
@@ -137,6 +188,11 @@ class MultipleCheckbox extends Control {
         }
     }
 
+    /**
+     * Propagates the read-only state to all individual {@link Checkbox} instances.
+     *
+     * @param isReadonly {@code true} to make all checkboxes read-only
+     */
     @Override
     void setReadonly(Boolean isReadonly) {
         for (checkboxEntry in checkboxes) {
@@ -145,6 +201,12 @@ class MultipleCheckbox extends Control {
         }
     }
 
+    /**
+     * Sets the simple rendering mode on this control and propagates it to all individual
+     * {@link Checkbox} instances.
+     *
+     * @param isSimple {@code true} to render all checkboxes without the toggle-switch style
+     */
     void setSimple(Boolean isSimple) {
         simple = isSimple
         for (checkboxEntry in checkboxes) {

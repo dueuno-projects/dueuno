@@ -16,19 +16,48 @@ package dueuno.elements.style
 
 import groovy.transform.CompileStatic
 
+/**
+ * Enumerates the vertical-alignment options available to Elements UI components.
+ * <p>
+ * Each constant maps to a Bootstrap CSS utility class. {@link #toString()} returns the
+ * CSS class string directly, so instances can be interpolated into HTML {@code class}
+ * attributes without additional conversion.
+ * </p>
+ *
+ * @author Gianluca Sartori
+ */
 @CompileStatic
 enum VerticalAlign {
+
+    /** No explicit vertical alignment; inherits from the parent element. CSS class: {@code ""}. */
     DEFAULT(''),
+
+    /** Aligns content to the top of the cell or container. CSS class: {@code "align-top"}. */
     TOP('align-top'),
+
+    /** Aligns content to the vertical middle of the cell or container. CSS class: {@code "align-middle"}. */
     MIDDLE('align-middle'),
+
+    /** Aligns content to the bottom of the cell or container. CSS class: {@code "align-bottom"}. */
     BOTTOM('align-bottom')
 
+    /** The Bootstrap CSS utility class corresponding to this alignment value. */
     final String cssClass
 
+    /**
+     * Creates a {@code VerticalAlign} constant bound to the given CSS class string.
+     *
+     * @param cssClass the Bootstrap utility class for this alignment (may be empty for {@link #DEFAULT})
+     */
     VerticalAlign(String cssClass) {
         this.cssClass = cssClass
     }
 
+    /**
+     * Returns the Bootstrap CSS class string for this alignment (e.g. {@code "align-middle"}).
+     *
+     * @return the CSS class, or an empty string for {@link #DEFAULT}
+     */
     String toString() {
         return cssClass
     }

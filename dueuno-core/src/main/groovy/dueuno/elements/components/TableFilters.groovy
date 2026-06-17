@@ -18,25 +18,59 @@ import dueuno.elements.Control
 import groovy.transform.CompileStatic
 
 /**
+ * A specialised {@link Form} that provides the filter bar rendered above a {@link Table}.
+ * <p>
+ * Filter fields are added with {@link #addField(Map)}, which automatically shows the filter
+ * panel and prepends the {@code filters.} prefix to the label key. Filter values are resolved
+ * from request parameters and the action session via {@link #getValues()}, which also sets
+ * {@link #isFiltering} and {@link #prettyValues} as side effects.
+ * </p>
+ * <p>
+ * The component creates a {@link TableActionbar} and two built-in link controls: a
+ * {@link #searchButton} that submits the filter form, and a {@link #resetButton} that clears
+ * all filters.
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class TableFilters extends Form {
 
+    /** The parent {@link Table} that owns this filter bar. */
     Table table
 
+    /** The action bar rendered alongside the filter controls (holds custom actions). */
     TableActionbar actionbar
 
+    /** Whether at least one filter control currently has a non-empty value. */
     Boolean isFiltering
+
+    /** Whether the filter panel is collapsed (folded) by default. */
     Boolean fold
+
+    /** Whether the filter panel folds automatically after a search is performed. */
     Boolean autoFold
+
+    /** A comma-separated human-readable summary of the active filter values. */
     String prettyValues
 
+    /** The search/submit {@link Link} button that triggers the filter query. */
     Link searchButton
+
+    /** The reset {@link Link} button that clears all filter values. */
     Link resetButton
 
+    /**
+     * Creates a {@code TableFilters} instance configured from the supplied argument map.
+     * Initialises the {@link #actionbar}, {@link #searchButton}, and {@link #resetButton} controls.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code table} ({@link Table}, required),
+     *             {@code fold} ({@link Boolean}, default {@code false}),
+     *             {@code autoFold} ({@link Boolean}, default {@code false}),
+     *             plus all keys accepted by {@link Form#Form(Map)}
+     */
     TableFilters(Map args) {
         super(args)
 
@@ -75,6 +109,13 @@ class TableFilters extends Form {
         )
     }
 
+    /**
+     * Serialises this filter form's properties to JSON, finalising submit-parameter
+     * assignments for the search and reset buttons before delegating to the parent.
+     *
+     * @param properties additional properties to merge before serialisation
+     * @return the JSON string representation of this filter form's properties
+     */
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         setSubmitParams()
@@ -84,6 +125,14 @@ class TableFilters extends Form {
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
 
+    /**
+     * Adds a filter field to this filter form.
+     * Auto-generates the label from the {@code filters.<id>} i18n key when no label is supplied,
+     * enables the "allow clear" option for Select controls, and makes the filter panel visible.
+     *
+     * @param args field configuration forwarded to {@link Form#addField(Map)}
+     * @return the newly created {@link FormField}
+     */
     FormField addField(Map args) {
         args.label = (args.label != null) ? args.label : buildLabel(filtersFieldPrefix + args.id)
         args.allowClear = true // for Select controls
@@ -93,6 +142,10 @@ class TableFilters extends Form {
         return field
     }
 
+    /**
+     * Clears all filter values from the action session, effectively resetting the filter state
+     * without reloading the page.
+     */
     void reset() {
         for (controlEntry in controls) {
             Control control = controlEntry.value
@@ -100,6 +153,10 @@ class TableFilters extends Form {
         }
     }
 
+    /**
+     * Wires the search and reset buttons with the table's submit parameters and configures
+     * each filter control to submit the filter form on change.
+     */
     private void setSubmitParams() {
         searchButton.params = table.submitParams + (Map)[
                 _21Table: table.id,
@@ -122,10 +179,29 @@ class TableFilters extends Form {
         }
     }
 
+    /**
+     * Returns the i18n label prefix used for filter field keys ({@code "filters."}).
+     *
+     * @return the filter field prefix string
+     */
     private String getFiltersFieldPrefix() {
         return 'filters.'
     }
 
+    /**
+     * Resolves and sets the value for a single filter control, following this priority order:
+     * <ol>
+     *   <li>If a reset was requested ({@code _21FiltersReset}), the control's default value is
+     *       restored (or the session entry is removed if no default exists).</li>
+     *   <li>If the request parameters contain the control's key, that value is stored in the
+     *       session and applied to the control.</li>
+     *   <li>If the action session contains a previously saved value, it is restored.</li>
+     *   <li>If the control already has a value, it is left unchanged.</li>
+     *   <li>If the control has a default value, it is applied and stored in request parameters.</li>
+     * </ol>
+     *
+     * @param control the filter control to initialise
+     */
     private void initializeFilter(Control control) {
         if (requestParams._21FiltersReset) {
             if (control.defaultValue != null) {
@@ -161,6 +237,13 @@ class TableFilters extends Form {
         }
     }
 
+    /**
+     * Returns whether the filter panel is currently in its folded (collapsed) state.
+     * Checks the action session for a user-toggled fold preference before falling back
+     * to the {@link #fold} default.
+     *
+     * @return {@code true} if the filter panel is folded
+     */
     Boolean isFolded() {
         Object sessionParam = actionSession['_21FiltersFolded_' + getId()]
         if (sessionParam) {
@@ -170,6 +253,14 @@ class TableFilters extends Form {
         }
     }
 
+    /**
+     * Resolves and returns the current filter values as a parameter map (keyed by control name
+     * without the {@code filters.} prefix). As a side effect, sets {@link #isFiltering} to
+     * {@code true} when at least one filter has a non-empty value, and populates
+     * {@link #prettyValues} with a human-readable summary of the active filters.
+     *
+     * @return a map of filter control name → current value for all controls with a non-empty value
+     */
     Map getValues() {
         Map results = [:]
         isFiltering = false

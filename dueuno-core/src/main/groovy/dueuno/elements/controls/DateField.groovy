@@ -18,19 +18,38 @@ import dueuno.types.Type
 import groovy.transform.CompileStatic
 
 /**
+ * A date-only input control backed by {@link java.time.LocalDate}.
+ * <p>
+ * Extends {@link DateTimeField} with the value type fixed to {@link dueuno.types.Type#DATE}
+ * and an input validation pattern that restricts entry to digits and forward-slashes
+ * ({@code ^[0-9/]*$}).
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class DateField extends DateTimeField {
 
+    /**
+     * Creates a {@code DateField} instance configured from the supplied argument map.
+     * Sets the value type to {@link dueuno.types.Type#DATE}.
+     *
+     * @param args initialisation arguments forwarded to {@link DateTimeField#DateTimeField(Map)}
+     */
     DateField(Map args) {
         super(args)
 
         valueType = Type.DATE
     }
 
+    /**
+     * Serialises this field's properties to JSON, adding the date input validation pattern
+     * ({@code ^[0-9/]*$}) to restrict entry to digits and forward-slashes.
+     *
+     * @param properties additional properties to merge before serialisation
+     * @return the JSON string representation of this field's properties
+     */
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [

@@ -17,13 +17,35 @@ package dueuno.elements.controls
 import groovy.transform.CompileStatic
 
 /**
+ * A text-input control pre-configured for e-mail address entry.
+ * <p>
+ * Extends {@link TextField} with:
+ * <ul>
+ *   <li>Input mode set to {@link TextFieldInputMode#EMAIL} (triggers the e-mail keyboard
+ *       on mobile devices).</li>
+ *   <li>A client-side validation pattern that allows a single {@code @} character,
+ *       prevents consecutive dots, and restricts characters to letters, digits, and
+ *       {@code _}, {@code -}, {@code .}, {@code @}.</li>
+ *   <li>An {@code fa-at} icon displayed inside the input.</li>
+ * </ul>
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class EmailField extends TextField {
 
+    /**
+     * Creates an {@code EmailField} instance configured from the supplied argument map.
+     * Sets the input mode, validation pattern, and icon; all three can be overridden via
+     * {@code args}.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code inputMode} ({@link TextFieldInputMode}, default {@link TextFieldInputMode#EMAIL}),
+     *             {@code pattern} ({@link String}) — overrides the default e-mail regex,
+     *             plus all keys accepted by {@link TextField#TextField(Map)}
+     */
     EmailField(Map args) {
         super(args)
 

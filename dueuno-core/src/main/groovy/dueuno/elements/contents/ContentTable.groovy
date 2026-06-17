@@ -19,14 +19,28 @@ import dueuno.elements.style.TextDefault
 import groovy.transform.CompileStatic
 
 /**
+ * A {@link ContentHeader} that pairs a standard page header with a {@link Table} component,
+ * providing the canonical list/browse layout used throughout the Elements framework.
+ * <p>
+ * On construction a "New" button (linking to the {@code create} action) is automatically
+ * added to the header, and an empty {@link Table} is registered as the main content
+ * component. Both can be further configured after instantiation.
+ * </p>
+ *
  * @author Gianluca Sartori
  */
-
 @CompileStatic
 class ContentTable extends ContentHeader {
 
+    /** The {@link Table} component that displays the list of records. */
     Table table
 
+    /**
+     * Creates a {@code ContentTable} instance configured from the supplied argument map.
+     * Adds a "New" button to the header and initialises the {@link #table} component.
+     *
+     * @param args initialisation arguments forwarded to {@link ContentHeader#ContentHeader(Map)}
+     */
     ContentTable(Map args) {
         super(args)
 

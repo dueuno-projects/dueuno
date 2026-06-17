@@ -17,19 +17,41 @@ package dueuno.elements
 import groovy.transform.CompileStatic
 
 /**
+ * Enumerates the client-side command methods that a {@link Transition} can dispatch
+ * to the Elements frontend after a server-side action completes.
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
 
 @CompileStatic
 enum TransitionCommandMethod {
+
+    /** Redirects the browser to a different URL or controller action. */
     REDIRECT,
+
+    /** Replaces the main page content area with a new {@link PageContent} component. */
     CONTENT,
+
+    /** Appends a new component as a child of an existing parent component. */
     APPEND,
+
+    /** Replaces an existing component in the DOM with a new one. */
     REPLACE,
+
+    /** Removes a component from the DOM. */
     REMOVE,
+
+    /** Triggers a named event on a component. */
     TRIGGER,
+
+    /** Shows or hides the global loading indicator. */
     LOADING,
+
+    /** Invokes a named client-side method on a component. */
     CALL,
-    SET
+
+    /** Sets a property on a component, optionally triggering its change event. */
+    SET,
+
 }

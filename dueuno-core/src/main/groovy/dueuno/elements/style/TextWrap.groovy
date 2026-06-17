@@ -16,20 +16,51 @@ package dueuno.elements.style
 
 import groovy.transform.CompileStatic
 
+/**
+ * Enumerates the text-wrapping options available to Elements UI components.
+ * <p>
+ * Each constant maps to a CSS utility class name. {@link #toString()} returns the
+ * class string directly, so instances can be interpolated into HTML {@code class}
+ * attributes without additional conversion.
+ * </p>
+ *
+ * @author Gianluca Sartori
+ */
 @CompileStatic
 enum TextWrap {
+
+    /** No explicit wrapping behaviour; inherits from the parent element. CSS class: {@code ""}. */
     DEFAULT(''),
+
+    /** Prevents the text from wrapping to the next line. CSS class: {@code "no-wrap"}. */
     NO_WRAP('no-wrap'),
+
+    /** Allows soft (browser-controlled) line wrapping. CSS class: {@code "soft-wrap"}. */
     SOFT_WRAP('soft-wrap'),
+
+    /** Forces line wrapping at word boundaries. CSS class: {@code "line-wrap"}. */
     LINE_WRAP('line-wrap'),
+
+    /** Forces a line break at the element boundary. CSS class: {@code "line-break"}. */
     LINE_BREAK('line-break')
 
+    /** The CSS utility class corresponding to this wrapping option. */
     final String cssClass
 
+    /**
+     * Creates a {@code TextWrap} constant bound to the given CSS class string.
+     *
+     * @param cssClass the CSS utility class for this wrapping option (may be empty for {@link #DEFAULT})
+     */
     TextWrap(String cssClass) {
         this.cssClass = cssClass
     }
 
+    /**
+     * Returns the CSS utility class string for this wrapping option (e.g. {@code "no-wrap"}).
+     *
+     * @return the CSS class, or an empty string for {@link #DEFAULT}
+     */
     String toString() {
         return cssClass
     }

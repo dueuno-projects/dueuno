@@ -18,12 +18,25 @@ import dueuno.elements.style.TextDefault
 import groovy.transform.CompileStatic
 
 /**
+ * A {@link ContentForm} pre-configured for the "edit existing record" use case.
+ * <p>
+ * On construction the header's primary button label is set to
+ * {@link dueuno.elements.style.TextDefault#SAVE} and its action is wired to
+ * {@code onEdit}, following the Elements CRUD convention. The form can be
+ * further populated with fields and pre-filled with existing values after instantiation.
+ * </p>
+ *
  * @author Gianluca Sartori
  */
-
 @CompileStatic
 class ContentEdit extends ContentForm {
 
+    /**
+     * Creates a {@code ContentEdit} instance configured from the supplied argument map.
+     * Sets the header's next button to "Save" / {@code onEdit}.
+     *
+     * @param args initialisation arguments forwarded to {@link ContentForm#ContentForm(Map)}
+     */
     ContentEdit(Map args) {
         super(args)
 

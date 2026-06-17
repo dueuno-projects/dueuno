@@ -32,30 +32,84 @@ import groovy.transform.CompileStatic
 import java.time.temporal.Temporal
 
 /**
+ * A single row within a {@link TableRowset}, containing one {@link TableCell} per table column.
+ * <p>
+ * The row lifecycle consists of two phases driven by {@link TableRowset}:
+ * </p>
+ * <ol>
+ *   <li>{@link #preProcessRow()} — converts the raw record to a value map, creates all cells,
+ *       processes keys, copies actions from the table, applies transformers, creates hidden
+ *       submit fields, and applies pretty-printer configuration.</li>
+ *   <li>{@link #postProcessRow()} — injects key params into the action button, resolves final
+ *       cell values (after the user's {@code eachRow} closure may have mutated them), and sets
+ *       cell alignment.</li>
+ * </ol>
+ * <p>
+ * Each row also carries a row-level {@link Button} for per-row actions and a {@link Checkbox}
+ * for row selection.
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class TableRow extends Component {
 
+    /** The {@link Table} this row belongs to. */
     Table table
+
+    /** The {@link TableRowset} (header, body, or footer band) that owns this row. */
     TableRowset rowset
+
+    /** Map of column name → {@link TableCell} for each cell in this row. */
     Map<String, TableCell> cells
+
+    /** Map of field name → {@link HiddenField} for values submitted with the row. */
     Map<String, HiddenField> submit
+
+    /** Zero-based index of this row within its rowset. */
     Integer index
+
+    /** The raw record or value map used to populate this row's cells. */
     Object values
 
+    /** Per-row action {@link Button} populated from the table's action definitions. */
     Button actions
+
+    /** Row-selection {@link Checkbox}; rendered as a simple checkbox without toggle-switch style. */
     Checkbox selected
 
+    /** {@code true} if this row is a header row. */
     Boolean isHeader
+
+    /** {@code true} if this row is a footer row. */
     Boolean isFooter
+
+    /** {@code true} if the row-selection checkbox should be rendered. Defaults to {@code true}. */
     Boolean hasSelection
 
+    /** Vertical alignment applied to all cells in this row. Defaults to {@link VerticalAlign#MIDDLE}. */
     VerticalAlign verticalAlign
+
+    /** Text styles applied to all cells in this row. */
     List<TextStyle> textStyle
 
+    /**
+     * Creates a {@code TableRow} instance configured from the supplied argument map.
+     * Initialises the per-row action button and selection checkbox.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code table} ({@link Table}, required),
+     *             {@code rowset} ({@link TableRowset}, required),
+     *             {@code index} ({@link Integer}, required),
+     *             {@code values} (record data),
+     *             {@code isHeader} ({@link Boolean}, default {@code false}),
+     *             {@code isFooter} ({@link Boolean}, default {@code false}),
+     *             {@code hasSelection} ({@link Boolean}, default {@code true}),
+     *             {@code checked} ({@link Boolean}, default {@code false}),
+     *             {@code textStyle} ({@link TextStyle} or {@link List}&lt;{@link TextStyle}&gt;),
+     *             plus all keys accepted by {@link Component#Component(Map)}
+     */
     @Requires({ args.table && args.rowset && args.index != null })
     TableRow(Map args) {
         super(args)
@@ -90,6 +144,12 @@ class TableRow extends Component {
         )
     }
 
+    /**
+     * First phase of row processing: converts the raw record to a value map, creates all
+     * {@link TableCell} instances, and runs the key, action, transformer, submit-value, and
+     * pretty-printer processing steps.
+     * Called by {@link TableRowset#setRows(Collection)} before the user's {@code eachRow} closure.
+     */
     void preProcessRow() {
         selected.readonly = table.readonly
         values = Elements.toMap(values, table.columns, table.includeValues, table.excludeValues)
@@ -103,6 +163,11 @@ class TableRow extends Component {
         processPrettyPrinters()
     }
 
+    /**
+     * Second phase of row processing: injects key params into the action button, updates
+     * hidden submit-field values, resolves final cell display values, and sets cell alignment.
+     * Called by {@link TableRowset#setRows(Collection)} after the user's {@code eachRow} closure.
+     */
     void postProcessRow() {
         if (!isHeader && !isFooter) {
             // Adds key columns to actions params
@@ -162,6 +227,10 @@ class TableRow extends Component {
         }
     }
 
+    /**
+     * Copies actions from the table's action {@link Button} into the row's action button,
+     * unless this is a header or footer row or the table has no row actions.
+     */
     private void processActions() {
         if (isHeader || isFooter) {
             return
@@ -172,6 +241,10 @@ class TableRow extends Component {
         }
     }
 
+    /**
+     * Applies the table's column transformers to the corresponding values in this row.
+     * Skipped for header rows.
+     */
     private void processTransformers() {
         if (isHeader) {
             return
@@ -184,6 +257,10 @@ class TableRow extends Component {
         }
     }
 
+    /**
+     * Creates hidden {@link HiddenField} submit components for the row index, key columns,
+     * and any columns listed in {@link Table#submit}. Skipped for header rows.
+     */
     private void processSubmitValues() {
         if (isHeader) {
             return
@@ -216,6 +293,11 @@ class TableRow extends Component {
         }
     }
 
+    /**
+     * Applies the table's per-column {@link dueuno.core.PrettyPrinterProperties} and
+     * pretty-printer class overrides to each cell's inner {@link Label}. Skipped for header rows
+     * and cells that contain a custom component instead of a label.
+     */
     private void processPrettyPrinters() {
         if (isHeader) {
             return
@@ -242,22 +324,49 @@ class TableRow extends Component {
         }
     }
 
+    /**
+     * Returns the first row in this row's {@link TableRowset}.
+     *
+     * @return the first {@link TableRow} of the rowset
+     */
     TableRow getFirst() {
         return rowset.firstRow
     }
 
+    /**
+     * Returns the last row in this row's {@link TableRowset}.
+     *
+     * @return the last {@link TableRow} of the rowset
+     */
     TableRow getLast() {
         return rowset.lastRow
     }
 
+    /**
+     * Returns {@code true} if the rowset has a first row (i.e. contains at least one row).
+     *
+     * @return {@code true} when {@link TableRowset#firstRow} is non-null
+     */
     Boolean isFirst() {
         return rowset.firstRow != null
     }
 
+    /**
+     * Returns {@code true} if the rowset has a last row (i.e. contains at least one row).
+     *
+     * @return {@code true} when {@link TableRowset#lastRow} is non-null
+     */
     Boolean isLast() {
         return rowset.lastRow != null
     }
 
+    /**
+     * Sets the text styles for this row, accepting a single {@link TextStyle}, a
+     * {@link List}&lt;{@link TextStyle}&gt;, or {@code null}/{@code default} (which resets to
+     * {@link TextStyle#NONE}).
+     *
+     * @param value a {@link TextStyle}, a list of {@link TextStyle} values, or {@code null}
+     */
     void setTextStyle(Object value) {
         switch (value) {
             case TextStyle:
@@ -273,6 +382,11 @@ class TableRow extends Component {
         }
     }
 
+    /**
+     * Returns the text styles as a space-separated CSS class string.
+     *
+     * @return the joined text-style class string
+     */
     String getTextStyle() {
         return textStyle.join(' ')
     }
@@ -280,6 +394,15 @@ class TableRow extends Component {
     //
     // KEYS
     //
+
+    /**
+     * Resolves the key values from the row's value map according to the table's key column list.
+     * GORM object IDs are extracted as strings. Custom key columns (user-declared keys that have
+     * no matching value) are back-filled from the {@code id} column to avoid conflicts when
+     * passing IDs to another page.
+     *
+     * @return a map of key column name → resolved key value
+     */
     private Map processKeys() {
         Map results = [:]
         List<String> keyColumns = table.keys
@@ -318,6 +441,11 @@ class TableRow extends Component {
         return results
     }
 
+    /**
+     * Returns a map of key column name → current value for all of the table's key columns.
+     *
+     * @return the key column values map
+     */
     private Map getKeys() {
         Map results = [:]
         for (keyColumn in table.keys) {
@@ -326,14 +454,23 @@ class TableRow extends Component {
         return results
     }
 
+    /**
+     * Returns the key column values serialised as a JSON string.
+     *
+     * @return JSON representation of the keys map
+     */
     private String getKeysAsJSON() {
         return Elements.encodeAsJSON(getKeys())
     }
 
-
     //
     // CELLS
     //
+
+    /**
+     * Creates one {@link TableCell} for each column defined in the table, choosing the
+     * appropriate cell type (sortable header, plain header, or body cell).
+     */
     private void createCells() {
         cells = [:]
         for (columnName in table.columns) {
@@ -350,6 +487,14 @@ class TableRow extends Component {
         }
     }
 
+    /**
+     * Auto-detects and applies horizontal and vertical alignment for a cell based on the
+     * type of its value, and propagates the horizontal alignment to the corresponding
+     * header cells.
+     *
+     * @param columnName the column whose cell alignment should be set
+     * @param value      the resolved cell value used to determine alignment
+     */
     private void setCellAlignment(String columnName, Object value) {
         if (value == null) {
             return
@@ -387,6 +532,14 @@ class TableRow extends Component {
         }
     }
 
+    /**
+     * Creates a plain body (or custom-component) {@link TableCell} for the given column and
+     * registers it in {@link #cells}.
+     *
+     * @param columnName the column name to create a cell for
+     * @param component  an optional custom {@link Component} to embed; uses a {@link Label} when {@code null}
+     * @return the newly created {@link TableCell}
+     */
     private TableCell addCell(String columnName, Component component = null) {
         String cellName = getId() + '-' + columnName
         TableCell cell = createComponent(
@@ -402,6 +555,13 @@ class TableRow extends Component {
         return cell
     }
 
+    /**
+     * Creates a non-sortable header {@link TableCell} containing a bold {@link Label}
+     * for the given column.
+     *
+     * @param columnName the column name to create a header cell for
+     * @return the newly created header {@link TableCell}
+     */
     private TableCell addCellHeader(String columnName) {
         Label header = createComponent(
                 class: Label,
@@ -417,6 +577,13 @@ class TableRow extends Component {
         return addCell(columnName, header)
     }
 
+    /**
+     * Creates a sortable header {@link TableCell} containing a {@link Link} that toggles the
+     * sort direction for the given column when clicked.
+     *
+     * @param columnName the column name to create a sortable header cell for
+     * @return the newly created sortable header {@link TableCell}
+     */
     private TableCell addCellHeaderSortable(String columnName) {
         String order = table.sort[columnName] == 'asc' ? 'desc' : 'asc'
         Link sortableHeader = createComponent(
@@ -436,10 +603,20 @@ class TableRow extends Component {
         return addCell(columnName, sortableHeader)
     }
 
+    /**
+     * Hides the row-selection checkbox for this row by setting {@link #hasSelection}
+     * to {@code false}.
+     */
     void removeSelection() {
         hasSelection = false
     }
 
+    /**
+     * Sets whether this row is a header row. When {@code true}, the selection checkbox ID
+     * is updated to the table-level "select all" ID.
+     *
+     * @param value {@code true} if this is a header row
+     */
     void setIsHeader(Boolean value) {
         isHeader = value
         if (isHeader) {
