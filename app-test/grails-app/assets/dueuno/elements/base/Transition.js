@@ -218,7 +218,7 @@ class Transition {
         if (renderProperties) {
             // We don't update the URL on mobile devices to avoid
             // the display of the browser toolbar
-            renderProperties['updateUrl'] = !Elements.onMobile;
+            renderProperties['updateUrl'] = !Elements.isMobileDevice;
         }
 
         let values = Transition.build21Params(componentEvent);
@@ -282,8 +282,9 @@ class Transition {
 
             // Whether to display the whole page or the transition
             if (!componentEvent['direct']) {
-                params['_21Transition'] = true
-                params['_21Event'] = componentEvent['event']
+                params['_21IsMobileDevice'] = Elements.isMobileDevice;
+                params['_21Transition'] = true;
+                params['_21Event'] = componentEvent['event'];
             }
         }
 

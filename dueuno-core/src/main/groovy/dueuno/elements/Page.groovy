@@ -43,14 +43,14 @@ import groovy.util.logging.Slf4j
 @CompileStatic
 abstract class Page extends Component {
 
-    /** The global keyboard/barcode-scanner listener for this page. */
-    KeyPress keyPress
-
     /** The modal dialog container for this page. */
     PageModal modal
 
     /** The message box used to display info, error, and confirmation messages. */
     PageMessageBox messageBox
+
+    /** The global keyboard/barcode-scanner listener for this page. */
+    KeyPress keyPress
 
     /**
      * The main content area of the page. This is transient (not serialised to the session)
@@ -86,6 +86,10 @@ abstract class Page extends Component {
 
         favicon = args.favicon
         appicon = args.appicon
+    }
+
+    Boolean isMobileDevice() {
+        return requestParams.mobile || requestParams._21IsMobileDevice ? true : false
     }
 
     /**

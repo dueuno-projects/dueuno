@@ -13,7 +13,7 @@ class PageTooltips {
     static finalize() {
         // Initializing Bootstrap tooltips.
         // On Mobile we activate it only for Labels
-        let $tooltipTriggerList = Elements.onMobile
+        let $tooltipTriggerList = Elements.isMobileDevice
             ? $('.component-label [data-bs-toggle="tooltip"]')
             : $('[data-bs-toggle="tooltip"]');
 

@@ -12,7 +12,7 @@ class PageStickyBox {
     static set offset(value) { PageStickyBox_offset = value }
     // On some combinations of font size and resolution the offest is one line bigger then needed,
     // this trick reduces the cases to almost none
-    static get offsetAdjustment() { return Elements.onMobile ? 1 : .3 }
+    static get offsetAdjustment() { return Elements.isMobileDevice ? 1 : .3 }
     static get isActive() { return PageStickyBox.isStickyBoxActive() }
 
     static get $self() { return $('#page-sticky-box') }

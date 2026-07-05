@@ -149,6 +149,10 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         }
     }
 
+    Boolean isMobileDevice() {
+        return getMainPage().isMobileDevice()
+    }
+
     /**
      * Returns the name of the key that was pressed by the user in the current request,
      * as reported by the main page's key-press component.
@@ -166,7 +170,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
 
     /** Returns the main {@link Page} for the current session, falling back to a blank page. */
     private Page getMainPage() {
-        return getPageService().mainPage ?: createPage(PageBlank)
+        return getPageService().mainPage ?: createPage(PageBlank, params)
     }
 
     /**

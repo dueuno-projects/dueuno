@@ -5,11 +5,30 @@ function sleep(ms) {
 }
 
 function getOS() {
-  var uA = navigator.userAgent || navigator.vendor || window.opera;
-  if ((/iPad|iPhone|iPod/.test(uA) && !window.MSStream) || (uA.includes('Mac') && 'ontouchend' in document)) return 'iOS';
+    const ua = navigator.userAgent.toLowerCase();
 
-  var i, os = ['Windows', 'Android', 'Unix', 'Mac', 'Linux', 'BlackBerry'];
-  for (i = 0; i < os.length; i++) if (new RegExp(os[i],'i').test(uA)) return os[i];
+    // iPhone, iPad, iPod e iPadOS 13+
+    if (
+        ua.includes('iphone') ||
+        ua.includes('ipad') ||
+        ua.includes('ipod') ||
+        (ua.includes('mac') && 'ontouchend' in document)
+    ) {
+        return 'iOS';
+    }
+
+    const operatingSystems = [
+        'Windows',
+        'Android',
+        'Unix',
+        'Mac',
+        'Linux',
+        'BlackBerry'
+    ];
+
+    return operatingSystems.find(os =>
+        ua.includes(os.toLowerCase())
+    );
 }
 
 function enableSimpleBar($element) {

@@ -14,10 +14,24 @@ class Page {
     }
 
     static render() {
+        Page.detectMobileDevice();
         Page.initializePage();
         Page.initializeContent(Page.$self);
         $(window).on('load', Page.onLoad);
         LoadingScreen.show(false);
+    }
+
+    static detectMobileDevice() {
+        let url = new URL(window.location.href);
+
+        if (Elements.isMobileDevice && !url.searchParams.has('mobile')) {
+            url.searchParams.set('mobile', 'true');
+            window.location.replace(url);
+
+        } if (!Elements.isMobileDevice && url.searchParams.has('mobile')) {
+            url.searchParams.delete('mobile');
+            window.location.replace(url);
+        }
     }
 
     static onLoad(event) {
@@ -54,7 +68,7 @@ class Page {
     }
 
     static initializePage() {
-        if (Elements.onMobile) {
+        if (Elements.isMobileDevice) {
             $(':root').css('--elements-font-size', '16px');
         }
 

@@ -25,7 +25,7 @@ class Form extends Component {
                 'Label',
                 'Separator',
             ];
-            if (!Elements.onMobile && !excludedControls.includes(className) && !readonly) {
+            if (!Elements.isMobileDevice && !excludedControls.includes(className) && !readonly) {
                 $control.css('visibility', 'visible');
                 $control.triggerHandler('focus');
                 return false;

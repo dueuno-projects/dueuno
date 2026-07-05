@@ -16,6 +16,7 @@ package test
 
 import dueuno.audit.AuditService
 import dueuno.elements.components.Form
+import dueuno.elements.components.Label
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
@@ -24,6 +25,7 @@ import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.*
 import dueuno.core.ApplicationService
 import dueuno.elements.ElementsController
+import dueuno.elements.style.Color
 import dueuno.elements.style.TextDefault
 import dueuno.elements.style.TextWrap
 import dueuno.types.QuantityService
@@ -55,6 +57,17 @@ class CrudController implements ElementsController {
         def c = createContent(ContentTable)
 
         c.title = 'Runtime "content" title'
+
+        if (isMobileDevice()) {
+            c.addComponent(
+                    class: Label,
+                    id: 'isMobileDevice',
+                    text: "Running on a mobile device.",
+                    backgroundColor: Color.WARNING_BACKGROUND,
+                    textColor: Color.WARNING_TEXT,
+            )
+        }
+
         c.with {
             header.sticky = false
             header.text = 'Runtime "content.header" title'

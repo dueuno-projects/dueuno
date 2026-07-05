@@ -67,7 +67,6 @@ class PageService implements WebRequestAware, LinkGeneratorAware {
             fontSize = tenantPropertyService.getNumber('FONT_SIZE', true) as Integer
             guiStyle = tenantPropertyService.getString('GUI_STYLE', true)
         }
-
         return Component.createInstance(clazz, clazz.simpleName.uncapitalize(), initialize(args))
     }
 

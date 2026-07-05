@@ -3,14 +3,14 @@
 let Elements_pages = new Map();
 let Elements_components = new Map();
 let Elements_controls = new Map();
-let Elements_onMobile = false;
+let Elements_isMobileDevice = false;
 
 class Elements {
 
     static get pages() { return Elements_pages }
     static get components() { return Elements_components }
     static get controls() { return Elements_controls }
-    static get onMobile() { return Elements_onMobile }
+    static get isMobileDevice() { return Elements_isMobileDevice }
 
     static main() {
         log.debug('-');
@@ -19,8 +19,9 @@ class Elements {
         log.debug('Tenant: ' + _21_.app.tenant);
 
         let os = getOS();
-        Elements_onMobile = (os == 'iOS' || os == 'Android');
+        Elements_isMobileDevice = (os == 'iOS' || os == 'Android');
         log.debug('Operating System: ' + os);
+        log.debug('Is Mobile Device: ' + Elements_isMobileDevice);
         log.debug('-');
 
         Page.render();
