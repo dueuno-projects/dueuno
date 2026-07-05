@@ -256,12 +256,12 @@ class CrudController implements ElementsController {
     }
 
     def onCreateRecords() {
-        TCompany dueuno = companyService.get(1)
+        TCompany company = companyService.get(1)
 
         (1..100).each {
             personService.create(
                     active: true,
-                    company: dueuno,
+                    company: company,
                     name: 'user' + it,
                     address: 'Via del\'automazione, ' + it,
                     postcode: 12345
