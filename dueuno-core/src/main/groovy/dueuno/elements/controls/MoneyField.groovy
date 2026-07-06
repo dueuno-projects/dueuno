@@ -20,13 +20,29 @@ import dueuno.types.Money
 import groovy.transform.CompileStatic
 
 /**
+ * A numeric input control for entering {@link Money} values (amount + ISO 4217 currency code).
+ * <p>
+ * Extends {@link NumberField} with the value type fixed to {@link Money#TYPE_NAME}. The
+ * currency code is displayed as a prefix and is automatically updated when a {@link Money}
+ * value is set. Defaults to 2 decimal places, no negative values, and {@code EUR} currency.
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class MoneyField extends NumberField {
 
+    /**
+     * Creates a {@code MoneyField} instance configured from the supplied argument map.
+     * Sets the view template, value type, decimal places, negative-value flag, and currency prefix.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code decimals} ({@link Integer}, default {@code 2}),
+     *             {@code negative} ({@link Boolean}, default {@code false}),
+     *             {@code currency} ({@link String}, default {@code "EUR"}),
+     *             plus all keys accepted by {@link NumberField#NumberField(Map)}
+     */
     MoneyField(Map args) {
         super(args)
 
@@ -40,6 +56,13 @@ class MoneyField extends NumberField {
         inputMode = decimals ? TextFieldInputMode.DECIMAL : TextFieldInputMode.NUMERIC
     }
 
+    /**
+     * Sets the value of this field, enforcing that it must be a {@link Money} instance.
+     * When a {@link Money} value is set, the {@code prefix} is updated to its currency code.
+     *
+     * @param value the {@link Money} value to set, or {@code null} to clear the field
+     * @throws dueuno.exceptions.ElementsException if {@code value} is not a {@link Money} instance
+     */
     @Override
     void setValue(Object value) {
         super.setValue(value)
@@ -53,6 +76,12 @@ class MoneyField extends NumberField {
         }
     }
 
+    /**
+     * Serialises the current {@link Money} value to a JSON string containing the
+     * {@code type}, {@code amount}, {@code currency}, and {@code decimals} fields.
+     *
+     * @return a JSON string representing the current money value
+     */
     @Override
     String getValueAsJSON() {
         Map valueMap = [

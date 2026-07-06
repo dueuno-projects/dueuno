@@ -148,4 +148,77 @@ class ObjectUtils {
         }
     }
 
+    /**
+     * Converts a flat map with dot-separated keys into a nested map.
+     * <p>For example, the key {@code "day.info.author"} is converted into:
+     *
+     * <pre>{@code
+     * [
+     *     day: [
+     *         info: [
+     *             author: value
+     *         ]
+     *     ]
+     * ]
+     * }</pre>
+     *
+     * @param map the flat map to convert
+     * @return a nested map representing the same key/value pairs
+     */
+    static Map nestMap(Map map) {
+        Map result = [:]
+
+        for (entry in map) {
+            String key = entry.key
+            List<String> parts = key.tokenize('.')
+            Map current = result
+
+            for (int i = 0; i < parts.size(); i++) {
+                String part = parts[i]
+
+                if (i == parts.size() - 1) {
+                    current[part] = entry.value
+                } else {
+                    current = current.computeIfAbsent(part) { [:] } as Map
+                }
+            }
+        }
+
+        return result
+    }
+
+    /**
+     * Converts a map with dot-notation keys into a nested map structure,
+     * while also preserving the original flat keys.
+     *
+     * Example:
+     * Input:  ["month.day": 1]
+     * Output: [month: [day: 1], "month.day": 1]
+     *
+     * @param map input map with dot-notation keys
+     * @return nested map with original keys preserved
+     */
+    static Map expandDotKeysMap(Map map) {
+        Map result = [:]
+
+        for (entry in map) {
+            String key = entry.key
+            List<String> parts = key.tokenize('.')
+            Map current = result
+
+            for (int i = 0; i < parts.size(); i++) {
+                String part = parts[i]
+
+                if (i == parts.size() - 1) {
+                    current[part] = entry.value
+                } else {
+                    current = current.computeIfAbsent(part) { [:] } as Map
+                }
+            }
+
+            result[key] = entry.value
+        }
+
+        return result
+    }
 }

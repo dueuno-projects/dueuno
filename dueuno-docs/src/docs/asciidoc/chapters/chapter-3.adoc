@@ -22,7 +22,6 @@ import dueuno.core.ApplicationService
 
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService
 
     def init = {

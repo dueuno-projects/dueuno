@@ -16,22 +16,57 @@ package dueuno.elements.style
 
 import groovy.transform.CompileStatic
 
+/**
+ * Enumerates the text-styling options available to Elements UI components.
+ * <p>
+ * Each constant maps to a Bootstrap CSS utility class. {@link #toString()} returns the
+ * CSS class string directly, so instances can be interpolated into HTML {@code class}
+ * attributes without additional conversion.
+ * </p>
+ *
+ * @author Gianluca Sartori
+ */
 @CompileStatic
 enum TextStyle {
+
+    /** No explicit style applied. CSS class: {@code ""}. */
     NONE(''),
+
+    /** Normal (non-bold) font weight. CSS class: {@code "fw-normal"}. */
     NORMAL('fw-normal'),
+
+    /** Bold font weight. CSS class: {@code "fw-bold"}. */
     BOLD('fw-bold'),
+
+    /** Italic font style. CSS class: {@code "fst-italic"}. */
     ITALIC('fst-italic'),
+
+    /** Monospace font family. CSS class: {@code "font-monospace"}. */
     MONOSPACE('font-monospace'),
+
+    /** Underline text decoration. CSS class: {@code "text-decoration-underline"}. */
     UNDERLINE('text-decoration-underline'),
+
+    /** Strikethrough text decoration. CSS class: {@code "text-decoration-line-through"}. */
     LINE_THROUGH('text-decoration-line-through')
 
+    /** The Bootstrap CSS utility class corresponding to this text style. */
     final String textStyle
 
+    /**
+     * Creates a {@code TextStyle} constant bound to the given CSS class string.
+     *
+     * @param textStyle the Bootstrap utility class for this style (may be {@code null} or empty for {@link #NONE})
+     */
     TextStyle(String textStyle) {
         this.textStyle = textStyle ?: ''
     }
 
+    /**
+     * Returns the Bootstrap CSS class string for this text style (e.g. {@code "fw-bold"}).
+     *
+     * @return the CSS class, or an empty string for {@link #NONE}
+     */
     String toString() {
         return textStyle
     }

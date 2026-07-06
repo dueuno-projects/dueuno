@@ -17,14 +17,34 @@ package dueuno.elements.components
 import groovy.transform.CompileStatic
 
 /**
+ * A visual separator component used to divide sections within a form or layout.
+ * <p>
+ * {@code Separator} extends {@link Label} so it can display optional text, but it
+ * suppresses the field label and help text and skips focus. It is typically rendered
+ * as a horizontal rule or a titled divider line.
+ * </p>
+ *
  * @author Gianluca Sartori
  */
-
 @CompileStatic
 class Separator extends Label {
 
+    /**
+     * Whether the separator collapses its top margin to reduce vertical spacing.
+     * Defaults to {@code false}.
+     */
     Boolean squeeze
 
+    /**
+     * Creates a {@code Separator} instance configured from the supplied argument map.
+     * Suppresses the field label and help text, sets focus-skip, and defaults to a
+     * full-width (12-column) layout.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code squeeze} ({@link Boolean}, default {@code false}),
+     *             {@code cols} ({@link Integer}, default {@code 12}),
+     *             plus all keys accepted by {@link Label#Label(Map)}
+     */
     Separator(Map args) {
         super(args)
 

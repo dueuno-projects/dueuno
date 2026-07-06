@@ -172,7 +172,7 @@ class PublicPageController implements ElementsController {
         c.form['id'].readonly = true
         c.form['id'].value = 'Test Name'
 
-        display content: c, modal: true, wide: true
+        display content: c, modal: true, large: true
     }
 
     def onCreate(TPerson obj) {
@@ -187,7 +187,7 @@ class PublicPageController implements ElementsController {
     def edit(TPerson obj) {
         def c = buildForm(create: false)
         c.form.values = obj
-        display content: c, modal: true, wide: true
+        display content: c, modal: true, large: true
     }
 
     def onEdit(TPerson obj) {

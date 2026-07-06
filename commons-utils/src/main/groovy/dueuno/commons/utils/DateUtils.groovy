@@ -20,6 +20,8 @@ import groovy.util.logging.Slf4j
 import java.text.SimpleDateFormat
 import java.time.*
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.time.temporal.TemporalAccessor
 
 /**
  * Utility class for handling dates and times.
@@ -206,60 +208,145 @@ class DateUtils {
     // -------------------------
 
     /**
-     * Formats a {@link java.time.LocalDateTime} using the specified pattern.
+     * Formats a {@link java.time.LocalDate} using the locale-sensitive medium date style.
+     *
+     * @param date   the local date to format
+     * @param locale the locale to use for formatting (default: system default)
+     * @return the formatted date string, e.g., {@code "Feb 10, 2026"} for {@code Locale.ENGLISH}
+     */
+    static String format(LocalDate date, Locale locale = Locale.getDefault()) {
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofLocalizedDate(FormatStyle.SHORT)
+                .withLocale(locale)
+
+        return formatWith(date, formatter)
+    }
+
+    /**
+     * Formats a {@link java.time.LocalDate} using the given pattern.
+     *
+     * @param date    the local date to format
+     * @param pattern the pattern to use, e.g., {@code "yyyy/MM/dd"}
+     * @param locale  the locale to use for formatting (default: system default)
+     * @return the formatted date string
+     */
+    static String format(LocalDate date, String pattern, Locale locale = Locale.getDefault()) {
+        return formatWith(date, DateTimeFormatter.ofPattern(pattern, locale))
+    }
+
+    /**
+     * Formats a {@link java.time.LocalDateTime} using the locale-sensitive medium date-time style.
      *
      * @param dateTime the local date-time to format
-     * @param pattern the format pattern (default: "yyyy-MM-dd'T'HH:mm")
-     * @return the formatted string
+     * @param locale   the locale to use for formatting (default: system default)
+     * @return the formatted date-time string, e.g., {@code "Feb 10, 2026, 2:35:20 PM"} for {@code Locale.ENGLISH}
      */
-    static String format(LocalDateTime dateTime, String pattern = "yyyy-MM-dd'T'HH:mm") {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern)
-        return dateTime.format(dtf)
+    static String format(LocalDateTime dateTime, Locale locale = Locale.getDefault()) {
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofLocalizedDateTime(FormatStyle.SHORT)
+                .withLocale(locale)
+
+        return formatWith(dateTime, formatter)
     }
 
     /**
-     * Formats a {@link java.time.LocalDate} using the specified pattern.
+     * Formats a {@link java.time.LocalDateTime} using the given pattern.
      *
-     * @param date the local date to format
-     * @param pattern the format pattern (default: "yyyy-MM-dd")
-     * @return the formatted string
+     * @param dateTime the local date-time to format
+     * @param pattern  the pattern to use, e.g., {@code "yyyy/MM/dd HH:mm"}
+     * @param locale   the locale to use for formatting (default: system default)
+     * @return the formatted date-time string
      */
-    static String format(LocalDate date, String pattern = "yyyy-MM-dd") {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern)
-        return date.format(dtf)
+    static String format(LocalDateTime dateTime, String pattern, Locale locale = Locale.getDefault()) {
+        return formatWith(dateTime, DateTimeFormatter.ofPattern(pattern, locale))
     }
 
     /**
-     * Formats a {@link java.time.LocalTime} using the specified pattern.
+     * Formats a {@link java.time.LocalTime} using the locale-sensitive medium time style.
      *
-     * @param time the local time to format
-     * @param pattern the format pattern (default: "HH:mm")
-     * @return the formatted string
+     * @param time   the local time to format
+     * @param locale the locale to use for formatting (default: system default)
+     * @return the formatted time string, e.g., {@code "2:35:20 PM"} for {@code Locale.ENGLISH}
      */
-    static String format(LocalTime time, String pattern = "HH:mm") {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern)
-        return time.format(dtf)
+    static String format(LocalTime time, Locale locale = Locale.getDefault()) {
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofLocalizedTime(FormatStyle.SHORT)
+                .withLocale(locale)
+
+        return formatWith(time, formatter)
     }
 
     /**
-     * Formats a {@link java.util.Date} using the specified pattern.
+     * Formats a {@link java.time.LocalTime} using the given pattern.
      *
-     * @param date the date to format
-     * @param pattern the format pattern (default: "yyyy-MM-dd")
+     * @param time    the local time to format
+     * @param pattern the pattern to use, e.g., {@code "HH:mm"}
+     * @param locale  the locale to use for formatting (default: system default)
+     * @return the formatted time string
+     */
+    static String format(LocalTime time, String pattern, Locale locale = Locale.getDefault()) {
+        return formatWith(time, DateTimeFormatter.ofPattern(pattern, locale))
+    }
+
+    /**
+     * Formats a {@link java.util.Date} using the locale-sensitive medium date-time style.
+     *
+     * @param date   the date to format
+     * @param locale the locale to use for formatting (default: system default)
+     * @return the formatted date-time string, e.g., {@code "Feb 10, 2026, 2:35:20 PM"} for {@code Locale.ENGLISH}
+     */
+    static String format(Date date, Locale locale = Locale.getDefault()) {
+        Instant instant = date.toInstant()
+        ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault())
+
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofLocalizedDateTime(FormatStyle.SHORT)
+                .withLocale(locale)
+
+        return formatWith(zdt, formatter)
+    }
+
+    /**
+     * Formats a {@link java.util.Date} using the given pattern.
+     *
+     * @param date    the date to format
+     * @param pattern the pattern to use, e.g., {@code "yyyy/MM/dd HH:mm"}
+     * @param locale  the locale to use for formatting (default: system default)
+     * @return the formatted date-time string
+     */
+    static String format(Date date, String pattern, Locale locale = Locale.getDefault()) {
+        Instant instant = date.toInstant()
+        ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault())
+
+        return formatWith(zdt, DateTimeFormatter.ofPattern(pattern, locale))
+    }
+
+    /**
+     * Formats a {@link java.time.temporal.TemporalAccessor} using the given {@link java.time.format.DateTimeFormatter}.
+     *
+     * @param temporal  the temporal value to format
+     * @param formatter the formatter to apply
      * @return the formatted string
      */
-    static String format(Date date, String pattern = "yyyy-MM-dd") {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern)
-        return simpleDateFormat.format(date)
+    private static String formatWith(TemporalAccessor temporal, DateTimeFormatter formatter) {
+        return formatter.format(temporal)
     }
 
     /**
      * Reformats a date string from one pattern to another.
+     * <p>
+     * The input string is parsed as a {@link java.time.LocalDate} using {@code patternFrom},
+     * then formatted back to a string using {@code patternTo}.
+     * <p>
+     * Example:
+     * <pre>{@code
+     * String result = DateUtils.reformat("2026-02-10", "yyyy-MM-dd", "dd/MM/yyyy"); // "10/02/2026"
+     * }</pre>
      *
-     * @param date the date string to reformat
-     * @param patternFrom the original format
-     * @param patternTo the desired format
-     * @return the reformatted string, or empty string if input is null
+     * @param date        the date string to reformat
+     * @param patternFrom the pattern of the input string, e.g., {@code "yyyy-MM-dd"}
+     * @param patternTo   the pattern for the output string, e.g., {@code "dd/MM/yyyy"}
+     * @return the reformatted date string, or an empty string if input is null or blank
      */
     static String reformat(String date, String patternFrom, String patternTo) {
         if (!date) {

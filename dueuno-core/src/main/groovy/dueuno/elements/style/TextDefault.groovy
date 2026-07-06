@@ -16,6 +16,17 @@ package dueuno.elements.style
 
 import groovy.transform.CompileStatic
 
+/**
+ * Centralises the i18n message keys used by the Elements framework for standard UI action
+ * labels and confirmation messages (e.g. "Save", "Delete", "Cancel").
+ * <p>
+ * Each constant holds the key of a message that must be present in the application's
+ * {@code i18n/*.properties} files. Using these constants avoids hard-coded strings and
+ * ensures consistent labelling across all Elements components.
+ * </p>
+ *
+ * @author Gianluca Sartori
+ */
 @CompileStatic
 class TextDefault {
 

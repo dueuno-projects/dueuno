@@ -17,17 +17,37 @@ package dueuno.elements.controls
 import groovy.transform.CompileStatic
 
 /**
+ * Enumeration of HTML {@code inputmode} attribute values for {@link TextField} controls.
+ * <p>
+ * The {@code inputmode} hint tells the browser which virtual keyboard to display on
+ * touch devices. The enum name is lowercased when serialised to HTML.
+ * </p>
+ *
  * @author Gianluca Sartori
  */
-
 @CompileStatic
 enum TextFieldInputMode {
+    /** No virtual keyboard hint; the browser uses its default. */
     NONE,
+
+    /** Standard text keyboard. */
     TEXT,
+
+    /** Numeric keyboard (integers, no decimal separator). */
     NUMERIC,
+
+    /** Decimal keyboard (numeric with a locale-appropriate decimal separator). */
     DECIMAL,
+
+    /** Search-optimised keyboard. */
     SEARCH,
+
+    /** E-mail address keyboard (includes {@code @} and {@code .}). */
     EMAIL,
+
+    /** URL keyboard (includes {@code /}, {@code .}, and {@code :}). */
     URL,
+
+    /** Telephone number keyboard (includes {@code +}, {@code *}, and {@code #}). */
     TEL
 }

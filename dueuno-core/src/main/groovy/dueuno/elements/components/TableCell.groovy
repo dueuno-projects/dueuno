@@ -26,25 +26,57 @@ import groovy.contracts.Requires
 import groovy.transform.CompileStatic
 
 /**
+ * A single cell within a {@link TableRow}, bound to a named {@link Table} column.
+ * <p>
+ * By default the cell renders its value through an internal {@link Label}. An arbitrary
+ * {@link Component} can replace the label via {@link #setComponent(Component)} or
+ * {@link #setComponent(Map)}. Convenience setters delegate to the internal label when present.
+ * An optional hidden {@link dueuno.elements.controls.HiddenField} can be added to submit an
+ * extra value alongside the row via {@link #setSubmitValue(Object)}.
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class TableCell extends Component {
 
+    /** The {@link Table} this cell belongs to. */
     Table table
+
+    /** The name of the {@link Table} column this cell is bound to. */
     String column
+
+    /** The {@link TableRow} this cell belongs to. */
     TableRow row
 
+    /** Number of columns this cell spans; {@code 0} means no spanning. */
     Integer colspan
+
+    /** Number of rows this cell spans; {@code 0} means no spanning. */
     Integer rowspan
 
+    /** Horizontal alignment of the cell content. Defaults to {@link TextAlign#DEFAULT}. */
     TextAlign textAlign
+
+    /** Vertical alignment of the cell content. Defaults to {@link VerticalAlign#DEFAULT}. */
     VerticalAlign verticalAlign
 
+    /** The component ID of the inner content component (label or custom component). */
     String componentId
 
+    /**
+     * Creates a {@code TableCell} instance configured from the supplied argument map.
+     * If {@code args.component} is provided it replaces the default {@link Label};
+     * otherwise a {@link Label} is created automatically.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code table} ({@link Table}, required),
+     *             {@code row} ({@link TableRow}, required),
+     *             {@code column} ({@link String}, required),
+     *             {@code component} ({@link Component}),
+     *             plus all keys accepted by {@link Component#Component(Map)}
+     */
     @Requires({ args.table && args.row && args.column })
     TableCell(Map args) {
         super(args)
@@ -63,6 +95,12 @@ class TableCell extends Component {
         buildCellComponent(args.component as Component)
     }
 
+    /**
+     * Serialises this cell's properties to JSON, including the bound {@link #column} name.
+     *
+     * @param properties additional properties to merge before serialisation
+     * @return the JSON string representation of this cell's properties
+     */
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
@@ -71,6 +109,12 @@ class TableCell extends Component {
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
 
+    /**
+     * Initialises the inner content component: registers the supplied {@link Component} if
+     * non-null, or creates a default {@link Label} otherwise.
+     *
+     * @param component a custom component to embed, or {@code null} to use a {@link Label}
+     */
     private void buildCellComponent(Component component) {
         if (component) {
             setComponent(component)
@@ -79,18 +123,26 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Creates and registers the default {@link Label} as the inner content component.
+     */
     private void setLabel() {
         addComponent(
                 class: Label,
                 id: componentId,
                 replace: true,
-                iconFixedWidth: true,
                 textPrefix: controllerName,
                 textWrap: TextWrap.NO_WRAP,
                 tag: false,
         )
     }
 
+    /**
+     * Returns the inner {@link Label} if the current content component is a {@link Label},
+     * or {@code null} if a custom component has replaced it.
+     *
+     * @return the inner {@link Label}, or {@code null}
+     */
     Label getLabel() {
         Component component = getComponent()
         if (component in Label) {
@@ -100,6 +152,12 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Replaces the default label with the given {@link Component} instance.
+     * Flags the parent table and row as containing components (switching the row template).
+     *
+     * @param component the component to embed in this cell
+     */
     void setComponent(Component component) {
         if (!row.isHeader) {
             table.hasComponents = true
@@ -110,6 +168,12 @@ class TableCell extends Component {
         addComponent(component)
     }
 
+    /**
+     * Replaces the default label with a component built from the given argument map.
+     * Flags the parent table and row as containing components (switching the row template).
+     *
+     * @param args component configuration arguments; {@code id} defaults to {@link #componentId}
+     */
     void setComponent(Map args) {
         if (!row.isHeader) {
             table.hasComponents = true
@@ -125,10 +189,21 @@ class TableCell extends Component {
         addComponent(args)
     }
 
+    /**
+     * Returns the current inner content component (label or custom component).
+     *
+     * @return the inner {@link Component}
+     */
     Component getComponent() {
         return getComponent(componentId)
     }
 
+    /**
+     * Adds a hidden {@link dueuno.elements.controls.HiddenField} to this cell so that
+     * {@code value} is submitted alongside the row data.
+     *
+     * @param value the value to submit
+     */
     void setSubmitValue(Object value) {
         addComponent(
                 class: HiddenField,
@@ -138,10 +213,22 @@ class TableCell extends Component {
         )
     }
 
+    /**
+     * Returns the hidden submit-value component added via {@link #setSubmitValue(Object)},
+     * or {@code null} if none was added.
+     *
+     * @return the hidden submit-value {@link Component}, or {@code null}
+     */
     Component getSubmitValue() {
         return getComponent(getId() + '-value')
     }
 
+    /**
+     * Applies the given pretty-printer properties to the inner {@link Label}.
+     * Has no effect if the cell contains a custom component.
+     *
+     * @param value a map of {@link dueuno.core.PrettyPrinterProperties} settings
+     */
     void setPrettyPrinterProperties(Map value) {
         Label label = getLabel()
         if (label) {
@@ -149,6 +236,12 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Returns the {@link dueuno.core.PrettyPrinterProperties} of the inner {@link Label},
+     * or a default instance if the cell contains a custom component.
+     *
+     * @return the label's pretty-printer properties
+     */
     PrettyPrinterProperties getPrettyPrinterProperties() {
         Label label = getLabel()
         if (label) {
@@ -158,6 +251,11 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Sets the text-wrap mode on the inner {@link Label}.
+     *
+     * @param value the desired {@link TextWrap} mode
+     */
     void setTextWrap(TextWrap value) {
         Label label = getLabel()
         if (label) {
@@ -165,6 +263,11 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Sets a single text style on the inner {@link Label}.
+     *
+     * @param value the {@link TextStyle} to apply
+     */
     void setTextStyle(TextStyle value) {
         Label label = getLabel()
         if (label) {
@@ -172,6 +275,11 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Sets multiple text styles on the inner {@link Label}.
+     *
+     * @param value the list of {@link TextStyle} values to apply
+     */
     void setTextStyle(List<TextStyle> value) {
         Label label = getLabel()
         if (label) {
@@ -179,6 +287,11 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Sets the display text on the inner {@link Label}.
+     *
+     * @param value the text value or i18n key to display
+     */
     void setText(Object value) {
         Label label = getLabel()
         if (label) {
@@ -186,6 +299,11 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Sets the icon class on the inner {@link Label}.
+     *
+     * @param value the icon CSS class (e.g. {@code "fa-star"})
+     */
     void setIcon(String value) {
         Label label = getLabel()
         if (label) {
@@ -193,6 +311,11 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Sets the tooltip on the inner {@link Label}.
+     *
+     * @param value the tooltip text
+     */
     void setTooltip(String value) {
         Label label = getLabel()
         if (label) {
@@ -200,6 +323,13 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Enables or disables the tag (badge) rendering mode on the inner {@link Label}.
+     * When enabled, centres the cell content and applies an appropriate background colour
+     * that respects the table's row-striping setting.
+     *
+     * @param value {@code true} to render the cell value as a tag/badge
+     */
     void setTag(Boolean value) {
         Label label = getLabel()
         Object labelValue = ObjectUtils.getValue(row.values, column)
@@ -217,6 +347,11 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Sets a hyperlink URL on the inner {@link Label}.
+     *
+     * @param value the URL string
+     */
     void setUrl(String value) {
         Label label = getLabel()
         if (label) {
@@ -224,6 +359,11 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Sets raw HTML content on the inner {@link Label}.
+     *
+     * @param value the HTML string to render
+     */
     void setHtml(String value) {
         Label label = getLabel()
         if (label) {
@@ -231,6 +371,12 @@ class TableCell extends Component {
         }
     }
 
+    /**
+     * Returns {@code true} if this cell is covered by a {@code colspan} from a preceding
+     * cell in the same row, meaning it should not be rendered independently.
+     *
+     * @return {@code true} if this cell falls within another cell's column span
+     */
     Boolean isColumnSpanned() {
         Integer span = 0
         table.columns.find { String col ->

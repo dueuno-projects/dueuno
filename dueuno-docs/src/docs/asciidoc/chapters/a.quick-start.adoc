@@ -1,9 +1,9 @@
 == Quick Start
 
 === Goals
-*With _Dueuno_ you can develop back-office web applications writing code in a single programming language: https://groovy-lang.org/[Apache Groovy,window=_blank]. No need to know HTML, CSS o Javascript.*
+*With Dueuno you can develop back-office web applications writing code in a single programming language: https://groovy-lang.org/[Apache Groovy,window=_blank]. No need to know HTML, CSS o Javascript.*
 
-With _Dueuno_ you can develop and maintain web applications with requirements such as:
+With Dueuno you can develop and maintain web applications with requirements such as:
 
 . Authenticate & authorize users (who can access and what they can do)
 . Implement several business features with a coherent user interface
@@ -13,10 +13,10 @@ With _Dueuno_ you can develop and maintain web applications with requirements su
 . Develop multi-device applications. Each application will automatically work on a desktop pc with a mouse as well as on a mobile device with a finger.
 . Develop multi-tenant applications. The same application can serve different clients with separate databases.
 
-NOTE: The main purpose of _Dueuno_ is to decouple the business logic from the _User Interface (GUI)_. This lowers the costs of maintaining the application: just one language instead of 5 (HTML, CSS, JavaScript, Java, SQL), less skilled people can join the team and no need to upgrade the GUI when new web technologies/standards gets available.
+NOTE: The main purpose of Dueuno is to decouple the business logic from the _User Interface (GUI)_. This lowers the costs of maintaining the application: just one language instead of 5 (HTML, CSS, JavaScript, Java, SQL), less skilled people can join the team and no need to upgrade the GUI when new web technologies/standards gets available.
 
 === Non-Goals
-*_Dueuno_ is NOT a solution for:*
+*Dueuno is NOT a solution for:*
 
 . Creating classical websites (text + images + basic user interaction)
 . Creating graphical/animated web applications
@@ -42,13 +42,11 @@ You should see something like this:
 ----
 >                                                                            <
 >                         _                                                  <
->                        | |  ELEMENTS                                       <
+>                        | |   https://dueuno.com                            <
 >                      __| |_   _  ___ _   _ _ __   ___                      <
 >                     / _` | | | |/ _ \ | | | '_ \ / _ \                     <
 >                    | (_| | |_| |  __/ |_| | | | | (_) |                    <
 >                     \__,_|\__,_|\___|\__,_|_| |_|\___/                     <
->                              http://dueuno.org                             <
->                                                                            <
 >                                                                            <
 
 Grails application running at http://localhost:8080 in environment: development
@@ -61,19 +59,19 @@ image::images/quick-start/user-guide-login.png[Application Login]
 NOTE: Login with `admin/admin` to manage the default tenant or with `super/super` to manage the whole application.
 
 ==== Apache Groovy & Grails
-_Dueuno_ applications are Grails applications so you need to get confident with the https://grails.org/[Apache Grails,window=_blank] framework and the https://groovy-lang.org/[Apache Groovy,window=_blank] programming language.
+Dueuno applications are Grails applications so you need to get confident with the https://grails.org/[Apache Grails,window=_blank] framework and the https://groovy-lang.org/[Apache Groovy,window=_blank] programming language.
 
 NOTE: Apache Grails has been helping web developers for 20 years now, it's based on https://spring.io/projects/spring-boot[Spring Boot,window=_blank] and is a growing technology. What you want to do is https://grails.org/documentation.html[reading the latest documentation on the Grails website,window=_blank]
 
 NOTE: The Apache Groovy programming language has been the first language, other than Java, to be developed for the JVM. You can https://groovy-lang.org/documentation.html[read the documentation,window=_blank] and access the https://groovy-lang.org/learn.html[Groovy learning resources,window=_blank]
 
 == Basics
-In _Dueuno_ everything is a component. All visual objects of the application are derived from the same base class `Component` and they can be assembled together like we do with a LEGO set.
+In Dueuno everything is a component. All visual objects of the application are derived from the same base class `Component` and they can be assembled together like we do with a LEGO set.
 
 Some of these components are automatically created and managed by the `org.dueuno:dueuno-core` Grails plugin for each application instance. Let's give them a quick look.
 
 === The Shell
-The `Shell` component is the _Dueuno_ GUI. Each _Dueuno_ application share a common user experience and content structure.
+The `Shell` component is the Dueuno GUI. Each Dueuno application share a common user experience and content structure.
 
 ==== Login
 The login screen.
@@ -102,7 +100,7 @@ image::images/quick-start/basics-content.png[Content]
 
 Contents can be displayed as modals. A modal content is rendered inside a dialog window. This lets the user focus on a specific part of the Feature to accomplish subtasks like editing a specific object.
 
-Modals can be displayed in three sizes: `normal` (default), `wide` and `fullscreen`.
+Modals can be displayed in three sizes: `normal` (default), `small`, `large` and `fullscreen`.
 
 image::images/quick-start/basics-content-modal.png[Modal Content]
 
@@ -112,7 +110,7 @@ The application can display messages to the user to send alerts or confirm actio
 image::images/quick-start/basics-content-message.png[Message]
 
 ==== Responsiveness
-All _Dueuno_ applications work both on desktop computers and on mobile devices by design and without the developer having to cope with it. Here is how an application looks like on a Desktop, on a Tablet and on a Mobile Phone.
+All Dueuno applications work both on desktop computers and on mobile devices by design and without the developer having to cope with it. Here is how an application looks like on a Desktop, on a Tablet and on a Mobile Phone.
 
 [.text-center]
 image::images/quick-start/basics-device-desktop.png[Desktop]
@@ -122,7 +120,7 @@ image::images/quick-start/basics-device-tablet.png[Tablet]
 image::images/quick-start/basics-device-phone.png[Phone]
 
 === Project Structure
-_Dueuno_ applications are Grails applications. The project structure, follows the _conventions over configuration_ design paradigm so each folder contains a specific source file type.
+Dueuno applications are Grails applications. The project structure, follows the _conventions over configuration_ design paradigm so each folder contains a specific source file type.
 
 ----
 /myapp                      <1>
@@ -180,7 +178,7 @@ Each folder contains the package structure, so for example if your application m
 
 === Features
 
-A _Dueuno_ application is a container for a set of _Features_.
+A Dueuno application is a container for a set of _Features_.
 
 Each Feature consists of a set of visual objects the user can interact with to accomplish specific tasks. You can identify each Feature as an item in the application menu on the left. Clicking a menu item will display the content of the selected Feature.
 
@@ -191,7 +189,6 @@ To configure the application Features we register them in the `BootStrap.groovy`
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService // <1>
 
     def init = {
@@ -311,11 +308,11 @@ class TPerson implements GormEntity, MultiTenant<TPerson> { //<1>
 
 === Database Connections
 
-Each application has a `DEFAULT` database connection defined in the `grails-app/conf/application.yml` file. This `DEFAULT` connection cannot be changed at runtime and it is used by _Dueuno_ to store its own database.
+Each application has a `DEFAULT` database connection defined in the `grails-app/conf/application.yml` file. This `DEFAULT` connection cannot be changed at runtime and it is used by Dueuno to store its own database.
 
 . You can configure multiple databases per environment (DEV, TEST, PRODUCTION, ect) in the `application.yml`, see: https://docs.grails.org/latest/guide/single.html#environments[window=_blank]
 
-. You can edit/create database connections at runtime from the _Dueuno_ GUI accessing with the `super` user from the menu `System Configuration -> Connection Sources`
+. You can edit/create database connections at runtime from the Dueuno GUI accessing with the `super` user from the menu `System Configuration -> Connection Sources`
 
 . You can programmatically create database connections at runtime with the `ConnectionSourceService` as follows:
 
@@ -324,7 +321,6 @@ Each application has a `DEFAULT` database connection defined in the `grails-app/
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService // <1>
     ConnectionSourceService connectionSourceService // <2>
 
@@ -357,11 +353,11 @@ Application users can belong only to one Tenant. If a person needs to access dif
 
 NOTE: The default password for such users corresponds to their names. To change the password you need to log in with the admin user and change it from the `User Profile`. Go to `User Menu (top right) -> Profile`.
 
-New Tenants can be created from the _Dueuno_ GUI accessing as `super` from the menu `System Configuration -> Tenants`. If multi-tenancy is not a requirement to your application you will be using the `DEFAULT` Tenant which is automatically created.
+New Tenants can be created from the Dueuno GUI accessing as `super` from the menu `System Configuration -> Tenants`. If multi-tenancy is not a requirement to your application you will be using the `DEFAULT` Tenant which is automatically created.
 
 === User Management
 
-Users can access a _Dueuno_ application with credentials made of a username and a secret password. Each user must be configured by the Tenant's `admin` user from the menu `Tenant Administration -> Users` and `Tenant Administration -> Groups`.
+Users can access a Dueuno application with credentials made of a username and a secret password. Each user must be configured by the Tenant's `admin` user from the menu `Tenant Administration -> Users` and `Tenant Administration -> Groups`.
 
 ==== Users
 image::images/quick-start/basics-users.png[Users]
@@ -383,7 +379,6 @@ Applications are made of features, we register one to work with movies (See <<fe
 ----
 class BootStrap {
 
-    ServletContext servletContext
     ApplicationService applicationService // <1>
 
     def init = {
@@ -468,7 +463,7 @@ class MovieController implements ElementsController { // <2>
 }
 ----
 <1> Only users with the `ROLE_CAN_EDIT_MOVIES` authority can access the actions in this controller.
-<2> Implementing `ElementsController` the _Dueuno_ API will become available
+<2> Implementing `ElementsController` the Dueuno API will become available
 <3> As a convention, all actions building and displaying a GUI are named after a verb or a name while all actions that execute a business logic are identified by a name starting with `on`.
 
 We are going to use the `ContentTable` content to list the records, the `ContentCreate` and `ContentEdit` contents to create a new record and edit an existing one (See <<contents>>).

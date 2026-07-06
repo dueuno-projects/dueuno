@@ -17,17 +17,38 @@ package dueuno.elements.controls
 import groovy.transform.CompileStatic
 
 /**
+ * Enumeration of HTML {@code type} attribute values for {@link TextField} controls.
+ * <p>
+ * The {@code type} attribute determines the browser's built-in validation, UI widget,
+ * and virtual keyboard on touch devices. The enum name is lowercased when serialised
+ * to the HTML {@code <input>} element.
+ * </p>
+ *
  * @author Gianluca Sartori
  */
-
 @CompileStatic
 enum TextFieldInputType {
+    /** Plain text input; no special validation or widget. */
     TEXT,
+
+    /** Numeric input with browser-native spinner controls. */
     NUMBER,
+
+    /** Decimal numeric input. */
     DECIMAL,
+
+    /** Search input; may render with a clear button in some browsers. */
     SEARCH,
+
+    /** Password input; entered characters are masked. */
     PASSWORD,
+
+    /** E-mail address input; browser validates the format. */
     EMAIL,
+
+    /** URL input; browser validates the format. */
     URL,
+
+    /** Telephone number input; no strict format validation, but optimises mobile keyboard. */
     TEL
 }

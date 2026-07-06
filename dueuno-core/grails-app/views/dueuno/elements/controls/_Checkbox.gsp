@@ -5,7 +5,7 @@
 <g:else>
 <span class="input-group-text control-checkbox ${c.cssClass}">
     <div class="text-wrapper">
-        <g:if test="${c.message(c.text)}"><render:message code="${c.text}" /></g:if><g:else>&nbsp;</g:else>
+        <g:if test="${c.message(c.text)}"><render:message code="${c.text}" args="${c.textArgs}" /></g:if><g:else>&nbsp;</g:else>
     </div>
     <div class="form-check form-switch">
 </g:else>

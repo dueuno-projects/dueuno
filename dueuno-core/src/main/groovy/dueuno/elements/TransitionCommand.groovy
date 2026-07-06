@@ -17,15 +17,32 @@ package dueuno.elements
 import groovy.transform.CompileStatic
 
 /**
+ * Represents a single command within a {@link Transition}.
+ * <p>
+ * Each command encodes one client-side operation that the Elements frontend
+ * will execute in sequence after a server-side action completes. The set of
+ * supported operations is defined by {@link TransitionCommandMethod}.
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
 
 @CompileStatic
 class TransitionCommand {
+
+    /** The name of the client-side method to execute, as defined by {@link TransitionCommandMethod}. */
     String method
+
+    /** The identifier of the target component on which the command operates, or {@code null} if not applicable. */
     String component
+
+    /** The name of the property to read or write, or the event/method name for {@code TRIGGER}/{@code CALL} commands. */
     String property
+
+    /** The value or arguments associated with the command (e.g. the new property value, redirect URL map, or method args). */
     Object value
+
+    /** Whether the component's change event should be triggered after the command is applied (used by {@code SET} commands). */
     Boolean trigger
 }

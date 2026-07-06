@@ -17,19 +17,46 @@ package dueuno.properties
 import groovy.transform.CompileStatic
 
 /**
+ * Enumerates the data types supported by the Elements property system.
+ * <p>
+ * Each constant describes the expected type of a configurable application property,
+ * allowing the framework to render the appropriate input control and apply
+ * type-specific validation and formatting.
+ * </p>
+ *
  * @author Gianluca Sartori
  */
 
 @CompileStatic
 enum PropertyType {
+
+    /** A boolean (true/false) value; typically rendered as a checkbox or toggle. */
     BOOL,
+
+    /** A numeric value (integer or decimal); rendered as a number input. */
     NUMBER,
+
+    /** A combined date and time value; rendered as a date-time picker. */
     DATETIME,
+
+    /** A date-only value; rendered as a date picker. */
     DATE,
+
+    /** A time-only value; rendered as a time picker. */
     TIME,
+
+    /** A plain text string; rendered as a text input. */
     STRING,
+
+    /** A sensitive string whose characters are masked in the UI; rendered as a password input. */
     PASSWORD,
+
+    /** A file path pointing to a specific file; rendered as a file-name input or browser. */
     FILENAME,
+
+    /** A file system path pointing to a directory; rendered as a directory input or browser. */
     DIRECTORY,
+
+    /** A URL string; rendered as a URL input with basic format validation. */
     URL
 }

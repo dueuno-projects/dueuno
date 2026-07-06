@@ -17,14 +17,27 @@ package dueuno.audit
 import groovy.transform.CompileStatic
 
 /**
+ * Enumeration of audit-trail operation types recorded for user activity tracking.
+ *
  * @author Gianluca Sartori
  */
 @CompileStatic
 enum AuditOperation {
+    /** A user successfully authenticated. */
     LOGIN,
+
+    /** A user ended their session. */
     LOGOUT,
+
+    /** A user viewed (read) a resource. */
     VIEW,
+
+    /** A user modified an existing resource. */
     EDIT,
+
+    /** A user created a new resource. */
     CREATE,
+
+    /** A user deleted a resource. */
     DELETE
 }

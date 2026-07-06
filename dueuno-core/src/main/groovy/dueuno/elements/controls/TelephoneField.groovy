@@ -17,13 +17,29 @@ package dueuno.elements.controls
 import groovy.transform.CompileStatic
 
 /**
+ * A text-input control for entering telephone numbers.
+ * <p>
+ * Extends {@link TextField} with an input validation pattern restricted to digits and the
+ * {@code +} sign ({@code ^[0-9\+]*$}), the {@link TextFieldInputMode#TEL} input mode for
+ * mobile numeric keyboards, and a phone icon ({@code fa-phone}) displayed inside the input.
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class TelephoneField extends TextField {
 
+    /**
+     * Creates a {@code TelephoneField} instance configured from the supplied argument map.
+     * Sets the input validation pattern, input mode, and icon; the pattern and input mode
+     * can be overridden via {@code args.pattern} and {@code args.inputMode} respectively.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code pattern} ({@link String}, default {@code "^[0-9\\+]*$"}),
+     *             {@code inputMode} ({@link TextFieldInputMode}, default {@link TextFieldInputMode#TEL}),
+     *             plus all keys accepted by {@link TextField#TextField(Map)}
+     */
     TelephoneField(Map args) {
         super(args)
 

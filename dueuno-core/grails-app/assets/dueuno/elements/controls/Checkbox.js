@@ -20,11 +20,19 @@ class Checkbox extends Control {
     }
 
     static setValue($element, valueMap, trigger = true) {
+        $element.val(valueMap.value);
         $element.prop('checked', valueMap.value);
     }
 
     static setReadonly($element, value) {
         $element.prop('disabled', value);
+    }
+
+    static setText($element, value) {
+        let $text = $element.closest('.input-group').find('.text-wrapper');
+        if ($text.exists()) {
+            $text.html(value);
+        }
     }
 
 }

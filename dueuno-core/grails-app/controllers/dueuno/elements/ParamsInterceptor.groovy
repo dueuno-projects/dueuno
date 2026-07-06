@@ -14,7 +14,7 @@
  */
 package dueuno.elements
 
-
+import dueuno.commons.utils.ObjectUtils
 import dueuno.types.Types
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
@@ -84,7 +84,7 @@ class ParamsInterceptor implements ElementsController {
         for (component in components) {
             String componentName = component.key
             Map componentValues = component.value as Map
-            results[componentName] = Types.deserialize(componentValues)
+            results[componentName] = ObjectUtils.expandDotKeysMap(Types.deserialize(componentValues))
         }
 
         if (components.size() == 1) {

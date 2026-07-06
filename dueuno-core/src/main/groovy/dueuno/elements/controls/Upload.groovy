@@ -23,24 +23,63 @@ import org.springframework.web.multipart.MultipartFile
 import java.nio.file.Paths
 
 /**
+ * A file-upload control backed by Dropzone.js.
+ * <p>
+ * Supports drag-and-drop and click-to-browse file selection, configurable accepted MIME types,
+ * file count and size limits, optional thumbnail generation, and localised status messages.
+ * The value type is {@link dueuno.types.Type#LIST} (a list of uploaded file references).
+ * Uploaded files can be retrieved server-side via {@link #getFilename()} and persisted via
+ * {@link #save(String, String)}.
+ * </p>
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class Upload extends Control {
 
+    /** i18n key (or literal text) for the drop-zone invitation message. */
     String text
+
+    /** i18n key (or literal text) shown when the control is disabled. */
     String textDisabled
 
+    /** List of accepted MIME types or file extensions (e.g. {@code ["image/*", ".pdf"]}). Empty means all types are accepted. */
     List acceptedFiles
+
+    /** Maximum number of files that can be uploaded; {@code null} means no limit. */
     Integer maxFiles
-    Integer maxFileSize // MB
-    Integer maxThumbnailFilesize // MB
+
+    /** Maximum size of a single file in megabytes. Defaults to {@code 20} MB. */
+    Integer maxFileSize
+
+    /** Maximum file size in megabytes for which a thumbnail is generated. Defaults to {@code 17} MB. */
+    Integer maxThumbnailFilesize
+
+    /** Width in pixels of generated thumbnails; {@code null} uses the Dropzone default. */
     Integer thumbnailWidth
+
+    /** Height in pixels of generated thumbnails; {@code null} uses the Dropzone default. */
     Integer thumbnailHeight
+
+    /** When {@code true}, file preview thumbnails are disabled. Defaults to {@code false}. */
     Boolean disablePreviews
 
+    /**
+     * Creates an {@code Upload} instance configured from the supplied argument map.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code text} ({@link String}, default {@code "control.upload.message"}),
+     *             {@code textDisabled} ({@link String}, default {@code "control.upload.disabled"}),
+     *             {@code acceptedFiles} ({@link List}),
+     *             {@code maxFiles} ({@link Integer}),
+     *             {@code maxFileSize} ({@link Integer}, default {@code 20}),
+     *             {@code maxThumbnailFilesize} ({@link Integer}, default {@code 17}),
+     *             {@code thumbnailWidth} ({@link Integer}),
+     *             {@code thumbnailHeight} ({@link Integer}),
+     *             {@code disablePreviews} ({@link Boolean}, default {@code false}),
+     *             plus all keys accepted by {@link Control#Control(Map)}
+     */
     Upload(Map args) {
         super(args)
 
@@ -60,10 +99,23 @@ class Upload extends Control {
         containerSpecs.multiline = true
     }
 
+    /**
+     * Returns the original filename of the file submitted with the current request.
+     *
+     * @return the uploaded file's original name
+     */
     static String getFilename() {
         return WebUtils.retrieveGrailsWebRequest().params._21Upload['filename']
     }
 
+    /**
+     * Saves the uploaded file from the current request to the specified directory path.
+     * Does nothing if no file was uploaded. The file is saved using the original filename
+     * unless {@code newFilename} is provided.
+     *
+     * @param path        the target directory path (must end with a path separator)
+     * @param newFilename optional replacement filename; uses the original filename when {@code null}
+     */
     static void save(String path, String newFilename = null) {
         if (!WebUtils.retrieveGrailsWebRequest().params._21Upload) {
             return
@@ -74,6 +126,12 @@ class Upload extends Control {
         request.transferTo(Paths.get(pathname))
     }
 
+    /**
+     * Serialises this control's Dropzone configuration and localised messages to JSON.
+     *
+     * @param properties additional properties to merge before serialisation
+     * @return the JSON string representation of this control's properties
+     */
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [

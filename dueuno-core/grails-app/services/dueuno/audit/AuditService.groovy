@@ -14,7 +14,6 @@
  */
 package dueuno.audit
 
-import dueuno.audit.AuditOperation
 import dueuno.commons.utils.DateUtils
 import dueuno.core.WebRequestAware
 import dueuno.elements.Elements
@@ -100,7 +99,7 @@ class AuditService implements WebRequestAware {
     }
 
     private Map buildLog(LocalDateTime dateCreated, String username, AuditOperation operation, String message, String objectName, String stateBefore, String stateAfter) {
-        String sDateCreated = DateUtils.format(dateCreated)
+        String sDateCreated = DateUtils.format(dateCreated, 'yyyy-MM-dd @ HH:mm:ss')
         String sOperation = operation.toString()
         String userAgent = request.getHeader('User-Agent')
         String ip = getClientIp(request)

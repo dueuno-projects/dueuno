@@ -19,15 +19,25 @@ import groovy.contracts.Requires
 import groovy.transform.CompileStatic
 
 /**
+ * A lightweight component that holds a reference to the owning {@link Table} and provides
+ * the rendering context for the table's dataset section.
+ *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
-
 @CompileStatic
 class TableDataset extends Component {
 
+    /** The {@link Table} this dataset component belongs to. */
     Table table
 
+    /**
+     * Creates a {@code TableDataset} instance configured from the supplied argument map.
+     *
+     * @param args initialisation arguments; recognised keys include:
+     *             {@code table} ({@link Table}, required),
+     *             plus all keys accepted by {@link Component#Component(Map)}
+     */
     @Requires({ args.table })
     TableDataset(Map args) {
         super(args)

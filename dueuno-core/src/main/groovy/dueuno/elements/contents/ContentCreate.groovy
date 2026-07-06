@@ -18,12 +18,25 @@ import dueuno.elements.style.TextDefault
 import groovy.transform.CompileStatic
 
 /**
+ * A {@link ContentForm} pre-configured for the "create new record" use case.
+ * <p>
+ * On construction the header's primary button label is set to
+ * {@link dueuno.elements.style.TextDefault#SAVE} and its action is wired to
+ * {@code onCreate}, following the Elements CRUD convention. The form can be
+ * further populated with fields after instantiation.
+ * </p>
+ *
  * @author Gianluca Sartori
  */
-
 @CompileStatic
 class ContentCreate extends ContentForm {
 
+    /**
+     * Creates a {@code ContentCreate} instance configured from the supplied argument map.
+     * Sets the header's next button to "Save" / {@code onCreate}.
+     *
+     * @param args initialisation arguments forwarded to {@link ContentForm#ContentForm(Map)}
+     */
     ContentCreate(Map args) {
         super(args)
 
@@ -31,3 +44,4 @@ class ContentCreate extends ContentForm {
         header.nextButton.action = 'onCreate'
     }
 }
+

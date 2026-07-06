@@ -53,6 +53,6 @@ class SysinfoController implements ElementsController {
             body = systemInfoService.info.collect {[key: it.key, value: it.value]}
         }
 
-        display content: c, modal: true, wide: true
+        display content: c, modal: true, large: true
     }
 }

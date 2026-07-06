@@ -51,8 +51,6 @@
     border: none;
     padding: .8rem;
     padding-bottom: .65rem;
-    border-top-left-radius: var(--bs-border-radius-lg);
-    border-top-right-radius: var(--bs-border-radius-lg);
 }
 
 .modal-content {

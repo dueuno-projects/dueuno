@@ -18,14 +18,28 @@ import dueuno.elements.components.Form
 import groovy.transform.CompileStatic
 
 /**
+ * A {@link ContentHeader} that pairs a standard page header with a {@link Form} component,
+ * providing the canonical create/edit layout used throughout the Elements framework.
+ * <p>
+ * On construction an empty {@link Form} is registered as the main content component
+ * after the header. The form can be fully configured — fields added, values set, submit
+ * action specified — after instantiation.
+ * </p>
+ *
  * @author Gianluca Sartori
  */
-
 @CompileStatic
 class ContentForm extends ContentHeader {
 
+    /** The {@link Form} component used to collect or display record data. */
     Form form
 
+    /**
+     * Creates a {@code ContentForm} instance configured from the supplied argument map.
+     * Initialises the {@link #form} component after the header.
+     *
+     * @param args initialisation arguments forwarded to {@link ContentHeader#ContentHeader(Map)}
+     */
     ContentForm(Map args) {
         super(args)
 

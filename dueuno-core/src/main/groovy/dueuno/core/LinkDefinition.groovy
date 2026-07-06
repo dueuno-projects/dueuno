@@ -18,57 +18,88 @@ import dueuno.elements.PageRenderProperties
 import groovy.transform.CompileStatic
 
 /**
+ * Base class that holds all the properties needed to define a navigable link or
+ * server-side action invocation within the Elements framework.
+ * <p>
+ * A {@code LinkDefinition} can describe a target in one of two ways:
+ * </p>
+ * <ul>
+ *     <li>As a Grails controller/action pair (optionally namespaced), with request parameters.</li>
+ *     <li>As an explicit URL, which is always treated as a direct link by default.</li>
+ * </ul>
+ * <p>
+ * Additional properties control how the response is rendered ({@code direct},
+ * {@code target}, {@code renderProperties}), which form data is submitted
+ * ({@code submit}), and optional UI feedback shown before or instead of
+ * executing the link ({@code loading}, {@code infoMessage}, {@code confirmMessage}).
+ * </p>
+ *
  * @author Gianluca Sartori
  */
 
 @CompileStatic
 class LinkDefinition implements Serializable {
 
-    /** The namespace of the controller to use in the link */
+    /** The namespace of the controller to use in the link. */
     String namespace
 
-    /** The name of the controller to use in the link; if not specified the current controller will be linked */
+    /** The name of the controller to link to; if not specified the current controller is used. */
     String controller
 
-    /** The name of the action to use in the link; if not specified the default action will be linked */
+    /** The name of the action to link to; if not specified the default action is used. */
     String action
 
-    /** A Map of request parameters */
+    /** A map of request parameters to include in the link. */
     Map params
 
-    /** The link fragment (often called anchor tag) to use */
+    /** The URL fragment (anchor) to append to the link (e.g. {@code "#section"}). */
     String fragment
 
-    /** An absolute path (starting with '/') or relative path  */
+    /** An absolute path (starting with {@code '/'}) or relative path to use as the link target. */
     String path
 
-    /** Link may point to a specific URL. If specified it has precedence over controller/action pair. */
+    /** An explicit URL target. When set it takes precedence over the controller/action pair and {@code direct} defaults to {@code true}. */
     String url
 
-    /** Whether to render the whole html page (or raw http body) or a Transition */
+    /** When {@code true}, the link response is rendered as a full HTML page or raw HTTP body instead of a {@link dueuno.elements.Transition}. */
     Boolean direct
 
-    /** List of the names of the components to submit; if not specified the container component will be passed */
+    /** Names of the components whose data should be submitted with the request. If empty the closest container component is submitted. */
     List<String> submit
 
-    /** The target page to display the link into */
+    /** The browsing context (e.g. {@code "_blank"}, {@code "_self"}) in which to open the link. */
     String target
 
-    /** Render properties */
+    /** Page render properties that control how the linked page is displayed. */
     PageRenderProperties renderProperties
 
-    /** If true a waiting screen will be displayed while the link gets retrieved */
+    /** When {@code true}, a loading indicator is shown while the request is in flight. */
     Boolean loading
 
-    /** If specified an info message will pop up, the link will never be executed */
+    /** When set, an informational pop-up with this message is displayed and the link is never executed. */
     String infoMessage
+
+    /** Optional interpolation arguments for {@link #infoMessage}. */
     List infoMessageArgs
 
-    /** If specified a confirm message will pop up giving the user a chance to cancel the action */
+    /** When set, a confirmation pop-up with this message is displayed, giving the user a chance to cancel before the link is executed. */
     String confirmMessage
+
+    /** Optional interpolation arguments for {@link #confirmMessage}. */
     List confirmMessageArgs
+
+    /** Optional map defining the action to invoke when the user confirms the {@link #confirmMessage} dialog. */
     Map confirmMessageOnConfirm
 
+    /**
+     * Creates a {@code LinkDefinition} from a map of arguments.
+     * Supported keys mirror the field names of this class. If {@code url} is provided
+     * and {@code direct} is not explicitly set, {@code direct} defaults to {@code true}.
+     * {@code renderProperties} can be passed as a {@link PageRenderProperties} instance
+     * or as individual keys that will be forwarded to the {@link PageRenderProperties} constructor.
+     *
+     * @param args map of link properties
+     */
     LinkDefinition(Map args = [:]) {
         namespace = args.namespace ?: ''
         controller = args.controller ?: ''
@@ -105,10 +136,23 @@ class LinkDefinition implements Serializable {
             renderProperties = new PageRenderProperties(args)
     }
 
+    /**
+     * Returns {@code true} when the link is configured to open in a new browser tab
+     * (i.e. {@link #target} equals {@code "_blank"}).
+     *
+     * @return {@code true} if the link opens in a new tab
+     */
     Boolean getTargetNew() {
         return target == '_blank'
     }
 
+    /**
+     * Convenience setter that configures the link to open in a new browser tab.
+     * When {@code value} is {@code true}, sets {@link #direct} to {@code true}
+     * and {@link #target} to {@code "_blank"}.
+     *
+     * @param value {@code true} to open the link in a new tab
+     */
     void setTargetNew(Boolean value) {
         if (value) {
             direct = true
@@ -116,6 +160,13 @@ class LinkDefinition implements Serializable {
         }
     }
 
+    /**
+     * Sets the browsing context for the link. When {@code value} is {@code "_self"},
+     * {@link #direct} is also set to {@code true} so that the response replaces the
+     * current page rather than being processed as a {@link dueuno.elements.Transition}.
+     *
+     * @param value the target browsing context (e.g. {@code "_self"})
+     */
     void setTarget(String value) {
         if (value && value == '_self') {
             direct = true
@@ -123,6 +174,12 @@ class LinkDefinition implements Serializable {
         }
     }
 
+    /**
+     * Sets {@link #submit} to a single-element list containing the given component name.
+     * Does nothing if {@code value} is blank.
+     *
+     * @param value the name of the component to submit
+     */
     void setSubmit(String value) {
         if (!value) {
             return
@@ -131,6 +188,12 @@ class LinkDefinition implements Serializable {
         submit = [value]
     }
 
+    /**
+     * Sets {@link #submit} to the provided list of component names.
+     * Does nothing if {@code value} is empty or {@code null}.
+     *
+     * @param value the list of component names to submit
+     */
     void setSubmit(List<String> value) {
         if (!value) {
             return
@@ -139,6 +202,13 @@ class LinkDefinition implements Serializable {
         submit = value
     }
 
+    /**
+     * Serialises the link definition to a map suitable for JSON encoding.
+     * Only the properties relevant to the frontend are included; interpolation
+     * argument lists and path/fragment fields are omitted.
+     *
+     * @return a map representation of this link definition
+     */
     Map asMap() {
         return [
                 namespace: namespace,
