@@ -198,7 +198,7 @@ class CrudController implements ElementsController {
 
                 body.eachRow { TableRow row, Map values ->
                     values.prettyMap = [a: 'This', b: "is", c: "a", d: "Map"]
-                    values.prettyObjectList = [personService.create(name: 'Company 1'), personService.create(name: 'Company 2')]
+                    values.prettyObjectList = [companyService.create(name: 'Company 1'), companyService.create(name: 'Company 2')]
                     row.cells.prettyHtml.html = 'table.cell.label.html'
 //                    row.verticalAlign = VerticalAlign.TOP
                     row.cells.postcode.tag = true
