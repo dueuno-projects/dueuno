@@ -77,8 +77,8 @@ class TableFilters extends Form {
         table = args.table as Table
 
         display = false
-        fold = (args.fold == null) ? false : args.fold
-        autoFold = (args.autoFold == null) ? false : args.autoFold
+        fold = isMobileDevice() ? true : (args.fold == null) ? false : args.fold
+        autoFold = isMobileDevice() ? true : (args.autoFold == null) ? false : args.autoFold
         isFiltering = false
         prettyValues = ''
 

@@ -88,10 +88,6 @@ abstract class Page extends Component {
         appicon = args.appicon
     }
 
-    Boolean isMobileDevice() {
-        return requestParams.mobile || requestParams._21IsMobileDevice ? true : false
-    }
-
     /**
      * Returns the global components registry used by GSP views to include the JavaScript and
      * CSS assets contributed by third-party Elements components (see {@code _Shell.gsp}).

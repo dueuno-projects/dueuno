@@ -149,10 +149,6 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         }
     }
 
-    Boolean isMobileDevice() {
-        return getMainPage().isMobileDevice()
-    }
-
     /**
      * Returns the name of the key that was pressed by the user in the current request,
      * as reported by the main page's key-press component.
