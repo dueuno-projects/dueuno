@@ -108,10 +108,10 @@ class AuditService implements WebRequestAware {
                 ip         : ip,
                 userAgent  : userAgent,
                 operation  : sOperation,
-                message    : message,
+                message    : message?.take(TAuditLog.LOG_MESSAGE_MAX_SIZE),
                 objectName : objectName,
-                stateBefore: stateBefore?.take(4000), // Keep in sync with TAuditLog domain class constraints
-                stateAfter : stateAfter?.take(4000), // Keep in sync with TAuditLog domain class constraints
+                stateBefore: stateBefore?.take(TAuditLog.LOG_MESSAGE_MAX_SIZE),
+                stateAfter : stateAfter?.take(TAuditLog.LOG_MESSAGE_MAX_SIZE),
                 username   : username,
                 dateCreated: sDateCreated,
                 seed       : generateLogSeed(username, sOperation, sDateCreated),
