@@ -95,8 +95,8 @@
 .component-table-dataset .component-table-actions,
 .component-table-dataset .component-table-actions-header,
 .component-table-dataset .component-table-cell:has([data-21-control]) {
-    padding-top: 0;
-    padding-bottom: 0;
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
 }
 
 .table-no-results {
@@ -191,7 +191,7 @@
 }
 
 .component-table-dataset .component-table-header a:focus-visible {
-    background-color: rgba(var(--elements-primary-bg-shaded)));
+    background-color: rgba(var(--elements-primary-bg-shaded));
 }
 
 .component-table-header .sort-asc:after {
