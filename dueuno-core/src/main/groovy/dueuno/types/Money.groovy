@@ -18,8 +18,6 @@ import dueuno.core.PrettyPrinter
 import dueuno.core.PrettyPrinterProperties
 import dueuno.elements.controls.MoneyField
 import dueuno.exceptions.ElementsException
-import grails.gorm.MultiTenant
-import grails.gorm.annotation.Entity
 import groovy.transform.CompileDynamic
 import org.grails.datastore.gorm.GormEntity
 
@@ -41,9 +39,8 @@ import org.grails.datastore.gorm.GormEntity
  * @author Francesco Piceghello
  */
 
-@Entity
 @CompileDynamic
-class Money extends Number implements CustomType, GormEntity, MultiTenant<Money> {
+class Money extends Number implements CustomType, GormEntity {
 
     /** The Elements type name used to identify this custom type in the serialisation protocol. */
     static final TYPE_NAME = 'MONEY'

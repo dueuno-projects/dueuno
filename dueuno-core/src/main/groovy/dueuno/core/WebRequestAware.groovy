@@ -75,6 +75,15 @@ trait WebRequestAware {
     }
 
     /**
+     * Returns whether the current request is marked as coming from a mobile device.
+     * @return true if the current request is marked as coming from a mobile device.
+     */
+    Boolean isMobileDevice() {
+        GrailsParameterMap params = getRequestParams()
+        return params.mobile || params._21IsMobileDevice ? true : false
+    }
+
+    /**
      * Returns the current request controller name
      * @return The current request controller name
      */
