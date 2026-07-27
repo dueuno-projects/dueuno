@@ -18,7 +18,7 @@ dependencies {
     developmentOnly "org.springframework.boot:spring-boot-devtools"
 
     // LDAP
-    implementation "org.apache.grails:grails-spring-security-ldap:7.0.1"
+    implementation "org.apache.grails:grails-spring-security-ldap:7.2.1"
 }
 
 bootRun {

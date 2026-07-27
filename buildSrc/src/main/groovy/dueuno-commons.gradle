@@ -19,7 +19,7 @@ dependencies {
     implementation "org.apache.groovy:groovy-sql:${groovyVersion}"
     implementation "org.apache.groovy:groovy-json:${groovyVersion}"
     implementation "org.apache.groovy:groovy-templates:${groovyVersion}"
-    implementation "ch.qos.logback:logback-classic:1.2.12"
+    implementation "ch.qos.logback:logback-classic:1.5.37"
 }
 
 java {
