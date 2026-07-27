@@ -5,7 +5,7 @@ repositories {
 dependencies {
     implementation("com.bertramlabs.plugins:asset-pipeline-gradle")
     implementation("org.grails:grails-gradle-plugin")
-    implementation("org.grails.plugins:hibernate5")
+    implementation("org.grails.plugins:hibernate7")
 }
 configurations.configureEach {
     // Needed for Gradle compatibility with Grails Gradle Plugin.

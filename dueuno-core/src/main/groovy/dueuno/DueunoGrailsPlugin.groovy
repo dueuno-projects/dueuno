@@ -50,6 +50,7 @@ class DueunoGrailsPlugin extends Plugin {
     def authorEmail = 'g.sartori@gmail.com, f.piceghello@gmail.com'
     def description = 'Dueuno Core'
     def profiles = ['web']
+    def loadAfter = ['springSecurityCore']
 
     // URL to the plugin's documentation
     def documentation = 'https://www.dueuno.com/docs'

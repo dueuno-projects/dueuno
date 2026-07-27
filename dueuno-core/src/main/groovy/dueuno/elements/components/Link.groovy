@@ -79,12 +79,14 @@ class Link extends Label {
      *                when {@code null} the link definition's own action is used
      */
     void setOnEvent(String onEvent = null) {
-        on(linkDefinition.properties + [
+        Map event = linkDefinition.properties
+        Map eventOverride = [
                 event: eventName,
                 action: onEvent ?: linkDefinition.action,
                 infoMessage: message(linkDefinition.infoMessage, linkDefinition.infoMessageArgs),
                 confirmMessage: message(linkDefinition.confirmMessage, linkDefinition.confirmMessageArgs),
-        ])
+        ] as Map
+        on(event + eventOverride)
     }
 
     /**

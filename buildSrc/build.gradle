@@ -22,7 +22,6 @@ def loadProperties() {
 dependencies {
     implementation platform("org.apache.grails:grails-bom:${grailsVersion}")
     implementation "org.apache.grails:grails-gradle-plugins"
-    implementation "org.apache.grails:grails-data-hibernate5"
     implementation "cloud.wondrify:asset-pipeline-gradle"
 
     implementation "org.asciidoctor:asciidoctor-gradle-jvm:4.0.5"

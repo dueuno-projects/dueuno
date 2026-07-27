@@ -137,7 +137,7 @@ enum QuantityUnit {
     /** Gigawatt-hour (10⁹ Wh). */ GWH('ENERGY', 'quantity.unit.power.gigawatthour', 9),
     /** Megawatt-hour (10⁶ Wh). */ MWH('ENERGY', 'quantity.unit.power.megawatthour', 6),
     /** Kilowatt-hour (10³ Wh). */ KWH('ENERGY', 'quantity.unit.power.kilowatthour', 3),
-    /** Watt-hour (base energy unit). */ WH('ENERGY', 'quantity.unit.power.watthour', 0),
+    /** Watt-hour (base energy unit). */ WH('ENERGY', 'quantity.unit.power.watthour', 0)
 
     /** The name of the dimension group this unit belongs to (e.g. {@code "MASS"}), or {@code null} for dimensionless units. */
     final String parent

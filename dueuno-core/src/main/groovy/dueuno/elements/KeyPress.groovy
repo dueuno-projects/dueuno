@@ -141,9 +141,11 @@ class KeyPress extends Component {
      * link definition is modified.
      */
     private void setOnKeyPressEvent() {
-        on(linkDefinition.properties + [
+        Map event = linkDefinition.properties
+        Map eventOverride = [
                 event: 'keypress',
-        ])
+        ] as Map
+        on(event + eventOverride)
     }
 
     /**

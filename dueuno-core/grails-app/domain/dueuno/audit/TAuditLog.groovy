@@ -52,10 +52,10 @@ class TAuditLog implements GormEntity, MultiTenant<TAuditLog> {
         port nullable: true
         requestInfo nullable: true
         userAgent nullable: true
-        message nullable: true, maxSize: LOG_MESSAGE_MAX_SIZE
+        message nullable: true, maxSize: TAuditLog.LOG_MESSAGE_MAX_SIZE
         objectName nullable: true
-        stateBefore nullable: true, maxSize: LOG_MESSAGE_MAX_SIZE
-        stateAfter nullable: true, maxSize: LOG_MESSAGE_MAX_SIZE
+        stateBefore nullable: true, maxSize: TAuditLog.LOG_MESSAGE_MAX_SIZE
+        stateAfter nullable: true, maxSize: TAuditLog.LOG_MESSAGE_MAX_SIZE
         digest nullable: true
     }
 }

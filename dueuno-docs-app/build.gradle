@@ -8,7 +8,7 @@ buildscript {
     dependencies { // Not Published to Gradle Plugin Portal
         classpath "cloud.wondrify:asset-pipeline-gradle"
         classpath platform("org.apache.grails:grails-bom:$grailsVersion")
-        classpath "org.apache.grails:grails-data-hibernate5"
+        classpath "org.apache.grails:grails-data-hibernate7"
         classpath "org.apache.grails:grails-gradle-plugins"
     }
 }
@@ -41,7 +41,7 @@ dependencies {
     testAndDevelopmentOnly "org.webjars.npm:jquery"
     implementation platform("org.apache.grails:grails-bom:$grailsVersion")
     implementation "org.apache.grails:grails-core"
-    implementation "org.apache.grails:grails-data-hibernate5"
+    implementation "org.apache.grails:grails-data-hibernate7"
     implementation "org.apache.grails:grails-databinding"
     implementation "org.apache.grails:grails-events"
     implementation "org.apache.grails:grails-gsp"

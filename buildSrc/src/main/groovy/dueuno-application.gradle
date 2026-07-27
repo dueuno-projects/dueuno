@@ -21,20 +21,22 @@ repositories {
 
 dependencies {
     profile "org.apache.grails.profiles:web"
+    developmentOnly "org.springframework.boot:spring-boot-devtools" // Spring Boot DevTools may cause performance slowdowns or compatibility issues on larger applications
     testAndDevelopmentOnly "org.webjars.npm:bootstrap"
     testAndDevelopmentOnly "org.webjars.npm:bootstrap-icons"
     testAndDevelopmentOnly "org.webjars.npm:jquery"
-    implementation platform("org.apache.grails:grails-bom:$grailsVersion")
     implementation "org.apache.grails:grails-core"
-    implementation "org.apache.grails:grails-data-hibernate5"
+    implementation "org.apache.grails:grails-data-hibernate7"
     implementation "org.apache.grails:grails-databinding"
     implementation "org.apache.grails:grails-events"
     implementation "org.apache.grails:grails-gsp"
+    implementation platform("org.apache.grails:grails-hibernate7-bom:$grailsVersion")
     implementation "org.apache.grails:grails-interceptors"
-    implementation "org.apache.grails:grails-layout"
     implementation "org.apache.grails:grails-logging"
     implementation "org.apache.grails:grails-rest-transforms"
+    implementation "org.apache.grails:grails-scaffolding"
     implementation "org.apache.grails:grails-services"
+    implementation "org.apache.grails:grails-sitemesh3"
     implementation "org.apache.grails:grails-url-mappings"
     implementation "org.apache.grails:grails-web-boot"
     implementation "org.springframework.boot:spring-boot-autoconfigure"
@@ -52,7 +54,6 @@ dependencies {
     integrationTestImplementation testFixtures("org.apache.grails:grails-geb")
     testImplementation "org.apache.grails:grails-testing-support-datamapping"
     testImplementation "org.apache.grails:grails-testing-support-web"
-    testImplementation "org.mockito:mockito-core"
     testImplementation "org.spockframework:spock-core"
 }
 

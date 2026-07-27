@@ -23,6 +23,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 class TPerson implements GormEntity, MultiTenant<TPerson> {
+
     Long id
 
     LocalDateTime dateCreated
@@ -48,10 +49,9 @@ class TPerson implements GormEntity, MultiTenant<TPerson> {
     ]
 
     static constraints = {
-        picture nullable: true
-        salary nullable: true
-        distanceKm nullable: true
-        dateStart nullable: true
-        dateEnd nullable: true
+        name nullable: false
+        address nullable: false
+        postcode nullable: false
     }
+
 }

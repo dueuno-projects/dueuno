@@ -1,4 +1,9 @@
 info.app.name: app-test
+info:
+  app:
+    name: '@info.app.name@'
+    version: '@info.app.version@'
+    grailsVersion: '@info.app.grailsVersion@'
 
 # ===================================================
 # SSL CONSIGURATION
@@ -62,6 +67,18 @@ grails:
         - rememberMeAuthenticationProvider
 
 ---
+grails:
+  codegen:
+    defaultPackage: test.app
+  profile: web
+  views:
+    gsp:
+      encoding: UTF-8
+      htmlcodec: xml
+      codecs:
+        scriptlet: html
+
+---
 spring:
   threads:
     virtual:
@@ -69,110 +86,13 @@ spring:
   h2:
     console:
       enabled: true
-
----
-grails:
-  controllers:
-    upload:
-      maxFileSize: 20000000
-      maxRequestSize: 20000000
-
----
-grails:
-  profile: web
-  codegen:
-    defaultPackage: test.app
-  gorm:
-    reactor:
-      # Whether to translate GORM events into Reactor events
-      # Disabled by default for performance reasons
-      events: false
-info:
-  app:
-    name: '@info.app.name@'
-    version: '@info.app.version@'
-    grailsVersion: '@info.app.grailsVersion@'
-spring:
-  jmx:
-    unique-names: true
-  main:
-    banner-mode: "log"
-  groovy:
-    template:
-      check-template-location: false
-  devtools:
-    restart:
-      additional-exclude:
-        - '*.gsp'
-        - '**/*.gsp'
-        - '*.gson'
-        - '**/*.gson'
-        - 'logback.groovy'
-        - '*.properties'
-management:
-  endpoints:
-    enabled-by-default: false
-
----
-info:
-  app:
-    name: '@info.app.name@'
-    version: '@info.app.version@'
-    grailsVersion: '@info.app.grailsVersion@'
-grails:
-  views:
-    default:
-      codec: html
-    gsp:
-      encoding: UTF-8
-      htmlcodec: xml
-      codecs:
-        expression: html
-        scriptlet: html
-        taglib: none
-        staticparts: none
-  codegen:
-    defaultPackage: com.example
-  profile: web
-  mime:
-    disable:
-      accept:
-        header:
-          userAgents:
-            - Gecko
-            - WebKit
-            - Presto
-            - Trident
-    types:
-      all: '*/*'
-      atom: application/atom+xml
-      css: text/css
-      csv: text/csv
-      form: application/x-www-form-urlencoded
-      html:
-        - text/html
-        - application/xhtml+xml
-      js: text/javascript
-      json:
-        - application/json
-        - text/json
-      multipartForm: multipart/form-data
-      pdf: application/pdf
-      rss: application/rss+xml
-      text: text/plain
-      hal:
-        - application/hal+json
-        - application/hal+xml
-      xml:
-        - text/xml
-        - application/xml
+  servlet:
+    multipart:
+      maxFileSize: 20MB
+      maxRequestSize: 20MB
 
 ---
 hibernate:
-  # Necessario per poter eseguire operazioni DB nei controller demo
-  # Aggiunto in "elements"
-  #allow_update_outside_transaction: true
-
   cache:
     queries: false
     use_second_level_cache: false
@@ -188,42 +108,15 @@ dataSource:
   pooled: true
   jmxExport: true
   driverClassName: com.mysql.cj.jdbc.Driver
-  dialect: org.hibernate.dialect.MySQL8Dialect
-  #    dialect: org.hibernate.dialect.MySQL5Dialect
+  dialect: org.hibernate.dialect.MySQLDialect
 
   url: jdbc:mysql://localhost:3306/dueuno?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
   username: root
   password: root
 
-  properties:
-    jmxEnabled: true
-    initialSize: 5
-    maxActive: 50
-    minIdle: 5
-    maxIdle: 25
-    maxWait: 10000
-    maxAge: 600000
-    timeBetweenEvictionRunsMillis: 5000
-    minEvictableIdleTimeMillis: 60000
-    validationQuery: "SELECT 1"
-    validationQueryTimeout: 3
-    validationInterval: 15000
-    testOnBorrow: true
-    testWhileIdle: true
-    testOnReturn: false
-    jdbcInterceptors: "ConnectionState;StatementCache(max=200)"
-    defaultTransactionIsolation: 2
-
 environments:
+
   development:
-    grails:
-      logging:
-        jul:
-          usebridge: true
-      plugin:
-        springsecurity:
-          debug:
-            useFilter: true
     dataSource:
       dbCreate: update
 
