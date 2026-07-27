@@ -1,1 +1,3 @@
-apply plugin: "dueuno-asciidoctor"
+plugins {
+    id "dueuno-asciidoctor"
+}

@@ -26,4 +26,3 @@ asciidoctor {
         backends = ["html5"]
     }
 }
-

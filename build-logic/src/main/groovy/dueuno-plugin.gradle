@@ -1,9 +1,11 @@
 plugins {
     id "groovy"
-    id "org.apache.grails.gradle.grails-web"
     id "org.apache.grails.gradle.grails-gsp"
+    id "org.apache.grails.gradle.grails-plugin"
     id "cloud.wondrify.asset-pipeline"
     id "dueuno-asciidoctor"
+    id "dueuno-codenarc"
+    id "dueuno-publish"
     id "eclipse"
     id "idea"
 }
@@ -20,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    profile "org.apache.grails.profiles:web"
+    profile "org.apache.grails.profiles:web-plugin"
     testAndDevelopmentOnly "org.webjars.npm:bootstrap"
     testAndDevelopmentOnly "org.webjars.npm:bootstrap-icons"
     testAndDevelopmentOnly "org.webjars.npm:jquery"
@@ -48,7 +50,6 @@ dependencies {
     runtimeOnly "com.h2database:h2"
     runtimeOnly "com.zaxxer:HikariCP"
     runtimeOnly "org.fusesource.jansi:jansi"
-    integrationTestImplementation testFixtures("org.apache.grails:grails-geb")
     testImplementation "org.apache.grails:grails-testing-support-datamapping"
     testImplementation "org.apache.grails:grails-testing-support-web"
     testImplementation "org.spockframework:spock-core"
@@ -69,6 +70,7 @@ tasks.withType(Test) {
 }
 
 assets {
+    packagePlugin = true
     minifyCss = true
     minifyJs = true
     minifyOptions = [
