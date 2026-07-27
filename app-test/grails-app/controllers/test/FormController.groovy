@@ -113,7 +113,7 @@ class FormController implements ElementsController {
         def isReadonly = requireParam('isReadonly')
         def animate = requireParam('animate')
 
-        applicationService.registerTransformer('T_PERSON') {
+        applicationService.registerTransformer('PERSON') {
             return "PERSON_TRANS [${it.id}] - ${it.id}"
         }
         applicationService.registerTransformer('CUSTOM_TRANSFORMER') {
@@ -184,7 +184,7 @@ class FormController implements ElementsController {
                     class: Select,
                     id: 'userTrans',
                     optionsFromRecordset: personService.list(),
-                    transformer: 'T_PERSON',
+                    transformer: 'PERSON',
                     textStyle: [TextStyle.LINE_THROUGH, TextStyle.MONOSPACE],
             )
             addField(

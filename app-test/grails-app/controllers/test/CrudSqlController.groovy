@@ -36,14 +36,14 @@ class CrudSqlController implements ElementsController {
 
     def dataSource
 
-    String tblPerson = 't_person'
-    String tblCompany = 't_company'
+    String tblPerson = 'person'
+    String tblCompany = 'company'
 
     @PostConstruct
     void init() {
-//        applicationService.registerPrettyPrinter('T_COMPANY', '${it.name} (${it.date_created.toLocalDate().year})')
-        applicationService.registerPrettyPrinter('T_COMPANY', '${it.name}')
-        applicationService.registerTransformer('T_COMPANY') { value ->
+//        applicationService.registerPrettyPrinter('COMPANY', '${it.name} (${it.date_created.toLocalDate().year})')
+        applicationService.registerPrettyPrinter('COMPANY', '${it.name}')
+        applicationService.registerTransformer('COMPANY') { value ->
             Map r = SqlUtils.get(dataSource, tblCompany, [id: value])
             return r.name
         }
@@ -58,7 +58,7 @@ class CrudSqlController implements ElementsController {
     }
 
     def index() {
-        applicationService.registerPrettyPrinter('T_COMPANY', '${it.name}')
+        applicationService.registerPrettyPrinter('COMPANY', '${it.name}')
         def c = createContent(ContentTable)
         c.table.with {
             filters.with {
@@ -67,7 +67,7 @@ class CrudSqlController implements ElementsController {
                         id: 'company_id',
                         optionsFromRecordset: SqlUtils.list(dataSource, tblCompany),
                         keys: ['id'],
-                        prettyPrinter: 'T_COMPANY',
+                        prettyPrinter: 'COMPANY',
                         renderTextPrefix: false,
                         cols: 4,
                 )
@@ -99,10 +99,10 @@ class CrudSqlController implements ElementsController {
 //                    'active',
             ]
             transformers = [
-                    company_id: 'T_COMPANY',
+                    company_id: 'COMPANY',
             ]
             prettyPrinters = [
-                    company_id: 'T_COMPANY',
+                    company_id: 'COMPANY',
             ]
 
             body.eachRow { TableRow row, Map values ->
@@ -141,7 +141,7 @@ class CrudSqlController implements ElementsController {
                     class: Select,
                     id: 'company_id',
                     optionsFromRecordset: SqlUtils.list(dataSource, tblCompany),
-                    prettyPrinter: 'T_COMPANY',
+                    prettyPrinter: 'COMPANY',
             )
             addField(
                     class: MoneyField,
