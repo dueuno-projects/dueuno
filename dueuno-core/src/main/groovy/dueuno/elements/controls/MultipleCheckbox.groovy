@@ -116,7 +116,7 @@ class MultipleCheckbox extends Control {
             Object text = option.text
 
             Checkbox checkbox = new Checkbox(
-                    id: getId() + '.' + id,
+                    id: getId() + '_' + id,
                     optionKey: id,
                     optionValue: text,
                     simple: simple,
