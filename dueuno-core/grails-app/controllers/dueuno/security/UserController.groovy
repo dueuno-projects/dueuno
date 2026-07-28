@@ -134,7 +134,7 @@ class UserController implements ElementsController {
         display content: c
     }
 
-    private buildForm(TUser obj = null) {
+    private buildForm(TUserAccount obj = null) {
         def c = obj
                 ? createContent(ContentEdit)
                 : createContent(ContentCreate)
@@ -154,7 +154,7 @@ class UserController implements ElementsController {
         def isTenantAdmin = obj && securityService.isAdmin(obj) && !obj.deletable
 
         c.form.with {
-            validate = TUser
+            validate = TUserAccount
 
             if (isSuperAdmin && (isCreatingNewUser || isEditingUserButNotSuperAdmin)) {
                 addField(

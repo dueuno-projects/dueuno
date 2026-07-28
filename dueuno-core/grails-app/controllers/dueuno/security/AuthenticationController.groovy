@@ -63,7 +63,7 @@ class AuthenticationController implements ElementsController {
         ///////////////////////////////////////
 
         // Loads the user and sets up the current tenant
-        TUser user = securityService.currentUser
+        TUserAccount user = securityService.currentUser
 
         // Loading user setting
         decimalFormat = user.decimalFormat

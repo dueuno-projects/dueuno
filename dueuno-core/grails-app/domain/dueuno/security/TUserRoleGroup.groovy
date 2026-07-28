@@ -30,7 +30,7 @@ class TUserRoleGroup implements GormEntity, Serializable {
 
     private static final long serialVersionUID = 1
 
-    TUser user
+    TUserAccount user
     TRoleGroup roleGroup
 
     static mapping = {
@@ -67,24 +67,24 @@ class TUserRoleGroup implements GormEntity, Serializable {
 
     private static DetachedCriteria criteriaFor(long userId, long roleGroupId) {
         TUserRoleGroup.where {
-            user == TUser.load(userId) &&
+            user == TUserAccount.load(userId) &&
             roleGroup == TRoleGroup.load(roleGroupId)
         }
     }
 
-    static TUserRoleGroup create(TUser user, TRoleGroup roleGroup) {
+    static TUserRoleGroup create(TUserAccount user, TRoleGroup roleGroup) {
         def instance = new TUserRoleGroup(user: user, roleGroup: roleGroup)
         instance.save(flush: true)
         instance
     }
 
-    static boolean remove(TUser u, TRoleGroup rg) {
+    static boolean remove(TUserAccount u, TRoleGroup rg) {
         if (u != null && rg != null) {
             TUserRoleGroup.where { user == u && roleGroup == rg }.deleteAll()
         }
     }
 
-    static Number removeAll(TUser u) {
+    static Number removeAll(TUserAccount u) {
         u == null ? 0 : TUserRoleGroup.where { user == u }.deleteAll()
     }
 

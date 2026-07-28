@@ -20,12 +20,14 @@ import groovy.transform.EqualsAndHashCode
 import org.grails.datastore.gorm.GormEntity
 
 /**
+ * Renamed to 'user_account' to avoid conflicting with database keywords (DB2, H2 have problems with 'user' or 'role')
+ *
  * @author Gianluca Sartori
  */
 
 @GrailsCompileStatic
 @EqualsAndHashCode(includes='username')
-class TUser implements GormEntity, Serializable {
+class TUserAccount implements GormEntity, Serializable {
 
     private static final long serialVersionUID = 1
 

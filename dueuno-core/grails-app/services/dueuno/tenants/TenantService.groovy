@@ -22,7 +22,7 @@ import dueuno.core.TSystemInstall
 import dueuno.properties.SystemPropertyService
 import dueuno.security.TRoleGroup
 import dueuno.security.TRoleGroupRole
-import dueuno.security.TUser
+import dueuno.security.TUserAccount
 import dueuno.security.TUserRoleGroup
 import dueuno.utils.ResourceUtils
 import grails.gorm.DetachedCriteria
@@ -265,7 +265,7 @@ class TenantService {
             userRoleGroup.delete(flush: true)
         }
 
-        List<TUser> users = TUser.where { tenant == tenant }.list()
+        List<TUserAccount> users = TUserAccount.where { tenant == tenant }.list()
         for (user in users) {
             user.delete(flush: true)
         }

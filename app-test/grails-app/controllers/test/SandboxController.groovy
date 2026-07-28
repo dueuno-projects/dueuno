@@ -20,8 +20,8 @@ import dueuno.elements.components.*
 import dueuno.elements.controls.*
 import dueuno.core.ApplicationService
 import dueuno.security.SecurityService
-import dueuno.security.TUser
 import dueuno.elements.style.*
+import dueuno.security.TUserAccount
 import dueuno.types.QuantityService
 import dueuno.types.Money
 import dueuno.types.Quantity
@@ -704,7 +704,7 @@ Grails application running at http://localhost:9992/test in environment: develop
     }
 
     def onReject() {
-        def user = new TUser(username: 'G', password: 'G')
+        def user = new TUserAccount(username: 'G', password: 'G')
         user.errors.reject('obj.reject.error.test')
         display errors: user
     }

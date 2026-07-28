@@ -106,7 +106,7 @@ class GroupController implements ElementsController {
                     landingPage: group.landingPage,
                     deletable     : group.deletable,
             ]
-            for (role in TRole.findAll()) {
+            for (role in TUserRole.findAll()) {
                 cells[role.authority] = (group.authorities.any { it.authority == role.authority }) ?: null
             }
             rows.add(cells)
@@ -239,7 +239,7 @@ class GroupController implements ElementsController {
         try {
             securityService.deleteGroup(params.id)
             display action: 'index'
-            
+
         } catch (Exception e) {
             display exception: e
         }

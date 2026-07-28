@@ -49,7 +49,7 @@ class TRoleGroup implements GormEntity, Serializable {
         cache true
     }
 
-    List<TRole> getAuthorities() {
+    List<TUserRole> getAuthorities() {
         TRoleGroupRole.findAllByRoleGroup(this)*.role
     }
 }

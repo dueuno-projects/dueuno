@@ -85,7 +85,7 @@ class BootStrap {
                     failOnError: true,
                     connectionSource: [
                             driverClassName: 'com.mysql.cj.jdbc.Driver',
-                            url            : 'jdbc:mysql://localhost:3306/dueuno_elements_test?useSSL=false&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Europe/Rome',
+                            url            : 'jdbc:mysql://localhost:3306/dueuno_test?useSSL=false&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Europe/Rome',
                             username       : 'root',
                             password       : 'root',
                     ]

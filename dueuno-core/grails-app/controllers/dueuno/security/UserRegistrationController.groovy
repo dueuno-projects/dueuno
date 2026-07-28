@@ -20,7 +20,6 @@ import dueuno.elements.components.Label
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.controls.EmailField
 import dueuno.elements.pages.Login
-import dueuno.security.TUser
 import dueuno.types.Type
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -109,7 +108,7 @@ class UserRegistrationController implements ElementsController {
             return
         }
 
-        TUser user = securityService.updateUser(
+        TUserAccount user = securityService.updateUser(
                 username: params.username,
                 password: params.password,
         )

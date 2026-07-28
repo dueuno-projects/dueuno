@@ -35,21 +35,18 @@ class TDemo implements GormEntity, MultiTenant<TDemo> {
     LocalDate datefield
     LocalTime timefield
     Boolean checkbox
-    //TUser user1
-    //TUser user2
-    //TUser user3
 
     String filename
 
-    static embedded = ['moneyfield', 'quantityfield']
+    static embedded = [
+        'moneyfield',
+        'quantityfield',
+    ]
 
     static constraints = {
         quantityfield nullable: true
         datefield nullable: true
         timefield nullable: true
-        //user1 nullable: true
-        //user2 nullable: true
-        //user3 nullable: true
         filename nullable: true
     }
 }
