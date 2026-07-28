@@ -1,0 +1,985 @@
+[[controls]]
+== Controls
+
+=== Control (abstract)
+
+Controls are Components that can hold a value. Controls are the main way to interact with the application. We mainly use controls in forms to easily submit their values.
+
+Each control extends the base class `Control`, so each control shares the following properties and methods.
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`value`
+|`Object`
+|
+|The value held by the control.
+|`valueType`
+|`String`
+|
+|The type name used to serialize and deserialize the control value.
+|`defaultValue`
+|`Object`
+|
+|Default value to use when no value has been assigned.
+|`nullable`
+|`Boolean`
+|`true`
+|Whether the control can hold a `null` value.
+|`invalidChars`
+|`String`
+|
+|Characters that are not accepted as input. It takes precedence over `validChars` and `pattern`.
+|`validChars`
+|`String`
+|
+|Characters accepted as input. It takes precedence over `pattern`.
+|`pattern`
+|`String`
+|
+|A RegEx pattern to accept only specific input.
+|`prettyPrinter`
+|`String`
+|
+|Name of the pretty printer used to render the value. See <<registerPrettyPrinter()>>.
+|`transformer`
+|`String`
+|
+|Name of the transformer used to render the value. See <<registerTransformer()>>.
+|`textPrefix`
+|`String`
+|
+|Prefix used to look up localized text in `messages.properties`.
+|`renderTextPrefix`
+|`Boolean`
+|`true`
+|Whether to display the `textPrefix` or not.
+|`textArgs`
+|`List`
+|
+|A list of objects to pass to the localized text.
+|`textStyle`
+|`TextStyle`
+|
+|Text style applied by controls that render text.
+|===
+
+==== Methods
+[cols="2,8a"]
+|===
+|Method|Description
+
+|`onSubmit(Map)`
+|Configures the event used when the control is used as a `Table` filter and its value is submitted. The default event is `enter`; some controls override it.
+|===
+
+[[text-field]]
+=== TextField
+A text field.
+
+[source,groovy]
+----
+c.form.addField(
+    class: TextField,
+    id: 'username',
+    icon: 'fa-user',
+    textStyle: TextStyle.LINE_THROUGH,
+)
+----
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`inputType`
+|`TextFieldInputType`
+|`TEXT`
+|The HTML input type. It can be set to `TEXT`, `NUMBER`, `DECIMAL`, `SEARCH`, `PASSWORD`, `EMAIL`, `URL` or `TEL`.
+|`inputMode`
+|`TextFieldInputMode`
+|`TEXT`
+|The HTML input mode. It can be set to `NONE`, `TEXT`, `NUMERIC`, `DECIMAL`, `SEARCH`, `EMAIL`, `URL` or `TEL`.
+|`icon`
+|`String`
+|
+|An icon to display within the control, you can choose one from https://fontawesome.com/[Font Awesome,window=_blank]
+|`prefix`
+|`String`
+|
+|A text to display before the edit area of the control
+|`maxSize`
+|`Integer`
+|
+|Max number of characters the user can input
+|`placeholder`
+|`String`
+|
+|A text to display when the text area is empty
+|`autocomplete`
+|`Boolean`
+|`false`
+|Whether the browser can autocomplete the field.
+|`autoSelect`
+|`Boolean`
+|`true`
+|Whether the field value is automatically selected when the field gets focus.
+|`textTransform`
+|`TextTransform`
+|
+|Transforms the input while typing. It may be one of the following:
+
+- `NONE`
+- `UPPERCASE`
+- `LOWERCASE`
+- `CAPITALIZE` each word
+
+|`textStyle`
+|`TextStyle`
+|
+|Determines the text style:
+
+- `NORMAL`
+- `BOLD`
+- `ITALIC`
+- `MONOSPACE`
+- `UNDERLINE`
+- `LINE_THROUGH`
+|`pattern`
+|`String`
+|
+|A regular expression that accepts only specific input (for example, `'^[0-9\\.\\,]*$'` accepts only numbers, periods, and commas)
+|`onChangeAsync`
+|`Boolean`
+|`false`
+|If set to `true`, the `change` event is triggered asynchronously while typing.
+|===
+
+==== Methods
+[cols="2,8a"]
+|===
+|Method|Description
+
+|`addAction()`
+|Adds an action button at the end of the control. See <<link>>.
+|===
+
+==== Events
+[cols="2,8a"]
+|===
+|Event|Description
+
+|`load`
+|Triggered once the content is loaded
+|`change`
+|Triggered when the value changes
+|===
+
+[[select]]
+=== Select
+Displays a list of options to choose from.
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`optionsFromRecordset`
+|`List<Map>` or `List<Object>` or `GORM Recordset`
+|
+|Options will be set from the recordset
+|`optionsFromList`
+|`List`
+|
+|Options will be set from the List items. The key of each item will match the value of the item itself.
+|`optionsFromEnum`
+|`Enum`
+|
+|Options will be set from the Enum. The key of each item will match the value of the item itself.
+|`options`
+|`Map`
+|
+|Options will be set from the Map items (key/value)
+|`keys`
+|`List<String>`
+|`['id']`
+|List of column names to submit as the key for the selected option
+|`keysSeparator`
+|`String`
+|`,`
+|Separator used when multiple `keys` are combined into the option id.
+|`exclude`
+|`List`
+|
+|List of values to exclude when building options from a list or enum.
+|`forEachOption`
+|`Closure`
+|
+|Closure executed for each option while options are being built.
+|`prettyPrinter`
+|`Class` or `String`
+|
+|Use the specified pretty printer to display the options. See <<registerPrettyPrinter()>>. If the registered pretty printer `Class` matches the item class, the pretty printer will be automatically applied.
+|`transformer`
+|`String`
+|
+|Name of the transformer to use to display the options. See <<registerTransformer()>>
+|`textStyle`
+|`TextStyle`
+|
+|Determines the text style:
+
+- `NORMAL`
+- `BOLD`
+- `ITALIC`
+- `MONOSPACE`
+- `UNDERLINE`
+- `LINE_THROUGH`
+|`textPrefix`
+|`String`
+|
+|Prefix to add to each item so it can be referred in `message.properties` files to localise it
+|`renderTextPrefix`
+|`Boolean`
+|`true`
+|Whether to display the `textPrefix` or not
+|`placeholder`
+|`String`
+|
+|Displays a text when no option is selected
+|`allowClear`
+|`Boolean`
+|
+|If `true` the selection can be cleared
+|`autoSelect`
+|`Boolean`
+|`true`
+|When there is only one available option in the list it will be automatically selected
+|`multiple`
+|`Boolean`
+|`false`
+|Enables multiple selections
+|`search`
+|`Boolean`
+|
+|Displays a search box to filter the available options. It works on the client side, to search on the server we need to user the `search` event.
+|`searchMinInputLength`
+|`Integer`
+|`0`
+|Minimum number of characters to input before the search on the server can start. Works in combination with the `search` event.
+|===
+
+==== Methods
+[cols="2,8a"]
+|===
+|Method|Description
+
+|`Select.optionsFromRecordset(recordset: ...)`
+|Returns a `Map` of options to be used in a transition. See <<select-server-search>>. Accepts a `Map`, you can set the following arguments: `keys`, `keysSeparator`, `prettyPrinter`, `transformer`, `textPrefix`, `renderTextPrefix`, `locale`.
+|`Select.optionsFromList(list: ...)`
+|Returns a `Map` of options to be used in a transition. See <<select-server-search>>. Accepts a `Map`, you can set the above arguments.
+|`Select.optionsFromEnum(enum: ...)`
+|Returns a `Map` of options to be used in a transition. See <<select-server-search>>. Accepts a `Map`, you can set the above arguments.
+|`Select.options(options: ...)`
+|Returns a `Map` of options to be used in a transition. See <<select-server-search>>. Accepts a `Map`, you can set the above arguments.
+|`addAction()`
+|Adds an action button at the end of the control. See <<link>>.
+|===
+
+==== Events
+[cols="2,8a"]
+|===
+|Event|Description
+
+|`load`
+|Triggered once the content is loaded
+|`change`
+|Triggered when the value changes
+|`search`
+|Triggered when `searchMinInputLength` is reached
+|===
+
+[[select-server-search]]
+==== Search on server
+Example of setting up a server search.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: Select,
+        id: 'activity',
+        onLoad: 'onActivityLoad', // <1>
+        onChange: 'onActivityChange',
+        onSearch: 'onActivitySearch', // <2>
+        searchMinInputLength: 0, // <3>
+        submit: ['form'],
+        allowClear: true,
+    )
+}
+----
+<1> The `load` event must return a single option to display
+<2> The `search` event will return a list of matching options
+<3> If `0` then the `search` event will be triggered as soon as the user clicks on the control to open the options list.
+
+We need to create the following actions.
+
+[source,groovy]
+----
+ActivityService activityService
+
+def onActivityLoad() {
+    def t = createTransition()
+    def activities = activityService.list(id: params.activity) // <1>
+    def options = Select.optionsFromRecordset(recordset: activities)
+    t.set('activity', 'options', options)
+    display transition: t
+}
+
+def onActivityChange() {
+    def t = createTransition()
+    // Do something...
+    display transition: t
+}
+
+def onActivitySearch() {
+    def t = createTransition()
+    def activities = activityService.list(find: params.activity) // <2>
+    def options = Select.optionsFromRecordset(recordset: activities)
+    t.set('activity', 'options', options)
+    display transition: t
+}
+----
+<1> `params.activity` will hold the selected id
+<2> `params.activity` will hold the search string
+
+
+[[checkbox]]
+=== Checkbox
+A checkbox is a way to interact with `Boolean` values.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: Checkbox,
+        id: 'fullscreen',
+        displayLabel: false,
+        cols: 3,
+    )
+}
+----
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`text`
+|`String`
+|
+|The text to display
+|`textArgs`
+|`List`
+|`[]`
+|A list of objects to pass to the localized text.
+|`simple`
+|`Boolean`
+|`false`
+|If set to `true`, renders the checkbox with the simple style.
+|`option`
+|`Map`
+|
+|A single key/value option represented by this checkbox.
+|`optionKey`
+|`Object`
+|
+|The submitted value when this checkbox is checked.
+|`optionValue`
+|`Object`
+|
+|The displayed value for `optionKey`.
+|===
+
+==== Events
+[cols="2,8a"]
+|===
+|Event|Description
+
+|`change`
+|Triggered when the value changes
+|===
+
+[[multiple-checkbox]]
+=== MultipleCheckbox
+Manage multiple checkboxes as it was a Select control with many options. See <<Select>>.
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`optionsFromRecordset`
+|`List<Map>` or `List<Object>` or `GORM Recordset`
+|
+|Options will be set from the recordset.
+|`optionsFromList`
+|`List`
+|
+|Options will be set from the List items. The key of each item will match the value of the item itself.
+|`optionsFromEnum`
+|`Enum`
+|
+|Options will be set from the Enum. The key of each item will match the value of the item itself.
+|`options`
+|`Map`
+|
+|Options will be set from the Map items (key/value).
+|`keys`
+|`List<String>`
+|`['id']`
+|List of column names to submit as the key for each option.
+|`keysSeparator`
+|`String`
+|`,`
+|Separator used when multiple `keys` are combined into the option id.
+|`exclude`
+|`List`
+|
+|List of values to exclude when building options from a list or enum.
+|`forEachOption`
+|`Closure`
+|
+|Closure executed for each option while options are being built.
+|`textPrefix`
+|`String`
+|
+|Prefix to add to each item so it can be referred in `message.properties` files to localise it.
+|`simple`
+|`Boolean`
+|`false`
+|If set to `true`, renders each checkbox with the simple style.
+|===
+
+[[textarea]]
+=== Textarea
+A text area who can span multiple lines of a form.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: Textarea,
+        id: 'textarea',
+        maxSize: 100,
+        cols: 12,
+        rows: 5,
+    )
+}
+----
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`maxSize`
+|`Integer`
+|
+|Max number of characters the user can input
+|`acceptNewLine`
+|`Boolean`
+|`true`
+|Whether the user can enter line breaks.
+|`encode`
+|`Boolean`
+|`false`
+|If set to `true`, the submitted text is Base64 encoded. Use `Textarea.decodeText()` to decode it.
+|===
+
+==== Events
+[cols="2,8a"]
+|===
+|Event|Description
+
+|`change`
+|Triggered when the value changes
+|===
+
+[[upload]]
+=== Upload
+A control to upload one or more files.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: Upload,
+        id: 'documents',
+        acceptedFiles: ['.pdf', '.jpg'],
+        maxFiles: 3,
+    )
+}
+----
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`text`
+|`String`
+|`control.upload.message`
+|Message displayed in the upload area.
+|`textDisabled`
+|`String`
+|`control.upload.disabled`
+|Message displayed when the upload control is disabled.
+|`acceptedFiles`
+|`List`
+|`[]`
+|List of accepted file extensions or MIME types.
+|`maxFiles`
+|`Integer`
+|
+|Maximum number of files that can be uploaded.
+|`maxFileSize`
+|`Integer`
+|`20`
+|Maximum file size in MB.
+|`maxThumbnailFilesize`
+|`Integer`
+|`17`
+|Maximum file size in MB for thumbnail generation.
+|`thumbnailWidth`
+|`Integer`
+|
+|Thumbnail width in pixels.
+|`thumbnailHeight`
+|`Integer`
+|
+|Thumbnail height in pixels.
+|`disablePreviews`
+|`Boolean`
+|`false`
+|If set to `true`, file previews are disabled.
+|===
+
+==== Methods
+[cols="2,8a"]
+|===
+|Method|Description
+
+|`Upload.filename`
+|Returns the original filename of the uploaded file.
+|`Upload.save(String path, String newFilename = null)`
+|Saves the uploaded file to `path`, optionally using `newFilename`.
+|===
+
+[[quantity-field]]
+=== QuantityField
+A text field to input quantities.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: QuantityField,
+        id: 'quantity',
+        defaultUnit: QuantityUnit.KM,
+        availableUnits: quantityService.listAllUnits(),
+    )
+}
+----
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`decimals`
+|`Integer`
+|`2`
+|Allowed decimal digits
+|`negative`
+|`Boolean`
+|`false`
+|If negative values are allowed
+|`availableUnits`
+|`List`
+|
+|A list of units to select from.
+|`unitOptions`
+|`Map<String, String>`
+|
+|The available units rendered as key/value options.
+|`defaultUnit`
+|`QuantityUnit`
+|
+|The default unit to display
+|===
+
+==== Events
+[cols="2,8a"]
+|===
+|Event|Description
+
+|`load`
+|Triggered once the content is loaded
+|`change`
+|Triggered when the value changes
+|===
+
+[[money-field]]
+=== MoneyField
+A text field to input currency values.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: MoneyField,
+        id: 'salary',
+        decimals: 0,
+    )
+}
+----
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`decimals`
+|`Integer`
+|`2`
+|Allowed decimal digits
+|`negative`
+|`Boolean`
+|`false`
+|If negative values are allowed
+|`currency`
+|`String`
+|`EUR`
+|The currency prefix to display when the value is not already a `Money` instance.
+|===
+
+==== Events
+[cols="2,8a"]
+|===
+|Event|Description
+
+|`load`
+|Triggered once the content is loaded
+|`change`
+|Triggered when the value changes
+|===
+
+[[number-field]]
+=== NumberField
+A text field to manage number values.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: NumberField,
+        id: 'number',
+        min: -2,
+        max: 10,
+    )
+}
+----
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`decimals`
+|`Integer`
+|`0`
+|Allowed decimal digits
+|`negative`
+|`Boolean`
+|`true`
+|If negative values are allowed
+|`min`
+|`Integer`
+|
+|Minimum number the user can input
+|`max`
+|`Integer`
+|
+|Maximum number the user can input
+|===
+
+==== Events
+[cols="2,8a"]
+|===
+|Event|Description
+
+|`load`
+|Triggered once the content is loaded
+|`change`
+|Triggered when the value changes
+|===
+
+[[date-field]]
+=== DateField
+A control to input a date.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: DateField,
+        id: 'dateStart',
+        min: LocalDate.now().minusDays(3),
+        max: LocalDate.now().plusDays(3),
+    )
+}
+----
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`min`
+|`LocalDate`
+|
+|Minimum date the user can input
+|`max`
+|`LocalDate`
+|
+|Maximum date the user can input
+|`autoPopulate`
+|`Boolean`
+|`false`
+|If set to `true`, automatically populates the field on the client side when appropriate.
+|===
+
+==== Events
+[cols="2,8a"]
+|===
+|Event|Description
+
+|`load`
+|Triggered once the content is loaded
+|`change`
+|Triggered when the value changes
+|===
+
+[[month-field]]
+=== MonthField
+A control to input a month. See <<date-field>>.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: MonthField,
+        id: 'month',
+    )
+}
+----
+
+==== Events
+[cols="2,8a"]
+|===
+|Event|Description
+
+|`load`
+|Triggered once the content is loaded
+|`change`
+|Triggered when the value changes
+|===
+
+[[time-field]]
+=== TimeField
+A control to input a time.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: TimeField,
+        id: 'time',
+        min: LocalTime.now().minusHours(3),
+        timeStep: 10,
+    )
+}
+----
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`min`
+|`LocalTime`
+|
+|Minimum time the user can input
+|`max`
+|`LocalTime`
+|
+|Maximum time the user can input
+|`timeStep`
+|`Integer`
+|
+|The amount of minutes the user can select. For example if set to `15` the only available time selections are `00`, `15`, `30` and `45`.
+|`autoPopulate`
+|`Boolean`
+|`false`
+|If set to `true`, automatically populates the field on the client side when appropriate.
+|===
+
+==== Events
+[cols="2,8a"]
+|===
+|Event|Description
+
+|`load`
+|Triggered once the content is loaded
+|`change`
+|Triggered when the value changes
+|===
+
+[[datetime-field]]
+=== DateTimeField
+A control to input a date and time.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: DateTimeField,
+        id: 'datetime',
+        min: LocalDate.now().minusDays(3),
+    )
+}
+----
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`min`
+|`LocalDate`, `LocalTime` or `LocalDateTime`
+|
+|Minimum date and time the user can input
+|`max`
+|`LocalDate`, `LocalTime` or `LocalDateTime`
+|
+|Maximum date and time the user can input
+|`timeStep`
+|`Integer`
+|
+|The amount of minutes the user can select. For example if set to `15` the only available time selections are `00`, `15`, `30` and `45`.
+|`autoPopulate`
+|`Boolean`
+|`false`
+|If set to `true`, automatically populates the field on the client side when appropriate.
+|===
+
+==== Events
+[cols="2,8a"]
+|===
+|Event|Description
+
+|`load`
+|Triggered once the content is loaded
+|`change`
+|Triggered when the value changes
+|===
+
+[[email-field]]
+=== EmailField
+A control to input an email. See <<TextField>>.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: EmailField,
+        id: 'email',
+    )
+}
+----
+
+[[telephone-field]]
+=== TelephoneField
+A control to input a telephone number. See <<TextField>>.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: TelephoneField,
+        id: 'telephone',
+    )
+}
+----
+
+[[url-field]]
+=== UrlField
+A control to input a URL. See <<TextField>>.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: UrlField,
+        id: 'url',
+    )
+}
+----
+
+[[password-field]]
+=== PasswordField
+A control to input a password. See <<TextField>>.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: PasswordField,
+        id: 'password',
+    )
+}
+----
+
+[[hidden-field]]
+=== HiddenField
+A control to store a value without displaying it to the user.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: HiddenField,
+        id: 'hidden',
+        value: 'This is not visible but it will be submitted',
+    )
+}
+----
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to you under the Apache License, Version 2.0.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+////
+

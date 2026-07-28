@@ -1,0 +1,157 @@
+[[events]]
+== Events
+Each `Component` can trigger one or more events. Please see <<components>> and <<controls>> to see what events each specific component can trigger.
+
+Each available event has a lowercase name. We can configure the event directly when creating a component as follows.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: Select,
+        id: 'book',
+        onChange: 'onChangeBook', // <1>
+        submit: ['form'],
+    )
+}
+----
+<1> The parameter name is composed by `on` followed by the capitalized name of the event (the event `change` in this case). The parameter value is the name of the action to be called.
+
+Multiple events can be configured as follows.
+
+[source,groovy]
+----
+c.form.with {
+    def books = addField(
+        class: Select,
+        id: 'book',
+    ).component // <1>
+
+    books.with {
+        on( // <2>
+            event: 'load',
+            action: 'onLoadBooks',
+        )
+        on( // <3>
+            event: 'change',
+            action: 'onChangeBook',
+            submit: ['form'],
+        )
+    }
+}
+----
+<1> We reference the component held by the `FormField`, not the form field itself
+<2> Configuring the `load` event
+<3> Configuring the `change` event
+
+The following properties can be specified when configuring an event on a component.
+
+=== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`namespace`
+|`String`
+|
+|The namespace of the controller to redirect to.
+|`controller`
+|`String`
+|
+|The name of the controller to redirect to. If no `action` is specified the `index` action will be displayed
+|`action`
+|`String`
+|
+|The name of the action to redirect to. If no `controller` is specified and we are in the context of a web request (Eg. it's a user triggered event) the current controller will be used. If we are configuring the event outside of a web request (Eg. sending an event from a job) a `controller` must be specified.
+|`params`
+|`Map<String, Object>`
+|
+|The params to pass when redirecting to a `controller` or `action`
+|`url`
+|`String`
+|
+|Point to a specific URL. If specified, it has precedence over the `controller` / `action` pair.
+|`direct`
+|`Boolean`
+|
+|Whether to render the whole HTML page, or raw HTTP body, instead of a Transition.
+|`submit`
+|`List<String>`
+|
+|Name list of the components whose values we want to submit. Each component is responsible to define the data structure for the values it contains. The default behaviour will send the values of all the controls contained within the component.
+|`target`
+|`String`
+|
+|Target page or browser tab where the event destination is displayed.
+|`targetNew`
+|`Boolean`
+|
+|If set to `true`, opens the event destination in a new browser tab.
+|`loading`
+|`Boolean`
+|
+|If set to `true`, a waiting screen is displayed while the event is being executed.
+|`infoMessage`
+|`String`
+|
+|If specified, an info message pops up and the event action is not executed.
+|`infoMessageArgs`
+|`List`
+|
+|A list of objects to pass to the localized info message.
+|`confirmMessage`
+|`String`
+|
+|If specified, a confirmation message pops up giving the user a chance to cancel the event action.
+|`confirmMessageArgs`
+|`List`
+|
+|A list of objects to pass to the localized confirm message.
+|`modal`
+|`Boolean`
+|
+|Whether to display the destination content in a modal dialog or not.
+|`small`
+|`Boolean`
+|
+|When displaying the content as `modal`, the dialog will be smaller.
+|`large`
+|`Boolean`
+|
+|When displaying the content as `modal`, the dialog will be wider.
+|`fullscreen`
+|`Boolean`
+|
+|When displaying the content as `modal`, the dialog will fit the whole browser window size.
+|`closeButton`
+|`Boolean`
+|
+|When displaying the content as `modal`, whether to show the close button.
+|`updateUrl`
+|`Boolean`
+|
+|Whether the browser address bar should be updated with the event destination URL.
+|`animate`
+|`String`
+|
+|Graphical transition to apply when changing content.
+|`scroll`
+|`String`
+|
+|Scroll behavior to apply when rendering the destination content.
+|===
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to you under the Apache License, Version 2.0.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+////

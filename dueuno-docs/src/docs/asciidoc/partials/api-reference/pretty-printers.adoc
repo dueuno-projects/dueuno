@@ -1,0 +1,114 @@
+[[pretty-printer-properties]]
+== PrettyPrinterProperties
+
+Every value in Dueuno gets displayed by the `PrettyPrinter` subsystem. <<components>> and <<controls>> can be configured to override the user settings and the system settings. Refer to the documentation of each component to see how those settings can be configured.
+
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`prettyPrinter`
+|`Object`
+|
+|`Class` or `String` name of the pretty printer
+|`transformer`
+|`String`
+|
+|Transformer name
+|`locale`
+|`Locale`
+|
+|-
+|`renderTextPrefix`
+|`Boolean`
+|
+|Default: `false`, set to `true` to translate the value into `message.properties` files
+|`textPrefix`
+|`String`
+|
+|Add or change the message prefix
+|`textArgs`
+|`List`
+|
+|Add args for the i18n message
+|`renderBoolean`
+|`Boolean`
+|`true`
+|If `false` renders the text `true/false` otherwise renders a check symbol when `true` and nothing when `false`
+|`highlightNegative`
+|`Boolean`
+|`false`
+|If the value is `< 0` the text will be highlighted in red
+|`renderZero`
+|`String`
+|
+|If the value is 0 render the specified string instead
+|`renderDate`
+|`Boolean`
+|
+|For `LocalDateTime` values, whether to render the DATE part or not
+|`renderDatePattern`
+|`String`
+|
+|Change the way the date is rendered (See https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html[DateTimeFormatter,window=_blank])
+|`renderTime`
+|`Boolean`
+|
+|For `LocalDateTime` values, whether to render the TIME part or not
+|`renderSeconds`
+|`Boolean`
+|
+|For `LocalTime` values, whether to display the seconds or not
+|`renderDelimiter`
+|`String`
+|`', '`
+|For `Map` and `List` values, use this delimiter to list the items
+|`decimals`
+|`Integer`
+|
+|For `Number` values, how many decimals digits to display
+|`decimalFormat`
+|`String`
+|`ISO_COM`
+|For `Number` values, which decimal separator to use. It can be `ISO_COM` (,) or `ISO_DOT` (.).
+|`prefixedUnit`
+|`Boolean`
+|`false`
+|For `Quantity` and `Money` values, whether to display the unit of measure before or after the value
+|`symbolicCurrency`
+|`Boolean`
+|`true`
+|For `Money` values, whether to display the currency with a symbolic or ISO code
+|`symbolicQuantity`
+|`Boolean`
+|`true`
+|For `Quantity` values, whether to display the unit of measure with a symbolic or SI code
+|`invertedMonth`
+|`Boolean`
+|`false`
+|For `Date` values, whether to display month/day/year (`true`) or day/month/year (`false`)
+|`twelveHours`
+|`Boolean`
+|`false`
+|For `Time` values, whether to display 12H (`true`, uses AM/PM) or 24H (`false`)
+|`firstDaySunday`
+|`Boolean`
+|`false`
+|Whether to display Sunday as the first day of the week (`true`) or not
+|===
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to you under the Apache License, Version 2.0.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+////
+

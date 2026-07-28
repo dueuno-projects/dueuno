@@ -52,7 +52,7 @@ image::images/chapter-6/image-5.webp[align="center"]
 
 Dueuno applications can be configured from the _Tenant Properties_ _(System Administration -> Settings)_. That means each tenant can have a different setup.
 
-Login as `admin/admin`, click on _“System Administration -> Settings”_ on the Main Menu _(on the left)_ and search for “color”.
+Log in as `admin/admin`, click _“System Administration -> Settings”_ in the main menu _(on the left)_, and search for “color”.
 
 image::images/chapter-6/image-6.webp[align="center"]
 

@@ -1,0 +1,179 @@
+[[application]]
+== Application
+`ApplicationService` is the main component in charge of the application setup, mainly used in `BootStrap.groovy`.
+
+=== onInstall()
+Gets executed only the first time the application is run.
+
+.grails-app/init/BootStrap.groovy
+[source,groovy]
+----
+class BootStrap {
+
+    ApplicationService applicationService
+
+    def init = {
+
+        applicationService.onInstall {
+            // ...
+        }
+
+    }
+}
+----
+
+=== onTenantInstall()
+Installs the tenant. This closure gets called only once when the application is run for the first time. It is executed for the DEFAULT tenant and when a new tenant is created from the super admin GUI.
+
+.grails-app/init/BootStrap.groovy
+[source,groovy]
+----
+class BootStrap {
+
+    ApplicationService applicationService
+
+    def init = {
+
+        applicationService.onTenantInstall { String tenantId -> //<1>
+            // ...
+        }
+
+    }
+}
+----
+<1> The `tenantId` tells what tenant is being installed
+
+=== onDevInstall()
+Gets executed only once if the application is run from the IDE (only when the development environment is active). You can use this to preload data to test the application.
+
+This closure will NOT be executed when the application is run as JAR, WAR or when the test environment is active.
+
+.grails-app/init/BootStrap.groovy
+[source,groovy]
+----
+class BootStrap {
+
+    ApplicationService applicationService
+
+    def init = {
+
+        applicationService.onDevInstall { String tenantId ->
+            // ...
+        }
+
+    }
+}
+----
+
+=== onUpdate()
+On application releases, may you need to update the database or any other component, you can programmatically do it adding an `onUpdate` closure.
+
+These closures get executed only once when the application starts up. The execution order is defined by the argument, in alphabetical order.
+
+.grails-app/init/BootStrap.groovy
+[source,groovy]
+----
+class BootStrap {
+
+    ApplicationService applicationService
+
+    def init = { // <1>
+
+        applicationService.onUpdate('2021-01-03') { String tenantId ->
+            println "${tenantId}: UPDATE N.2"
+        }
+
+        applicationService.onUpdate('2021-01-02') { String tenantId ->
+            println "${tenantId}: UPDATE N.1"
+        }
+
+        applicationService.onUpdate('2021-01-05') { String tenantId ->
+            println "${tenantId}: UPDATE N.4"
+        }
+
+        applicationService.onUpdate('2021-01-04') { String tenantId ->
+            println "${tenantId}: UPDATE N.3"
+        }
+    }
+}
+----
+<1> The closures will be executed in the following order based on the specified version string: `2021-01-02`, `2021-01-03`, `2021-01-04`, `2021-01-05`.
+
+=== onInit()
+Initializes the application. This closure gets called each time the application is executed.
+
+.grails-app/init/BootStrap.groovy
+[source,groovy]
+----
+class BootStrap {
+
+    ApplicationService applicationService // <1>
+
+    def init = {
+
+        applicationService.onInit { // <2>
+            // ...
+        }
+
+    }
+}
+----
+<1> Injects an instance of the `ApplicationService`
+<2> The `onInit { ... }` closure is executed each time the application starts up
+
+=== afterLogin()
+Gets executed after the user logged in. The session is active, you can set session variables from here.
+
+.grails-app/init/BootStrap.groovy
+[source,groovy]
+----
+class BootStrap {
+
+    SecurityService securityService // <1>
+
+    def init = {
+
+        securityService.afterLogin {
+            // ...
+        }
+
+    }
+}
+----
+<1> Injects an instance of the `SecurityService`
+
+=== afterLogout()
+Runs after the user has logged in. The session is not active, so session variables cannot be managed here.
+
+.grails-app/init/BootStrap.groovy
+[source,groovy]
+----
+class BootStrap {
+
+    SecurityService securityService // <1>
+
+    def init = {
+
+        securityService.afterLogout {
+            // ...
+        }
+
+    }
+}
+----
+<1> Injects an instance of the `SecurityService`
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to you under the Apache License, Version 2.0.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+////

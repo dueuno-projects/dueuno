@@ -100,7 +100,7 @@ GORM will generate a database table for us. Let’s see:
 $ ./gradlew bootRun
 ----
 
-Login as Superuser (`super/super`).
+Log in as the superuser (`super/super`).
 
 Click on “*Connection Sources*” in the Main Menu _(on the left)_ and copy the connection URL:
 
@@ -411,4 +411,3 @@ video::lB12PqKSRXw[youtube,width=640,height=480]
 This chapter closes the first round on the Dueuno basics.
 
 In the next chapter we are going to explore the Tenant Properties to configure the application to reflect our customer’s brand.
-

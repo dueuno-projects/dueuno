@@ -141,4 +141,4 @@ video::lATAEaMBINo[youtube,width=640,height=480]
 
 === Actions
 
-Each button action is implemented by a `Link` component. See <<link>>
+Each button action is implemented by a `Link` component. See xref:z.api-reference.adoc#link[Link].

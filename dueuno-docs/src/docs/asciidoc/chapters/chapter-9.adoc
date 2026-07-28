@@ -351,10 +351,10 @@ video::iymb4FnC2Hc[youtube,width=640,height=480]
 
 What can we load a table with?
 
-===== List of Lists
+==== List of Lists
 Loading a table with a List of Lists is possible, the sequence will determine how each column will be mapped to each value. There is no hard relationship between the displayed column name and the value.
 
-For this reason we suggest using <<list-of-maps>> instead.
+For this reason, we suggest using <<table-list-of-maps>> instead.
 
 [source,groovy]
 ----
@@ -370,8 +370,8 @@ c.table.body = [
 ]
 ----
 
-[[list-of-maps]]
-===== List of Maps
+[[table-list-of-maps]]
+==== List of Maps
 We can load a table with a "recordset" style data structure like the List of Maps. This way each column will display exactly the value associated to the key of the record (`Map`) having the same name of the column.
 
 [source,groovy]
@@ -388,7 +388,7 @@ c.table.body = [
 ]
 ----
 
-===== List of POGOs
+==== List of POGOs
 A List of _Plain Old Groovy Objects_ can also be used to load a table.
 
 Given this POGO:
@@ -418,7 +418,7 @@ c.table.body = [
 ]
 ----
 
-===== GORM Recordsets
+==== GORM Recordsets
 Using a https://gorm.grails.org/latest/hibernate/manual/[GORM Recordset,window=_blank] is an easy way to load a table.
 
 Given this domain class:

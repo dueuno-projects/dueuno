@@ -1,3 +1,22 @@
+[[websockets]]
+== Websockets
+TODO
+
+[[tenant-properties]]
+== Tenant Properties
+TODO
+
+[[system-properties]]
+== System Properties
+TODO
+
+[[custom-css]]
+== Custom CSS
+TODO
+
+[[custom-js]]
+== Custom JavaScript
+TODO
 ////
 Licensed to the Apache Software Foundation (ASF) under one or more
 contributor license agreements. See the NOTICE file distributed with
@@ -13,17 +32,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ////
-
-include::{api-partials-dir}/overview.adoc[]
-include::{api-partials-dir}/application.adoc[]
-include::{api-partials-dir}/plugins.adoc[]
-include::{api-partials-dir}/features.adoc[]
-include::{api-partials-dir}/controllers.adoc[]
-include::{api-partials-dir}/transitions.adoc[]
-include::{api-partials-dir}/exceptions.adoc[]
-include::{api-partials-dir}/contents.adoc[]
-include::{api-partials-dir}/components.adoc[]
-include::{api-partials-dir}/controls.adoc[]
-include::{api-partials-dir}/events.adoc[]
-include::{api-partials-dir}/pretty-printers.adoc[]
-include::{api-partials-dir}/configuration.adoc[]

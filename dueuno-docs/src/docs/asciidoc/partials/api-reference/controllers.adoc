@@ -1,0 +1,470 @@
+[[controllers]]
+== Controllers & Actions
+
+=== Controllers
+A controller is a container for a set of actions. When a user interacts with the GUI an Action could be called to execute some logic. Actions are grouped in controllers so we can split and organize the application to fit the business domain.
+
+A Controller is a Groovy class and each method is an Action. In the following example we see the structure of a Dueuno controller for a CRUD operation.
+
+.grails-app/controllers/BookController.groovy
+[source,groovy]
+----
+@Secured(['ROLE_CAN_EDIT_BOOKS']) // <1>
+class BookController implements ElementsController { // <2>
+
+    def index() {
+        // will display a list of books
+    }
+
+    def create() { //<3>
+        // will display a form with book title and author
+    }
+
+    def onCreate() { // <3>
+        // will create the book record on the database
+    }
+
+    def edit() {
+        // will display the details of a book
+    }
+
+    def onEdit() {
+        // will update the book record on the database
+    }
+
+    def onDelete() {
+        // will delete a book from the database
+    }
+}
+----
+<1> The `@Secured` annotation let all the actions from this controller be accessed only by users with the `ROLE_CAN_EDIT_BOOKS` authority.
+<2> Implementing `ElementsController` the Dueuno API will become available
+<3> As a convention, all actions building and displaying a GUI are named after a verb or a name while all actions that execute a business logic are identified by a name starting with `on`.
+
+=== Actions
+An Action can implement an interactive Graphic User Interface (GUI) or act as an entry point to do some business logic and, if needed, update the user interface.
+
+We don't implement the business logic directly into actions, we do it into https://docs.grails.org/latest/guide/services.html[Grails Services,window=_blank], following Grails conventions and best practices.
+
+To display a GUI we need to build one using <<contents>> and <<components>>. In the following example we create a GUI to list, create and edit books:
+
+.grails-app/controllers/BookController.groovy
+[source,groovy]
+----
+@Secured(['ROLE_CAN_EDIT_BOOKS'])
+class BookController implements ElementsController {
+
+    BookService bookService // <1>
+
+    def index() {
+        def c = createContent(ContentTable) // <2>
+
+        c.table.with {
+            columns = [
+                    'title',
+                    'author',
+            ]
+            body = bookService.list()
+        }
+
+        display content: c
+    }
+
+    private buildForm(Map obj = null) {
+        def c = obj // <3>
+                ? createContent(ContentEdit)
+                : createContent(ContentCreate)
+
+        c.form.with {
+            addField(
+                    class: TextField,
+                    id: 'title',
+            )
+            addField(
+                    class: TextField,
+                    id: 'author',
+            )
+        }
+
+        if (obj) {
+            c.form.values = obj
+        }
+
+        return c
+    }
+
+    def create() {
+        def c = buildForm()
+        display content: c, modal: true
+    }
+
+    def edit() {
+        def book = bookService.get(params.id)
+        def c = buildForm(book)
+        display content: c, modal: true
+    }
+}
+----
+<1> The `BookService` service implements the business logic
+<2> `createContent()` instantiates one of the available <<contents>> to display a list of records
+<3> The GUI we build for the `create` and `edit` actions is the same. We make sure to use the appropriate content for creating and editing (See <<contents>>)
+
+Each action ends with a `display` statement that renders the composed GUI to the browser.
+
+We implement a `BookService` with CRUD operations to manage a simple in-memory database.
+
+.grails-app/services/BookService.groovy
+[source,groovy]
+----
+@CompileStatic
+class BookService {
+
+    private static final data = [
+            [id: 1, title: 'The Teachings of Don Juan', author: 'Carlos Castaneda', description: 'This is a nice fictional book'],
+            [id: 2, title: 'The Antipodes of the Mind', author: 'Benny Shanon', description: 'This is a nice scientific book'],
+    ]
+
+    List<Map> list() {
+        return data
+    }
+
+    Map get(Serializable id) {
+        return data.find { it.id == id }
+    }
+
+    void create(Map record) {
+        record.id = data.size() + 1
+        data.add(record)
+    }
+
+    void update(Map record) {
+        if (!record.id) throw new Exception("'id' required to update a record!")
+        Map item = data.find { it.id == record.id }
+        if (item) {
+            item.title == record.title
+            item.author = record.author
+        }
+    }
+
+    void delete(Serializable id) {
+        data.removeAll { it.id == id }
+    }
+}
+----
+
+Book listing:
+
+image::images/api-reference/reference-book-list.png[Book listing]
+
+Editing a book:
+
+image::images/api-reference/reference-book-edit.png[Editing a book]
+
+[[validation]]
+=== Validation
+Input from the user must be validated before we can save it. We can use the standard https://docs.grails.org/latest/guide/validation.html[Gails Validation,window=_blank] to make this happen.
+
+For the purpose of this document we are going to use the https://docs.grails.org/latest/guide/validation.html#:~:text=11.6%20Applying%20Validation%20to%20Other%20Classes[Validateable Trait,window=_blank] to check that the fields are not null and the title is unique. Please refer to the https://docs.grails.org/latest/guide/validation.html[Grails Validation,window=_blank] documentation to see all possible options.
+
+.grails-app/controllers/BookValidator.groovy
+[source,groovy]
+----
+class BookValidator implements Validateable {
+
+    String title
+    String author
+
+    BookService bookService
+
+    static constraints = {
+        title validator: { Object val, BookValidator obj, Errors errors ->
+            if (obj.bookService.getByTitle(val)) {
+                errors.rejectValue('title', ValidationError.IS_NOT_UNIQUE)
+            }
+        }
+    }
+}
+----
+
+When rejecting values you can use the following `ValidationError` default messages:
+[cols="3,2,7a"]
+|===
+|Enum|Code|Message
+
+|`ValidationError.IS_REQUIRED`
+|`nullable`
+|Required
+|`ValidationError.IS_NOT_UNIQUE`
+|`unique`
+|Already exists
+|`ValidationError.IS_BLANK`
+|`blank`
+|Required
+|`ValidationError.RANGE_TOO_SMALL`
+|`range.toosmall`
+|Value between {3} and {4}
+|`ValidationError.RANGE_TOO_BIG`
+|`range.toobig`
+|Value between {3} and {4}
+|`ValidationError.NOT_EQUAL`
+|`notEqual`
+|Must not be [{3}]
+|`ValidationError.NOT_IN_LIST`
+|`not.inList`
+|Choose one of {3}
+|`ValidationError.MAX_EXCEEDED`
+|`max.exceeded`
+|Maximum value {3}
+|`ValidationError.MAX_SIZE_EXCEEDED`
+|`maxSize.exceeded`
+|Maximum size {3}
+|`ValidationError.MIN_NOT_MET`
+|`min.notmet`
+|Minimum value {3}
+|`ValidationError.MIN_SIZE_NOT_MET`
+|`minSize.notmet`
+|Minimum size {3}
+|`ValidationError.INVALID_URL`
+|`url.invalid`
+|Invalid URL
+|`ValidationError.INVALID_EMAIL`
+|`email.invalid`
+|Invalid valid e-mail
+|`ValidationError.INVALID_CREDIT_CARD`
+|`creditCard.invalid`
+|Invalid card number
+|`ValidationError.INVALID_MATCH`
+|`matches.invalid`
+|Does not match pattern [{3}]
+|===
+
+We can now implement the whole CRUD interface:
+
+.grails-app/controllers/BookController.groovy
+[source,groovy]
+----
+class BookController implements ElementsController {
+
+    BookService bookService
+
+    def index() {
+        def c = createContent(ContentTable)
+
+        c.table.with {
+            columns = [
+                    'title',
+                    'author',
+            ]
+            body = bookService.list()
+        }
+
+        display content: c
+    }
+
+    private buildForm(Map obj = null) {
+        def c = obj
+                ? createContent(ContentEdit)
+                : createContent(ContentCreate)
+
+        c.form.with {
+            addField(
+                    class: TextField,
+                    id: 'title',
+            )
+            addField(
+                    class: TextField,
+                    id: 'author',
+            )
+        }
+
+        if (obj) {
+            c.form.values = obj
+        }
+
+        return c
+    }
+
+    def create() {
+        def c = buildForm()
+        display content: c, modal: true
+    }
+
+    def onCreate(BookValidator obj) { // <2>
+        if (obj.hasErrors()) {
+            display errors: obj // <1>
+            return
+        }
+
+        bookService.create(params)
+        display action: 'index'
+    }
+
+    def edit() {
+        def book = bookService.get(params.id)
+        def c = buildForm(book)
+        display content: c, modal: true
+    }
+
+    def onEdit(BookValidator obj) { // <2>
+        if (obj.hasErrors()) {
+            display errors: obj // <1>
+            return
+        }
+
+        bookService.update(params)
+        display action: 'index'
+    }
+
+    def onDelete() { // <2>
+        try {
+            bookService.delete(params.id)
+            display action: 'index'
+
+        } catch (Exception e) {
+            display exception: e
+        }
+    }
+}
+----
+<1> We use our `BookValidator` class to make sure the fields are not `null` and the title is unique and, in case, highlight the invalid fields
+<2> The name of these methods is defined by the `ContentTable`, `ContentCreate` and `ContentEdit` contents, you can see them in your browser hovering the mouse over the `Delete`, `Create` and `Save` buttons (look the bottom left of your browser to see which URL is going to be called when clicking the buttons)
+
+image::images/api-reference/reference-book-validation.png[Book listing]
+
+=== Internationalization (i18n)
+When building the GUI, Dueuno automatically suggests labels for any relevant component requiring a text. To translate those labels we just copy them to its corresponding `grails-app/i18n/messages_*.properties` file giving them a translation.
+
+For example to enable the English and Italian languages we can do as follows.
+
+English:
+
+.grails-app/i18n/messages.properties.groovy
+[source]
+----
+shell.book=Books
+shell.read=Read
+book.index.header.title=Books
+book.create.header.title=New Book
+book.edit.header.title=Book
+book.title=Title
+book.author=Author
+----
+
+image::images/api-reference/reference-book-list-en.png[Book listing]
+image::images/api-reference/reference-book-edit-en.png[Editing a book]
+
+Italian:
+
+.grails-app/i18n/messages_it.properties.groovy
+[source]
+----
+shell.book=Libri
+shell.read=Leggi
+book.index.header.title=Libri
+book.create.header.title=Nuovo libro
+book.edit.header.title=Libro
+book.title=Titolo
+book.author=Autore
+----
+
+image::images/api-reference/reference-book-list-it.png[Book listing]
+image::images/api-reference/reference-book-edit-it.png[Editing a book]
+
+The _User Menu_ will automatically display the available languages based on the presence of their language files.
+
+image::images/api-reference/reference-book-languages.png[Available languages]
+
+=== display()
+The most relevant feature of Dueuno is the `display` method. It renders the GUI on the server and sends is to the browser.
+
+You can call `display` with one or more of the following parameters:
+
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`controller`
+|`String`
+|
+|The name of the controller to redirect to. If no `action` is specified the `index` action will be displayed
+
+|`action`
+|`String`
+|
+|The name of the action to redirect to. If no `controller` is specified the current controller will be used
+
+|`params`
+|`Map<String, Object>`
+|
+|The params to pass when redirecting to a `controller` or `action`
+
+|`content`
+|`PageContent`
+|
+|The content to display (See <<contents>>)
+
+|`transition`
+|`Transition`
+|
+|The transition to display (See <<transitions>>)
+
+|`modal`
+|`Boolean`
+|
+|Whether to display the content in a modal dialog or not
+
+|`small`
+|`Boolean`
+|
+|When displaying the content as `modal` the dialog will be tighter.
+
+|`large`
+|`Boolean`
+|
+|When displaying the content as `modal` the dialog will be wider.
+
+|`fullscreen`
+|`Boolean`
+|
+|When displaying the content as `modal` the dialog will fit the whole browser window size.
+
+|`closeButton`
+|`Boolean`
+|`true`
+|When displaying the content as `modal` the dialog will present a close button on the top-left side to let the user close the dialog cancelling the operation.
+
+|`errors`
+|`org.springframework.validation.Errors`
+|
+|Validation errors to display (See <<validation>>)
+
+|`errorMessage`
+|`String`
+|
+|Message to display in a message box to the user
+
+|`exception`
+|`Exception`
+|
+|Exception to display in a message box to the user
+
+|`message`
+|`String`
+|
+|Message to display in a message box to the user
+|===
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to you under the Apache License, Version 2.0.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+////
