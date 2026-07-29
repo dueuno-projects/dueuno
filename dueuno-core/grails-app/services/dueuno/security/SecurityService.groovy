@@ -16,9 +16,9 @@ package dueuno.security
 
 import dueuno.application.ApplicationService
 import dueuno.elements.core.Feature
-import dueuno.elements.core.LinkGeneratorAware
+import dueuno.elements.LinkGeneratorAware
 import dueuno.elements.core.PrettyPrinterDecimalFormat
-import dueuno.elements.core.WebRequestAware
+import dueuno.elements.WebRequestAware
 import dueuno.commons.utils.StringUtils
 import dueuno.elements.style.GuiStyle
 import dueuno.elements.core.Menu

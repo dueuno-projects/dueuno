@@ -12,9 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.elements.core
+package dueuno.elements
 
-import dueuno.elements.ElementsException
+
+import dueuno.elements.core.PrettyPrinter
+import dueuno.elements.core.PrettyPrinterDecimalFormat
+import dueuno.elements.core.PrettyPrinterProperties
+import dueuno.elements.core.Transformer
 import dueuno.elements.style.GuiStyle
 import dueuno.utils.LocaleUtils
 import grails.web.servlet.mvc.GrailsHttpSession

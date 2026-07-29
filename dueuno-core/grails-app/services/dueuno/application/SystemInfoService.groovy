@@ -16,7 +16,7 @@ package dueuno.application
 
 import dueuno.commons.utils.hardware.HardwareInfo
 import dueuno.commons.utils.hardware.HardwareUtils
-import dueuno.elements.core.WebRequestAware
+import dueuno.elements.WebRequestAware
 import dueuno.utils.EnvUtils
 import grails.core.GrailsApplication
 import grails.plugins.GrailsPluginManager

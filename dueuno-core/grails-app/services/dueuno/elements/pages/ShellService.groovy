@@ -16,8 +16,8 @@ package dueuno.elements.pages
 
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
-import dueuno.elements.core.LinkGeneratorAware
-import dueuno.elements.core.WebRequestAware
+import dueuno.elements.LinkGeneratorAware
+import dueuno.elements.WebRequestAware
 import dueuno.commons.utils.LogUtils
 import dueuno.elements.PageService
 import dueuno.elements.ElementsException

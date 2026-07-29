@@ -16,6 +16,7 @@ package dueuno.elements.core
 
 import dueuno.commons.utils.LogUtils
 import dueuno.elements.ElementsException
+import dueuno.elements.WebRequestAware
 import dueuno.elements.style.Color
 import dueuno.utils.EnvUtils
 import groovy.contracts.Requires

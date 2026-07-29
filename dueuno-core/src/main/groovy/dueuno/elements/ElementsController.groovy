@@ -18,11 +18,9 @@ import dueuno.commons.utils.LogUtils
 import dueuno.elements.contents.ContentHeader
 import dueuno.elements.core.ComponentEvent
 import dueuno.elements.core.Elements
-import dueuno.elements.core.LinkGeneratorAware
 import dueuno.elements.core.Page
 import dueuno.elements.core.PageContent
 import dueuno.elements.core.Transition
-import dueuno.elements.core.WebRequestAware
 import dueuno.elements.pages.PageBlank
 import grails.artefact.Controller
 import grails.artefact.Enhances

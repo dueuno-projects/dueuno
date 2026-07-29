@@ -14,7 +14,7 @@
  */
 package dueuno.tenant
 
-import dueuno.elements.core.WebRequestAware
+import dueuno.elements.WebRequestAware
 import dueuno.security.TUser
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j

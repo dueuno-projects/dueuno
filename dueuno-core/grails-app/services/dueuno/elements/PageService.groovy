@@ -18,10 +18,8 @@ package dueuno.elements
 import dueuno.commons.utils.FileUtils
 import dueuno.elements.contents.ContentHeader
 import dueuno.elements.core.Component
-import dueuno.elements.core.LinkGeneratorAware
 import dueuno.elements.core.Page
 import dueuno.elements.core.Transition
-import dueuno.elements.core.WebRequestAware
 import dueuno.security.SecurityService
 import dueuno.tenant.TenantPropertyService
 import dueuno.tenant.TenantService

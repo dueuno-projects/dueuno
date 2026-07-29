@@ -15,6 +15,7 @@
 package dueuno.elements.core
 
 import dueuno.elements.ElementsException
+import dueuno.elements.WebRequestAware
 import dueuno.types.Types
 import groovy.contracts.Requires
 import groovy.transform.CompileStatic

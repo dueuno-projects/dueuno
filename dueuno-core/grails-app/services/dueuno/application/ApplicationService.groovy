@@ -17,7 +17,7 @@ package dueuno.application
 import dueuno.commons.utils.FileUtils
 import dueuno.elements.core.Elements
 import dueuno.elements.core.Feature
-import dueuno.elements.core.LinkGeneratorAware
+import dueuno.elements.LinkGeneratorAware
 import dueuno.elements.core.PrettyPrinter
 import dueuno.elements.core.Transformer
 import dueuno.elements.ElementsException

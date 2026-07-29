@@ -21,7 +21,6 @@ import dueuno.elements.controls.HiddenField
 import dueuno.elements.core.Component
 import dueuno.elements.core.Control
 import dueuno.elements.core.PrettyPrinter
-import dueuno.elements.core.WebRequestAware
 
 /**
  * Render tags

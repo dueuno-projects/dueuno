@@ -14,7 +14,7 @@
  */
 package dueuno.application
 
-import dueuno.elements.core.WebRequestAware
+import dueuno.elements.WebRequestAware
 import grails.artefact.Controller
 import grails.plugin.springsecurity.annotation.Secured
 
