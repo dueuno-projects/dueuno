@@ -15,7 +15,7 @@
 package dueuno.elements.components
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.core.Transformer
+import dueuno.application.Transformer
 import dueuno.elements.Component
 import dueuno.elements.Elements
 import dueuno.elements.controls.Checkbox
@@ -294,7 +294,7 @@ class TableRow extends Component {
     }
 
     /**
-     * Applies the table's per-column {@link dueuno.core.PrettyPrinterProperties} and
+     * Applies the table's per-column {@link dueuno.application.PrettyPrinterProperties} and
      * pretty-printer class overrides to each cell's inner {@link Label}. Skipped for header rows
      * and cells that contain a custom component instead of a label.
      */

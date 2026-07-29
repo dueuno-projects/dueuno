@@ -15,7 +15,7 @@
 package dueuno.elements.components
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.core.PrettyPrinterProperties
+import dueuno.application.PrettyPrinterProperties
 import dueuno.elements.Component
 import dueuno.elements.controls.HiddenField
 import dueuno.elements.style.TextAlign
@@ -227,7 +227,7 @@ class TableCell extends Component {
      * Applies the given pretty-printer properties to the inner {@link Label}.
      * Has no effect if the cell contains a custom component.
      *
-     * @param value a map of {@link dueuno.core.PrettyPrinterProperties} settings
+     * @param value a map of {@link dueuno.application.PrettyPrinterProperties} settings
      */
     void setPrettyPrinterProperties(Map value) {
         Label label = getLabel()
@@ -237,7 +237,7 @@ class TableCell extends Component {
     }
 
     /**
-     * Returns the {@link dueuno.core.PrettyPrinterProperties} of the inner {@link Label},
+     * Returns the {@link dueuno.application.PrettyPrinterProperties} of the inner {@link Label},
      * or a default instance if the cell contains a custom component.
      *
      * @return the label's pretty-printer properties

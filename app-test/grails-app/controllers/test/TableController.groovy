@@ -19,7 +19,7 @@ import dueuno.elements.components.Table
 import dueuno.elements.components.TableRow
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
-import dueuno.core.ApplicationService
+import dueuno.application.ApplicationService
 import dueuno.elements.ElementsController
 import dueuno.elements.style.TextAlign
 import dueuno.elements.style.TextStyle

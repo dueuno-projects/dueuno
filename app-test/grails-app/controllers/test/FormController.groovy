@@ -14,7 +14,7 @@
  */
 package test
 
-import dueuno.core.ApplicationService
+import dueuno.application.ApplicationService
 import dueuno.elements.ElementsController
 import dueuno.elements.components.*
 import dueuno.elements.contents.ContentForm

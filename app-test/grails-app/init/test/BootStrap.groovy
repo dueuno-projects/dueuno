@@ -16,13 +16,13 @@ package test
 
 import dueuno.commons.utils.FileUtils
 import dueuno.elements.pages.ShellService
-import dueuno.core.ApplicationService
-import dueuno.core.ConnectionSourceService
-import dueuno.properties.ApplicationPropertyService
+import dueuno.application.ApplicationService
+import dueuno.application.ConnectionSourceService
+import dueuno.application.ApplicationPropertyService
 import dueuno.elements.TransitionService
 import dueuno.security.SecurityService
-import dueuno.properties.TenantPropertyService
-import dueuno.tenants.TenantService
+import dueuno.tenant.TenantPropertyService
+import dueuno.tenant.TenantService
 import dueuno.types.QuantityService
 import grails.web.servlet.mvc.GrailsHttpSession
 import jakarta.servlet.ServletContext

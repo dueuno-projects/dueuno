@@ -14,13 +14,13 @@
  */
 package dueuno.elements.pages
 
+import dueuno.application.ApplicationService
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Label
 import dueuno.elements.contents.ContentForm
-import dueuno.core.ApplicationService
-import dueuno.security.SecurityService
 import dueuno.elements.style.TextAlign
-import dueuno.properties.TenantPropertyService
+import dueuno.security.SecurityService
+import dueuno.tenant.TenantPropertyService
 import grails.plugin.springsecurity.annotation.Secured
 
 /**

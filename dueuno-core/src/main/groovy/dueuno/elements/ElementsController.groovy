@@ -15,8 +15,8 @@
 package dueuno.elements
 
 import dueuno.commons.utils.LogUtils
-import dueuno.core.LinkGeneratorAware
-import dueuno.core.WebRequestAware
+import dueuno.application.LinkGeneratorAware
+import dueuno.application.WebRequestAware
 import dueuno.elements.contents.ContentHeader
 import dueuno.elements.pages.PageBlank
 import dueuno.exceptions.ElementsException

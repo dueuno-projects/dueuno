@@ -14,8 +14,8 @@
  */
 package dueuno.elements
 
-import dueuno.core.PrettyPrinter
-import dueuno.core.WebRequestAware
+import dueuno.application.PrettyPrinter
+import dueuno.application.WebRequestAware
 import dueuno.elements.components.Form
 import dueuno.elements.components.FormField
 import dueuno.elements.controls.HiddenField

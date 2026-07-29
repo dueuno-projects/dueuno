@@ -14,14 +14,14 @@
  */
 package dueuno.elements.components
 
-import dueuno.core.LinkDefinition
+import dueuno.application.LinkDefinition
 import dueuno.elements.ComponentEvent
 import groovy.transform.CompileStatic
 
 /**
  * A {@link Label}-based component that renders a navigable link.
  * <p>
- * {@code Link} wraps a {@link dueuno.core.LinkDefinition} and registers a client-side
+ * {@code Link} wraps a {@link dueuno.application.LinkDefinition} and registers a client-side
  * event (default: {@code "click"}) that triggers the configured server-side action.
  * All navigation properties ({@code controller}, {@code action}, {@code url}, etc.)
  * are delegated to the underlying {@link #linkDefinition}; changing any of them
@@ -47,7 +47,7 @@ class Link extends Label {
 
     /**
      * Creates a {@code Link} component from the given argument map.
-     * All {@link Label} arguments are supported, plus all {@link dueuno.core.LinkDefinition}
+     * All {@link Label} arguments are supported, plus all {@link dueuno.application.LinkDefinition}
      * properties. If no {@code action} is provided it defaults to {@code "index"}.
      * An optional {@code onClick} key may specify an action name override for the click event.
      *
@@ -75,7 +75,7 @@ class Link extends Label {
      * {@code infoMessage} and {@code confirmMessage}, and the optional {@code onEvent}
      * action override.
      *
-     * @param onEvent optional action name to use instead of {@link dueuno.core.LinkDefinition#action};
+     * @param onEvent optional action name to use instead of {@link dueuno.application.LinkDefinition#action};
      *                when {@code null} the link definition's own action is used
      */
     void setOnEvent(String onEvent = null) {
@@ -128,12 +128,12 @@ class Link extends Label {
         return null
     }
 
-    /** @see dueuno.core.LinkDefinition#target */
+    /** @see dueuno.application.LinkDefinition#target */
     String getTarget() { return linkDefinition.target }
-    /** @see dueuno.core.LinkDefinition#target */
+    /** @see dueuno.application.LinkDefinition#target */
     void setTarget(String value) { linkDefinition.target = value }
 
-    /** @see dueuno.core.LinkDefinition#namespace */
+    /** @see dueuno.application.LinkDefinition#namespace */
     String getNamespace() { return linkDefinition.namespace }
     /** Sets the controller namespace and re-registers the click event. */
     void setNamespace(String value) {
@@ -141,7 +141,7 @@ class Link extends Label {
         setOnEvent()
     }
 
-    /** @see dueuno.core.LinkDefinition#controller */
+    /** @see dueuno.application.LinkDefinition#controller */
     String getController() { return linkDefinition.controller }
     /** Sets the controller name and re-registers the click event. */
     void setController(String value) {
@@ -149,7 +149,7 @@ class Link extends Label {
         setOnEvent()
     }
 
-    /** @see dueuno.core.LinkDefinition#action */
+    /** @see dueuno.application.LinkDefinition#action */
     String getAction() { return linkDefinition.action }
     /** Sets the action name and re-registers the click event. */
     void setAction(String value) {
@@ -157,7 +157,7 @@ class Link extends Label {
         setOnEvent()
     }
 
-    /** @see dueuno.core.LinkDefinition#params */
+    /** @see dueuno.application.LinkDefinition#params */
     Map getParams() { return linkDefinition.params }
     /** Sets the request parameters and re-registers the click event. */
     void setParams(Map value) {
@@ -165,7 +165,7 @@ class Link extends Label {
         setOnEvent()
     }
 
-    /** @see dueuno.core.LinkDefinition#fragment */
+    /** @see dueuno.application.LinkDefinition#fragment */
     String getFragment() { return linkDefinition.fragment }
     /** Sets the URL fragment and re-registers the click event. */
     void setFragment(String value) {
@@ -173,7 +173,7 @@ class Link extends Label {
         setOnEvent()
     }
 
-    /** @see dueuno.core.LinkDefinition#path */
+    /** @see dueuno.application.LinkDefinition#path */
     String getPath() { return linkDefinition.path }
     /** Sets the path and re-registers the click event. */
     void setPath(String value) {
@@ -181,7 +181,7 @@ class Link extends Label {
         setOnEvent()
     }
 
-    /** @see dueuno.core.LinkDefinition#url */
+    /** @see dueuno.application.LinkDefinition#url */
     String getUrl() { return linkDefinition.url }
     /** Sets the explicit URL and re-registers the click event. */
     void setUrl(String value) {
@@ -189,7 +189,7 @@ class Link extends Label {
         setOnEvent()
     }
 
-    /** @see dueuno.core.LinkDefinition#submit */
+    /** @see dueuno.application.LinkDefinition#submit */
     List<String> getSubmit() { return linkDefinition.submit }
 
     /**
@@ -206,9 +206,9 @@ class Link extends Label {
         setOnEvent()
     }
 
-    /** @see dueuno.core.LinkDefinition#direct */
+    /** @see dueuno.application.LinkDefinition#direct */
     Boolean getDirect() { return linkDefinition.direct }
-    /** @see dueuno.core.LinkDefinition#direct */
+    /** @see dueuno.application.LinkDefinition#direct */
     void setDirect(Boolean value) { linkDefinition.direct = value }
 
     /** Whether this link opens its target in a modal dialog. */
@@ -259,7 +259,7 @@ class Link extends Label {
         setOnEvent()
     }
 
-    /** @see dueuno.core.LinkDefinition#getTargetNew() */
+    /** @see dueuno.application.LinkDefinition#getTargetNew() */
     Boolean getTargetNew() { return linkDefinition.targetNew }
     /** Sets whether the link opens in a new tab and re-registers the click event. */
     void setTargetNew(Boolean value) {
@@ -267,7 +267,7 @@ class Link extends Label {
         setOnEvent()
     }
 
-    /** @see dueuno.core.LinkDefinition#loading */
+    /** @see dueuno.application.LinkDefinition#loading */
     Boolean getLoading() { return linkDefinition.loading }
     /** Sets the loading indicator flag and re-registers the click event. */
     void setLoading(Boolean value) {
@@ -275,7 +275,7 @@ class Link extends Label {
         setOnEvent()
     }
 
-    /** @see dueuno.core.LinkDefinition#infoMessage */
+    /** @see dueuno.application.LinkDefinition#infoMessage */
     String getInfoMessage() { return linkDefinition.infoMessage }
     /** Sets the info message and re-registers the click event. */
     void setInfoMessage(String value) {
@@ -288,7 +288,7 @@ class Link extends Label {
         setOnEvent()
     }
 
-    /** @see dueuno.core.LinkDefinition#confirmMessage */
+    /** @see dueuno.application.LinkDefinition#confirmMessage */
     String getConfirmMessage() { return linkDefinition.confirmMessage }
     /** Sets the confirmation dialog message and re-registers the click event. */
     void setConfirmMessage(String value) {

@@ -203,7 +203,7 @@ class Header extends Component {
 
     /**
      * Sets the header title by pretty-printing the given value through the
-     * {@link dueuno.core.PrettyPrinter}.
+     * {@link dueuno.application.PrettyPrinter}.
      *
      * @param value the value to format and use as the header title
      */

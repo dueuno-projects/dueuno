@@ -15,8 +15,8 @@
 package dueuno.elements
 
 import dueuno.commons.utils.LogUtils
-import dueuno.core.PrettyPrinterProperties
-import dueuno.core.WebRequestAware
+import dueuno.application.PrettyPrinterProperties
+import dueuno.application.WebRequestAware
 import dueuno.elements.style.Color
 import dueuno.exceptions.ElementsException
 import dueuno.utils.EnvUtils

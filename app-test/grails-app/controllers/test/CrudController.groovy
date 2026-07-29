@@ -14,7 +14,7 @@
  */
 package test
 
-import dueuno.audit.AuditService
+import dueuno.tenant.AuditService
 import dueuno.elements.components.Form
 import dueuno.elements.components.Label
 import dueuno.elements.components.TableRow
@@ -23,7 +23,7 @@ import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.*
-import dueuno.core.ApplicationService
+import dueuno.application.ApplicationService
 import dueuno.elements.ElementsController
 import dueuno.elements.style.Color
 import dueuno.elements.style.TextDefault

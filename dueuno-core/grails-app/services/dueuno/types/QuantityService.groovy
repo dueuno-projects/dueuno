@@ -14,7 +14,7 @@
  */
 package dueuno.types
 
-import dueuno.properties.TenantPropertyService
+import dueuno.tenant.TenantPropertyService
 import groovy.transform.CompileStatic
 
 /**

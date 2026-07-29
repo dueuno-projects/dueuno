@@ -14,7 +14,7 @@
  */
 package dueuno.elements
 
-import dueuno.tenants.TenantService
+import dueuno.tenant.TenantService
 
 /**
  * @author Gianluca Sartori

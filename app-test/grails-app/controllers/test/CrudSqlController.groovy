@@ -20,7 +20,7 @@ import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.*
-import dueuno.core.ApplicationService
+import dueuno.application.ApplicationService
 import dueuno.elements.ElementsController
 import dueuno.types.Money
 import dueuno.types.Quantity

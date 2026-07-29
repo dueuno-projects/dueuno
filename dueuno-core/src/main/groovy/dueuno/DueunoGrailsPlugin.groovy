@@ -14,11 +14,11 @@
  */
 package dueuno
 
-import dueuno.core.SessionInitializer
+import dueuno.application.SessionInitializer
 import dueuno.security.CustomUserDetailsService
 import dueuno.security.ExternalIdAuthenticationFilter
 import dueuno.security.ExternalIdAuthenticationProvider
-import dueuno.tenants.TenantForCurrentUserResolver
+import dueuno.tenant.TenantForCurrentUserResolver
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugins.Plugin
 import groovy.transform.CompileDynamic

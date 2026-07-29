@@ -18,7 +18,7 @@ import dueuno.commons.utils.DateUtils
 import dueuno.elements.ElementsController
 import dueuno.elements.components.*
 import dueuno.elements.controls.*
-import dueuno.core.ApplicationService
+import dueuno.application.ApplicationService
 import dueuno.security.SecurityService
 import dueuno.elements.style.*
 import dueuno.security.TUser

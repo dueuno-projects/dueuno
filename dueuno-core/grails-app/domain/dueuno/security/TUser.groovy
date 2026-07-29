@@ -14,7 +14,7 @@
  */
 package dueuno.security
 
-import dueuno.tenants.TTenant
+import dueuno.tenant.TTenant
 import grails.compiler.GrailsCompileStatic
 import groovy.transform.EqualsAndHashCode
 import org.grails.datastore.gorm.GormEntity

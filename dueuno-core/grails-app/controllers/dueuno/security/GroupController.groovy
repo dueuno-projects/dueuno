@@ -14,7 +14,8 @@
  */
 package dueuno.security
 
-import dueuno.core.Feature
+import dueuno.application.ApplicationService
+import dueuno.application.Feature
 import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
@@ -23,9 +24,8 @@ import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.MultipleCheckbox
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
-import dueuno.core.ApplicationService
 import dueuno.elements.style.TextTransform
-import dueuno.tenants.TenantService
+import dueuno.tenant.TenantService
 import grails.plugin.springsecurity.annotation.Secured
 
 /**

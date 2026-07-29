@@ -14,7 +14,7 @@
  */
 package dueuno.elements.extra
 
-import dueuno.core.ApplicationService
+import dueuno.application.ApplicationService
 import groovy.transform.CompileStatic
 
 @CompileStatic

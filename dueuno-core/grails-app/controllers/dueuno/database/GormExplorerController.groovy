@@ -14,8 +14,8 @@
  */
 package dueuno.database
 
+import dueuno.application.ConnectionSourceService
 import dueuno.commons.utils.SqlUtils
-import dueuno.core.ConnectionSourceService
 import dueuno.elements.Elements
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Button
@@ -28,7 +28,7 @@ import dueuno.elements.contents.ContentForm
 import dueuno.elements.controls.*
 import dueuno.elements.style.TextDefault
 import dueuno.security.SecurityService
-import dueuno.tenants.TenantService
+import dueuno.tenant.TenantService
 import dueuno.types.CustomType
 import dueuno.types.Types
 import grails.gorm.DetachedCriteria

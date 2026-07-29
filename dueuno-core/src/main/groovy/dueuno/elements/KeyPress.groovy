@@ -14,7 +14,7 @@
  */
 package dueuno.elements
 
-import dueuno.core.LinkDefinition
+import dueuno.application.LinkDefinition
 import dueuno.elements.controls.HiddenField
 import groovy.transform.CompileStatic
 

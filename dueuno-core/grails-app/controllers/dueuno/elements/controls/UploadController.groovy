@@ -14,8 +14,8 @@
  */
 package dueuno.elements.controls
 
+import dueuno.application.WebRequestAware
 import dueuno.commons.utils.FileUtils
-import dueuno.core.WebRequestAware
 
 /**
  * @author Gianluca Sartori

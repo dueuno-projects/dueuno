@@ -20,7 +20,7 @@ import groovy.transform.CompileStatic
  * Carries the display options that control how a {@link PageContent} is rendered by the
  * Elements frontend after a server-side action completes.
  * <p>
- * An instance of this class is attached to every {@link dueuno.core.LinkDefinition} and
+ * An instance of this class is attached to every {@link dueuno.application.LinkDefinition} and
  * {@link PageContent}, and is serialised into the {@link Transition} command stream so the
  * browser can apply the requested visual behaviour when the response arrives.
  * </p>

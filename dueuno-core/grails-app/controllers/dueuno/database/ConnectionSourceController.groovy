@@ -14,6 +14,9 @@
  */
 package dueuno.database
 
+import dueuno.application.ApplicationService
+import dueuno.application.ConnectionSourceService
+import dueuno.application.TConnectionSource
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Label
 import dueuno.elements.components.TableRow
@@ -23,9 +26,6 @@ import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.Checkbox
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
-import dueuno.core.ApplicationService
-import dueuno.core.ConnectionSourceService
-import dueuno.core.TConnectionSource
 import dueuno.elements.style.Color
 import grails.plugin.springsecurity.annotation.Secured
 

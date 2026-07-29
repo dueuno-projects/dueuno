@@ -14,7 +14,7 @@
  */
 package dueuno.elements.components
 
-import dueuno.core.PrettyPrinterProperties
+import dueuno.application.PrettyPrinterProperties
 import dueuno.elements.Component
 import groovy.transform.CompileStatic
 

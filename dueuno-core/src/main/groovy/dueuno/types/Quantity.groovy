@@ -14,8 +14,8 @@
  */
 package dueuno.types
 
-import dueuno.core.PrettyPrinter
-import dueuno.core.PrettyPrinterProperties
+import dueuno.application.PrettyPrinter
+import dueuno.application.PrettyPrinterProperties
 import dueuno.elements.controls.QuantityField
 import dueuno.exceptions.ElementsException
 import groovy.transform.CompileDynamic

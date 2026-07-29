@@ -14,15 +14,15 @@
  */
 package dueuno.elements.pages
 
+import dueuno.application.ApplicationPropertyService
+import dueuno.application.ApplicationService
+import dueuno.application.LinkGeneratorAware
+import dueuno.application.WebRequestAware
 import dueuno.commons.utils.LogUtils
-import dueuno.core.LinkGeneratorAware
-import dueuno.core.WebRequestAware
-import dueuno.core.ApplicationService
 import dueuno.elements.PageService
-import dueuno.properties.ApplicationPropertyService
-import dueuno.properties.TenantPropertyService
-import dueuno.tenants.TenantService
 import dueuno.exceptions.ElementsException
+import dueuno.tenant.TenantPropertyService
+import dueuno.tenant.TenantService
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 

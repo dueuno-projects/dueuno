@@ -14,8 +14,8 @@
  */
 package dueuno.elements
 
-import dueuno.core.LinkDefinition
-import dueuno.core.WebRequestAware
+import dueuno.application.LinkDefinition
+import dueuno.application.WebRequestAware
 import dueuno.exceptions.ElementsException
 import dueuno.types.Types
 import groovy.contracts.Requires

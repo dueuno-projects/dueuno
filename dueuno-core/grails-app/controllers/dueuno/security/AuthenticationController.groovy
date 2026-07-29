@@ -16,8 +16,8 @@ package dueuno.security
 
 import dueuno.elements.ElementsController
 import dueuno.elements.pages.Login
-import dueuno.properties.TenantPropertyService
-import dueuno.tenants.TenantService
+import dueuno.tenant.TenantPropertyService
+import dueuno.tenant.TenantService
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 

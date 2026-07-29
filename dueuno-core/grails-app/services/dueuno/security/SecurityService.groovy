@@ -14,17 +14,18 @@
  */
 package dueuno.security
 
-import dueuno.audit.AuditOperation
-import dueuno.audit.AuditService
+import dueuno.application.ApplicationService
+import dueuno.application.Feature
+import dueuno.application.LinkGeneratorAware
+import dueuno.application.PrettyPrinterDecimalFormat
+import dueuno.application.WebRequestAware
 import dueuno.commons.utils.StringUtils
-import dueuno.core.*
+import dueuno.elements.GuiStyle
 import dueuno.elements.Menu
 import dueuno.elements.pages.Shell
 import dueuno.elements.pages.ShellService
 import dueuno.exceptions.ElementsException
-import dueuno.properties.TenantPropertyService
-import dueuno.tenants.TTenant
-import dueuno.tenants.TenantService
+import dueuno.tenant.*
 import dueuno.utils.EnvUtils
 import grails.gorm.DetachedCriteria
 import grails.gorm.multitenancy.CurrentTenant

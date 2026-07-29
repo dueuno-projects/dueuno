@@ -14,8 +14,8 @@
  */
 package dueuno.exceptions
 
-import dueuno.core.PrettyPrinter
-import dueuno.core.WebRequestAware
+import dueuno.application.PrettyPrinter
+import dueuno.application.WebRequestAware
 import groovy.transform.CompileStatic
 import org.springframework.validation.ObjectError
 

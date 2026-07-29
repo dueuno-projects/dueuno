@@ -14,9 +14,11 @@
  */
 package dueuno.security
 
-import dueuno.core.GuiStyle
-import dueuno.core.PrettyPrinterDecimalFormat
+import dueuno.application.ApplicationPropertyService
+import dueuno.application.ApplicationService
+import dueuno.application.PrettyPrinterDecimalFormat
 import dueuno.elements.ElementsController
+import dueuno.elements.GuiStyle
 import dueuno.elements.components.Separator
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
@@ -24,11 +26,9 @@ import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.*
-import dueuno.core.ApplicationService
-import dueuno.properties.ApplicationPropertyService
 import dueuno.elements.style.TextDefault
-import dueuno.properties.TenantPropertyService
-import dueuno.tenants.TenantService
+import dueuno.tenant.TenantPropertyService
+import dueuno.tenant.TenantService
 import grails.plugin.springsecurity.annotation.Secured
 
 /**

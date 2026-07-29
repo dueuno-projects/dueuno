@@ -14,7 +14,7 @@
  */
 package test
 
-import dueuno.core.ApplicationService
+import dueuno.application.ApplicationService
 import dueuno.types.Money
 import grails.gorm.multitenancy.CurrentTenant
 import grails.gorm.transactions.Transactional

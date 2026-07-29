@@ -14,7 +14,7 @@
  */
 package dueuno.elements.controls
 
-import dueuno.core.PrettyPrinterProperties
+import dueuno.application.PrettyPrinterProperties
 import dueuno.elements.Component
 import dueuno.elements.Control
 import dueuno.types.Type

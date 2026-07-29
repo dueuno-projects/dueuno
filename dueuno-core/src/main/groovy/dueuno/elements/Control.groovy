@@ -14,7 +14,7 @@
  */
 package dueuno.elements
 
-import dueuno.core.PrettyPrinterProperties
+import dueuno.application.PrettyPrinterProperties
 import dueuno.elements.style.TextStyle
 import dueuno.types.Types
 import groovy.transform.CompileStatic
@@ -78,7 +78,7 @@ abstract class Control extends Component {
      */
     String pattern
 
-    /** Formatting options passed to {@link dueuno.core.PrettyPrinter} when rendering {@link #getPrettyValue()}. */
+    /** Formatting options passed to {@link dueuno.application.PrettyPrinter} when rendering {@link #getPrettyValue()}. */
     PrettyPrinterProperties prettyPrinterProperties
 
     /** One or more {@link TextStyle} values that control the visual appearance of the rendered text. */
@@ -145,7 +145,7 @@ abstract class Control extends Component {
     /**
      * Sets the name of the value transformer to apply before rendering.
      *
-     * @param value the transformer name registered with {@link dueuno.core.Transformer}
+     * @param value the transformer name registered with {@link dueuno.application.Transformer}
      */
     void setTransformer(String value) {
         prettyPrinterProperties.transformer = value
@@ -161,17 +161,17 @@ abstract class Control extends Component {
     }
 
     /**
-     * Sets the name of the {@link dueuno.core.PrettyPrinter} template used to render
+     * Sets the name of the {@link dueuno.application.PrettyPrinter} template used to render
      * this control's value.
      *
-     * @param value the template name registered with {@link dueuno.core.PrettyPrinter#register}
+     * @param value the template name registered with {@link dueuno.application.PrettyPrinter#register}
      */
     void setPrettyPrinter(String value) {
         prettyPrinterProperties.prettyPrinter = value
     }
 
     /**
-     * Returns the name of the {@link dueuno.core.PrettyPrinter} template currently
+     * Returns the name of the {@link dueuno.application.PrettyPrinter} template currently
      * configured on this control.
      *
      * @return the template name, or {@code null} if none is set
@@ -214,7 +214,7 @@ abstract class Control extends Component {
 
     /**
      * Returns the control's current value rendered as a human-readable string by
-     * {@link dueuno.core.PrettyPrinter}, using this control's {@link #prettyPrinterProperties}.
+     * {@link dueuno.application.PrettyPrinter}, using this control's {@link #prettyPrinterProperties}.
      *
      * @return the formatted value string
      */

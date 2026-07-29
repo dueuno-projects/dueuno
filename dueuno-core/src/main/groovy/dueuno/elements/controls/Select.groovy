@@ -15,8 +15,8 @@
 package dueuno.elements.controls
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.core.PrettyPrinter
-import dueuno.core.PrettyPrinterProperties
+import dueuno.application.PrettyPrinter
+import dueuno.application.PrettyPrinterProperties
 import dueuno.elements.Component
 import dueuno.elements.Control
 import dueuno.elements.Elements

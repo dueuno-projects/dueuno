@@ -79,7 +79,7 @@ class Table extends Component {
     /** Per-column custom pretty-printer instances. */
     Map<String, Object> prettyPrinters
 
-    /** Per-column {@link dueuno.core.PrettyPrinterProperties} maps. */
+    /** Per-column {@link dueuno.application.PrettyPrinterProperties} maps. */
     Map<String, Map> prettyPrinterProperties
 
     /** Column names whose values are always included in the rendered output. */
