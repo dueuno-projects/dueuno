@@ -12,22 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.application
+package dueuno.elements.core
+
+import groovy.transform.CompileStatic
 
 /**
- * INTERNAL USE ONLY
-
  * @author Gianluca Sartori
  */
-class CoreUrlMappings {
 
-    static mappings = {
+@CompileStatic
+enum PrettyPrinterDecimalFormat {
+    ISO_COM(','),
+    ISO_DOT('.')
 
-        // DEFAULT
-        "/$controller/$action?/$id?"()
+    final String separator
 
-        // PWA
-        "/pwa/manifest.json"(controller: "pwaManifest", action: "index")
-
+    PrettyPrinterDecimalFormat(String separator) {
+        this.separator = separator
     }
 }

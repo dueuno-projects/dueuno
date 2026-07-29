@@ -12,13 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.elements
+package dueuno.elements.core
 
 import dueuno.commons.utils.LogUtils
-import dueuno.application.PrettyPrinterProperties
-import dueuno.application.WebRequestAware
+import dueuno.elements.ElementsException
 import dueuno.elements.style.Color
-import dueuno.exceptions.ElementsException
 import dueuno.utils.EnvUtils
 import groovy.contracts.Requires
 import groovy.transform.CompileStatic

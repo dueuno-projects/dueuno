@@ -12,29 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.elements
+package dueuno.elements.style
 
 import groovy.transform.CompileStatic
 
 /**
  * @author Gianluca Sartori
- * @author Francesco Piceghello
  */
 
 @CompileStatic
-enum ComponentType {
-    COMPONENT('components'),
-    CONTROL('controls'),
-    CONTENT('contents'),
-    PAGE('pages')
-
-    final String directory
-
-    ComponentType(String directory) {
-        this.directory = directory
-    }
-
-    String toString() {
-        return name()
-    }
+enum GuiStyle {
+    ROUNDED,
+    SQUARED
 }

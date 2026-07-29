@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.application
+package dueuno.elements.core
 
-import dueuno.elements.Elements
+
 import grails.core.GrailsApplication
 import grails.util.Holders
 import grails.web.mapping.LinkGenerator

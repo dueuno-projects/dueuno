@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.elements
+package dueuno.elements.core
 
 
 import groovy.transform.CompileStatic
@@ -22,7 +22,7 @@ import groovy.transform.CompileStatic
  * <p>
  * A {@code PageContent} is the component that fills the primary content slot of a {@link Page}.
  * Each controller action typically creates a concrete subclass (e.g. a form, a list, or a
- * custom layout) and passes it to {@link ElementsController#display(Map)} via the
+ * custom layout) and passes it to {@link dueuno.elements.ElementsController#display(Map)} via the
  * {@code content} key.
  * </p>
  * <p>
@@ -83,7 +83,7 @@ abstract class PageContent extends Component {
      * Applies matching entries from {@code args} to {@link #renderProperties}.
      * Only keys that correspond to existing properties of {@link PageRenderProperties}
      * are applied; the {@code class} meta-property is skipped.
-     * This method is called by the framework when {@link ElementsController#display(Map)}
+     * This method is called by the framework when {@link dueuno.elements.ElementsController#display(Map)}
      * forwards render options to the content.
      *
      * @param args a map that may contain {@link PageRenderProperties} property names as keys

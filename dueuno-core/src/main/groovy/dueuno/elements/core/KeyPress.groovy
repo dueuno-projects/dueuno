@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.elements
+package dueuno.elements.core
 
-import dueuno.application.LinkDefinition
+
 import dueuno.elements.controls.HiddenField
 import groovy.transform.CompileStatic
 

@@ -14,9 +14,9 @@
  */
 package dueuno.elements.controls
 
-import dueuno.application.PrettyPrinterProperties
-import dueuno.elements.Component
-import dueuno.elements.Control
+import dueuno.elements.core.PrettyPrinterProperties
+import dueuno.elements.core.Component
+import dueuno.elements.core.Control
 import dueuno.types.Type
 import groovy.transform.CompileStatic
 
@@ -135,7 +135,7 @@ class Checkbox extends Control {
      * Registers a {@code change} event listener that submits the form when the checkbox
      * is toggled, if no {@code change} handler has already been registered.
      *
-     * @param args event configuration forwarded to {@link dueuno.elements.Component#on(Map)}
+     * @param args event configuration forwarded to {@link Component#on(Map)}
      * @return this component for chaining
      */
     @Override

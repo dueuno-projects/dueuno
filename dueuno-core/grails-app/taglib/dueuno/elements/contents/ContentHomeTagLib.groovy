@@ -14,8 +14,8 @@
  */
 package dueuno.elements.contents
 
-import dueuno.application.WebRequestAware
-import dueuno.elements.Menu
+import dueuno.elements.core.WebRequestAware
+import dueuno.elements.core.Menu
 import dueuno.elements.pages.ShellService
 import dueuno.elements.pages.Shell
 

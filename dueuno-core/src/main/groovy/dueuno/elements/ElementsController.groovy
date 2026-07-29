@@ -15,11 +15,15 @@
 package dueuno.elements
 
 import dueuno.commons.utils.LogUtils
-import dueuno.application.LinkGeneratorAware
-import dueuno.application.WebRequestAware
 import dueuno.elements.contents.ContentHeader
+import dueuno.elements.core.ComponentEvent
+import dueuno.elements.core.Elements
+import dueuno.elements.core.LinkGeneratorAware
+import dueuno.elements.core.Page
+import dueuno.elements.core.PageContent
+import dueuno.elements.core.Transition
+import dueuno.elements.core.WebRequestAware
 import dueuno.elements.pages.PageBlank
-import dueuno.exceptions.ElementsException
 import grails.artefact.Controller
 import grails.artefact.Enhances
 import grails.artefact.controller.RestResponder
@@ -60,11 +64,11 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
 
     /**
      * Property-style shorthand for {@link #display(Map)} with no arguments.
-     * Renders the current {@link Transition} and returns {@code true}.
-     * Throws {@link dueuno.exceptions.ElementsException} if called more than once per action.
+     * Renders the current {@link dueuno.elements.core.Transition} and returns {@code true}.
+     * Throws {@link ElementsException} if called more than once per action.
      *
      * @return {@code true} after the transition has been rendered
-     * @throws dueuno.exceptions.ElementsException if {@code display} has already been rendered in this action
+     * @throws ElementsException if {@code display} has already been rendered in this action
      */
     @CompileDynamic
     Boolean getDisplay() {
@@ -83,15 +87,15 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
     }
 
     /**
-     * Renders the response for the current action, choosing between a {@link Transition}
-     * (AJAX) or a full {@link Page} depending on whether the request carries the
+     * Renders the response for the current action, choosing between a {@link dueuno.elements.core.Transition}
+     * (AJAX) or a full {@link dueuno.elements.core.Page} depending on whether the request carries the
      * {@code _21Transition} flag.
      * <p>
      * Supported {@code args} keys:
      * </p>
      * <ul>
-     *     <li>{@code page} — a {@link Page} instance to render directly (forces a full-page render)</li>
-     *     <li>{@code content} — a {@link PageContent} to inject into the transition or page</li>
+     *     <li>{@code page} — a {@link dueuno.elements.core.Page} instance to render directly (forces a full-page render)</li>
+     *     <li>{@code content} — a {@link dueuno.elements.core.PageContent} to inject into the transition or page</li>
      *     <li>{@code message} / {@code messageArgs} — show an info message in the message box</li>
      *     <li>{@code confirmMessage} / {@code messageArgs} — show a confirmation dialog</li>
      *     <li>{@code errorMessage} / {@code messageArgs} — show an error message</li>
@@ -99,15 +103,15 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      *     <li>{@code errors} — display field-level or global validation errors on a submitted component</li>
      *     <li>{@code controller} / {@code action} — redirect the browser</li>
      *     <li>{@code loading} — show or hide the loading indicator</li>
-     *     <li>{@code transition} — use an explicit {@link Transition} instance instead of creating a new one</li>
+     *     <li>{@code transition} — use an explicit {@link dueuno.elements.core.Transition} instance instead of creating a new one</li>
      * </ul>
      * <p>
      * This method must be the last statement of a controller action; calling it more than
-     * once throws {@link dueuno.exceptions.ElementsException}.
+     * once throws {@link ElementsException}.
      * </p>
      *
      * @param args optional map of display arguments (see above)
-     * @throws dueuno.exceptions.ElementsException if {@code display} has already been rendered in this action
+     * @throws ElementsException if {@code display} has already been rendered in this action
      */
     @CompileDynamic
     void display(Map args = [:]) {
@@ -159,12 +163,12 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         return getMainPage().keyPress.keyPressed
     }
 
-    /** Returns the application-scoped {@link PageService} bean. */
+    /** Returns the application-scoped {@link dueuno.elements.PageService} bean. */
     private PageService getPageService() {
         return Elements.getBean('pageService') as PageService
     }
 
-    /** Returns the main {@link Page} for the current session, falling back to a blank page. */
+    /** Returns the main {@link dueuno.elements.core.Page} for the current session, falling back to a blank page. */
     private Page getMainPage() {
         return getPageService().mainPage ?: createPage(PageBlank, params)
     }
@@ -190,9 +194,9 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
     }
 
     /**
-     * Creates and returns a new instance of the specified {@link PageContent} subclass.
+     * Creates and returns a new instance of the specified {@link dueuno.elements.core.PageContent} subclass.
      *
-     * @param clazz the {@link PageContent} subclass to instantiate
+     * @param clazz the {@link dueuno.elements.core.PageContent} subclass to instantiate
      * @param args  optional map of constructor/property arguments
      * @return the newly created content instance
      */
@@ -201,9 +205,9 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
     }
 
     /**
-     * Creates and returns a new {@link Transition} scoped to the current request.
+     * Creates and returns a new {@link dueuno.elements.core.Transition} scoped to the current request.
      *
-     * @return a new {@link Transition} instance
+     * @return a new {@link dueuno.elements.core.Transition} instance
      */
     Transition createTransition() {
         return getPageService().createTransition()

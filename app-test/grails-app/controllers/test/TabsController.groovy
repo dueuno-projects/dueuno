@@ -19,7 +19,7 @@ import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
-import dueuno.elements.ComponentEvent
+import dueuno.elements.core.ComponentEvent
 import dueuno.elements.ElementsController
 import dueuno.elements.style.TextDefault
 import grails.gorm.multitenancy.CurrentTenant

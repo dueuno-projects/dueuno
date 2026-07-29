@@ -14,7 +14,7 @@
  */
 package dueuno.elements.pages
 
-import dueuno.elements.Component
+import dueuno.elements.core.Component
 import dueuno.elements.components.Button
 import dueuno.elements.components.Image
 import dueuno.elements.components.Link

@@ -14,7 +14,7 @@
  */
 package dueuno.servlet
 
-import dueuno.elements.Elements
+import dueuno.elements.core.Elements
 import groovy.util.logging.Slf4j
 import jakarta.servlet.Servlet
 

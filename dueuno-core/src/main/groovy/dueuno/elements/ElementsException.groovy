@@ -12,10 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.exceptions
+package dueuno.elements
 
-import dueuno.application.PrettyPrinter
-import dueuno.application.WebRequestAware
+import dueuno.elements.core.PrettyPrinter
+import dueuno.elements.core.WebRequestAware
 import groovy.transform.CompileStatic
 import org.springframework.validation.ObjectError
 

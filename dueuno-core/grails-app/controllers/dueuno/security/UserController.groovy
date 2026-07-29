@@ -16,9 +16,9 @@ package dueuno.security
 
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
-import dueuno.application.PrettyPrinterDecimalFormat
+import dueuno.elements.core.PrettyPrinterDecimalFormat
 import dueuno.elements.ElementsController
-import dueuno.elements.GuiStyle
+import dueuno.elements.style.GuiStyle
 import dueuno.elements.components.Separator
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate

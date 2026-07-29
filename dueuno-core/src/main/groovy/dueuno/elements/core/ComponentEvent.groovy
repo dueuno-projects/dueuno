@@ -12,16 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.elements
+package dueuno.elements.core
 
-import dueuno.application.LinkDefinition
+
 import dueuno.types.Types
 import groovy.transform.CompileStatic
 
 /**
  * Describes a server-side action to invoke in response to a client-side component event.
  * <p>
- * A {@code ComponentEvent} extends {@link dueuno.application.LinkDefinition} with an {@code on} field
+ * A {@code ComponentEvent} extends {@link LinkDefinition} with an {@code on} field
  * that specifies which DOM event (e.g. {@code "click"}, {@code "change"}) should trigger the
  * action. It is used to bind controller actions to UI interactions such as button clicks,
  * selection changes, or any other browser event exposed by a component.
@@ -43,7 +43,7 @@ class ComponentEvent extends LinkDefinition {
 
     /**
      * Creates a {@code ComponentEvent} from a map of arguments.
-     * All {@link dueuno.application.LinkDefinition} properties are supported, plus:
+     * All {@link LinkDefinition} properties are supported, plus:
      * <ul>
      *     <li>{@code on} — the triggering DOM event name (defaults to {@code "click"})</li>
      * </ul>

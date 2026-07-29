@@ -17,7 +17,7 @@ package dueuno.tenant
 import dueuno.application.PropertyService
 import dueuno.application.PropertyType
 import dueuno.commons.utils.StringUtils
-import dueuno.elements.GuiStyle
+import dueuno.elements.style.GuiStyle
 import dueuno.security.CryptoService
 import dueuno.utils.EnvUtils
 import grails.gorm.DetachedCriteria

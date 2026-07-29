@@ -14,6 +14,7 @@
  */
 package dueuno.elements
 
+import dueuno.elements.core.Component
 import jakarta.servlet.ServletContext
 
 /**

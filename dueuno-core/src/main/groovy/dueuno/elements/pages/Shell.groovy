@@ -14,7 +14,7 @@
  */
 package dueuno.elements.pages
 
-import dueuno.elements.Page
+import dueuno.elements.core.Page
 import dueuno.elements.contents.ContentHome
 import groovy.contracts.Requires
 import groovy.transform.CompileStatic

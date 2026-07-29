@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.application
+package dueuno.elements.core
 
-import dueuno.elements.PageRenderProperties
+
 import groovy.transform.CompileStatic
 
 /**
@@ -61,7 +61,7 @@ class LinkDefinition implements Serializable {
     /** An explicit URL target. When set it takes precedence over the controller/action pair and {@code direct} defaults to {@code true}. */
     String url
 
-    /** When {@code true}, the link response is rendered as a full HTML page or raw HTTP body instead of a {@link dueuno.elements.Transition}. */
+    /** When {@code true}, the link response is rendered as a full HTML page or raw HTTP body instead of a {@link Transition}. */
     Boolean direct
 
     /** Names of the components whose data should be submitted with the request. If empty the closest container component is submitted. */
@@ -163,7 +163,7 @@ class LinkDefinition implements Serializable {
     /**
      * Sets the browsing context for the link. When {@code value} is {@code "_self"},
      * {@link #direct} is also set to {@code true} so that the response replaces the
-     * current page rather than being processed as a {@link dueuno.elements.Transition}.
+     * current page rather than being processed as a {@link Transition}.
      *
      * @param value the target browsing context (e.g. {@code "_self"})
      */

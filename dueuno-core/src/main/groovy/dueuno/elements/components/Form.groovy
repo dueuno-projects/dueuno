@@ -15,11 +15,11 @@
 package dueuno.elements.components
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.elements.Component
-import dueuno.elements.Control
-import dueuno.elements.Elements
+import dueuno.elements.core.Component
+import dueuno.elements.core.Control
+import dueuno.elements.core.Elements
 import dueuno.elements.controls.HiddenField
-import dueuno.exceptions.ElementsException
+import dueuno.elements.ElementsException
 import dueuno.types.Type
 import dueuno.types.Types
 import grails.gorm.validation.ConstrainedProperty
@@ -177,7 +177,7 @@ class Form extends Component {
      * @param domainOrCommandClass the domain or command class to inspect
      * @param fieldName            the field name or dot-separated path (e.g. {@code "address.city"})
      * @return a map with {@code nullable} and {@code maxSize} keys, or an empty map
-     * @throws dueuno.exceptions.ElementsException if the class is neither a GORM domain nor a {@code Validateable}
+     * @throws ElementsException if the class is neither a GORM domain nor a {@code Validateable}
      */
     private Map getFieldConstraints(Class domainOrCommandClass, String fieldName) {
         if (!domainOrCommandClass || !fieldName)
@@ -249,7 +249,7 @@ class Form extends Component {
      * @param id        the field identifier
      * @param valueType the type name string (must be a registered type)
      * @param value     the key value
-     * @throws dueuno.exceptions.ElementsException if {@code valueType} is not a registered type
+     * @throws ElementsException if {@code valueType} is not a registered type
      */
     // We are using a Sting instead of a Type to accomodate custom types (Eg. Money, Quantity, etc)
     void addKeyField(String id, String valueType, Object value) {

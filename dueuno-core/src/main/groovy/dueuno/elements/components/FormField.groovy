@@ -14,12 +14,12 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.Component
-import dueuno.exceptions.ElementsException
+import dueuno.elements.core.Component
+import dueuno.elements.ElementsException
 import groovy.transform.CompileStatic
 
 /**
- * A layout wrapper that pairs a single {@link Component} (typically a {@link dueuno.elements.Control})
+ * A layout wrapper that pairs a single {@link Component} (typically a {@link dueuno.elements.core.Control})
  * with its associated label, help text, and Bootstrap grid-column configuration.
  * <p>
  * {@code FormField} instances are created internally by {@link Form#addField(Map)} and are
@@ -153,7 +153,7 @@ class FormField extends Component {
      *
      * @param columns      the column span for medium and larger screens (sm breakpoint)
      * @param columnsSmall the column span for small (xs) screens
-     * @throws dueuno.exceptions.ElementsException if either value is not in {@link #acceptedCols}
+     * @throws ElementsException if either value is not in {@link #acceptedCols}
      */
     void setCols(Integer columns, Integer columnsSmall) {
         if (columns in acceptedCols && columnsSmall in acceptedCols) {
@@ -169,7 +169,7 @@ class FormField extends Component {
      * when that list is non-empty.
      *
      * @param lines the number of rows
-     * @throws dueuno.exceptions.ElementsException if {@code lines} is not in {@link #acceptedRows}
+     * @throws ElementsException if {@code lines} is not in {@link #acceptedRows}
      */
     void setRows(Integer lines) {
         if (acceptedRows) {

@@ -14,9 +14,9 @@
  */
 package dueuno.elements.controls
 
-import dueuno.application.PrettyPrinterProperties
-import dueuno.elements.Elements
-import dueuno.exceptions.ElementsException
+import dueuno.elements.core.PrettyPrinterProperties
+import dueuno.elements.core.Elements
+import dueuno.elements.ElementsException
 import dueuno.types.Quantity
 import dueuno.types.QuantityUnit
 import groovy.transform.CompileStatic
@@ -129,7 +129,7 @@ class QuantityField extends NumberField {
      * When a {@link Quantity} value is set, the {@link #defaultUnit} is updated to its unit.
      *
      * @param value the {@link Quantity} value to set, or {@code null} to clear the field
-     * @throws dueuno.exceptions.ElementsException if {@code value} is not a {@link Quantity} instance
+     * @throws ElementsException if {@code value} is not a {@link Quantity} instance
      */
     @Override
     void setValue(Object value) {

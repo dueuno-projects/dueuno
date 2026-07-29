@@ -14,20 +14,20 @@
  */
 package dueuno.application
 
-import groovy.transform.CompileStatic
-
 /**
+ * INTERNAL USE ONLY
+
  * @author Gianluca Sartori
  */
+class ApplicationUrlMappings {
 
-@CompileStatic
-enum PrettyPrinterDecimalFormat {
-    ISO_COM(','),
-    ISO_DOT('.')
+    static mappings = {
 
-    final String separator
+        // DEFAULT
+        "/$controller/$action?/$id?"()
 
-    PrettyPrinterDecimalFormat(String separator) {
-        this.separator = separator
+        // PWA
+        "/pwa/manifest.json"(controller: "pwaManifest", action: "index")
+
     }
 }

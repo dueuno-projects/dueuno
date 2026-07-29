@@ -14,10 +14,10 @@
  */
 package dueuno.types
 
-import dueuno.application.PrettyPrinter
-import dueuno.application.PrettyPrinterProperties
+import dueuno.elements.core.PrettyPrinter
+import dueuno.elements.core.PrettyPrinterProperties
 import dueuno.elements.controls.MoneyField
-import dueuno.exceptions.ElementsException
+import dueuno.elements.ElementsException
 import groovy.transform.CompileDynamic
 import org.grails.datastore.gorm.GormEntity
 
@@ -29,7 +29,7 @@ import org.grails.datastore.gorm.GormEntity
  * serialisation protocol, and extends {@link Number} so it can be used wherever a numeric
  * value is expected. Arithmetic operators ({@code +}, {@code -}, {@code *}, {@code /}) are
  * provided for both {@code Money × Money} and {@code Money × Number} operations; mixed-currency
- * arithmetic throws an {@link dueuno.exceptions.ElementsException}.
+ * arithmetic throws an {@link ElementsException}.
  * </p>
  * <p>
  * The associated UI control is {@link dueuno.elements.controls.MoneyField}.
@@ -229,7 +229,7 @@ class Money extends Number implements CustomType, GormEntity {
     }
 
     /**
-     * Throws {@link dueuno.exceptions.ElementsException} if {@code money}'s currency differs
+     * Throws {@link ElementsException} if {@code money}'s currency differs
      * from this instance's currency.
      */
     private void checkOperandsCompatibility(Money money) {
@@ -243,7 +243,7 @@ class Money extends Number implements CustomType, GormEntity {
      *
      * @param money the addend
      * @return the sum as a new {@code Money} instance
-     * @throws dueuno.exceptions.ElementsException if the currencies differ
+     * @throws ElementsException if the currencies differ
      */
     Money plus(Money money) {
         checkOperandsCompatibility(money)
@@ -256,7 +256,7 @@ class Money extends Number implements CustomType, GormEntity {
      *
      * @param money the subtrahend
      * @return the difference as a new {@code Money} instance
-     * @throws dueuno.exceptions.ElementsException if the currencies differ
+     * @throws ElementsException if the currencies differ
      */
     Money minus(Money money) {
         checkOperandsCompatibility(money)
@@ -269,7 +269,7 @@ class Money extends Number implements CustomType, GormEntity {
      *
      * @param money the multiplier
      * @return the product as a new {@code Money} instance
-     * @throws dueuno.exceptions.ElementsException if the currencies differ
+     * @throws ElementsException if the currencies differ
      */
     Money multiply(Money money) {
         checkOperandsCompatibility(money)
@@ -282,7 +282,7 @@ class Money extends Number implements CustomType, GormEntity {
      *
      * @param money the divisor
      * @return the quotient as a new {@code Money} instance
-     * @throws dueuno.exceptions.ElementsException if the currencies differ
+     * @throws ElementsException if the currencies differ
      */
     Money div(Money money) {
         checkOperandsCompatibility(money)

@@ -14,7 +14,7 @@
  */
 package dueuno.types
 
-import dueuno.exceptions.ElementsException
+import dueuno.elements.ElementsException
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -63,7 +63,7 @@ class Types {
      * field that serves as the unique type identifier.
      *
      * @param type the class to register; must implement {@link CustomType}
-     * @throws dueuno.exceptions.ElementsException if the class does not implement {@link CustomType}
+     * @throws ElementsException if the class does not implement {@link CustomType}
      */
     static register(Class type) {
         if (type !in CustomType) {
@@ -113,7 +113,7 @@ class Types {
      *
      * @param typeName the type identifier
      * @return a new {@link CustomType} instance
-     * @throws dueuno.exceptions.ElementsException if the type has not been registered
+     * @throws ElementsException if the type has not been registered
      */
     private static CustomType create(String typeName) {
         if (registry.containsKey(typeName)) {
@@ -183,7 +183,7 @@ class Types {
      *
      * @param value the object to inspect
      * @return the type name string for {@code value}
-     * @throws dueuno.exceptions.ElementsException if the runtime class is not a known type
+     * @throws ElementsException if the runtime class is not a known type
      */
     static String getType(Object value) {
         if (value == null) {

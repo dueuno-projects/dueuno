@@ -14,8 +14,8 @@
  */
 package dueuno.elements.components
 
-import dueuno.application.PrettyPrinterProperties
-import dueuno.elements.Component
+import dueuno.elements.core.PrettyPrinterProperties
+import dueuno.elements.core.Component
 import dueuno.elements.style.TextAlign
 import dueuno.elements.style.TextStyle
 import dueuno.elements.style.TextWrap
@@ -27,7 +27,7 @@ import groovy.transform.CompileStatic
  * and supports rich text styling options.
  * <p>
  * The displayed value is passed as {@code text} and is pretty-printed on read via
- * {@link dueuno.application.PrettyPrinter} using the configured {@link #prettyPrinterProperties}.
+ * {@link dueuno.elements.core.PrettyPrinter} using the configured {@link #prettyPrinterProperties}.
  * Alternatively, raw HTML can be provided via {@link #html}. Boolean values are rendered as
  * a check-mark icon; negative numbers are highlighted in red by default.
  * </p>

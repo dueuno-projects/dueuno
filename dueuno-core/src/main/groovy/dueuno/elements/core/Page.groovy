@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.elements
+package dueuno.elements.core
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j

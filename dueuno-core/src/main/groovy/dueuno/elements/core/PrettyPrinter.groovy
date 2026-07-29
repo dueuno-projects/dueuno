@@ -12,10 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.application
+package dueuno.elements.core
+
 
 import dueuno.commons.utils.DateUtils
-import dueuno.elements.Elements
 import dueuno.types.CustomType
 import dueuno.types.Money
 import dueuno.types.Quantity

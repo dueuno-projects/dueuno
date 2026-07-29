@@ -16,7 +16,7 @@ package dueuno.database
 
 import dueuno.application.ConnectionSourceService
 import dueuno.commons.utils.SqlUtils
-import dueuno.elements.Elements
+import dueuno.elements.core.Elements
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Button
 import dueuno.elements.components.Form

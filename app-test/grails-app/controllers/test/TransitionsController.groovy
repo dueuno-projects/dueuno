@@ -20,7 +20,7 @@ import dueuno.elements.components.Label
 import dueuno.elements.components.Separator
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.controls.*
-import dueuno.elements.ComponentEvent
+import dueuno.elements.core.ComponentEvent
 import dueuno.elements.ElementsController
 import dueuno.security.SecurityService
 import dueuno.elements.style.TextStyle

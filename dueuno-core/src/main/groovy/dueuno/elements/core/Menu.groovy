@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.elements
+package dueuno.elements.core
 
-import dueuno.application.Feature
+
 import dueuno.elements.components.Link
 import groovy.transform.CompileStatic
 
@@ -378,49 +378,49 @@ class Menu extends Component {
     // LINK SHORTCUTS — convenience delegating accessors for the underlying {@link Link} component.
     //
 
-    /** @see dueuno.application.LinkDefinition#target */
+    /** @see LinkDefinition#target */
     String getTarget() { return link.target }
-    /** @see dueuno.application.LinkDefinition#target */
+    /** @see LinkDefinition#target */
     void setTarget(String value) { link.target = value }
 
-    /** @see dueuno.application.LinkDefinition#getTargetNew() */
+    /** @see LinkDefinition#getTargetNew() */
     Boolean getTargetNew() { return link.targetNew }
-    /** @see dueuno.application.LinkDefinition#setTargetNew(Boolean) */
+    /** @see LinkDefinition#setTargetNew(Boolean) */
     void setTargetNew(Boolean value) { link.targetNew = value }
 
-    /** @see dueuno.application.LinkDefinition#namespace */
+    /** @see LinkDefinition#namespace */
     String getNamespace() { return link.namespace }
-    /** @see dueuno.application.LinkDefinition#namespace */
+    /** @see LinkDefinition#namespace */
     void setNamespace(String value) { link.namespace = value }
 
-    /** @see dueuno.application.LinkDefinition#controller */
+    /** @see LinkDefinition#controller */
     String getController() { return link.controller }
-    /** @see dueuno.application.LinkDefinition#controller */
+    /** @see LinkDefinition#controller */
     void setController(String value) { link.controller = value }
 
-    /** @see dueuno.application.LinkDefinition#action */
+    /** @see LinkDefinition#action */
     String getAction() { return link.action }
-    /** @see dueuno.application.LinkDefinition#action */
+    /** @see LinkDefinition#action */
     void setAction(String value) { link.action = value }
 
-    /** @see dueuno.application.LinkDefinition#params */
+    /** @see LinkDefinition#params */
     Map getParams() { return link.params }
-    /** @see dueuno.application.LinkDefinition#params */
+    /** @see LinkDefinition#params */
     void setParams(Map value) { link.params = value }
 
-    /** @see dueuno.application.LinkDefinition#fragment */
+    /** @see LinkDefinition#fragment */
     String getFragment() { return link.fragment }
-    /** @see dueuno.application.LinkDefinition#fragment */
+    /** @see LinkDefinition#fragment */
     void setFragment(String value) { link.fragment = value }
 
-    /** @see dueuno.application.LinkDefinition#path */
+    /** @see LinkDefinition#path */
     String getPath() { return link.path }
-    /** @see dueuno.application.LinkDefinition#path */
+    /** @see LinkDefinition#path */
     void setPath(String value) { link.path = value }
 
-    /** @see dueuno.application.LinkDefinition#url */
+    /** @see LinkDefinition#url */
     String getUrl() { return link.url }
-    /** @see dueuno.application.LinkDefinition#url */
+    /** @see LinkDefinition#url */
     void setUrl(String value) { link.url = value }
 
     /** The icon identifier displayed on this menu item's link. */
@@ -438,9 +438,9 @@ class Menu extends Component {
     /** Sets the image for this menu item's link. */
     void setImage(String value) { link.image = value }
 
-    /** @see dueuno.application.LinkDefinition#submit */
+    /** @see LinkDefinition#submit */
     List<String> getSubmit() { return link.submit }
-    /** @see dueuno.application.LinkDefinition#submit */
+    /** @see LinkDefinition#submit */
     void setSubmit(List<String> value) { link.submit = value }
 
     /** Whether this menu item opens its target in a modal dialog. */
@@ -463,9 +463,9 @@ class Menu extends Component {
     /** Sets the CSS animation applied when navigating to this menu item's target. */
     void setAnimate(String value) { link.animate = value }
 
-    /** @see dueuno.application.LinkDefinition#direct */
+    /** @see LinkDefinition#direct */
     Boolean getDirect() { return link.direct }
-    /** @see dueuno.application.LinkDefinition#direct */
+    /** @see LinkDefinition#direct */
     void setDirect(Boolean value) { link.direct = value }
 
     /** Whether a close button is displayed when this menu item's target is shown in a modal. */
@@ -495,24 +495,24 @@ class Menu extends Component {
     /** Sets the interpolation arguments for the menu item's display text. */
     void setTextArgs(List values) { link.textArgs = values }
 
-    /** @see dueuno.application.LinkDefinition#loading */
+    /** @see LinkDefinition#loading */
     Boolean getLoading() { return link.loading }
-    /** @see dueuno.application.LinkDefinition#loading */
+    /** @see LinkDefinition#loading */
     void setLoading(Boolean value) { link.loading = value }
 
-    /** @see dueuno.application.LinkDefinition#infoMessage */
+    /** @see LinkDefinition#infoMessage */
     String getInfoMessage() { return link.infoMessage }
-    /** @see dueuno.application.LinkDefinition#infoMessage */
+    /** @see LinkDefinition#infoMessage */
     void setInfoMessage(String value) { link.infoMessage = value }
-    /** @see dueuno.application.LinkDefinition#infoMessageArgs */
+    /** @see LinkDefinition#infoMessageArgs */
     void setInfoMessageArgs(List value) { link.infoMessageArgs = value }
 
-    /** @see dueuno.application.LinkDefinition#confirmMessage */
+    /** @see LinkDefinition#confirmMessage */
     String getConfirmMessage() { return link.confirmMessage }
-    /** @see dueuno.application.LinkDefinition#confirmMessage */
+    /** @see LinkDefinition#confirmMessage */
     void setConfirmMessage(String value) { link.confirmMessage = value }
-    /** @see dueuno.application.LinkDefinition#confirmMessageArgs */
+    /** @see LinkDefinition#confirmMessageArgs */
     void setConfirmMessageArgs(List value) { link.confirmMessageArgs = value }
-    /** @see dueuno.application.LinkDefinition#confirmMessageOnConfirm */
+    /** @see LinkDefinition#confirmMessageOnConfirm */
     void setConfirmMessageOnConfirm(ComponentEvent value) { link.confirmMessageOnConfirm = value }
 }

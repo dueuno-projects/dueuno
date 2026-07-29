@@ -15,7 +15,7 @@
 package dueuno.security
 
 import dueuno.application.ApplicationService
-import dueuno.application.Feature
+import dueuno.elements.core.Feature
 import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate

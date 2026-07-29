@@ -15,16 +15,16 @@
 package dueuno.security
 
 import dueuno.application.ApplicationService
-import dueuno.application.Feature
-import dueuno.application.LinkGeneratorAware
-import dueuno.application.PrettyPrinterDecimalFormat
-import dueuno.application.WebRequestAware
+import dueuno.elements.core.Feature
+import dueuno.elements.core.LinkGeneratorAware
+import dueuno.elements.core.PrettyPrinterDecimalFormat
+import dueuno.elements.core.WebRequestAware
 import dueuno.commons.utils.StringUtils
-import dueuno.elements.GuiStyle
-import dueuno.elements.Menu
+import dueuno.elements.style.GuiStyle
+import dueuno.elements.core.Menu
 import dueuno.elements.pages.Shell
 import dueuno.elements.pages.ShellService
-import dueuno.exceptions.ElementsException
+import dueuno.elements.ElementsException
 import dueuno.tenant.*
 import dueuno.utils.EnvUtils
 import grails.gorm.DetachedCriteria

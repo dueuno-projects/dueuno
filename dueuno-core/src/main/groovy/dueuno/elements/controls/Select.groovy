@@ -15,13 +15,13 @@
 package dueuno.elements.controls
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.application.PrettyPrinter
-import dueuno.application.PrettyPrinterProperties
-import dueuno.elements.Component
-import dueuno.elements.Control
-import dueuno.elements.Elements
+import dueuno.elements.core.PrettyPrinter
+import dueuno.elements.core.PrettyPrinterProperties
+import dueuno.elements.core.Component
+import dueuno.elements.core.Control
+import dueuno.elements.core.Elements
 import dueuno.elements.components.Button
-import dueuno.exceptions.ElementsException
+import dueuno.elements.ElementsException
 import dueuno.types.Type
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -290,7 +290,7 @@ class Select extends Control {
      *             {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
      *             {@code renderTextPrefix}, {@code locale}
      * @return a list of {@code [id: key, text: label]} maps
-     * @throws dueuno.exceptions.ElementsException if the record has no {@code id} and no {@code keys} are given
+     * @throws ElementsException if the record has no {@code id} and no {@code keys} are given
      */
     static List<Map<String, String>> optionsFromRecordset(Map args) {
         Collection recordset = args.recordset as Collection ?: []

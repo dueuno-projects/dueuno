@@ -14,7 +14,7 @@
  */
 package dueuno.elements.controls
 
-import dueuno.application.WebRequestAware
+import dueuno.elements.core.WebRequestAware
 import dueuno.commons.utils.FileUtils
 
 /**

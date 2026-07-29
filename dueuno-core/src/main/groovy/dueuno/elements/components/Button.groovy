@@ -14,9 +14,9 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.Component
-import dueuno.elements.ComponentEvent
-import dueuno.elements.Menu
+import dueuno.elements.core.Component
+import dueuno.elements.core.ComponentEvent
+import dueuno.elements.core.Menu
 import dueuno.elements.style.TextWrap
 import groovy.transform.CompileStatic
 import groovy.transform.Synchronized

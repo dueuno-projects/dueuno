@@ -14,7 +14,7 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.Component
+import dueuno.elements.core.Component
 import groovy.contracts.Requires
 import groovy.transform.CompileStatic
 

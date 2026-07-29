@@ -12,10 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.application
+package dueuno.elements.core
 
-
-import dueuno.exceptions.ElementsException
+import dueuno.elements.ElementsException
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 

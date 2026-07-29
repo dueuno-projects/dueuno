@@ -12,11 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.elements
+package dueuno.elements.core
 
-import dueuno.application.LinkDefinition
-import dueuno.application.WebRequestAware
-import dueuno.exceptions.ElementsException
+import dueuno.elements.ElementsException
 import dueuno.types.Types
 import groovy.contracts.Requires
 import groovy.transform.CompileStatic

@@ -1,7 +1,7 @@
 package test
 
 import dueuno.elements.components.*
-import dueuno.elements.Component
+import dueuno.elements.core.Component
 import dueuno.elements.style.TextAlign
 import dueuno.elements.style.TextStyle
 import groovy.util.logging.Slf4j

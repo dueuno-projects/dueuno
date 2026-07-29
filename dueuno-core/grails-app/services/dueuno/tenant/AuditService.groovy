@@ -14,10 +14,10 @@
  */
 package dueuno.tenant
 
-import dueuno.application.WebRequestAware
+import dueuno.elements.core.WebRequestAware
 import dueuno.audit.TAuditLog
 import dueuno.commons.utils.DateUtils
-import dueuno.elements.Elements
+import dueuno.elements.core.Elements
 import dueuno.security.CryptoService
 import dueuno.security.SecurityService
 import grails.gorm.DetachedCriteria

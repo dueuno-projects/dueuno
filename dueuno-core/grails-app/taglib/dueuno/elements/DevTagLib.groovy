@@ -14,7 +14,7 @@
  */
 package dueuno.elements
 
-import dueuno.application.WebRequestAware
+import dueuno.elements.core.WebRequestAware
 import dueuno.tenant.TenantPropertyService
 import dueuno.utils.EnvUtils
 

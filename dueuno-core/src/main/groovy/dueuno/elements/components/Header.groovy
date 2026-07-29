@@ -14,7 +14,7 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.Component
+import dueuno.elements.core.Component
 import dueuno.elements.style.TextDefault
 import groovy.transform.CompileStatic
 
@@ -203,7 +203,7 @@ class Header extends Component {
 
     /**
      * Sets the header title by pretty-printing the given value through the
-     * {@link dueuno.application.PrettyPrinter}.
+     * {@link dueuno.elements.core.PrettyPrinter}.
      *
      * @param value the value to format and use as the header title
      */

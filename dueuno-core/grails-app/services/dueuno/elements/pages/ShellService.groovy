@@ -16,11 +16,11 @@ package dueuno.elements.pages
 
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
-import dueuno.application.LinkGeneratorAware
-import dueuno.application.WebRequestAware
+import dueuno.elements.core.LinkGeneratorAware
+import dueuno.elements.core.WebRequestAware
 import dueuno.commons.utils.LogUtils
 import dueuno.elements.PageService
-import dueuno.exceptions.ElementsException
+import dueuno.elements.ElementsException
 import dueuno.tenant.TenantPropertyService
 import dueuno.tenant.TenantService
 import groovy.transform.CompileStatic

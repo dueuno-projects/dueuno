@@ -12,10 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.application
+package dueuno.elements.core
 
-import dueuno.elements.GuiStyle
-import dueuno.exceptions.ElementsException
+import dueuno.elements.ElementsException
+import dueuno.elements.style.GuiStyle
 import dueuno.utils.LocaleUtils
 import grails.web.servlet.mvc.GrailsHttpSession
 import grails.web.servlet.mvc.GrailsParameterMap

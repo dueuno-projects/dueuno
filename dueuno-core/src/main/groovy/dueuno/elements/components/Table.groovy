@@ -15,8 +15,8 @@
 package dueuno.elements.components
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.elements.Component
-import dueuno.elements.Elements
+import dueuno.elements.core.Component
+import dueuno.elements.core.Elements
 import dueuno.elements.style.TextDefault
 import groovy.transform.CompileStatic
 
@@ -79,7 +79,7 @@ class Table extends Component {
     /** Per-column custom pretty-printer instances. */
     Map<String, Object> prettyPrinters
 
-    /** Per-column {@link dueuno.application.PrettyPrinterProperties} maps. */
+    /** Per-column {@link dueuno.elements.core.PrettyPrinterProperties} maps. */
     Map<String, Map> prettyPrinterProperties
 
     /** Column names whose values are always included in the rendered output. */

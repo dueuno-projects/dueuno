@@ -14,8 +14,8 @@
  */
 package dueuno.elements.controls
 
-import dueuno.elements.Elements
-import dueuno.exceptions.ElementsException
+import dueuno.elements.core.Elements
+import dueuno.elements.ElementsException
 import dueuno.types.Money
 import groovy.transform.CompileStatic
 
@@ -61,7 +61,7 @@ class MoneyField extends NumberField {
      * When a {@link Money} value is set, the {@code prefix} is updated to its currency code.
      *
      * @param value the {@link Money} value to set, or {@code null} to clear the field
-     * @throws dueuno.exceptions.ElementsException if {@code value} is not a {@link Money} instance
+     * @throws ElementsException if {@code value} is not a {@link Money} instance
      */
     @Override
     void setValue(Object value) {

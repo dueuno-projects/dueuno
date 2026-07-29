@@ -14,8 +14,8 @@
  */
 package dueuno.elements.controls
 
-import dueuno.elements.Control
-import dueuno.elements.Elements
+import dueuno.elements.core.Control
+import dueuno.elements.core.Elements
 import dueuno.elements.components.Button
 import dueuno.elements.style.TextTransform
 import dueuno.types.Type
