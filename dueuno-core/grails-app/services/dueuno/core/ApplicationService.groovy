@@ -18,7 +18,7 @@ import dueuno.commons.utils.FileUtils
 import dueuno.elements.Elements
 import dueuno.tenants.TenantService
 import dueuno.exceptions.ElementsException
-import dueuno.properties.SystemPropertyService
+import dueuno.properties.ApplicationPropertyService
 import dueuno.utils.EnvUtils
 import grails.core.GrailsApplication
 import grails.gorm.transactions.Transactional
@@ -45,7 +45,7 @@ class ApplicationService implements LinkGeneratorAware {
     ServletContext servletContext
     ConnectionSourceService connectionSourceService
     TenantService tenantService
-    SystemPropertyService systemPropertyService
+    ApplicationPropertyService applicationPropertyService
 
     private static Map<String, List> credits = [:]
 
@@ -106,7 +106,7 @@ class ApplicationService implements LinkGeneratorAware {
     void performInstallation() {
         connectionSourceService.installOrConnect()
 
-        if (!systemInstalled) {
+        if (!applicationInstalled) {
             executeOnPluginInstall()
             executeOnInstall()
         }
@@ -335,14 +335,14 @@ class ApplicationService implements LinkGeneratorAware {
 
     @Transactional
     @CompileDynamic
-    Boolean getSystemInstalled() {
-        return TSystemInstall.count() > 0
+    Boolean getApplicationInstalled() {
+        return TApplicationInstall.count() > 0
     }
 
     @Transactional
     @CompileDynamic
     Boolean isPluginInstalled(String pluginName) {
-        return TSystemInstall.where { plugin == pluginName }.count() > 0
+        return TApplicationInstall.where { plugin == pluginName }.count() > 0
     }
 
     @Transactional
@@ -357,7 +357,7 @@ class ApplicationService implements LinkGeneratorAware {
             Closure closure = revision.value
 
             String pluginName = closure.getClass().getPackage().getName()
-            Integer isInstalled = TSystemInstall.countByPluginAndRevisionAndTenantIdAndDev(pluginName, revisionName, tenantId, isDev)
+            Integer isInstalled = TApplicationInstall.countByPluginAndRevisionAndTenantIdAndDev(pluginName, revisionName, tenantId, isDev)
 
             if (isInstalled) {
                 continue
@@ -371,7 +371,7 @@ class ApplicationService implements LinkGeneratorAware {
                 closure.call(tenantId, pluginName)
             }
 
-            new TSystemInstall(
+            new TApplicationInstall(
                     plugin: pluginName,
                     revision: revisionName,
                     tenantId: tenantId,
@@ -573,7 +573,7 @@ class ApplicationService implements LinkGeneratorAware {
     }
 
     /**
-     * Registers a feature into the "System Configuration" area.
+     * Registers a feature into the "Application Management" area.
      * Registers a feature accessible only by the ROLE_SUPERADMIN authority.
      */
     void registerSuperadminFeature(Map args = [:]) {
@@ -591,7 +591,7 @@ class ApplicationService implements LinkGeneratorAware {
     }
 
     /**
-     * Registers a feature into the "System Administration" area.
+     * Registers a feature into the "Tenant Management" area.
      * To be used when creating features accessible only by users with the ROLE_ADMIN authority.
      */
     void registerAdminFeature(Map args = [:]) {
@@ -610,13 +610,13 @@ class ApplicationService implements LinkGeneratorAware {
 
     private void registerLanguages() {
         List<String> available = getLanguagesFromResources()
-        systemPropertyService.setString('AVAILABLE_LANGUAGES', available.join(','))
+        applicationPropertyService.setString('AVAILABLE_LANGUAGES', available.join(','))
 
         // Exclusions
-        List<String> excluded = systemPropertyService.getString('EXCLUDED_LANGUAGES').split(',') as List<String>
+        List<String> excluded = applicationPropertyService.getString('EXCLUDED_LANGUAGES').split(',') as List<String>
 
         // Main check
-        String main = systemPropertyService.getString('DEFAULT_LANGUAGE')
+        String main = applicationPropertyService.getString('DEFAULT_LANGUAGE')
         if (main !in available) {
             throw new ElementsException("""
                 The language '${main}' does not have a corresponding '/i18n/messages_${main}.properties' file,
@@ -628,8 +628,8 @@ class ApplicationService implements LinkGeneratorAware {
     }
 
     List<String> getLanguages() {
-        String[] availableLanguages = systemPropertyService.getString('AVAILABLE_LANGUAGES').split(',')
-        String[] excludedLanguages = systemPropertyService.getString('EXCLUDED_LANGUAGES').split(',')
+        String[] availableLanguages = applicationPropertyService.getString('AVAILABLE_LANGUAGES').split(',')
+        String[] excludedLanguages = applicationPropertyService.getString('EXCLUDED_LANGUAGES').split(',')
         return (availableLanguages - excludedLanguages) as List<String>
     }
 

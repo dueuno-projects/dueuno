@@ -17,7 +17,7 @@ package dueuno.properties
 import dueuno.commons.utils.FileUtils
 import dueuno.commons.utils.StringUtils
 import dueuno.core.ApplicationService
-import dueuno.core.TSystemProperty
+import dueuno.core.TApplicationProperty
 import grails.gorm.DetachedCriteria
 import grails.gorm.transactions.Transactional
 import groovy.contracts.Requires
@@ -32,7 +32,7 @@ import jakarta.annotation.PostConstruct
 
 @Slf4j
 @CompileStatic
-class SystemPropertyService extends PropertyService {
+class ApplicationPropertyService extends PropertyService {
 
     ApplicationService applicationService
 
@@ -60,8 +60,8 @@ class SystemPropertyService extends PropertyService {
     }
 
     @CompileDynamic
-    DetachedCriteria<TSystemProperty> buildQuery(Map filters) {
-        def query = TSystemProperty.where {}
+    DetachedCriteria<TApplicationProperty> buildQuery(Map filters) {
+        def query = TApplicationProperty.where {}
 
         if (filters) {
             if (filters.type) query = query.where { type == filters.type }
@@ -86,20 +86,20 @@ class SystemPropertyService extends PropertyService {
         return query
     }
 
-    TSystemProperty get(Serializable id) {
-        TSystemProperty p = TSystemProperty.get(id) as TSystemProperty
+    TApplicationProperty get(Serializable id) {
+        TApplicationProperty p = TApplicationProperty.get(id) as TApplicationProperty
         if (p) p.refresh()
         return p
     }
 
     @CompileDynamic
-    private TSystemProperty getByName(String name) {
-        TSystemProperty p = TSystemProperty.findByName(name)
+    private TApplicationProperty getByName(String name) {
+        TApplicationProperty p = TApplicationProperty.findByName(name)
         if (p) p.refresh()
         return p
     }
 
-    List<TSystemProperty> list(Map filterParams = [:], Map fetchParams = [:]) {
+    List<TApplicationProperty> list(Map filterParams = [:], Map fetchParams = [:]) {
         def query = buildQuery(filterParams)
         return query.list(fetchParams)
     }
@@ -110,8 +110,8 @@ class SystemPropertyService extends PropertyService {
     }
 
     @Transactional
-    private TSystemProperty create(Map args) {
-        TSystemProperty obj = new TSystemProperty(args)
+    private TApplicationProperty create(Map args) {
+        TApplicationProperty obj = new TApplicationProperty(args)
         obj.save(flush: true, failOnError: args.failOnError)
         return obj
     }
@@ -119,11 +119,11 @@ class SystemPropertyService extends PropertyService {
     @Transactional
     @CompileDynamic
     @Requires({ args.id })
-    private TSystemProperty update(Map args) {
+    private TApplicationProperty update(Map args) {
         if (args.failOnError == null) args.failOnError = false
 
-        TSystemProperty.withTransaction {
-            TSystemProperty obj = get(args.id)
+        TApplicationProperty.withTransaction {
+            TApplicationProperty obj = get(args.id)
             obj.properties = args
             obj.save(flush: true, failOnError: args.failOnError)
             return obj
@@ -133,7 +133,7 @@ class SystemPropertyService extends PropertyService {
     @Override
     @Transactional
     void setValue(PropertyType type, String name, Object value, Object defaultValue = null, String validation = null) {
-        TSystemProperty property = getByName(name)
+        TApplicationProperty property = getByName(name)
         String typeName = StringUtils.screamingSnakeToCamel(type as String)
         String typeNameDefault = typeName + 'Default'
 
@@ -180,7 +180,7 @@ class SystemPropertyService extends PropertyService {
         }
 
         String typeName = StringUtils.screamingSnakeToCamel(type as String)
-        TSystemProperty property = getByName(name)
+        TApplicationProperty property = getByName(name)
         if (!property) {
             return null
 
@@ -193,7 +193,7 @@ class SystemPropertyService extends PropertyService {
     }
 
     void validateAll() {
-        List<TSystemProperty> properties = list()
+        List<TApplicationProperty> properties = list()
         for (property in properties) {
             switch (property.type as PropertyType) {
                 case PropertyType.FILENAME:
@@ -216,7 +216,7 @@ class SystemPropertyService extends PropertyService {
 
     @Transactional
     void delete(Serializable id) {
-        TSystemProperty obj = get(id)
+        TApplicationProperty obj = get(id)
         obj.delete(flush: true)
     }
 }

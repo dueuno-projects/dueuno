@@ -106,7 +106,7 @@ class GroupController implements ElementsController {
                     landingPage: group.landingPage,
                     deletable     : group.deletable,
             ]
-            for (role in TUserRole.findAll()) {
+            for (role in TRole.findAll()) {
                 cells[role.authority] = (group.authorities.any { it.authority == role.authority }) ?: null
             }
             rows.add(cells)

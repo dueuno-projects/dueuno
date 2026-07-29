@@ -19,7 +19,7 @@ import dueuno.core.LinkGeneratorAware
 import dueuno.core.WebRequestAware
 import dueuno.core.ApplicationService
 import dueuno.elements.PageService
-import dueuno.properties.SystemPropertyService
+import dueuno.properties.ApplicationPropertyService
 import dueuno.properties.TenantPropertyService
 import dueuno.tenants.TenantService
 import dueuno.exceptions.ElementsException
@@ -36,7 +36,7 @@ class ShellService implements WebRequestAware, LinkGeneratorAware {
 
     ApplicationService applicationService
     TenantService tenantService
-    SystemPropertyService systemPropertyService
+    ApplicationPropertyService applicationPropertyService
     TenantPropertyService tenantPropertyService
     PageService pageService
 
@@ -72,10 +72,10 @@ class ShellService implements WebRequestAware, LinkGeneratorAware {
         shellConfig.features.main = applicationService.mainFeatures
 
         // System properties
-        shellConfig.display.menu = systemPropertyService.getBoolean('DISPLAY_MENU', true)
-        shellConfig.display.menuSearch = systemPropertyService.getBoolean('DISPLAY_MENU_SEARCH', true)
-        shellConfig.display.homeButton = systemPropertyService.getBoolean('DISPLAY_HOME_BUTTON', true)
-        shellConfig.display.userMenu = systemPropertyService.getBoolean('DISPLAY_USER_MENU', true)
+        shellConfig.display.menu = applicationPropertyService.getBoolean('DISPLAY_MENU', true)
+        shellConfig.display.menuSearch = applicationPropertyService.getBoolean('DISPLAY_MENU_SEARCH', true)
+        shellConfig.display.homeButton = applicationPropertyService.getBoolean('DISPLAY_HOME_BUTTON', true)
+        shellConfig.display.userMenu = applicationPropertyService.getBoolean('DISPLAY_USER_MENU', true)
 
         // Tenant properties
         shellConfig.display.logo = tenantPropertyService.getString('LOGO', true)

@@ -21,7 +21,7 @@ import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.*
-import dueuno.core.TSystemProperty
+import dueuno.core.TApplicationProperty
 import dueuno.security.SecurityService
 import dueuno.elements.style.TextAlign
 import dueuno.elements.style.TextDefault
@@ -33,10 +33,10 @@ import grails.plugin.springsecurity.annotation.Secured
  * @author Gianluca Sartori
  */
 @Secured(['ROLE_SUPERADMIN'])
-class SystemPropertyController implements ElementsController {
+class ApplicationPropertyController implements ElementsController {
 
     SecurityService securityService
-    SystemPropertyService systemPropertyService
+    ApplicationPropertyService applicationPropertyService
 
     def index() {
         def c = createContent(ContentTable)
@@ -48,7 +48,7 @@ class SystemPropertyController implements ElementsController {
                 addAction(
                         action: 'create',
                         params: [type: 'STRING'],
-                        text: message("systemProperty.STRING"),
+                        text: message("applicationProperty.STRING"),
                         icon: 'fa-plus'
                 )
                 for (String type in PropertyType.values()*.name()) {
@@ -57,7 +57,7 @@ class SystemPropertyController implements ElementsController {
                     addAction(
                             action: 'create',
                             params: [type: type],
-                            text: message("systemProperty.${type}"),
+                            text: message("applicationProperty.${type}"),
                     )
                 }
             }
@@ -87,7 +87,7 @@ class SystemPropertyController implements ElementsController {
                         optionsFromList: ['error'],
                         search: false,
                         noSelection: true,
-//                        textPrefix: 'systemProperty.validation',
+//                        textPrefix: 'applicationProperty.validation',
                         cols: 2,
                 )
             }
@@ -120,7 +120,7 @@ class SystemPropertyController implements ElementsController {
                 String typeName = StringUtils.screamingSnakeToCamel(values.type as String)
                 values.value = values[typeName]
 
-                String descriptionCode = "system.property.${values.name}"
+                String descriptionCode = "application.property.${values.name}"
                 String description = messageOrBlank(descriptionCode)
                 row.cells.description.html = description ?: descriptionCode
                 if (!description) {
@@ -134,19 +134,19 @@ class SystemPropertyController implements ElementsController {
         }
 
         def filters = c.table.filterParams
-        c.table.body = systemPropertyService.list(filters, params)
-        c.table.paginate = systemPropertyService.count(filters)
+        c.table.body = applicationPropertyService.list(filters, params)
+        c.table.paginate = applicationPropertyService.count(filters)
 
         display content: c
     }
 
-    private buildForm(TSystemProperty obj) {
+    private buildForm(TApplicationProperty obj) {
         def c = createContent(ContentEdit)
 
         c.form.with {
-            validate = TSystemProperty
+            validate = TApplicationProperty
 
-            String descriptionCode = "system.property.${obj.name}"
+            String descriptionCode = "application.property.${obj.name}"
             String description = messageOrBlank(descriptionCode)
             if (description) {
                 addField(
@@ -331,7 +331,7 @@ class SystemPropertyController implements ElementsController {
 
         if (obj) {
             c.form.values = obj
-            c.form['value'].value = systemPropertyService.getValue(obj.type, obj.name, true)
+            c.form['value'].value = applicationPropertyService.getValue(obj.type, obj.name, true)
         }
 
         return c
@@ -343,15 +343,15 @@ class SystemPropertyController implements ElementsController {
         def validation
         switch (params.type as PropertyType) {
             case PropertyType.FILENAME:
-                validation = systemPropertyService.validateFilename(params.value)
+                validation = applicationPropertyService.validateFilename(params.value)
                 break
 
             case PropertyType.DIRECTORY:
-                validation = systemPropertyService.validateDirectory(params.value)
+                validation = applicationPropertyService.validateDirectory(params.value)
                 break
 
             case PropertyType.URL:
-                validation = systemPropertyService.validateUrl(params.value)
+                validation = applicationPropertyService.validateUrl(params.value)
                 break
         }
 
@@ -361,13 +361,13 @@ class SystemPropertyController implements ElementsController {
     }
 
     def create() {
-        def obj = new TSystemProperty(type: params.type as PropertyType)
+        def obj = new TApplicationProperty(type: params.type as PropertyType)
         def c = buildForm(obj)
         display content: c, modal: true
     }
 
     def edit() {
-        def obj = systemPropertyService.get(params.id)
+        def obj = applicationPropertyService.get(params.id)
         def c = buildForm(obj)
         display content: c, modal: true
     }
@@ -378,13 +378,13 @@ class SystemPropertyController implements ElementsController {
             return
         }
 
-        systemPropertyService.setValue(params.type as PropertyType, params.name, params.value)
+        applicationPropertyService.setValue(params.type as PropertyType, params.name, params.value)
         display action: 'index'
     }
 
     def onDelete() {
         try {
-            systemPropertyService.delete(params.id)
+            applicationPropertyService.delete(params.id)
             display action: 'index'
 
         } catch (Exception e) {

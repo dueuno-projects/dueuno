@@ -25,7 +25,7 @@ import dueuno.elements.contents.ContentForm
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.*
 import dueuno.core.ApplicationService
-import dueuno.properties.SystemPropertyService
+import dueuno.properties.ApplicationPropertyService
 import dueuno.elements.style.TextDefault
 import dueuno.properties.TenantPropertyService
 import dueuno.tenants.TenantService
@@ -42,7 +42,7 @@ class UserController implements ElementsController {
     ApplicationService applicationService
     SecurityService securityService
     TenantService tenantService
-    SystemPropertyService systemPropertyService
+    ApplicationPropertyService applicationPropertyService
     TenantPropertyService tenantPropertyService
 
     def index() {
@@ -134,7 +134,7 @@ class UserController implements ElementsController {
         display content: c
     }
 
-    private buildForm(TUserAccount obj = null) {
+    private buildForm(TUser obj = null) {
         def c = obj
                 ? createContent(ContentEdit)
                 : createContent(ContentCreate)
@@ -154,7 +154,7 @@ class UserController implements ElementsController {
         def isTenantAdmin = obj && securityService.isAdmin(obj) && !obj.deletable
 
         c.form.with {
-            validate = TUserAccount
+            validate = TUser
 
             if (isSuperAdmin && (isCreatingNewUser || isEditingUserButNotSuperAdmin)) {
                 addField(
@@ -259,7 +259,7 @@ class UserController implements ElementsController {
 
         buildPreferencesForm(c)
 
-        c.form['language'].defaultValue = systemPropertyService.getString('DEFAULT_LANGUAGE')
+        c.form['language'].defaultValue = applicationPropertyService.getString('DEFAULT_LANGUAGE')
 
         return c
     }

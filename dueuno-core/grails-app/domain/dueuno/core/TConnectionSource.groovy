@@ -45,4 +45,9 @@ class TConnectionSource implements GormEntity, Serializable {
         url unique: true
         password nullable: true
     }
+
+    static mapping = {
+        table 'sys_connection_source'
+    }
+
 }

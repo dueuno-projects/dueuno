@@ -42,7 +42,7 @@ class BootStrap {
     def init = {
 
         applicationService.onPluginInstall {
-            systemPropertyService.install()
+            applicationPropertyService.install()
             tenantService.install()
             securityService.install()
         }
@@ -67,7 +67,7 @@ class BootStrap {
         }
 
         applicationService.afterInit {
-            systemPropertyService.validateAll()
+            applicationPropertyService.validateAll()
             securityService.registerFeatures()
         }
 

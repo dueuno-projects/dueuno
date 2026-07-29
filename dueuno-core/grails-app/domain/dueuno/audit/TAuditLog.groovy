@@ -58,4 +58,9 @@ class TAuditLog implements GormEntity, MultiTenant<TAuditLog> {
         stateAfter nullable: true, maxSize: LOG_MESSAGE_MAX_SIZE
         digest nullable: true
     }
+
+    static mapping = {
+        table 'sys_audit_log'
+    }
+
 }

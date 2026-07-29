@@ -27,7 +27,7 @@ import java.time.LocalTime
  */
 
 @GrailsCompileStatic
-class TSystemProperty implements GormEntity {
+class TApplicationProperty implements GormEntity {
 
     Long id
 
@@ -85,6 +85,10 @@ class TSystemProperty implements GormEntity {
         urlDefault nullable: true, maxSize: 500
 
         password nullable: true
+    }
+
+    static mapping = {
+        table 'sys_application_property'
     }
 
 }

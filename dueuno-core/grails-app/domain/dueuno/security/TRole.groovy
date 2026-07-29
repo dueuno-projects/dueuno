@@ -28,7 +28,7 @@ import org.grails.datastore.gorm.GormEntity
 @GrailsCompileStatic
 @EqualsAndHashCode(includes='authority')
 @ToString(includes='authority', includeNames=true, includePackage=false)
-class TUserRole implements GormEntity, Serializable {
+class TRole implements GormEntity, Serializable {
 
     private static final long serialVersionUID = 1
 
@@ -41,6 +41,7 @@ class TUserRole implements GormEntity, Serializable {
     }
 
     static mapping = {
+        table 'sys_role'
         cache true
     }
 }

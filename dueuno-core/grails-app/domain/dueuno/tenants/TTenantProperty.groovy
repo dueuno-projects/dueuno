@@ -14,7 +14,7 @@
  */
 package dueuno.tenants
 
-import dueuno.core.TSystemProperty
+import dueuno.core.TApplicationProperty
 import dueuno.properties.PropertyType
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.MultiTenant
@@ -28,7 +28,7 @@ import java.time.LocalTime
  * @author Gianluca Sartori
  */
 
-// KEEP ALIGNED WITH TSystemProperty
+// KEEP ALIGNED WITH TApplicationProperty
 @GrailsCompileStatic
 class TTenantProperty implements GormEntity, MultiTenant<TTenantProperty> {
 
@@ -63,7 +63,11 @@ class TTenantProperty implements GormEntity, MultiTenant<TTenantProperty> {
     String password
 
     static constraints = {
-        importFrom TSystemProperty
+        importFrom TApplicationProperty
+    }
+
+    static mapping = {
+        table 'sys_tenant_property'
     }
 
 }

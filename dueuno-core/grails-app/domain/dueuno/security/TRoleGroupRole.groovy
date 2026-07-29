@@ -32,9 +32,10 @@ class TRoleGroupRole implements GormEntity, Serializable {
     private static final long serialVersionUID = 1
 
     TRoleGroup roleGroup
-    TUserRole role
+    TRole role
 
     static mapping = {
+        table 'sys_role_group_role'
         id composite: ['roleGroup', 'role']
         version false
     }
@@ -69,23 +70,23 @@ class TRoleGroupRole implements GormEntity, Serializable {
     private static DetachedCriteria criteriaFor(long roleGroupId, long roleId) {
         TRoleGroupRole.where {
             roleGroup == TRoleGroup.load(roleGroupId) &&
-            role == TUserRole.load(roleId)
+            role == TRole.load(roleId)
         }
     }
 
-    static TRoleGroupRole create(TRoleGroup roleGroup, TUserRole role) {
+    static TRoleGroupRole create(TRoleGroup roleGroup, TRole role) {
         def instance = new TRoleGroupRole(roleGroup: roleGroup, role: role)
         instance.save(flush: true)
         instance
     }
 
-    static boolean remove(TRoleGroup rg, TUserRole r) {
+    static boolean remove(TRoleGroup rg, TRole r) {
         if (rg != null && r != null) {
             TRoleGroupRole.where { roleGroup == rg && role == r }.deleteAll()
         }
     }
 
-    static Number removeAll(TUserRole r) {
+    static Number removeAll(TRole r) {
         r == null ? 0 : TRoleGroupRole.where { role == r }.deleteAll()
     }
 

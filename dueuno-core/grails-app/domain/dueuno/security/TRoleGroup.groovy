@@ -46,10 +46,11 @@ class TRoleGroup implements GormEntity, Serializable {
     }
 
     static mapping = {
+        table 'sys_role_group'
         cache true
     }
 
-    List<TUserRole> getAuthorities() {
+    List<TRole> getAuthorities() {
         TRoleGroupRole.findAllByRoleGroup(this)*.role
     }
 }

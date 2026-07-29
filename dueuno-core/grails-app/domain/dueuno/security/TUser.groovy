@@ -27,7 +27,7 @@ import org.grails.datastore.gorm.GormEntity
 
 @GrailsCompileStatic
 @EqualsAndHashCode(includes='username')
-class TUserAccount implements GormEntity, Serializable {
+class TUser implements GormEntity, Serializable {
 
     private static final long serialVersionUID = 1
 
@@ -88,6 +88,7 @@ class TUserAccount implements GormEntity, Serializable {
     }
 
     static mapping = {
+        table 'sys_user'
         password column: '`password`'
     }
 

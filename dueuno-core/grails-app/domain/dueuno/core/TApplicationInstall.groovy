@@ -24,7 +24,7 @@ import java.time.LocalDateTime
  */
 
 @GrailsCompileStatic
-class TSystemInstall implements GormEntity {
+class TApplicationInstall implements GormEntity {
 
     Long id
 
@@ -39,4 +39,9 @@ class TSystemInstall implements GormEntity {
         plugin unique: ['revision', 'tenantId', 'dev']
         revision blank: true
     }
+
+    static mapping = {
+        table 'sys_application_install'
+    }
+
 }

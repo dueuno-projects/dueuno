@@ -16,7 +16,7 @@ package dueuno.core
 
 import dueuno.elements.ElementsController
 import dueuno.tenants.TenantService
-import dueuno.properties.SystemPropertyService
+import dueuno.properties.ApplicationPropertyService
 import grails.gorm.multitenancy.CurrentTenant
 import grails.plugin.springsecurity.annotation.Secured
 import groovy.util.logging.Slf4j
@@ -29,7 +29,7 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class DownloadResourceController implements ElementsController {
 
-    SystemPropertyService systemPropertyService
+    ApplicationPropertyService applicationPropertyService
     TenantService tenantService
 
     private Boolean isValidPathname(String pathname) {
@@ -38,7 +38,7 @@ class DownloadResourceController implements ElementsController {
 
     @Secured(['permitAll'])
     def system() {
-        String root = systemPropertyService.getDirectory(params.root)
+        String root = applicationPropertyService.getDirectory(params.root)
         String pathname = params.pathname
         String resource =  root + pathname
 

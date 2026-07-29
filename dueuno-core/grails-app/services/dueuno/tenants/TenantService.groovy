@@ -18,11 +18,11 @@ import dueuno.DueunoGrailsPlugin
 import dueuno.commons.utils.FileUtils
 import dueuno.core.ApplicationService
 import dueuno.core.ConnectionSourceService
-import dueuno.core.TSystemInstall
-import dueuno.properties.SystemPropertyService
+import dueuno.core.TApplicationInstall
+import dueuno.properties.ApplicationPropertyService
 import dueuno.security.TRoleGroup
 import dueuno.security.TRoleGroupRole
-import dueuno.security.TUserAccount
+import dueuno.security.TUser
 import dueuno.security.TUserRoleGroup
 import dueuno.utils.ResourceUtils
 import grails.gorm.DetachedCriteria
@@ -44,7 +44,7 @@ class TenantService {
 
     ApplicationService applicationService
     ConnectionSourceService connectionSourceService
-    SystemPropertyService systemPropertyService
+    ApplicationPropertyService applicationPropertyService
 
     void install() {
         create(
@@ -58,22 +58,22 @@ class TenantService {
 
     String getPrivateDir() {
         String tenantIdUpper = currentTenantId.toUpperCase()
-        return systemPropertyService.getDirectory(tenantIdUpper + '_TENANT_PRIVATE_DIR')
+        return applicationPropertyService.getDirectory(tenantIdUpper + '_TENANT_PRIVATE_DIR')
     }
 
     String getPublicDir() {
         String tenantIdUpper = currentTenantId.toUpperCase()
-        return systemPropertyService.getDirectory(tenantIdUpper + '_TENANT_PUBLIC_DIR')
+        return applicationPropertyService.getDirectory(tenantIdUpper + '_TENANT_PUBLIC_DIR')
     }
 
     String getPrivateDir(String tenantId) {
         String tenantIdUpper = tenantId.toUpperCase()
-        return systemPropertyService.getDirectory(tenantIdUpper + '_TENANT_PRIVATE_DIR')
+        return applicationPropertyService.getDirectory(tenantIdUpper + '_TENANT_PRIVATE_DIR')
     }
 
     String getPublicDir(String tenantId) {
         String tenantIdUpper = tenantId.toUpperCase()
-        return systemPropertyService.getDirectory(tenantIdUpper + '_TENANT_PUBLIC_DIR')
+        return applicationPropertyService.getDirectory(tenantIdUpper + '_TENANT_PUBLIC_DIR')
     }
 
     void eachTenant(Closure closure) {
@@ -180,19 +180,19 @@ class TenantService {
             log.info "Creating new tenant '${obj.tenantId}'..."
 
             String tenantIdUpper = obj.tenantId.toUpperCase()
-            String root = systemPropertyService.getDirectory('NEW_TENANT_DIR')
+            String root = applicationPropertyService.getDirectory('NEW_TENANT_DIR')
 
             String privateDir = "${root}${obj.tenantId}/private"
-            systemPropertyService.setDirectory(tenantIdUpper + '_TENANT_PRIVATE_DIR', privateDir)
+            applicationPropertyService.setDirectory(tenantIdUpper + '_TENANT_PRIVATE_DIR', privateDir)
             FileUtils.createDirectory(privateDir)
             ResourceUtils.extractDirectory('/deploy/private', privateDir)
 
             String publicDir = "${root}${obj.tenantId}/public"
-            systemPropertyService.setDirectory(tenantIdUpper + '_TENANT_PUBLIC_DIR', publicDir)
+            applicationPropertyService.setDirectory(tenantIdUpper + '_TENANT_PUBLIC_DIR', publicDir)
             FileUtils.createDirectory(publicDir)
             ResourceUtils.extractDirectory('/deploy/public', publicDir)
 
-            systemPropertyService.validateAll()
+            applicationPropertyService.validateAll()
 
             ResourceUtils.extractDirectoryFromPlugin(
                     DueunoGrailsPlugin,
@@ -253,8 +253,8 @@ class TenantService {
         tenant.delete(flush: true)
         tenant.connectionSource.delete(flush: true)
 
-        DetachedCriteria<TSystemInstall> systemInstall = TSystemInstall.where { tenantId == tenant.tenantId }
-        systemInstall.deleteAll()
+        DetachedCriteria<TApplicationInstall> applicationInstall = TApplicationInstall.where { tenantId == tenant.tenantId }
+        applicationInstall.deleteAll()
     }
 
     @Transactional
@@ -265,7 +265,7 @@ class TenantService {
             userRoleGroup.delete(flush: true)
         }
 
-        List<TUserAccount> users = TUserAccount.where { tenant == tenant }.list()
+        List<TUser> users = TUser.where { tenant == tenant }.list()
         for (user in users) {
             user.delete(flush: true)
         }

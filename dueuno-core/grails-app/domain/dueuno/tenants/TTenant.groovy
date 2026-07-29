@@ -44,4 +44,9 @@ class TTenant implements GormEntity, Serializable {
         description nullable: true
         host nullable: true, unique: true
     }
+
+    static mapping = {
+        table 'sys_tenant'
+    }
+
 }
