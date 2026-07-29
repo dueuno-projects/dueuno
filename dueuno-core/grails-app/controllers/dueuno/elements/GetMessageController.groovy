@@ -12,19 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.application
+package dueuno.elements
 
-import dueuno.elements.ElementsController
+
 import grails.plugin.springsecurity.annotation.Secured
 
 /**
- * Renders a transition to the client
+ * Renders an i18n message
  *
  * @author Gianluca Sartori
  * @author Francesco Piceghello
  */
 @Secured(['permitAll'])
-class TranslateController implements ElementsController {
+class GetMessageController implements ElementsController {
 
     def index() {
         String code = params.code

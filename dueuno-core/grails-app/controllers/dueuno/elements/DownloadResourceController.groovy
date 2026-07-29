@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.application
+package dueuno.elements
 
-import dueuno.elements.ElementsController
+import dueuno.application.ApplicationPropertyService
 import dueuno.tenant.TenantService
 import grails.gorm.multitenancy.CurrentTenant
 import grails.plugin.springsecurity.annotation.Secured
