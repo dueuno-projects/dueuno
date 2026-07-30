@@ -55,6 +55,8 @@ class GridColumn extends Component {
     /** Column-level override for the {@code xxl} breakpoint, or {@code null} to inherit from {@link #grid}. */
     Integer xxl
 
+    Boolean scrollable
+
     /**
      * Creates a {@code GridColumn} instance configured from the supplied argument map.
      * The {@code grid} argument is required.
@@ -77,6 +79,8 @@ class GridColumn extends Component {
         lg = args.lg as Integer
         xl = args.xl as Integer
         xxl = args.xxl as Integer
+
+        scrollable = args.scrollable == null ? false : args.scrollable
     }
 
     /**

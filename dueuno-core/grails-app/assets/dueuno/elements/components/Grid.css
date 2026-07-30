@@ -14,3 +14,9 @@
 .grid-column .grid-tag {
     border-radius: var(--bs-border-radius-xl);
 }
+
+.grid-column.scrollable {
+    height: calc(100vh - 4rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
