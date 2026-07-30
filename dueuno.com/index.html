@@ -12,110 +12,133 @@
     <title>Dueuno</title>
 
     <style>
-* {
-    box-sizing: border-box;
-}
-a, a:hover {
-    color: #aa0000;
-}
+        * {
+            box-sizing: border-box;
+        }
 
-h1, h2 {
-    font-family: "Open Sans","DejaVu Sans",sans-serif;
-    font-weight: 300;
-    font-style: normal;
-}
+        a, a:hover {
+            color: #aa0000;
+        }
 
-body {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    font-style: normal;
-    font-weight: 200;
-    letter-spacing: -.01em;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    margin: 0;
-    color: rgba(0, 0, 0, .8);
-    transition: background-color 0.3s, color 0.3s;
-}
-header {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    align-items: center;
-    background-color: rgb(244, 241, 241);
-    background-size: cover;
-    color: #333333;
-    padding: 3rem 2rem 3rem 2rem;
-}
-header img.logo {
-    height: 170px;
-    border-radius: 8px;
-}
-header h1 {
-    margin-bottom: 1rem;
-    margin-top: 0;
-    font-size: 2rem;
-}
-header p {
-    margin-top: 0.25rem;
-    max-width: 800px;
-}
-main {
-    max-width: 600px;
-    margin: 3rem auto;
-    padding: 0 1.5rem;
-}
-section {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-h2 {
-    font-size: 1.75rem;
-    color: #aa0000;
-    margin-bottom: .5rem;
-    margin-top: 2rem;
-}
-p {
-    font-size: 1.3rem;
-    line-height: 1.5;
-    margin: 0 1rem 1rem 1rem;
-}
-p.highlight {
-    font-weight: bold;
-}
-.image {
-    width: 100%;
-}
-ul, ol {
-    margin-top: 0.5rem;
-    padding-left: 1.5rem;
-}
-pre {
-    background: #ecf0f1;
-    padding: 0.75rem;
-    border-radius: .75rem;
-    overflow-x: auto;
-}
-code {
-    font-family: monospace;
-    color: #333333;
-}
-a.button {
-    font-size: 1.2rem;
-    font-weight: 500;
-    display: inline-block;
-    background: #aa0000;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    text-decoration: none;
-    border-radius: .75rem;
-    margin-top: .5rem;
-    transition: background 0.3s, box-shadow 0.3s;
-}
-footer {
-    text-align: center;
-    padding: 2rem;
-    background-color: rgb(244, 241, 241);
-}
+        h1, h2 {
+            font-family: "Open Sans", "DejaVu Sans", sans-serif;
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-style: normal;
+            font-weight: 200;
+            letter-spacing: -.01em;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            margin: 0;
+            color: rgba(0, 0, 0, .8);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+            background-color: rgb(244, 241, 241);
+            background-size: cover;
+            color: #333333;
+            padding: 3rem 2rem 3rem 2rem;
+        }
+
+        header img.logo {
+            height: 170px;
+            border-radius: 8px;
+            margin-bottom: .5rem;
+        }
+
+        header h1 {
+            margin-bottom: 1rem;
+            margin-top: 0;
+            font-size: 2rem;
+        }
+
+        header p {
+            margin-top: 0.25rem;
+            max-width: 800px;
+        }
+
+        main {
+            max-width: 600px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .menu {
+            margin-top: 1rem;
+        }
+
+        section {
+            text-align: center;
+            margin-top: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            color: #aa0000;
+            margin-bottom: .5rem;
+            margin-top: 2rem;
+        }
+
+        p {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            margin: 0 1rem 1rem 1rem;
+        }
+
+        p.highlight {
+            /*font-weight: bold;*/
+            font-size: 1.7rem;
+        }
+
+        .image {
+            width: 100%;
+        }
+
+        ul, ol {
+            margin-top: 0.5rem;
+            padding-left: 1.5rem;
+        }
+
+        pre {
+            background: #ecf0f1;
+            padding: 0.75rem;
+            border-radius: .75rem;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: monospace;
+            color: #333333;
+        }
+
+        a.button {
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: inline-block;
+            background: #aa0000;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: .75rem;
+            margin-top: .5rem;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: rgb(244, 241, 241);
+        }
     </style>
 </head>
 
@@ -123,7 +146,11 @@ footer {
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9NV4BX9XK2"></script>
 <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
     gtag('js', new Date());
 
     gtag('config', 'G-9NV4BX9XK2');
@@ -133,9 +160,15 @@ footer {
 <header>
     <img src="images/dueuno-logo.png" alt="Dueuno Logo" class="logo"/>
 
-    <p><i>Clean, elegant and simple back-office web applications with <a href="https://groovy-lang.org/" target="_blank">Apache Groovy</a></i></p>
+    <p class="highlight">
+        <i>Create Business Applications with AI and <a href="https://groovy-lang.org/" target="_blank">Apache
+            Groovy</a></i>
+    </p>
 
-    <div class="texts">
+    <div class="menu">
+        <a class="button" href="https://github.com/dueuno-projects/dueuno-skills" target="_blank"><i
+            class="fa-solid fa-lightbulb"
+            style="margin-right: .5rem"></i>AI</a>
         <a class="button"
            href="https://github.com/dueuno-projects/dueuno-app-template?tab=readme-ov-file#dueuno-application-template"
            target="_blank"><i class="fa-solid fa-rocket" style="margin-right: .5rem"></i>Quickstart</a>
@@ -143,27 +176,39 @@ footer {
                                                                      style="margin-right: .5rem"></i>Documentation</a>
         <a class="button" href="https://github.com/dueuno-projects/dueuno-elements?tab=readme-ov-file#dueuno-elements"
            target="_blank"><i class="fa-brands fa-github" style="margin-right: .5rem"></i>GitHub</a>
-<!--        <a class="button" href="https://x.com/dueunoframework" target="_blank"><i-->
-<!--                class="fa-brands fa-x-twitter"></i></a>-->
-<!--        <a class="button" href="https://www.linkedin.com/company/dueuno" target="_blank"><i-->
-<!--                class="fa-brands fa-linkedin-in"></i></a>-->
+        <!--        <a class="button" href="https://x.com/dueunoframework" target="_blank"><i-->
+        <!--                class="fa-brands fa-x-twitter"></i></a>-->
+        <!--        <a class="button" href="https://www.linkedin.com/company/dueuno" target="_blank"><i-->
+        <!--                class="fa-brands fa-linkedin-in"></i></a>-->
     </div>
 </header>
 <main>
 
     <section>
-        <img src="images/dueuno-login.png" alt="Dueuno" class="image"/>
-
         <p>
-            A standard UX to offer clarity and control — with a Zen-like approach to web development.
-            Whether you're building internal dashboards, admin panels, or fully modular systems, it's
-            cost-effective and future-proof.
+            Whether you're building enterprise dashboards, workflow-driven applications, administration platforms, or
+            fully modular ERP systems,
+            Dueuno provides a cost-effective, scalable, and future-proof foundation for developing modern business
+            applications that meet real-world needs.
+        </p>
+    </section>
+
+    <section>
+        <img src="images/dueuno-login.png" alt="Dueuno" class="image"/>
+    </section>
+
+    <section>
+        <p>
+            A consistent UX designed to bring clarity, consistency, and control to business applications — with a
+            Zen-like approach to web development.
         </p>
     </section>
 
 </main>
 <footer>
-    &copy; <script>document.write(new Date().getFullYear());</script> Dueuno
+    &copy;
+    <script>document.write(new Date().getFullYear());</script>
+    Dueuno
 </footer>
 </body>
 </html>

@@ -774,10 +774,10 @@
      inkscape:zoom="0.71743565"
      inkscape:cx="443.94225"
      inkscape:cy="211.16876"
-     inkscape:window-width="1512"
+     inkscape:window-width="1520"
      inkscape:window-height="844"
-     inkscape:window-x="0"
-     inkscape:window-y="34"
+     inkscape:window-x="199"
+     inkscape:window-y="117"
      inkscape:window-maximized="0"
      inkscape:current-layer="g1">
     <inkscape:page
@@ -832,32 +832,32 @@
         <g
            id="g5878"
            transform="matrix(2.9731994,0,0,2.9731994,-334.9435,675.79769)"
-           style="stroke:#ffffff;stroke-width:3.5815;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+           style="stroke:#ffffff;stroke-width:4.03605634;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
            inkscape:export-filename="logo.png"
            inkscape:export-xdpi="130"
            inkscape:export-ydpi="130">
           <g
              id="g5876"
-             style="stroke:#ffffff;stroke-width:2.46637;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+             style="stroke:#ffffff;stroke-width:2.77940371;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
              transform="matrix(1.4521303,0,0,1.4521303,-115.07824,68.995908)">
             <text
                xml:space="preserve"
-               style="font-size:30.7784px;line-height:285.3;font-family:Anton;-inkscape-font-specification:Anton;text-align:center;text-anchor:middle;fill:#1a1a1a;stroke:#ffffff;stroke-width:2.46637;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-               x="253.69351"
+               style="font-size:30.7784px;line-height:285.3;font-family:Anton;-inkscape-font-specification:Anton;text-align:center;text-anchor:middle;fill:#1a1a1a;stroke:#ffffff;stroke-width:2.77940371;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+               x="254.52451"
                y="163.48201"
                id="text5874"
                transform="scale(1,-1)"><tspan
                  sodipodi:role="line"
                  id="tspan5872"
-                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Lobster;-inkscape-font-specification:Lobster;fill:#1a1a1a;stroke:#ffffff;stroke-width:2.46637;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-                 x="253.69351"
-                 y="163.48201">:dueuno</tspan></text>
+                 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Lobster;-inkscape-font-specification:Lobster;fill:#1a1a1a;stroke:#ffffff;stroke-width:2.77940371;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+                 x="254.52451"
+                 y="163.48201">dueuno</tspan></text>
           </g>
         </g>
         <circle
-           style="fill:#aa0000;fill-opacity:1;stroke:#ffffff;stroke-width:6.00000015;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1"
+           style="fill:#aa0000;fill-opacity:1;stroke:#ffffff;stroke-width:7.50000019;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1"
            id="path408-08"
-           cx="421.18094"
+           cx="420.94498"
            cy="-337.42081"
            r="65.661934"
            transform="scale(1,-1)" />
