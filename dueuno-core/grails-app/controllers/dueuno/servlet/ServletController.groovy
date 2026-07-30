@@ -14,7 +14,8 @@
  */
 package dueuno.servlet
 
-import dueuno.elements.core.Elements
+import grails.artefact.Controller
+import grails.util.Holders
 import groovy.util.logging.Slf4j
 import jakarta.servlet.Servlet
 
@@ -25,7 +26,7 @@ import jakarta.servlet.Servlet
  * @author Gianluca Sartori
  */
 @Slf4j
-class ServletController {
+class ServletController implements Controller {
 
     static defaultAction = 'service'
 
@@ -38,7 +39,7 @@ class ServletController {
 
         Servlet servlet
         try {
-            servlet = (Servlet) Elements.getBean(servletName)
+            servlet = (Servlet) Holders.applicationContext.getBean(servletName)
 
         } catch (Exception ignore) {
             log.info "Cannot find a servlet called ${servletName}."

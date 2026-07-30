@@ -14,7 +14,6 @@
  */
 package dueuno.elements
 
-import dueuno.elements.core.Elements
 import grails.core.GrailsApplication
 import grails.util.Holders
 import grails.web.mapping.LinkGenerator
@@ -37,7 +36,7 @@ trait LinkGeneratorAware {
      * @return the absolute application URL (Eg. http://my.server.com/myapp)
      */
     String getBaseUrl() {
-        LinkGenerator linkGenerator = Elements.getBean("grailsLinkGenerator") as LinkGenerator
+        LinkGenerator linkGenerator = Holders.applicationContext.getBean("grailsLinkGenerator") as LinkGenerator
         return linkGenerator.serverBaseURL
     }
 

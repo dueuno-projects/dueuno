@@ -17,7 +17,6 @@ package dueuno.elements
 import dueuno.commons.utils.LogUtils
 import dueuno.elements.contents.ContentHeader
 import dueuno.elements.core.ComponentEvent
-import dueuno.elements.core.Elements
 import dueuno.elements.core.Page
 import dueuno.elements.core.PageContent
 import dueuno.elements.core.Transition
@@ -25,6 +24,7 @@ import dueuno.elements.pages.PageBlank
 import grails.artefact.Controller
 import grails.artefact.Enhances
 import grails.artefact.controller.RestResponder
+import grails.util.Holders
 import grails.validation.Validateable
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -163,7 +163,8 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
 
     /** Returns the application-scoped {@link dueuno.elements.PageService} bean. */
     private PageService getPageService() {
-        return Elements.getBean('pageService') as PageService
+        PageService pageService = Holders.applicationContext.getBean('pageService') as PageService
+        return pageService
     }
 
     /** Returns the main {@link dueuno.elements.core.Page} for the current session, falling back to a blank page. */
