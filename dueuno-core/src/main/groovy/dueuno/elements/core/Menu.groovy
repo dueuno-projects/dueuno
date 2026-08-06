@@ -163,7 +163,7 @@ class Menu extends Component {
      */
     Menu addItem(Menu menu) {
         items.add(menu)
-        if (menu.id < items.last().id) {
+        if (items.size() > 1 && menu.order < items[-2].order) {
             items.sort { it['order'] }
         }
 
