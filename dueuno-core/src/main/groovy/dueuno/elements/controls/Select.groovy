@@ -470,7 +470,7 @@ class Select extends Control {
     /**
      * Serialises the current selected value(s) to a JSON string.
      * A {@link Collection} value is serialised as {@link dueuno.types.Type#LIST};
-     * a scalar value is serialised as {@link dueuno.types.Type#TEXT}.
+     * a scalar value is serialised as {@link dueuno.types.Type#STRING}.
      *
      * @return a JSON string representing the current selection
      */
@@ -485,7 +485,7 @@ class Select extends Control {
             ]
         } else {
             valueMap = [
-                    type : Type.TEXT.toString(),
+                    type : Type.STRING.toString(),
                     value: value != null ? value as String : null,
             ]
         }

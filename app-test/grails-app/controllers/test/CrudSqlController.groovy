@@ -135,8 +135,8 @@ class CrudSqlController implements ElementsController {
         c.form.with {
             validate = CrudRestValidator
             addKeyField('version', 0)
-            addKeyField('salary_currency', Type.TEXT, 'EUR')
-            addKeyField('distance_km_unit', Type.TEXT,'KM')
+            addKeyField('salary_currency', Type.STRING, 'EUR')
+            addKeyField('distance_km_unit', Type.STRING, 'KM')
             addField(
                     class: Select,
                     id: 'company_id',

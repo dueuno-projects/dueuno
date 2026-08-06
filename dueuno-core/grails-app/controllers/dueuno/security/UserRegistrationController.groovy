@@ -81,7 +81,7 @@ class UserRegistrationController implements ElementsController {
         c.header.nextButton.action = 'onCreateNewPassword'
         c.form.with {
             validate = UserRegistrationNewPasswordValidator
-            addKeyField('username', Type.TEXT)
+            addKeyField('username', Type.STRING)
             addField(
                     class: Label,
                     id: 'newPassword',

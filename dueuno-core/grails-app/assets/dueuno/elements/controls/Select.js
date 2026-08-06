@@ -105,7 +105,7 @@ class Select extends Control {
         // In case of user clear we align the control value
         if (select2Values.length == 0) {
             let valueMap = {
-                type: Type.TEXT,
+                type: Type.STRING,
                 value: null,
             };
             $element.data('21-value', valueMap);
@@ -153,11 +153,11 @@ class Select extends Control {
 
         let result = {};
         if (ids.length == 0) {
-            result.type = Type.TEXT;
+            result.type = Type.STRING;
             result.value = null;
 
         } else if (ids.length == 1 && !properties['multiple']) {
-            result.type = Type.TEXT;
+            result.type = Type.STRING;
             result.value = ids[0];
 
         } else {

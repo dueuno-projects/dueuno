@@ -19,7 +19,7 @@ import dueuno.types.Type
 import groovy.transform.CompileStatic
 
 /**
- * A multi-line text-input control backed by {@link dueuno.types.Type#TEXT}.
+ * A multi-line text-input control backed by {@link dueuno.types.Type#STRING}.
  * <p>
  * Extends {@link TextField} with multi-line rendering, optional newline acceptance, and
  * optional Base64 encoding of the submitted value. When {@link #encode} is {@code true},
@@ -41,7 +41,7 @@ class Textarea extends TextField {
 
     /**
      * Creates a {@code Textarea} instance configured from the supplied argument map.
-     * Sets the value type to {@link dueuno.types.Type#TEXT}, disables auto-select by default,
+     * Sets the value type to {@link dueuno.types.Type#STRING}, disables auto-select by default,
      * and marks the container as multi-line.
      *
      * @param args initialisation arguments; recognised keys include:
@@ -53,7 +53,7 @@ class Textarea extends TextField {
     Textarea(Map args) {
         super(args)
 
-        valueType = Type.TEXT
+        valueType = Type.STRING
         autoSelect = args.autoSelect == null ? false : args.autoSelect
         acceptNewLine = args.acceptNewLine == null ? true : args.acceptNewLine
         encode = args.encode == null ? false : args.encode

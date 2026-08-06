@@ -39,7 +39,7 @@ import java.time.LocalTime
  * <ul>
  *     <li>{@link Boolean} → {@link Type#BOOL}</li>
  *     <li>{@link Number} → {@link Type#NUMBER}</li>
- *     <li>{@link String} / {@link Enum} → {@link Type#TEXT}</li>
+ *     <li>{@link String} / {@link Enum} → {@link Type#STRING}</li>
  *     <li>{@link Map} → {@link Type#MAP}</li>
  *     <li>{@link java.util.List} → {@link Type#LIST}</li>
  *     <li>{@link java.time.LocalDateTime} → {@link Type#DATETIME}</li>
@@ -177,7 +177,7 @@ class Types {
      * to the runtime type of {@code value}.
      * <ul>
      *     <li>{@code null} → {@link Type#NA}</li>
-     *     <li>{@link Enum} → {@link Type#TEXT}</li>
+     *     <li>{@link Enum} → {@link Type#STRING}</li>
      *     <li>Registered {@link CustomType} → the value of its {@code TYPE_NAME} field</li>
      * </ul>
      *
@@ -191,7 +191,7 @@ class Types {
         }
 
         if (value in Enum) {
-            return Type.TEXT
+            return Type.STRING
         }
 
         if (isRegistered(value)) {
@@ -206,7 +206,7 @@ class Types {
                 return Type.NUMBER
 
             case String:
-                return Type.TEXT
+                return Type.STRING
 
             case Map:
                 return Type.MAP
@@ -224,7 +224,7 @@ class Types {
                 return Type.TIME
 
             case Enum:
-                return Type.TEXT
+                return Type.STRING
 
             default:
                 throw new ElementsException("Object of class '${value.getClass()}' cannot be identified as one of the available types: ${availableTypeNames}.")
@@ -275,7 +275,7 @@ class Types {
 
             case String:
                 return [
-                        type : Type.TEXT.toString(),
+                        type : Type.STRING.toString(),
                         value: value,
                 ]
 
@@ -324,7 +324,7 @@ class Types {
 
             case Enum:
                 return [
-                        type: Type.TEXT.toString(),
+                        type: Type.STRING.toString(),
                         value: (value as Enum).name(),
                 ]
 
@@ -385,7 +385,7 @@ class Types {
                 case Type.NUMBER.toString():
                     return deserializeNumber(valueMap)
 
-                case Type.TEXT.toString():
+                case Type.STRING.toString():
                     return deserializeString(valueMap)
 
                 case Type.MAP.toString():
@@ -450,7 +450,7 @@ class Types {
     /**
      * Extracts a {@link String} from a typed-value map.
      *
-     * @param valueMap the typed-value map with type {@link Type#TEXT}
+     * @param valueMap the typed-value map with type {@link Type#STRING}
      * @return the deserialised {@link String}
      */
     static String deserializeString(Map valueMap) {

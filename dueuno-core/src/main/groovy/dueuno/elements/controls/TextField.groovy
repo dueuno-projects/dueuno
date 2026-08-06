@@ -22,7 +22,7 @@ import dueuno.types.Type
 import groovy.transform.CompileStatic
 
 /**
- * A single-line text-input control backed by {@link dueuno.types.Type#TEXT}.
+ * A single-line text-input control backed by {@link dueuno.types.Type#STRING}.
  * <p>
  * Serves as the base class for specialised text controls (e.g. {@link PasswordField},
  * {@link NumberField}, {@link TelephoneField}, {@link Textarea}). Supports configurable
@@ -91,7 +91,7 @@ class TextField extends Control {
     TextField(Map args) {
         super(args)
 
-        valueType = Type.TEXT
+        valueType = Type.STRING
         inputType = args.inputType as TextFieldInputType ?: TextFieldInputType.TEXT
         inputMode = args.inputMode as TextFieldInputMode ?: TextFieldInputMode.TEXT
 

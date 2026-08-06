@@ -5,9 +5,9 @@ class HiddenField extends Control {
 
         switch (valueMap.type) {
             case Type.NA:
-            case Type.BOOLEAN:
+            case Type.BOOL:
             case Type.NUMBER:
-            case Type.TEXT:
+            case Type.STRING:
                 value = valueMap.value;
                 break
 
@@ -23,9 +23,9 @@ class HiddenField extends Control {
 
         switch (value.type) {
             case Type.NA:
-            case Type.BOOLEAN:
+            case Type.BOOL:
             case Type.NUMBER:
-            case Type.TEXT:
+            case Type.STRING:
                 value.value = $element.val();
                 break
 

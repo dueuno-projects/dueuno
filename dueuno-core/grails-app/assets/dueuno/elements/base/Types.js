@@ -3,7 +3,7 @@ const Type = {
     NA: 'NA',
     BOOL: 'BOOL',
     NUMBER: 'NUMBER',
-    TEXT: 'TEXT',
+    STRING: 'STRING',
     MAP: 'MAP',
     LIST: 'LIST',
     DATETIME: 'DATETIME',

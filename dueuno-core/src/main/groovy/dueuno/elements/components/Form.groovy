@@ -244,7 +244,7 @@ class Form extends Component {
      * Adds a hidden key field using a raw type name string, accommodating custom types
      * (e.g. {@code "MONEY"}, {@code "QUANTITY"}) beyond the built-in {@link Type} constants.
      * Enum values are automatically coerced to their {@link String} representation with type
-     * {@link Type#TEXT}.
+     * {@link Type#STRING}.
      *
      * @param id        the field identifier
      * @param valueType the type name string (must be a registered type)
@@ -258,7 +258,7 @@ class Form extends Component {
         }
 
         if (value in Enum) {
-            valueType = Type.TEXT.toString()
+            valueType = Type.STRING.toString()
             value = value.toString()
         }
 

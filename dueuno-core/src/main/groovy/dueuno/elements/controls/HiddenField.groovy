@@ -27,7 +27,7 @@ import groovy.transform.CompileStatic
  * {@code HiddenField} is used internally by {@link dueuno.elements.components.Form#addKeyField}
  * to transmit primary-key and surrogate-key values. The value type is inferred from the
  * supplied value via {@link Types#serializeValue(Object)} when not specified explicitly, and
- * defaults to {@link Type#TEXT} when no value is present.
+ * defaults to {@link Type#STRING} when no value is present.
  * </p>
  *
  * @author Gianluca Sartori
@@ -48,7 +48,7 @@ class HiddenField extends Control {
         super(args)
 
         Map value = Types.serializeValue(args.value)
-        valueType = args.valueType ?: value?.type ?: Type.TEXT
+        valueType = args.valueType ?: value?.type ?: Type.STRING
 
         skipFocus = true
         display = false
