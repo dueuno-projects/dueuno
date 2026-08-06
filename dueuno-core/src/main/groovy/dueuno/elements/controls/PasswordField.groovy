@@ -35,7 +35,7 @@ class PasswordField extends TextField {
      * and disables browser autocomplete.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code icon} ({@link String}, default {@code "fa-lock"}),
+     * {@code icon} ({@link String}, default {@code "fa-lock"}),
      *             plus all keys accepted by {@link TextField#TextField(Map)}
      */
     PasswordField(Map args) {

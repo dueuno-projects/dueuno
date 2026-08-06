@@ -18,7 +18,7 @@ import groovy.transform.CompileStatic
  * RenderQuality.values().each { q ->
  *     println("${q.name()} -> ${q.width}x${q.height} @ ${q.dpi} DPI")
  * }
- * }</pre>
+ *}</pre>
  *
  * Presets:
  * <ul>

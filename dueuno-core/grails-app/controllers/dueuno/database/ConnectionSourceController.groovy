@@ -46,13 +46,13 @@ class ConnectionSourceController implements ElementsController {
         def c = createContent(ContentTable)
         c.table.with {
             columns = [
-                    'name',
-                    'embedded',
-                    'tenant',
-                    'readOnly',
-                    'dbCreate',
-                    'driverClassName',
-                    'url',
+                'name',
+                'embedded',
+                'tenant',
+                'readOnly',
+                'dbCreate',
+                'driverClassName',
+                'url',
             ]
 
             body.eachRow { TableRow row, Map values ->
@@ -69,8 +69,8 @@ class ConnectionSourceController implements ElementsController {
 
     private buildForm(TConnectionSource obj = null) {
         def c = obj
-                ? createContent(ContentEdit)
-                : createContent(ContentCreate)
+            ? createContent(ContentEdit)
+            : createContent(ContentCreate)
 
         def isReadonly = obj?.embedded || obj?.tenant
 
@@ -84,60 +84,60 @@ class ConnectionSourceController implements ElementsController {
 
             if (obj && !isReadonly) {
                 addField(
-                        class: Label,
-                        id: 'info',
-                        textColor: Color.WARNING_TEXT,
-                        backgroundColor: Color.WARNING_BACKGROUND,
-                        text: 'connectionSource.edit.info',
-                        displayLabel: false,
-                        cols: 12,
+                    class: Label,
+                    id: 'info',
+                    textColor: Color.WARNING_TEXT,
+                    backgroundColor: Color.WARNING_BACKGROUND,
+                    text: 'connectionSource.edit.info',
+                    displayLabel: false,
+                    cols: 12,
                 )
             }
             addField(
-                    class: TextField,
-                    id: 'name',
-                    readonly: obj,
-                    cols: 12,
+                class: TextField,
+                id: 'name',
+                readonly: obj,
+                cols: 12,
             )
             addField(
-                    class: Select,
-                    id: 'driverClassName',
-                    optionsFromList: connectionSourceService.listAvailableDrivers(),
-                    textPrefix: 'jdbc',
-                    search: true,
-                    cols: 6,
+                class: Select,
+                id: 'driverClassName',
+                optionsFromList: connectionSourceService.listAvailableDrivers(),
+                textPrefix: 'jdbc',
+                search: true,
+                cols: 6,
             )
             addField(
-                    class: TextField,
-                    id: 'dialect',
-                    cols: 6,
+                class: TextField,
+                id: 'dialect',
+                cols: 6,
             )
             addField(
-                    class: Select,
-                    id: 'dbCreate',
-                    optionsFromList: connectionSourceService.listAvailableSchemaGenerators(),
-                    renderTextPrefix: false,
-                    cols: 6,
+                class: Select,
+                id: 'dbCreate',
+                optionsFromList: connectionSourceService.listAvailableSchemaGenerators(),
+                renderTextPrefix: false,
+                cols: 6,
             )
             addField(
-                    class: Checkbox,
-                    id: 'readOnly',
-                    cols: 6,
+                class: Checkbox,
+                id: 'readOnly',
+                cols: 6,
             )
             addField(
-                    class: TextField,
-                    id: 'url',
-                    cols: 12,
+                class: TextField,
+                id: 'url',
+                cols: 12,
             )
             addField(
-                    class: TextField,
-                    id: 'username',
-                    cols: 6,
+                class: TextField,
+                id: 'username',
+                cols: 6,
             )
             addField(
-                    class: TextField,
-                    id: 'password',
-                    cols: 6,
+                class: TextField,
+                id: 'password',
+                cols: 6,
             )
         }
 

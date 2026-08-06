@@ -37,16 +37,16 @@ class UserRegistrationController implements ElementsController {
         c.form.with {
             validate = UserRegistrationPasswordResetValidator
             addField(
-                    class: Label,
-                    id: 'emailReset',
-                    html: """
+                class: Label,
+                id: 'emailReset',
+                html: """
                     Inserisci il tuo indirizzo email, se sei presente nei nostri database ti invieremo una email
                     con il link per reimpostare la password.
                     """
             )
             addField(
-                    class: EmailField,
-                    id: 'email',
+                class: EmailField,
+                id: 'email',
             )
         }
 
@@ -65,9 +65,9 @@ class UserRegistrationController implements ElementsController {
         c.header.removeNextButton()
         c.form.with {
             addField(
-                    class: Label,
-                    id: 'confirmMessage',
-                    html: """
+                class: Label,
+                id: 'confirmMessage',
+                html: """
                         Ti abbiamo inviato una email per resettare la password, segui le istruzioni riportate
                         (se non la trovi potrebbe essere nella cartella di spam).
                     """,
@@ -83,19 +83,19 @@ class UserRegistrationController implements ElementsController {
             validate = UserRegistrationNewPasswordValidator
             addKeyField('username', Type.STRING)
             addField(
-                    class: Label,
-                    id: 'newPassword',
-                    html: """
+                class: Label,
+                id: 'newPassword',
+                html: """
                     Scegli la nuova password
                     """
             )
             addField(
-                    class: 'PasswordField',
-                    id: 'password',
+                class: 'PasswordField',
+                id: 'password',
             )
             addField(
-                    class: 'PasswordField',
-                    id: 'confermaPassword',
+                class: 'PasswordField',
+                id: 'confermaPassword',
             )
         }
 
@@ -109,8 +109,8 @@ class UserRegistrationController implements ElementsController {
         }
 
         TUser user = securityService.updateUser(
-                username: params.username,
-                password: params.password,
+            username: params.username,
+            password: params.password,
         )
         if (user.hasErrors()) {
             display errors: user
@@ -121,18 +121,18 @@ class UserRegistrationController implements ElementsController {
         c.header.removeNextButton()
         c.form.with {
             addField(
-                    class: 'Label',
-                    id: 'confirmMessage',
-                    html: """
+                class: 'Label',
+                id: 'confirmMessage',
+                html: """
                         Password modificata, per accedere al sito eseguire nuovamente il login.
                     """,
             )
             addField(
-                    class: Button,
-                    id: 'login',
-                    controller: 'authentication',
-                    action: 'login',
-                    stretch: true,
+                class: Button,
+                id: 'login',
+                controller: 'authentication',
+                action: 'login',
+                stretch: true,
             )
         }
 

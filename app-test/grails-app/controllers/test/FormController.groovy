@@ -38,66 +38,66 @@ class FormController implements ElementsController {
         c.header.removeNextButton()
         c.form.with {
             addField(
-                    class: Button,
-                    id: 'button1',
-                    action: 'edit',
-                    submit: 'form',
-                    stretch: true,
-                    cols: 12,
+                class: Button,
+                id: 'button1',
+                action: 'edit',
+                submit: 'form',
+                stretch: true,
+                cols: 12,
             )
             addField(
-                    class: Separator,
-                    id: 'separator',
-                    text: 'Options',
-                    center: true,
-                    underline: true,
-                    cols: 12,
+                class: Separator,
+                id: 'separator',
+                text: 'Options',
+                center: true,
+                underline: true,
+                cols: 12,
             )
             addField(
-                    class: Checkbox,
-                    id: 'modal',
-                    displayLabel: false,
-                    help: 'Questo è un messaggio di aiuto in una bottiglia',
-                    cols: 3,
+                class: Checkbox,
+                id: 'modal',
+                displayLabel: false,
+                help: 'Questo è un messaggio di aiuto in una bottiglia',
+                cols: 3,
             )
             addField(
-                    class: Checkbox,
-                    id: 'small',
-                    displayLabel: false,
-                    cols: 3,
+                class: Checkbox,
+                id: 'small',
+                displayLabel: false,
+                cols: 3,
             )
             addField(
-                    class: Checkbox,
-                    id: 'large',
-                    displayLabel: false,
-                    cols: 3,
+                class: Checkbox,
+                id: 'large',
+                displayLabel: false,
+                cols: 3,
             )
             addField(
-                    class: Checkbox,
-                    id: 'fullscreen',
-                    displayLabel: false,
-                    cols: 3,
+                class: Checkbox,
+                id: 'fullscreen',
+                displayLabel: false,
+                cols: 3,
             )
             addField(
-                    class: Checkbox,
-                    id: 'closeButton',
-                    displayLabel: false,
-                    cols: 6,
+                class: Checkbox,
+                id: 'closeButton',
+                displayLabel: false,
+                cols: 6,
             )
             addField(
-                    class: Checkbox,
-                    id: 'isReadonly',
-                    displayLabel: false,
-                    cols: 6,
+                class: Checkbox,
+                id: 'isReadonly',
+                displayLabel: false,
+                cols: 6,
             )
             addField(
-                    class: Select,
-                    id: 'animate',
-                    optionsFromList: ['fade', 'next', 'back'],
-                    textStyle: [TextStyle.BOLD, TextStyle.MONOSPACE],
-                    defaultValue: 'fade',
-                    displayLabel: false,
-                    cols: 6,
+                class: Select,
+                id: 'animate',
+                optionsFromList: ['fade', 'next', 'back'],
+                textStyle: [TextStyle.BOLD, TextStyle.MONOSPACE],
+                defaultValue: 'fade',
+                displayLabel: false,
+                cols: 6,
             )
         }
 
@@ -129,8 +129,8 @@ class FormController implements ElementsController {
         def c = createContent(ContentForm)
         c.header.with {
             addBackButton(
-                    action: 'index',
-                    animate: (animate ? 'back' : null)
+                action: 'index',
+                animate: (animate ? 'back' : null)
             )
 
             nextButton.with {
@@ -141,12 +141,12 @@ class FormController implements ElementsController {
         c.form.with {
             readonly = isReadonly
             def user1 = addField(
-                    class: Select,
-                    id: 'user1',
-                    optionsFromRecordset: personService.list(),
-                    keys: ['id'],
-                    value: params.person,
-                    help: 'Questo è un messaggio di aiuto per te che non sai cosa diavolo fare',
+                class: Select,
+                id: 'user1',
+                optionsFromRecordset: personService.list(),
+                keys: ['id'],
+                value: params.person,
+                help: 'Questo è un messaggio di aiuto per te che non sai cosa diavolo fare',
             )/*.on(
                     event: 'create',
                     controller: 'crud',
@@ -159,205 +159,205 @@ class FormController implements ElementsController {
                     ],
             )*/
             user1.component.addAction(
-                    action: 'index',
-                    icon: 'fa-truck',
+                action: 'index',
+                icon: 'fa-truck',
             )
             user1.component.addAction(
-                    action: 'index',
-                    icon: 'fa-car',
+                action: 'index',
+                icon: 'fa-car',
             )
             user1.component.addAction(
-                    controller: 'crud',
-                    action: 'create',
-                    text: '',
-                    icon: 'fa-plus',
-                    modal: modal,
-                    animate: animate,
-                    large: large,
-                    fullscreen: fullscreen,
-                    params: [
-                            embedded: true,
-                            animate : animate,
-                    ],
+                controller: 'crud',
+                action: 'create',
+                text: '',
+                icon: 'fa-plus',
+                modal: modal,
+                animate: animate,
+                large: large,
+                fullscreen: fullscreen,
+                params: [
+                    embedded: true,
+                    animate : animate,
+                ],
             )
             addField(
-                    class: Select,
-                    id: 'userTrans',
-                    optionsFromRecordset: personService.list(),
-                    transformer: 'PERSON',
-                    textStyle: [TextStyle.LINE_THROUGH, TextStyle.MONOSPACE],
+                class: Select,
+                id: 'userTrans',
+                optionsFromRecordset: personService.list(),
+                transformer: 'PERSON',
+                textStyle: [TextStyle.LINE_THROUGH, TextStyle.MONOSPACE],
             )
             addField(
-                    class: Select,
-                    id: 'curtomTrans',
-                    optionsFromRecordset: [
-                            [key: 1, name: 'Gianluca', lastname: 'Sartori'],
-                            [key: 2, name: 'Francesco', lastname: 'Piceghello'],
-                    ],
-                    transformer: 'CUSTOM_TRANSFORMER',
-                    search: false,
-                    keys: ['key'],
-                    value: 2,
+                class: Select,
+                id: 'curtomTrans',
+                optionsFromRecordset: [
+                    [key: 1, name: 'Gianluca', lastname: 'Sartori'],
+                    [key: 2, name: 'Francesco', lastname: 'Piceghello'],
+                ],
+                transformer: 'CUSTOM_TRANSFORMER',
+                search: false,
+                keys: ['key'],
+                value: 2,
             )
             addField(
-                    class: TextField,
-                    id: 'textfield',
-                    textTransform: TextTransform.UPPERCASE,
-                    help: 'Questo è un messaggio di aiuto per te che non sai cosa diavolo fare',
+                class: TextField,
+                id: 'textfield',
+                textTransform: TextTransform.UPPERCASE,
+                help: 'Questo è un messaggio di aiuto per te che non sai cosa diavolo fare',
             )
             addField(
-                    class: TextField,
-                    id: 'textfield2',
-                    value: [name: 'pippo'],
-                    prettyPrinter: 'OBJ2TEXT',
-                    help: 'Questo è un messaggio di aiuto per te che non sai cosa diavolo fare',
-                    helpCollapsed: true,
+                class: TextField,
+                id: 'textfield2',
+                value: [name: 'pippo'],
+                prettyPrinter: 'OBJ2TEXT',
+                help: 'Questo è un messaggio di aiuto per te che non sai cosa diavolo fare',
+                helpCollapsed: true,
             )
             def textfieldActions = addField(
-                    class: TextField,
-                    id: 'textfieldActions',
-                    prefix: 'PIPPO',
-                    textStyle: [TextStyle.LINE_THROUGH, TextStyle.MONOSPACE],
+                class: TextField,
+                id: 'textfieldActions',
+                prefix: 'PIPPO',
+                textStyle: [TextStyle.LINE_THROUGH, TextStyle.MONOSPACE],
             )
             textfieldActions.component.addAction(
-                    action: 'index',
-                    submit: 'form',
-                    icon: 'fa-truck',
+                action: 'index',
+                submit: 'form',
+                icon: 'fa-truck',
             )
             textfieldActions.component.addAction(
-                    action: 'index',
-                    submit: 'form',
-                    icon: 'fa-car',
+                action: 'index',
+                submit: 'form',
+                icon: 'fa-car',
             )
             addField(
-                    class: NumberField,
-                    id: 'numberfield',
-                    value: 0,
-                    cols: 6,
+                class: NumberField,
+                id: 'numberfield',
+                value: 0,
+                cols: 6,
             ).component.addAction(
-                    action: 'increment',
-                    submit: 'form',
-                    icon: 'fa-plus',
-                    text: '',
+                action: 'increment',
+                submit: 'form',
+                icon: 'fa-plus',
+                text: '',
             ).addAction(
-                    action: 'decrement',
-                    submit: 'form',
-                    icon: 'fa-minus',
-                    text: '',
+                action: 'decrement',
+                submit: 'form',
+                icon: 'fa-minus',
+                text: '',
             )
             addField(
-                    class: EmailField,
-                    id: 'emailfield',
-                    placeholder: 'me@mail.com',
-                    cols: 6,
+                class: EmailField,
+                id: 'emailfield',
+                placeholder: 'me@mail.com',
+                cols: 6,
             )
             addField(
-                    class: UrlField,
-                    id: 'urlfield',
-                    cols: 6,
+                class: UrlField,
+                id: 'urlfield',
+                cols: 6,
             )
             addField(
-                    class: PasswordField,
-                    id: 'passwordfield',
-                    cols: 6,
+                class: PasswordField,
+                id: 'passwordfield',
+                cols: 6,
             )
             addField(
-                    class: QuantityField,
-                    id: 'quantityfield',
-                    defaultUnit: QuantityUnit.KM,
-                    availableUnits: quantityService.listAllUnits(),
-                    cols: 6,
+                class: QuantityField,
+                id: 'quantityfield',
+                defaultUnit: QuantityUnit.KM,
+                availableUnits: quantityService.listAllUnits(),
+                cols: 6,
             )
             addField(
-                    class: MoneyField,
-                    id: 'moneyfield',
-                    cols: 6,
+                class: MoneyField,
+                id: 'moneyfield',
+                cols: 6,
             )
             addField(
-                    class: Upload,
-                    id: 'upload1',
+                class: Upload,
+                id: 'upload1',
             )
 
             addField(
-                    class: Upload,
-                    id: 'upload2',
-                    dragAndDrop: false,
+                class: Upload,
+                id: 'upload2',
+                dragAndDrop: false,
             )
             addField(
-                    class: Button,
-                    id: 'button',
-                    stretch: true,
-                    primary: true,
+                class: Button,
+                id: 'button',
+                stretch: true,
+                primary: true,
             ).component.addAction(action: 'anotherAction1')
-                    .addAction(action: 'anotherAction2')
-                    .addAction(action: 'anotherAction3')
-                    .addAction(action: 'anotherAction4')
+                .addAction(action: 'anotherAction2')
+                .addAction(action: 'anotherAction3')
+                .addAction(action: 'anotherAction4')
 
             def buttonGroupField = addField(
-                    class: Button,
-                    id: 'buttonGroup',
-                    stretch: true,
-                    group: true,
-                    backgroundColor: Color.DANGER_BACKGROUND,
-                    textColor: Color.DANGER_TEXT,
+                class: Button,
+                id: 'buttonGroup',
+                stretch: true,
+                group: true,
+                backgroundColor: Color.DANGER_BACKGROUND,
+                textColor: Color.DANGER_TEXT,
             )
             buttonGroupField.component.addAction(action: 'anotherAction1', backgroundColor: Color.WARNING_BACKGROUND, textColor: Color.WARNING_TEXT)
             buttonGroupField.component.addAction(action: 'anotherAction2', backgroundColor: Color.SUCCESS_BACKGROUND, textColor: Color.SUCCESS_TEXT)
             buttonGroupField.component.addAction(action: 'anotherAction3', backgroundColor: Color.INFO_BACKGROUND, textColor: Color.INFO_TEXT)
             buttonGroupField.component.addAction(action: 'anotherAction4', backgroundColor: mainBackgroundColor, textColor: Color.DISABLED_TEXT)
             addField(
-                    class: Separator,
-                    id: 'separator',
-                    icon: 'fa-car',
+                class: Separator,
+                id: 'separator',
+                icon: 'fa-car',
             )
             addField(
-                    class: Separator,
-                    id: 'anotherSeparator',
-                    icon: 'fa-truck',
+                class: Separator,
+                id: 'anotherSeparator',
+                icon: 'fa-truck',
             )
             addField(
-                    class: DateField,
-                    id: 'datefield',
-                    help: 'Questo è un messaggio di aiuto per te che non sai cosa diavolo fare',
-                    cols: 6,
+                class: DateField,
+                id: 'datefield',
+                help: 'Questo è un messaggio di aiuto per te che non sai cosa diavolo fare',
+                cols: 6,
             )
             addField(
-                    class: TimeField,
-                    id: 'timefield',
-                    cols: 6,
+                class: TimeField,
+                id: 'timefield',
+                cols: 6,
             )
             addField(
-                    class: DateTimeField,
-                    id: 'datetimefield',
-                    cols: 6,
+                class: DateTimeField,
+                id: 'datetimefield',
+                cols: 6,
             )
             addField(
-                    class: Select,
-                    id: 'user2',
-                    optionsFromRecordset: personService.list(),
-                    multiple: true,
-                    keys: ['id'],
-                    search: false,
+                class: Select,
+                id: 'user2',
+                optionsFromRecordset: personService.list(),
+                multiple: true,
+                keys: ['id'],
+                search: false,
             )
             addField(
-                    class: Checkbox,
-                    id: 'checkbox',
-                    textArgs: ['ARG_1'],
-                    help: 'Questo è un messaggio di aiuto per te che non sai cosa diavolo fare',
-                    onChange: 'onChangeCheckbox',
-                    cols: 6,
+                class: Checkbox,
+                id: 'checkbox',
+                textArgs: ['ARG_1'],
+                help: 'Questo è un messaggio di aiuto per te che non sai cosa diavolo fare',
+                onChange: 'onChangeCheckbox',
+                cols: 6,
             )
             addField(
-                    class: Checkbox,
-                    id: 'checkbox2',
-                    value: true,
-                    readonly: true,
-                    cols: 6,
+                class: Checkbox,
+                id: 'checkbox2',
+                value: true,
+                readonly: true,
+                cols: 6,
             )
             addField(
-                    class: Checkbox,
-                    id: 'simplecheckbox',
-                    simple: true,
+                class: Checkbox,
+                id: 'simplecheckbox',
+                simple: true,
             )
             /*addField(
                     class: MultipleCheckbox,
@@ -371,80 +371,80 @@ class FormController implements ElementsController {
 //                    id: 'keypad',
 //            )
             addField(
-                    class: Textarea,
-                    id: 'textarea',
-                    maxSize: 100,
-                    rows: 5,
+                class: Textarea,
+                id: 'textarea',
+                maxSize: 100,
+                rows: 5,
             )
 
             addField(
-                    class: Label,
-                    id: 'label',
-                    label: 'The label of a label',
+                class: Label,
+                id: 'label',
+                label: 'The label of a label',
             )
             addField(
-                    class: Label,
-                    id: 'label2',
-                    textAlign: TextAlign.END,
+                class: Label,
+                id: 'label2',
+                textAlign: TextAlign.END,
             )
             addField(
-                    class: Label,
-                    id: 'info',
-                    textAlign: TextAlign.CENTER,
-                    backgroundColor: '#eab676',
-                    displayLabel: false,
+                class: Label,
+                id: 'info',
+                textAlign: TextAlign.CENTER,
+                backgroundColor: '#eab676',
+                displayLabel: false,
             )
             addField(
-                    class: Label,
-                    id: 'label3',
-                    textWrap: TextWrap.LINE_WRAP,
-                    tag: false,
+                class: Label,
+                id: 'label3',
+                textWrap: TextWrap.LINE_WRAP,
+                tag: false,
             )
             addField(
-                    class: Label,
-                    id: 'paragraph',
-                    tag: false,
+                class: Label,
+                id: 'paragraph',
+                tag: false,
             )
 
             addField(
-                    class: Label,
-                    id: 'errorColor',
-                    textWrap: TextWrap.NO_WRAP,
-                    textColor: Color.DANGER_TEXT,
-                    backgroundColor: Color.DANGER_BACKGROUND,
-                    cols: 2,
+                class: Label,
+                id: 'errorColor',
+                textWrap: TextWrap.NO_WRAP,
+                textColor: Color.DANGER_TEXT,
+                backgroundColor: Color.DANGER_BACKGROUND,
+                cols: 2,
             )
             addField(
-                    class: Label,
-                    id: 'warningColor',
-                    textWrap: TextWrap.NO_WRAP,
-                    textColor: Color.WARNING_TEXT,
-                    backgroundColor: Color.WARNING_BACKGROUND,
-                    cols: 2,
+                class: Label,
+                id: 'warningColor',
+                textWrap: TextWrap.NO_WRAP,
+                textColor: Color.WARNING_TEXT,
+                backgroundColor: Color.WARNING_BACKGROUND,
+                cols: 2,
             )
             addField(
-                    class: Label,
-                    id: 'successColor',
-                    textWrap: TextWrap.NO_WRAP,
-                    textColor: Color.SUCCESS_TEXT,
-                    backgroundColor: Color.SUCCESS_BACKGROUND,
-                    cols: 2,
+                class: Label,
+                id: 'successColor',
+                textWrap: TextWrap.NO_WRAP,
+                textColor: Color.SUCCESS_TEXT,
+                backgroundColor: Color.SUCCESS_BACKGROUND,
+                cols: 2,
             )
             addField(
-                    class: Label,
-                    id: 'infoColor',
-                    textWrap: TextWrap.NO_WRAP,
-                    textColor: Color.INFO_TEXT,
-                    backgroundColor: Color.INFO_BACKGROUND,
-                    cols: 2,
+                class: Label,
+                id: 'infoColor',
+                textWrap: TextWrap.NO_WRAP,
+                textColor: Color.INFO_TEXT,
+                backgroundColor: Color.INFO_BACKGROUND,
+                cols: 2,
             )
             addField(
-                    class: Label,
-                    id: 'disabledColor',
-                    textWrap: TextWrap.NO_WRAP,
-                    textColor: Color.DISABLED_TEXT,
-                    backgroundColor: mainBackgroundColor,
-                    cols: 4,
+                class: Label,
+                id: 'disabledColor',
+                textWrap: TextWrap.NO_WRAP,
+                textColor: Color.DISABLED_TEXT,
+                backgroundColor: mainBackgroundColor,
+                cols: 4,
             )
         }
 
@@ -464,9 +464,9 @@ class FormController implements ElementsController {
 
         c.addComponent(Table, 'colorTable').with {
             columns = [
-                    'status',
-                    'textColor',
-                    'backgroundColor',
+                'status',
+                'textColor',
+                'backgroundColor',
             ]
             rowActions = false
             body.eachRow { TableRow row, Map values ->
@@ -474,27 +474,27 @@ class FormController implements ElementsController {
                 row.backgroundColor = values.backgroundColor
             }
             body = [
-                    [status: 'ERROR', textColor: Color.DANGER_TEXT, backgroundColor: Color.DANGER_BACKGROUND],
-                    [status: 'WARNING', textColor: Color.WARNING_TEXT, backgroundColor: Color.WARNING_BACKGROUND],
-                    [status: 'SUCCESS', textColor: Color.SUCCESS_TEXT, backgroundColor: Color.SUCCESS_BACKGROUND],
-                    [status: 'INFO', textColor: Color.INFO_TEXT, backgroundColor: Color.INFO_BACKGROUND],
-                    [status: 'DISABLED', textColor: Color.DISABLED_TEXT, backgroundColor: mainBackgroundColor],
+                [status: 'ERROR', textColor: Color.DANGER_TEXT, backgroundColor: Color.DANGER_BACKGROUND],
+                [status: 'WARNING', textColor: Color.WARNING_TEXT, backgroundColor: Color.WARNING_BACKGROUND],
+                [status: 'SUCCESS', textColor: Color.SUCCESS_TEXT, backgroundColor: Color.SUCCESS_BACKGROUND],
+                [status: 'INFO', textColor: Color.INFO_TEXT, backgroundColor: Color.INFO_BACKGROUND],
+                [status: 'DISABLED', textColor: Color.DISABLED_TEXT, backgroundColor: mainBackgroundColor],
             ]
         }
 
         c.addComponent(Table, 'table').with {
 //            rowActions = false
             columns = [
-                    'company',
-                    'name',
-                    'picture',
-                    'address',
-                    'postcode',
-                    'salary',
-                    'distanceKm',
-                    'dateStart',
-                    'dateEnd',
-                    'active',
+                'company',
+                'name',
+                'picture',
+                'address',
+                'postcode',
+                'salary',
+                'distanceKm',
+                'dateStart',
+                'dateEnd',
+                'active',
             ]
             actions.addAction(action: 'test1')
             actions.addAction(action: 'test2')

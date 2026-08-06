@@ -118,8 +118,8 @@ class KeyPress extends Component {
         linkDefinition.action = args.action ?: 'onKeyPress'
 
         buffer = createControl(
-                class: HiddenField,
-                id: 'buffer',
+            class: HiddenField,
+            id: 'buffer',
         )
 
         setOnKeyPressEvent()
@@ -142,7 +142,7 @@ class KeyPress extends Component {
      */
     private void setOnKeyPressEvent() {
         on(linkDefinition.properties + [
-                event: 'keypress',
+            event: 'keypress',
         ])
     }
 
@@ -156,11 +156,11 @@ class KeyPress extends Component {
     @Override
     String getPropertiesAsJSON() {
         Map thisProperties = [
-                enabled: enabled,
-                triggerKey: triggerKey,
-                readingSpeed: readingSpeed,
-                bufferTimeout: bufferTimeout,
-                hideInput: hideInput,
+            enabled      : enabled,
+            triggerKey   : triggerKey,
+            readingSpeed : readingSpeed,
+            bufferTimeout: bufferTimeout,
+            hideInput    : hideInput,
         ]
         return Elements.encodeAsJSON(thisProperties)
     }

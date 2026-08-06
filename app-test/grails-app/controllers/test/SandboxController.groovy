@@ -14,19 +14,15 @@
  */
 package test
 
+import dueuno.application.ApplicationService
 import dueuno.commons.utils.DateUtils
 import dueuno.elements.ElementsController
 import dueuno.elements.components.*
 import dueuno.elements.controls.*
-import dueuno.application.ApplicationService
-import dueuno.security.SecurityService
 import dueuno.elements.style.*
+import dueuno.security.SecurityService
 import dueuno.security.TUser
-import dueuno.types.QuantityService
-import dueuno.types.Money
-import dueuno.types.Quantity
-import dueuno.types.QuantityUnit
-import dueuno.types.Type
+import dueuno.types.*
 import jakarta.servlet.ServletContext
 
 import java.time.LocalDate
@@ -69,23 +65,23 @@ class SandboxController implements ElementsController {
 
         def c = createContent()
         c.header.addNextButton(
-                action: 'onSubmit',
-                submit: ['form', 'formFail', 'tableTest', 'table2'],
-                text: 'Submit',
+            action: 'onSubmit',
+            submit: ['form', 'formFail', 'tableTest', 'table2'],
+            text: 'Submit',
         )
 
         def formFail = c.addComponent(Form, 'formFail')
         formFail.with {
             // Typed key fields
             addKeyField('listTest', Type.LIST, [1, 2, 3])
-            addKeyField('mapTest', Type.MAP, [a:1, b:2, c:[a:1, b:2]])
+            addKeyField('mapTest', Type.MAP, [a: 1, b: 2, c: [a: 1, b: 2]])
             addKeyField('datetimeTest', Type.DATETIME, LocalDateTime.now())
             addKeyField('dateTest', Type.DATE, LocalDate.now())
             addKeyField('timeTest', Type.TIME, LocalTime.now())
 
             // Automatic type retrieval
             addKeyField('listTestAuto', [1, 2, 3])
-            addKeyField('mapTestAuto', [a:1, b:2, c:[a:1, b:2]])
+            addKeyField('mapTestAuto', [a: 1, b: 2, c: [a: 1, b: 2]])
             addKeyField('datetimeTestAuto', LocalDateTime.now())
             addKeyField('dateTestAuto', LocalDate.now())
             addKeyField('timeTestAuto', LocalTime.now())
@@ -94,281 +90,281 @@ class SandboxController implements ElementsController {
 //            addKeyField('typeError', 'MY_TYPE', 10)
 
             addField(
-                    class: Button,
-                    id: 'messageAndRedirect',
-                    action: 'onMessage',
-                    modal: true,
-                    displayLabel: false,
-                    cols: 12,
-                    colsSmall: 6,
+                class: Button,
+                id: 'messageAndRedirect',
+                action: 'onMessage',
+                modal: true,
+                displayLabel: false,
+                cols: 12,
+                colsSmall: 6,
             )
             addField(
-                    class: Button,
-                    id: 'confirmMessageAndRedirect',
-                    action: 'onConfirmMessage',
-                    params: [name: 'Gianluca Sartori'],
-                    displayLabel: false,
-                    cols: 12,
+                class: Button,
+                id: 'confirmMessageAndRedirect',
+                action: 'onConfirmMessage',
+                params: [name: 'Gianluca Sartori'],
+                displayLabel: false,
+                cols: 12,
             )
             addField(
-                    class: Button,
-                    id: 'loadingScreen',
-                    action: 'onHideLoadingScreen',
-                    displayLabel: false,
-                    cols: 12,
-                    colsSmall: 6,
+                class: Button,
+                id: 'loadingScreen',
+                action: 'onHideLoadingScreen',
+                displayLabel: false,
+                cols: 12,
+                colsSmall: 6,
             )
             addField(
-                    class: Button,
-                    id: 'customParams',
-                    action: 'index',
-                    onClick: 'onCustomParams',
+                class: Button,
+                id: 'customParams',
+                action: 'index',
+                onClick: 'onCustomParams',
 //                    params: [money: new Money(10), quantity: new Quantity(20)],
-                    displayLabel: false,
-                    cols: 12,
-                    colsSmall: 6,
+                displayLabel: false,
+                cols: 12,
+                colsSmall: 6,
             )
             addField(
-                    class: Button,
-                    id: 'setErrors',
-                    action: 'onSetErrors',
-                    submit: 'formFail',
-                    loading: false,
-                    displayLabel: false,
-                    cols: 12,
-                    colsSmall: 6,
-                    highlight: true,
+                class: Button,
+                id: 'setErrors',
+                action: 'onSetErrors',
+                submit: 'formFail',
+                loading: false,
+                displayLabel: false,
+                cols: 12,
+                colsSmall: 6,
+                highlight: true,
             )
             addField(
-                    class: DateTimeField,
-                    id: 'dt1',
-                    value: LocalDate.now().minusDays(4),
-                    min: LocalDate.now().minusDays(3),
-                    onLoad: 'onDateTimeLoad',
-                    onChange: 'onDateTimeChange',
-                    textStyle: TextStyle.LINE_THROUGH,
-                    highlight: true,
-                    cols: 4,
+                class: DateTimeField,
+                id: 'dt1',
+                value: LocalDate.now().minusDays(4),
+                min: LocalDate.now().minusDays(3),
+                onLoad: 'onDateTimeLoad',
+                onChange: 'onDateTimeChange',
+                textStyle: TextStyle.LINE_THROUGH,
+                highlight: true,
+                cols: 4,
             )
             addField(
-                    class: DateField,
-                    id: 'd1',
-                    value: LocalDate.now().minusDays(4),
-                    min: LocalDate.now().minusDays(3),
-                    onChange: 'onDateChange',
-                    textStyle: [TextStyle.LINE_THROUGH, TextStyle.ITALIC],
-                    highlight: true,
-                    cols: 4,
+                class: DateField,
+                id: 'd1',
+                value: LocalDate.now().minusDays(4),
+                min: LocalDate.now().minusDays(3),
+                onChange: 'onDateChange',
+                textStyle: [TextStyle.LINE_THROUGH, TextStyle.ITALIC],
+                highlight: true,
+                cols: 4,
             )
             addField(
-                    class: TimeField,
-                    id: 't1',
-                    defaultValue: LocalTime.now(),
-                    min: LocalTime.now().minusHours(3),
-                    timeStep: 15,
-                    onChange: 'onTimeChange',
-                    textStyle: TextStyle.NORMAL,
-                    help: 'This is a help message',
-                    cols: 2,
+                class: TimeField,
+                id: 't1',
+                defaultValue: LocalTime.now(),
+                min: LocalTime.now().minusHours(3),
+                timeStep: 15,
+                onChange: 'onTimeChange',
+                textStyle: TextStyle.NORMAL,
+                help: 'This is a help message',
+                cols: 2,
             )
             addField(
-                    class: TimeField,
-                    id: 't2',
-                    value: LocalTime.now(),
-                    readonly: true,
-                    help: 'This is a help message',
-                    cols: 2,
+                class: TimeField,
+                id: 't2',
+                value: LocalTime.now(),
+                readonly: true,
+                help: 'This is a help message',
+                cols: 2,
             )
             addField(
-                    class: MonthField,
-                    id: 'm1',
-                    value: LocalDate.now(),
-                    textStyle: [TextStyle.LINE_THROUGH, TextStyle.NORMAL],
-                    highlight: true,
-                    help: 'This is a help message',
-                    cols: 6,
+                class: MonthField,
+                id: 'm1',
+                value: LocalDate.now(),
+                textStyle: [TextStyle.LINE_THROUGH, TextStyle.NORMAL],
+                highlight: true,
+                help: 'This is a help message',
+                cols: 6,
             )
             addField(
-                    class: PasswordField,
-                    id: 'passWithHelp',
-                    help: 'Type your password',
-                    cols: 6,
+                class: PasswordField,
+                id: 'passWithHelp',
+                help: 'Type your password',
+                cols: 6,
             )
             addField(
-                    class: Select,
-                    id: 'selectEnum',
-                    optionsFromEnum: TextFieldInputMode,
-                    highlight: true,
+                class: Select,
+                id: 'selectEnum',
+                optionsFromEnum: TextFieldInputMode,
+                highlight: true,
             )
             addField(
-                    class: Select,
-                    id: 'select2',
-                    label: 'onLoad',
-                    onLoad: 'onSelect2Load',
-                    value: 99,
+                class: Select,
+                id: 'select2',
+                label: 'onLoad',
+                onLoad: 'onSelect2Load',
+                value: 99,
 //                    onChange: 'onSelect2Change',
-                    allowClear: true,
-                    cols: 12,
+                allowClear: true,
+                cols: 12,
             )
             addField(
-                    class: Select,
-                    id: 'select3',
-                    label: 'onSearch',
-                    onLoad: 'onSelect3Load',
-                    onSearch: 'onSelect3Search',
-                    onChange: 'onSelect3Change',
-                    submit: ['formFail'],
-                    help: 'This is a long help message, long, long, long, long, long, long, long',
-                    value: 3,
-                    allowClear: true,
-                    cols: 12,
+                class: Select,
+                id: 'select3',
+                label: 'onSearch',
+                onLoad: 'onSelect3Load',
+                onSearch: 'onSelect3Search',
+                onChange: 'onSelect3Change',
+                submit: ['formFail'],
+                help: 'This is a long help message, long, long, long, long, long, long, long',
+                value: 3,
+                allowClear: true,
+                cols: 12,
 //                    highlight: true,
             )
             addField(
-                    class: MoneyField,
-                    id: 'testMoney',
-                    value: new Money(),
-                    cols: 6,
-                    highlight: true,
+                class: MoneyField,
+                id: 'testMoney',
+                value: new Money(),
+                cols: 6,
+                highlight: true,
             )
             addField(
-                    class: QuantityField,
-                    id: 'testQuantity',
-                    availableUnits: quantityService.listAllUnits(),
-                    defaultUnit: QuantityUnit.KG,
-                    value: new Quantity(),
-                    cols: 6,
-                    highlight: true,
+                class: QuantityField,
+                id: 'testQuantity',
+                availableUnits: quantityService.listAllUnits(),
+                defaultUnit: QuantityUnit.KG,
+                value: new Quantity(),
+                cols: 6,
+                highlight: true,
             )
             addField(
-                    class: TextField,
-                    id: 'placeholderText',
-                    placeholder: 'sandbox.placeholder.text',
-                    validChars: '/:1234567890',
+                class: TextField,
+                id: 'placeholderText',
+                placeholder: 'sandbox.placeholder.text',
+                validChars: '/:1234567890',
 //                    prefix: 'PRE',
-                    icon: 'fa-box',
-                    onChange: 'onIconChange',
-                    highlight: true,
-                    maxSize: 7,
-                    cols: 6,
+                icon: 'fa-box',
+                onChange: 'onIconChange',
+                highlight: true,
+                maxSize: 7,
+                cols: 6,
             )
             addField(
-                    class: TextField,
-                    id: 'readonlyText',
-                    readonly: true,
-                    cols: 6,
+                class: TextField,
+                id: 'readonlyText',
+                readonly: true,
+                cols: 6,
             )
             addField(
-                    class: Textarea,
-                    id: 'placeholderArea',
-                    placeholder: 'sandbox.placeholder.textarea',
-                    invalidChars: '+-*/',
-                    acceptNewLine: false,
-                    highlight: true,
-                    cols: 12,
+                class: Textarea,
+                id: 'placeholderArea',
+                placeholder: 'sandbox.placeholder.textarea',
+                invalidChars: '+-*/',
+                acceptNewLine: false,
+                highlight: true,
+                cols: 12,
             )
             addField(
-                    class: Button,
-                    id: 'placeholderBtn',
-                    action: 'index',
-                    icon: 'fa-user',
-                    onClick: 'onSetPlaceholder',
-                    loading: false,
-                    cols: 2,
+                class: Button,
+                id: 'placeholderBtn',
+                action: 'index',
+                icon: 'fa-user',
+                onClick: 'onSetPlaceholder',
+                loading: false,
+                cols: 2,
             )
             addField(
-                    class: Button,
-                    id: 'targetNew',
-                    action: 'index',
-                    icon: 'fa-user',
-                    targetNew: true,
-                    cols: 10,
+                class: Button,
+                id: 'targetNew',
+                action: 'index',
+                icon: 'fa-user',
+                targetNew: true,
+                cols: 10,
             )
 
             for (i in 1..6) {
                 addField(
-                        class: Label,
-                        id: "${i}Label",
-                        displayLabel: false,
-                        textArgs: [i],
-                        userSelect: true,
-                        cols: 9,
+                    class: Label,
+                    id: "${i}Label",
+                    displayLabel: false,
+                    textArgs: [i],
+                    userSelect: true,
+                    cols: 9,
                 )
                 addField(
-                        class: DateField,
-                        id: "${i}Date",
-                        displayLabel: false,
-                        cols: 3,
+                    class: DateField,
+                    id: "${i}Date",
+                    displayLabel: false,
+                    cols: 3,
                 )
             }
 
             addField(
-                    class: TextField,
-                    id: 'textUp',
-                    value: 'lower UPPER Capitalized',
-                    textTransform: TextTransform.UPPERCASE,
-                    onChange: 'onTextChange',
-                    cols: 4,
+                class: TextField,
+                id: 'textUp',
+                value: 'lower UPPER Capitalized',
+                textTransform: TextTransform.UPPERCASE,
+                onChange: 'onTextChange',
+                cols: 4,
             )
             addField(
-                    class: TextField,
-                    id: 'textLow',
-                    value: 'lower UPPER Capitalized',
-                    textTransform: TextTransform.LOWERCASE,
-                    cols: 4,
+                class: TextField,
+                id: 'textLow',
+                value: 'lower UPPER Capitalized',
+                textTransform: TextTransform.LOWERCASE,
+                cols: 4,
             )
             addField(
-                    class: TextField,
-                    id: 'textCap',
-                    value: 'lower UPPER Capitalized',
-                    textTransform: TextTransform.CAPITALIZE,
-                    cols: 4,
+                class: TextField,
+                id: 'textCap',
+                value: 'lower UPPER Capitalized',
+                textTransform: TextTransform.CAPITALIZE,
+                cols: 4,
             )
             addField(
-                    class: NumberField,
-                    id: 'textPattern',
-                    pattern: '^(?!.*@.*@)(?!.*(\\.)\\1).[a-z0-9_\\.@]*$',
-                    cols: 6,
+                class: NumberField,
+                id: 'textPattern',
+                pattern: '^(?!.*@.*@)(?!.*(\\.)\\1).[a-z0-9_\\.@]*$',
+                cols: 6,
             )
             addField(
-                    class: Checkbox,
-                    id: 'checkThisOut',
-                    onChange: 'onChangeCheckThisOut',
-                    help: 'This is a help message',
-                    cols: 6,
+                class: Checkbox,
+                id: 'checkThisOut',
+                onChange: 'onChangeCheckThisOut',
+                help: 'This is a help message',
+                cols: 6,
             )
 
             def linkField = addField(
-                    class: Link,
-                    id: 'imageWithLink',
-                    controller: 'form',
-                    modal: true,
-                    cols: 12,
+                class: Link,
+                id: 'imageWithLink',
+                controller: 'form',
+                modal: true,
+                cols: 12,
             )
             linkField.component.addComponent(
-                    class: Image,
-                    id: 'theImage',
-                    image: linkPublicResource("brand/login-logo.png", false),
+                class: Image,
+                id: 'theImage',
+                image: linkPublicResource("brand/login-logo.png", false),
             )
             linkField.component.addComponent(
-                    class: Label,
-                    id: 'theLabel',
-                    text: 'This is a text',
+                class: Label,
+                id: 'theLabel',
+                text: 'This is a text',
             )
 
             addField(
-                    class: Label,
-                    id: 'errorField',
-                    displayLabel: false,
-                    cols: 12,
+                class: Label,
+                id: 'errorField',
+                displayLabel: false,
+                cols: 12,
             )
             addField(
-                    class: Label,
-                    id: 'labelTest',
-                    textStyle: TextStyle.MONOSPACE,
-                    cols: 12,
-                    textWrap: TextWrap.LINE_BREAK,
-                    text: """
+                class: Label,
+                id: 'labelTest',
+                textStyle: TextStyle.MONOSPACE,
+                cols: 12,
+                textWrap: TextWrap.LINE_BREAK,
+                text: """
 2022-01-04 15:46:57.006  INFO --- [           main] dueuno.solutions.test.Application        : The following profiles are active: development
 
 Configuring Spring Security Core ...
@@ -426,8 +422,8 @@ Grails application running at http://localhost:9992/test in environment: develop
         }
 
         formFail.values = [
-                name: 'PIPPO',
-                t1: LocalTime.now().plusHours(3)
+            name: 'PIPPO',
+            t1  : LocalTime.now().plusHours(3)
         ]
 
         def table = c.addComponent(Table, 'tableTest')
@@ -435,26 +431,26 @@ Grails application running at http://localhost:9992/test in environment: develop
             title.display = true
             filters.with {
                 addField(
-                        class: TextField,
-                        id: 'find',
-                        label: TextDefault.FIND,
-                        cols: 12,
+                    class: TextField,
+                    id: 'find',
+                    label: TextDefault.FIND,
+                    cols: 12,
                 )
             }
             columns = [
-                    'company',
-                    'name',
-                    'address',
-                    'postcode',
-                    'input',
+                'company',
+                'name',
+                'address',
+                'postcode',
+                'input',
             ]
             submit = [
-                    'company',
-                    'name',
-                    'customColumn',
+                'company',
+                'name',
+                'customColumn',
             ]
             widths = [
-                    'input': 150,
+                'input': 150,
             ]
             actions.addAction(action: 'test1')
             actions.addAction(action: 'test2')
@@ -465,23 +461,23 @@ Grails application running at http://localhost:9992/test in environment: develop
                 row.cells.postcode.tag = true
 
                 row.cells.input.component = [
-                        class   : NumberField,
-                        id      : "number${values.id}",
-                        min     : -2,
-                        max     : 10,
-                        textAlign: TextAlign.END,
+                    class    : NumberField,
+                    id       : "number${values.id}",
+                    min      : -2,
+                    max      : 10,
+                    textAlign: TextAlign.END,
                 ]
                 row.cells.input.component.addAction(
-                        action: 'onDecrement',
-                        submit: "tableTest-${row.index}",
-                        icon: 'fa-minus',
-                        text: '',
+                    action: 'onDecrement',
+                    submit: "tableTest-${row.index}",
+                    icon: 'fa-minus',
+                    text: '',
                 )
                 row.cells.input.component.addAction(
-                        action: 'onIncrement',
-                        submit: "tableTest-${row.index}",
-                        icon: 'fa-plus',
-                        text: '',
+                    action: 'onIncrement',
+                    submit: "tableTest-${row.index}",
+                    icon: 'fa-plus',
+                    text: '',
                 )
 
             }
@@ -491,19 +487,19 @@ Grails application running at http://localhost:9992/test in environment: develop
         }
 
         c.addComponent(
-                class: Button,
-                id: 'reject',
-                action: 'onReject',
-                icon: 'fa-xmark',
-                stretch: true,
+            class: Button,
+            id: 'reject',
+            action: 'onReject',
+            icon: 'fa-xmark',
+            stretch: true,
         )
         c.addComponent(
-                class: Button,
-                id: 'setCellValue',
-                action: 'onSetCellValue',
-                params: [value: '**PIPPO**'],
-                stretch: true,
-                loading: false,
+            class: Button,
+            id: 'setCellValue',
+            action: 'onSetCellValue',
+            params: [value: '**PIPPO**'],
+            stretch: true,
+            loading: false,
         )
 
         def table2 = c.addComponent(Table, 'table2')
@@ -520,14 +516,14 @@ Grails application running at http://localhost:9992/test in environment: develop
 //                )
 //            }
             columns = [
-                    'company',
-                    'name',
-                    'address',
-                    'postcode',
-                    'input',
+                'company',
+                'name',
+                'address',
+                'postcode',
+                'input',
             ]
             submit = [
-                    'company',
+                'company',
             ]
             body.eachRow { TableRow row, Map values ->
             }
@@ -659,14 +655,14 @@ Grails application running at http://localhost:9992/test in environment: develop
 //        form['transformQta'].value = new Quantity(3, Unit.M)
 
         c.addComponent(
-                before: 'formFail',
-                class: Label,
-                id: 'addedBeforeFormFail',
-                text: 'I am the one 8-)',
-                textAlign: TextAlign.CENTER,
-                backgroundColor: 'red',
-                textColor: Color.WHITE,
-                tag: true,
+            before: 'formFail',
+            class: Label,
+            id: 'addedBeforeFormFail',
+            text: 'I am the one 8-)',
+            textAlign: TextAlign.CENTER,
+            backgroundColor: 'red',
+            textColor: Color.WHITE,
+            tag: true,
         )
 
         display content: c, modal: true
@@ -842,7 +838,7 @@ Grails application running at http://localhost:9992/test in environment: develop
     def onSearch() {
         def t = createTransition()
         t.set('select1', 'options', Select.optionsFromRecordset(
-                recordset: personService.list(name: params.select1),
+            recordset: personService.list(name: params.select1),
         ))
         display transition: t
     }

@@ -41,16 +41,16 @@ class AuthenticationController implements ElementsController {
         }
 
         def hostTenant = tenantService.getByHost(request.getHeader('host'))
-        def tenantId =  hostTenant?.tenantId ?: tenantService.defaultTenantId
+        def tenantId = hostTenant?.tenantId ?: tenantService.defaultTenantId
 
         tenantService.withTenant(tenantId) {
             def loginArgs = [
-                    backgroundImage    : tenantPropertyService.getString('LOGIN_BACKGROUND_IMAGE', true),
-                    logoImage          : tenantPropertyService.getString('LOGIN_LOGO', true),
-                    autocomplete       : tenantPropertyService.getBoolean('LOGIN_AUTOCOMPLETE', true),
-                    copy               : tenantPropertyService.getString('LOGIN_COPY', true),
-                    registerUrl        : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
-                    passwordRecoveryUrl: tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
+                backgroundImage    : tenantPropertyService.getString('LOGIN_BACKGROUND_IMAGE', true),
+                logoImage          : tenantPropertyService.getString('LOGIN_LOGO', true),
+                autocomplete       : tenantPropertyService.getBoolean('LOGIN_AUTOCOMPLETE', true),
+                copy               : tenantPropertyService.getString('LOGIN_COPY', true),
+                registerUrl        : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
+                passwordRecoveryUrl: tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
             ]
             display page: createPage(Login, loginArgs)
         }
@@ -86,9 +86,9 @@ class AuthenticationController implements ElementsController {
         // We redirect the user to the configured location
         if (params.ajax) { // Default login
             def message = [
-                    login   : true,
-                    success : true,
-                    redirect: securityService.loginLandingPage,
+                login   : true,
+                success : true,
+                redirect: securityService.loginLandingPage,
             ]
             render message as JSON
 

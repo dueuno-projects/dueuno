@@ -141,10 +141,10 @@ class KeyStoreUtils {
      */
     static String getKey(KeyStore keyStore, byte[] password, String name) {
         KeyStore.SecretKeyEntry entry =
-                keyStore.getEntry(name, buildProtection(password)) as KeyStore.SecretKeyEntry
+            keyStore.getEntry(name, buildProtection(password)) as KeyStore.SecretKeyEntry
         return entry
-                ? new String(entry.secretKey.encoded, StandardCharsets.UTF_8)
-                : null
+            ? new String(entry.secretKey.encoded, StandardCharsets.UTF_8)
+            : null
     }
 
     /**

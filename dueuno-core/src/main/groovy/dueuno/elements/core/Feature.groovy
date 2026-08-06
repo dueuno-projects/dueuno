@@ -140,8 +140,8 @@ class Feature extends LinkDefinition {
      */
     List<Feature> getFavouriteFeatures() {
         return features
-                .findAll { it['favourite'] == true }
-                .sort { it['order'] } as List<Feature>
+            .findAll { it['favourite'] == true }
+            .sort { it['order'] } as List<Feature>
     }
 
     private List<Feature> listFeatureRecursive() {

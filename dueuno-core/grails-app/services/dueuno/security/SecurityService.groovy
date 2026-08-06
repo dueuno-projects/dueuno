@@ -15,16 +15,16 @@
 package dueuno.security
 
 import dueuno.application.ApplicationService
-import dueuno.elements.core.Feature
-import dueuno.elements.LinkGeneratorAware
-import dueuno.elements.core.PrettyPrinterDecimalFormat
-import dueuno.elements.WebRequestAware
 import dueuno.commons.utils.StringUtils
-import dueuno.elements.style.GuiStyle
+import dueuno.elements.ElementsException
+import dueuno.elements.LinkGeneratorAware
+import dueuno.elements.WebRequestAware
+import dueuno.elements.core.Feature
 import dueuno.elements.core.Menu
+import dueuno.elements.core.PrettyPrinterDecimalFormat
 import dueuno.elements.pages.Shell
 import dueuno.elements.pages.ShellService
-import dueuno.elements.ElementsException
+import dueuno.elements.style.GuiStyle
 import dueuno.tenant.*
 import dueuno.utils.EnvUtils
 import grails.gorm.DetachedCriteria
@@ -89,18 +89,18 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         applicationService.registerPrettyPrinter('LANDING_PAGE', '${it.text}')
 
         applicationService.registerFeature(
-                namespace: 'security',
-                controller: 'superadmin',
-                icon: 'fa-cog',
-                order: 10000000,
-                authorities: [ROLE_SUPERADMIN],
+            namespace: 'security',
+            controller: 'superadmin',
+            icon: 'fa-cog',
+            order: 10000000,
+            authorities: [ROLE_SUPERADMIN],
         )
         applicationService.registerFeature(
-                namespace: 'security',
-                controller: 'admin',
-                icon: 'fa-cog',
-                order: 9000000,
-                authorities: [ROLE_ADMIN, ROLE_SECURITY],
+            namespace: 'security',
+            controller: 'admin',
+            icon: 'fa-cog',
+            order: 9000000,
+            authorities: [ROLE_ADMIN, ROLE_SECURITY],
         )
     }
 
@@ -111,14 +111,14 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         createAuthority(ROLE_SECURITY)
 
         createSystemUser(
-                tenantId: defaultTenantId,
-                groups: [GROUP_SUPERADMINS],
-                firstname: 'Super',
-                lastname: 'Admin',
-                username: USERNAME_SUPERADMIN,
-                password: USERNAME_SUPERADMIN,
-                sessionDuration: EnvUtils.isDevelopment() ? 60 : 5, // always 5 minutes in production for the SuperAdmin
-                rememberMeDuration: EnvUtils.isDevelopment() ? 12 * 60 : 5, // always 5 minutes in production for the SuperAdmin
+            tenantId: defaultTenantId,
+            groups: [GROUP_SUPERADMINS],
+            firstname: 'Super',
+            lastname: 'Admin',
+            username: USERNAME_SUPERADMIN,
+            password: USERNAME_SUPERADMIN,
+            sessionDuration: EnvUtils.isDevelopment() ? 60 : 5, // always 5 minutes in production for the SuperAdmin
+            rememberMeDuration: EnvUtils.isDevelopment() ? 12 * 60 : 5, // always 5 minutes in production for the SuperAdmin
         )
     }
 
@@ -132,14 +132,14 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
         String username = buildAdminUsername()
         createSystemUser(
-                tenantId: tenantId,
-                username: username,
-                password: username,
-                firstname: tenantId,
-                lastname: 'Admin',
-                sessionDuration: EnvUtils.isDevelopment() ? 60 : 15, // defaults to 15 minutes in production for the Admin
-                rememberMeDuration: EnvUtils.isDevelopment() ? 12 * 60 : 15, // defaults to 15 minutes in production for the Admin
-                admin: true,
+            tenantId: tenantId,
+            username: username,
+            password: username,
+            firstname: tenantId,
+            lastname: 'Admin',
+            sessionDuration: EnvUtils.isDevelopment() ? 60 : 15, // defaults to 15 minutes in production for the Admin
+            rememberMeDuration: EnvUtils.isDevelopment() ? 12 * 60 : 15, // defaults to 15 minutes in production for the Admin
+            admin: true,
         )
 
         tenantPropertyService.setBoolean('USER_CAN_CHANGE_PASSWORD', true)
@@ -172,8 +172,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             icon: 'fa-house-user',
         )
         applicationService.registerSuperadminFeature(
-                controller: 'connectionSource',
-                icon: 'fa-plug',
+            controller: 'connectionSource',
+            icon: 'fa-plug',
         )
 //        applicationService.registerSuperadminFeature(
 //                controller: 'authenticationProvider',
@@ -184,81 +184,81 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             icon: 'fa-tools',
         )
         applicationService.registerSuperadminFeature(
-                controller: 'monitoring',
-                icon: 'fa-chart-simple',
-                targetNew: true,
+            controller: 'monitoring',
+            icon: 'fa-chart-simple',
+            targetNew: true,
         )
         applicationService.registerSuperadminFeature(
-                controller: 'sysinfo',
-                icon: 'fa-info-circle',
+            controller: 'sysinfo',
+            icon: 'fa-info-circle',
         )
     }
 
     private void registerAdminFeatures() {
         registerSecurityFeature(
-                controller: 'user',
-                icon: 'fa-user',
+            controller: 'user',
+            icon: 'fa-user',
         )
         registerSecurityFeature(
-                controller: 'group',
-                icon: 'fa-user-shield',
+            controller: 'group',
+            icon: 'fa-user-shield',
         )
         applicationService.registerAdminFeature(
-                controller: 'audit',
-                icon: 'fa-book',
+            controller: 'audit',
+            icon: 'fa-book',
         )
         applicationService.registerAdminFeature(
-                controller: 'tenantProperty',
-                icon: 'fa-tools',
+            controller: 'tenantProperty',
+            icon: 'fa-tools',
         )
     }
 
     private void registerSecurityUserFeatures() {
         applicationService.registerUserFeature(
-                namespace: 'security',
-                controller: 'userProfile',
-                icon: 'fa-user-circle',
-                order: 10000010,
+            namespace: 'security',
+            controller: 'userProfile',
+            icon: 'fa-user-circle',
+            order: 10000010,
         )
         applicationService.registerUserFeature(
-                namespace: 'security',
-                controller: 'authentication',
-                action: 'logout',
-                icon: 'fa-power-off',
-                confirmMessage: 'shell.security.authentication.logout.confirm',
-                direct: true,
-                order: 10000020,
+            namespace: 'security',
+            controller: 'authentication',
+            action: 'logout',
+            icon: 'fa-power-off',
+            confirmMessage: 'shell.security.authentication.logout.confirm',
+            direct: true,
+            order: 10000020,
         )
 
         applicationService.registerDeveloperUserFeature(
-                order: 10000030,
+            order: 10000030,
         )
         applicationService.registerDeveloperUserFeature(
-                controller: 'shell',
-                action: 'toggleClientLogs',
-                icon: 'fa-bug',
-                order: 10000040,
+            controller: 'shell',
+            action: 'toggleClientLogs',
+            icon: 'fa-bug',
+            order: 10000040,
         )
         applicationService.registerDeveloperUserFeature(
-                controller: 'shell',
-                action: 'toggleDevHints',
-                icon: 'fa-key',
-                order: 10000050,
+            controller: 'shell',
+            action: 'toggleDevHints',
+            icon: 'fa-key',
+            order: 10000050,
         )
         applicationService.registerDeveloperUserFeature(
-                controller: 'gormExplorer',
-                icon: 'fa-table',
-                targetNew: true,
-                order: 10000060,
+            controller: 'gormExplorer',
+            icon: 'fa-table',
+            targetNew: true,
+            order: 10000060,
         )
 
         if (EnvUtils.isDevelopment()) {
             applicationService.registerDeveloperUserFeature(
-                    controller: 'connectionSource',
-                    action: 'h2Console',
-                    icon: 'fa-database',
-                    targetNew: true,
-                    order: 10000070,
+                controller: 'connectionSource',
+                action: 'h2Console',
+                icon: 'fa-database',
+                targetNew: true,
+                order: 10000070,
             )
         }
     }
@@ -414,9 +414,9 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         TUser user = getUserByUsername(username)
         if (!user) {
             user = createUser(
-                    failOnError: true,
-                    username: username,
-                    password: StringUtils.generateRandomToken(),
+                failOnError: true,
+                username: username,
+                password: StringUtils.generateRandomToken(),
             )
         }
 
@@ -582,11 +582,11 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         if (filterParams.find) {
             query = query.where {
                 true
-                        || apiKey =~ "%${filterParams.find}%"
-                        || externalId =~ "%${filterParams.find}%"
-                        || username =~ "%${filterParams.find}%"
-                        || firstname =~ "%${filterParams.find}%"
-                        || lastname =~ "%${filterParams.find}%"
+                    || apiKey =~ "%${filterParams.find}%"
+                    || externalId =~ "%${filterParams.find}%"
+                    || username =~ "%${filterParams.find}%"
+                    || firstname =~ "%${filterParams.find}%"
+                    || lastname =~ "%${filterParams.find}%"
             }
         }
 
@@ -596,8 +596,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     private Map getFetchAll() {
         // Add any relationship here (Eg. references to other DomainObjects or hasMany)
         return [
-                tenant      : 'join',
-                defaultGroup: 'join',
+            tenant      : 'join',
+            defaultGroup: 'join',
         ]
     }
 
@@ -605,8 +605,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         // Add only single-sided relationships here (Eg. references to other Domain Objects)
         // DO NOT add hasMany relationships, you are going to have troubles with pagination
         return [
-                tenant      : 'join',
-                defaultGroup: 'join',
+            tenant      : 'join',
+            defaultGroup: 'join',
         ]
     }
 
@@ -749,8 +749,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         }
 
         TTenant tenant = args.tenant
-                ?: tenantService.getByTenantId(args.tenantId as String)
-                ?: tenantService.currentTenant
+            ?: tenantService.getByTenantId(args.tenantId as String)
+            ?: tenantService.currentTenant
 
         log.info "${tenant.tenantId} Tenant - Creating user '${args.username}' in groups ${groups} (default '${defaultGroup}')"
 
@@ -762,32 +762,32 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         }
 
         user = new TUser(
-                tenant: tenant,
-                apiKey: args.apiKey,
-                externalId: args.externalId,
-                deletable: args.deletable == null ? true : args.deletable,
-                username: args.username,
-                password: args.password ? encodePassword((String) args.password) : null,
-                enabled: args.enabled == null ? true : args.enabled,
-                firstname: args.firstname,
-                lastname: args.lastname,
-                email: args.email,
-                telephone: args.telephone,
-                language: args.language ?: 'en',
-                decimalFormat: args.decimalFormat ?: PrettyPrinterDecimalFormat.ISO_COM,
-                prefixedUnit: args.prefixedUnit == null ? false : args.prefixedUnit,
-                symbolicCurrency: args.symbolicCurrency == null ? true : args.symbolicCurrency,
-                symbolicQuantity: args.symbolicQuantity == null ? true : args.symbolicQuantity,
-                invertedMonth: args.invertedMonth == null ? false : args.invertedMonth,
-                twelveHours: args.twelveHours == null ? false : args.twelveHours,
-                firstDaySunday: args.firstDaySunday == null ? false : args.firstDaySunday,
-                sessionDuration: args.sessionDuration as Integer ?: tenantPropertyService.getNumber('SESSION_DEFAULT_DURATION') ?: 5,
-                rememberMeDuration: args.rememberMeDuration as Integer ?: tenantPropertyService.getNumber('REMEMBER_ME_DEFAULT_DURATION') ?: 10080, // One week in minutes
-                fontSize: args.fontSize as Integer ?: tenantPropertyService.getNumber('FONT_SIZE') as Integer ?: 14,
-                guiStyle: args.guiStyle ?: tenantPropertyService.getString('GUI_STYLE') ?: GuiStyle.ROUNDED,
-                animations: args.animations as Boolean ?: true,
-                defaultGroup: defaultGroup ? TRoleGroup.findByTenantAndName(tenant, defaultGroup) : null,
-                note: args.note,
+            tenant: tenant,
+            apiKey: args.apiKey,
+            externalId: args.externalId,
+            deletable: args.deletable == null ? true : args.deletable,
+            username: args.username,
+            password: args.password ? encodePassword((String) args.password) : null,
+            enabled: args.enabled == null ? true : args.enabled,
+            firstname: args.firstname,
+            lastname: args.lastname,
+            email: args.email,
+            telephone: args.telephone,
+            language: args.language ?: 'en',
+            decimalFormat: args.decimalFormat ?: PrettyPrinterDecimalFormat.ISO_COM,
+            prefixedUnit: args.prefixedUnit == null ? false : args.prefixedUnit,
+            symbolicCurrency: args.symbolicCurrency == null ? true : args.symbolicCurrency,
+            symbolicQuantity: args.symbolicQuantity == null ? true : args.symbolicQuantity,
+            invertedMonth: args.invertedMonth == null ? false : args.invertedMonth,
+            twelveHours: args.twelveHours == null ? false : args.twelveHours,
+            firstDaySunday: args.firstDaySunday == null ? false : args.firstDaySunday,
+            sessionDuration: args.sessionDuration as Integer ?: tenantPropertyService.getNumber('SESSION_DEFAULT_DURATION') ?: 5,
+            rememberMeDuration: args.rememberMeDuration as Integer ?: tenantPropertyService.getNumber('REMEMBER_ME_DEFAULT_DURATION') ?: 10080, // One week in minutes
+            fontSize: args.fontSize as Integer ?: tenantPropertyService.getNumber('FONT_SIZE') as Integer ?: 14,
+            guiStyle: args.guiStyle ?: tenantPropertyService.getString('GUI_STYLE') ?: GuiStyle.ROUNDED,
+            animations: args.animations as Boolean ?: true,
+            defaultGroup: defaultGroup ? TRoleGroup.findByTenantAndName(tenant, defaultGroup) : null,
+            note: args.note,
         )
         user.save(flush: true, failOnError: args.failOnError)
 
@@ -837,8 +837,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         if (args.failOnError == null) args.failOnError = false
 
         TTenant tenant = args.tenant
-                ?: tenantService.getByTenantId(args.tenantId as String)
-                ?: tenantService.currentTenant
+            ?: tenantService.getByTenantId(args.tenantId as String)
+            ?: tenantService.currentTenant
 
         if (args.password) {
             args.password = encodePassword((String) args.password)
@@ -1025,17 +1025,17 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         String landingPage = args.landingPage ?: null
 
         TTenant tenant = args.tenant
-                ?: tenantService.getByTenantId(args.tenantId as String)
-                ?: tenantService.currentTenant
+            ?: tenantService.getByTenantId(args.tenantId as String)
+            ?: tenantService.currentTenant
 
         TRoleGroup roleGroup = TRoleGroup.findByNameAndTenant(groupName, tenant)
         if (!roleGroup) {
             log.info "${tenant.tenantId} Tenant - Creating group '${groupName}' with authorities: ${authorities}"
             roleGroup = new TRoleGroup(
-                    tenant: tenant,
-                    name: groupName,
-                    deletable: deletable,
-                    landingPage: landingPage,
+                tenant: tenant,
+                name: groupName,
+                deletable: deletable,
+                landingPage: landingPage,
             )
             roleGroup.save(flush: true, failOnError: args.failOnError)
         } else {
@@ -1048,8 +1048,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             TRoleGroupRole roleGroupRole = TRoleGroupRole.findByRoleGroupAndRole(roleGroup, role)
             if (!roleGroupRole) {
                 TRoleGroupRole newRoleGroupRole = new TRoleGroupRole(
-                        roleGroup: roleGroup,
-                        role: role,
+                    roleGroup: roleGroup,
+                    role: role,
                 )
                 newRoleGroupRole.save(flush: true, failOnError: args.failOnError)
             }
@@ -1083,8 +1083,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         String groupName = (args.name as String).toUpperCase()
         TTenant tenant = TTenant.findByTenantId(args.tenantId)
         TRoleGroup roleGroup = tenant
-                ? TRoleGroup.findByTenantAndName(tenant, groupName)
-                : TRoleGroup.get(id as Serializable)
+            ? TRoleGroup.findByTenantAndName(tenant, groupName)
+            : TRoleGroup.get(id as Serializable)
         if (!roleGroup) {
             throw new ElementsException("Group '${id}' not found!")
         }
@@ -1167,8 +1167,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         List<String> results = []
         for (role in TRole.findAll()) {
             if (role.authority != ROLE_SUPERADMIN &&
-                    role.authority != ROLE_ADMIN &&
-                    role.authority != ROLE_USER)
+                role.authority != ROLE_ADMIN &&
+                role.authority != ROLE_USER)
                 results.add(role.authority)
         }
         return results

@@ -81,26 +81,26 @@ class ConnectionSourceService {
 
     List<String> listAvailableSchemaGenerators() {
         return [
-                'none',
-                'create-only',
-                'drop',
-                'create',
-                'create-drop',
-                'validate',
-                'update',
+            'none',
+            'create-only',
+            'drop',
+            'create',
+            'create-drop',
+            'validate',
+            'update',
         ]
     }
 
     private Map buildConnectionSourceObject(ConnectionSource<SessionFactory, HibernateConnectionSourceSettings> connectionSource) {
         return [
-                name           : connectionSource.name,
-                driverClassName: connectionSource.settings.dataSource.driverClassName,
-                dialect        : connectionSource.settings.dataSource.dialect?.name,
-                dbCreate       : connectionSource.settings.dataSource.dbCreate,
-                readOnly       : connectionSource.settings.dataSource.readOnly,
-                username       : connectionSource.settings.dataSource.username,
-                password       : connectionSource.settings.dataSource.password,
-                url            : connectionSource.settings.dataSource.url,
+            name           : connectionSource.name,
+            driverClassName: connectionSource.settings.dataSource.driverClassName,
+            dialect        : connectionSource.settings.dataSource.dialect?.name,
+            dbCreate       : connectionSource.settings.dataSource.dbCreate,
+            readOnly       : connectionSource.settings.dataSource.readOnly,
+            username       : connectionSource.settings.dataSource.username,
+            password       : connectionSource.settings.dataSource.password,
+            url            : connectionSource.settings.dataSource.url,
         ]
     }
 
@@ -115,14 +115,14 @@ class ConnectionSourceService {
 
     void connect(TConnectionSource connectionSource) {
         hibernateDatastore.connectionSources.addConnectionSource(
-                connectionSource.name as String, [
-                'driverClassName'       : connectionSource.driverClassName,
-                'dialect'               : connectionSource.dialect,
-                'hibernate.hbm2ddl.auto': connectionSource.dbCreate,
-                'readOnly'              : connectionSource.readOnly,
-                'url'                   : connectionSource.url,
-                'username'              : connectionSource.username,
-                'password'              : connectionSource.password,
+            connectionSource.name as String, [
+            'driverClassName'       : connectionSource.driverClassName,
+            'dialect'               : connectionSource.dialect,
+            'hibernate.hbm2ddl.auto': connectionSource.dbCreate,
+            'readOnly'              : connectionSource.readOnly,
+            'url'                   : connectionSource.url,
+            'username'              : connectionSource.username,
+            'password'              : connectionSource.password,
         ] as Map)
     }
 
@@ -132,7 +132,7 @@ class ConnectionSourceService {
 
         if (filters.containsKey('id')) query = query.where { id == filters.id }
         if (filters.containsKey('name')) query = query.where { name == filters.name }
-        if (filters.containsKey('tenantId')) query = query.where { tenant == true &&  name == filters.tenantId }
+        if (filters.containsKey('tenantId')) query = query.where { tenant == true && name == filters.tenantId }
         if (filters.containsKey('embedded')) query = query.where { embedded == filters.embedded }
 
         return query

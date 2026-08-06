@@ -48,7 +48,7 @@ import oshi.hardware.HardwareAbstractionLayer
  *         println "GPU Cores (Apple Silicon): ${gpu.cores}"
  *     }
  * }
- * }</pre>
+ *}</pre>
  */
 @CompileStatic
 class HardwareUtils {
@@ -72,7 +72,7 @@ class HardwareUtils {
      * info.gpus.each { gpu ->
      *     println "GPU Model: ${gpu.model}, Vendor: ${gpu.vendor}"
      * }
-     * }</pre>
+     *}</pre>
      */
     static HardwareInfo getInfo() {
 
@@ -85,11 +85,11 @@ class HardwareUtils {
         CentralProcessor cpu = hw.processor
 
         info.cpu = new CpuInfo(
-                model: cpu.processorIdentifier.name,
-                physicalCores: cpu.physicalProcessorCount,
-                logicalCores: cpu.logicalProcessorCount,
-                maxFreqHz: cpu.maxFreq,
-                architecture: System.getProperty("os.arch"),
+            model: cpu.processorIdentifier.name,
+            physicalCores: cpu.physicalProcessorCount,
+            logicalCores: cpu.logicalProcessorCount,
+            maxFreqHz: cpu.maxFreq,
+            architecture: System.getProperty("os.arch"),
         )
 
         // ================= GPU =================
@@ -99,10 +99,10 @@ class HardwareUtils {
         Integer index = 0
         for (card in cards) {
             GpuInfo gpu = new GpuInfo(
-                    index: index,
-                    model: card.name,
-                    vendor: card.vendor,
-                    vram: card.getVRam(),
+                index: index,
+                model: card.name,
+                vendor: card.vendor,
+                vram: card.getVRam(),
             )
 
             if (appleGpuCores && card.vendor?.toLowerCase()?.contains('apple')) {
@@ -134,7 +134,7 @@ class HardwareUtils {
      * if (appleGpuCores != null) {
      *     println "Apple GPU cores: ${appleGpuCores}"
      * }
-     * }</pre>
+     *}</pre>
      */
     private static Integer getAppleGpuCores() {
         String os = System.getProperty('os.name')?.toLowerCase()

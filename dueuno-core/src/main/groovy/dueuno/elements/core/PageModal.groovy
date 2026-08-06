@@ -33,11 +33,11 @@ class PageModal extends Component {
         viewPath = '/dueuno/elements/'
 
         closeButton = createComponent(
-                class: Button,
-                id: 'closeButton',
-                icon: 'fa-times',
-                text: '',
-                display: false,
+            class: Button,
+            id: 'closeButton',
+            icon: 'fa-times',
+            text: '',
+            display: false,
         )
     }
 }

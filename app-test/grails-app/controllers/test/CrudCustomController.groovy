@@ -14,6 +14,7 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.components.Form
 import dueuno.elements.components.Header
 import dueuno.elements.components.Table
@@ -21,7 +22,6 @@ import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.controls.*
-import dueuno.elements.ElementsController
 import dueuno.elements.style.TextAlign
 import dueuno.elements.style.TextDefault
 
@@ -34,24 +34,24 @@ class CrudCustomController implements ElementsController {
 
         def c = createContent()
         c.header.addNextButton(
-                action: 'create',
-                text: TextDefault.NEW,
-                icon: 'fa-plus',
+            action: 'create',
+            text: TextDefault.NEW,
+            icon: 'fa-plus',
         )
 
         def form1 = c.addComponent(Form, 'form1')
         form1.with {
             sticky = true
             addField(
-                    class: TextField,
-                    id: 'test1',
-                    cols: 6,
+                class: TextField,
+                id: 'test1',
+                cols: 6,
             )
             addField(
-                    class: Select,
-                    id: 'test2',
-                    optionsFromList: ['PIPPO', 'PLUTO', 'PAPERINO'],
-                    cols: 6,
+                class: Select,
+                id: 'test2',
+                optionsFromList: ['PIPPO', 'PLUTO', 'PAPERINO'],
+                cols: 6,
             )
         }
 
@@ -92,14 +92,14 @@ class CrudCustomController implements ElementsController {
             sticky = true
             filters.with {
                 addField(
-                        class: DateField,
-                        id: 'dateFrom',
-                        cols: 3,
+                    class: DateField,
+                    id: 'dateFrom',
+                    cols: 3,
                 )
                 addField(
-                        class: DateField,
-                        id: 'dateTo',
-                        cols: 3,
+                    class: DateField,
+                    id: 'dateTo',
+                    cols: 3,
                 )
             }
 
@@ -112,12 +112,12 @@ class CrudCustomController implements ElementsController {
             actions.addAction(controller: 'controller3')
 
             columns = [
-                    'dateCreated',
-                    'company',
-                    'name',
-                    'picture',
-                    'address',
-                    'postcode',
+                'dateCreated',
+                'company',
+                'name',
+                'picture',
+                'address',
+                'postcode',
             ]
 
             max = 2
@@ -151,14 +151,14 @@ class CrudCustomController implements ElementsController {
                         keys: ['username'],
                 )*/
                 addField(
-                        class: DateField,
-                        id: 'dateFrom',
-                        cols: 3,
+                    class: DateField,
+                    id: 'dateFrom',
+                    cols: 3,
                 )
                 addField(
-                        class: DateField,
-                        id: 'dateTo',
-                        cols: 3,
+                    class: DateField,
+                    id: 'dateTo',
+                    cols: 3,
                 )
             }
 
@@ -171,15 +171,15 @@ class CrudCustomController implements ElementsController {
             actions.addAction(controller: 'controller3')
 
             sortable = [
-                    address: 'asc',
-                    name: 'desc',
+                address: 'asc',
+                name   : 'desc',
             ]
             columns = [
-                    'dateCreated',
-                    'company',
-                    'name',
-                    'picture',
-                    'address',
+                'dateCreated',
+                'company',
+                'name',
+                'picture',
+                'address',
             ]
 
             max = 3
@@ -207,14 +207,14 @@ class CrudCustomController implements ElementsController {
                         keys: ['username'],
                 )*/
                 addField(
-                        class: DateField,
-                        id: 'dateFrom',
-                        cols: 3,
+                    class: DateField,
+                    id: 'dateFrom',
+                    cols: 3,
                 )
                 addField(
-                        class: DateField,
-                        id: 'dateTo',
-                        cols: 3,
+                    class: DateField,
+                    id: 'dateTo',
+                    cols: 3,
                 )
             }
 
@@ -227,21 +227,21 @@ class CrudCustomController implements ElementsController {
             actions.addAction(controller: 'controller3')
 
             sortable = [
-                    name: 'asc',
-                    address: 'desc',
+                name   : 'asc',
+                address: 'desc',
             ]
             columns = [
-                    'dateCreated',
-                    'company',
-                    'name',
-                    'picture',
-                    'address',
-                    'postcode',
-                    'salary',
-                    'distanceKm',
-                    'dateStart',
-                    'dateEnd',
-                    'active',
+                'dateCreated',
+                'company',
+                'name',
+                'picture',
+                'address',
+                'postcode',
+                'salary',
+                'distanceKm',
+                'dateStart',
+                'dateEnd',
+                'active',
             ]
 
             max = 4
@@ -275,52 +275,52 @@ class CrudCustomController implements ElementsController {
 
     private buildForm(Map args = [:]) {
         def c = args.create
-                ? createContent(ContentCreate)
-                : createContent(ContentEdit)
+            ? createContent(ContentCreate)
+            : createContent(ContentEdit)
         c.form.with {
             validate = TPerson
             addField(
-                    class: Select,
-                    id: 'company',
-                    optionsFromRecordset: companyService.list(),
+                class: Select,
+                id: 'company',
+                optionsFromRecordset: companyService.list(),
             )
             addField(
-                    class: TextField,
-                    id: 'name',
+                class: TextField,
+                id: 'name',
             )
             addField(
-                    class: TextField,
-                    id: 'address',
-                    help: 'Runtime help message',
-                    label: 'Indirizzo (runtime label)',
+                class: TextField,
+                id: 'address',
+                help: 'Runtime help message',
+                label: 'Indirizzo (runtime label)',
             )
             addField(
-                    class: NumberField,
-                    id: 'postcode',
+                class: NumberField,
+                id: 'postcode',
             )
             addField(
-                    class: MoneyField,
-                    id: 'salary',
+                class: MoneyField,
+                id: 'salary',
             )
             addField(
-                    class: QuantityField,
-                    id: 'distanceKm',
+                class: QuantityField,
+                id: 'distanceKm',
             )
             addField(
-                    class: DateField,
-                    id: 'dateStart',
+                class: DateField,
+                id: 'dateStart',
             )
             addField(
-                    class: DateField,
-                    id: 'dateEnd',
+                class: DateField,
+                id: 'dateEnd',
             )
             addField(
-                    class: Checkbox,
-                    id: 'active',
+                class: Checkbox,
+                id: 'active',
             )
             addField(
-                    class: Upload,
-                    id: 'picture',
+                class: Upload,
+                id: 'picture',
             )
         }
         return c

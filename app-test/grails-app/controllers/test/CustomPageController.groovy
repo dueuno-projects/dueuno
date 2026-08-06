@@ -15,11 +15,11 @@
 package test
 
 import custom.CustomPage
+import dueuno.elements.ElementsController
 import dueuno.elements.components.Form
 import dueuno.elements.components.Label
 import dueuno.elements.components.Table
 import dueuno.elements.components.TableRow
-import dueuno.elements.ElementsController
 import dueuno.security.SecurityService
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -33,11 +33,11 @@ class CustomPageController implements ElementsController {
         def header = p.content.addComponent(Form, 'headerForm')
         header.with {
             addField(
-                    class: Label,
-                    id: 'status',
-                    html: buildStatusLabel(getCurrentStatus()),
-                    cols: 12,
-                    displayLabel: false,
+                class: Label,
+                id: 'status',
+                html: buildStatusLabel(getCurrentStatus()),
+                cols: 12,
+                displayLabel: false,
             )
         }
 
@@ -73,12 +73,12 @@ class CustomPageController implements ElementsController {
 //                )
             }
             sortable = [
-                    username: 'asc',
+                username: 'asc',
             ]
             columns = [
-                    'username',
-                    'firstname',
-                    'lastname',
+                'username',
+                'firstname',
+                'lastname',
             ]
 
             actions.removeTailAction()
@@ -117,25 +117,25 @@ class CustomPageController implements ElementsController {
 
     private Map getStatus(String status) {
         return [
-                status     : status,
-                description: getStatusDescription(status),
-                color      : 'bg-light',
+            status     : status,
+            description: getStatusDescription(status),
+            color      : 'bg-light',
         ]
     }
 
     private String getStatusDescription(String status) {
         Map descriptions = [
-                '0': 'MARKER SPENTO, PREMI "RESET EMERGENZE"',
-                '1': 'MARKER IN RISCALDAMENTO, ATTENDI...',
-                '2': 'MARKER SPENTO, GIRA LA CHIAVE',
-                '3': 'MARKER IN STANDBY',
-                '4': 'MARKER PRONTO, CHIUDI IL COPERCHIO PER STAMPARE',
-                '5': 'MARKER PRONTO A STAMPARE',
-                '6': 'MARKER PRONTO, SHUTTER CHIUSO',
-                '7': 'STAMPA IN CORSO',
-                '8': 'STAMPA IN CORSO, SHUTTER CHIUSO',
-                '9': 'MARKER SPENTO, RIMUOVI IL COPERCHIO',
-                ':': 'ERRORE DI SISTEMA, USA INTERRUTTORE PRINCIPALE "ON/OFF"',
+            '0': 'MARKER SPENTO, PREMI "RESET EMERGENZE"',
+            '1': 'MARKER IN RISCALDAMENTO, ATTENDI...',
+            '2': 'MARKER SPENTO, GIRA LA CHIAVE',
+            '3': 'MARKER IN STANDBY',
+            '4': 'MARKER PRONTO, CHIUDI IL COPERCHIO PER STAMPARE',
+            '5': 'MARKER PRONTO A STAMPARE',
+            '6': 'MARKER PRONTO, SHUTTER CHIUSO',
+            '7': 'STAMPA IN CORSO',
+            '8': 'STAMPA IN CORSO, SHUTTER CHIUSO',
+            '9': 'MARKER SPENTO, RIMUOVI IL COPERCHIO',
+            ':': 'ERRORE DI SISTEMA, USA INTERRUTTORE PRINCIPALE "ON/OFF"',
         ]
 
         return descriptions[status]

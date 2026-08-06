@@ -26,10 +26,10 @@ import org.hibernate.cfg.ImprovedNamingStrategy
 @CompileStatic
 class TNamingStrategy extends ImprovedNamingStrategy {
 
-    String classToTableName(String className){
+    String classToTableName(String className) {
         String domainName = className.startsWith('T')
-                ? className.drop(1)
-                : className
+            ? className.drop(1)
+            : className
         String tableName = super.classToTableName(domainName)
         return tableName
     }

@@ -24,8 +24,8 @@ import org.grails.datastore.gorm.GormEntity
  */
 
 @GrailsCompileStatic
-@EqualsAndHashCode(includes='entry')
-@ToString(includes='entry', includeNames=true, includePackage=false)
+@EqualsAndHashCode(includes = 'entry')
+@ToString(includes = 'entry', includeNames = true, includePackage = false)
 class TRoleHierarchyEntry implements GormEntity, Serializable {
 
     private static final long serialVersionUID = 1

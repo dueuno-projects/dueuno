@@ -58,34 +58,34 @@ class SystemInfoService implements WebRequestAware {
         }
 
         return [
-                environment         : message('default.env.' + EnvUtils.currentEnvironment),
-                browser             : request.getHeader("User-Agent"),
+            environment         : message('default.env.' + EnvUtils.currentEnvironment),
+            browser             : request.getHeader("User-Agent"),
 
-                applicationName     : grailsApplication.config.getProperty('info.app.name', String) as String,
-                applicationPath     : servletContext.getRealPath('/'),
-                applicationVersion  : grailsApplication.config.getProperty('info.app.version', String) as String,
+            applicationName     : grailsApplication.config.getProperty('info.app.name', String) as String,
+            applicationPath     : servletContext.getRealPath('/'),
+            applicationVersion  : grailsApplication.config.getProperty('info.app.version', String) as String,
 
-                dueunoVersion       : dueunoVersion,
-                grailsVersion       : grailsApplication.config.getProperty('info.app.grailsVersion', String) as String,
-                groovyVersion       : GroovySystem.getVersion(),
+            dueunoVersion       : dueunoVersion,
+            grailsVersion       : grailsApplication.config.getProperty('info.app.grailsVersion', String) as String,
+            groovyVersion       : GroovySystem.getVersion(),
 
-                serverVirtualThreads: Thread.currentThread().isVirtual() ? 'Enabled' : 'Disabled',
-                serverVersion       : servletContext.getServerInfo(),
+            serverVirtualThreads: Thread.currentThread().isVirtual() ? 'Enabled' : 'Disabled',
+            serverVersion       : servletContext.getServerInfo(),
 
-                jvmUptime           : "${uptime.toDays()}d ${uptime.toHoursPart()}h ${uptime.toMinutesPart()}m ${uptime.toSecondsPart()}s",
-                jvmHeapMax          : "${Math.round(jvmHeapMax)} MB",
-                jvmHeapUsed         : "${Math.round(jvmHeapUsed)} MB",
-                jvmHeapFree         : "${Math.round(jvmHeapFree)} MB",
-                jvmGC               : jvmGC,
-                jvmPath             : System.getProperty('java.home'),
-                jvmVersion          : System.getProperty('java.version') + ' ' + System.getProperty('java.vendor'),
+            jvmUptime           : "${uptime.toDays()}d ${uptime.toHoursPart()}h ${uptime.toMinutesPart()}m ${uptime.toSecondsPart()}s",
+            jvmHeapMax          : "${Math.round(jvmHeapMax)} MB",
+            jvmHeapUsed         : "${Math.round(jvmHeapUsed)} MB",
+            jvmHeapFree         : "${Math.round(jvmHeapFree)} MB",
+            jvmGC               : jvmGC,
+            jvmPath             : System.getProperty('java.home'),
+            jvmVersion          : System.getProperty('java.version') + ' ' + System.getProperty('java.vendor'),
 
-                osVersion           : System.getProperty('os.name') + ' ' + System.getProperty('os.version'),
+            osVersion           : System.getProperty('os.name') + ' ' + System.getProperty('os.version'),
 
-                hardwareHD          : "${(hwHD.totalSpace / 1_000_000_000).round(0)} GB (${(hwHD.totalSpace / (1024**3)).round(0)} GiB)",
-                hardwareRAM         : "${ramToGb(hw.ram)} GB",
-                hardwareGPU         : gpuList.join(', '),
-                hardwareCPU         : "${hw.cpu.model} (${hw.cpu.physicalCores} cores, ${hw.cpu.architecture})",
+            hardwareHD          : "${(hwHD.totalSpace / 1_000_000_000).round(0)} GB (${(hwHD.totalSpace / (1024**3)).round(0)} GiB)",
+            hardwareRAM         : "${ramToGb(hw.ram)} GB",
+            hardwareGPU         : gpuList.join(', '),
+            hardwareCPU         : "${hw.cpu.model} (${hw.cpu.physicalCores} cores, ${hw.cpu.architecture})",
         ]
     }
 

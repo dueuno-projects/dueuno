@@ -66,9 +66,9 @@ class TableFilters extends Form {
      * Initialises the {@link #actionbar}, {@link #searchButton}, and {@link #resetButton} controls.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code table} ({@link Table}, required),
-     *             {@code fold} ({@link Boolean}, default {@code false}),
-     *             {@code autoFold} ({@link Boolean}, default {@code false}),
+     * {@code table} ({@link Table}, required),
+     * {@code fold} ({@link Boolean}, default {@code false}),
+     * {@code autoFold} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link Form#Form(Map)}
      */
     TableFilters(Map args) {
@@ -85,27 +85,27 @@ class TableFilters extends Form {
         // CONTROLS
         //
         actionbar = createComponent(
-                class: TableActionbar,
-                id: 'tableActionbar',
-                table: table,
-                filters: this,
+            class: TableActionbar,
+            id: 'tableActionbar',
+            table: table,
+            filters: this,
         )
 
         searchButton = createControl(
-                class: Link,
-                id: 'searchButton',
-                action: actionName,
-                submit: [id],
-                icon: 'fa-magnifying-glass',
-                text: '',
+            class: Link,
+            id: 'searchButton',
+            action: actionName,
+            submit: [id],
+            icon: 'fa-magnifying-glass',
+            text: '',
         )
         resetButton = createControl(
-                class: Link,
-                id: 'resetButton',
-                action: actionName,
-                icon: 'fa-delete-left',
-                tooltip: 'component.table.filters.reset',
-                text: '',
+            class: Link,
+            id: 'resetButton',
+            action: actionName,
+            icon: 'fa-delete-left',
+            tooltip: 'component.table.filters.reset',
+            text: '',
         )
     }
 
@@ -120,7 +120,7 @@ class TableFilters extends Form {
     String getPropertiesAsJSON(Map properties = [:]) {
         setSubmitParams()
         Map thisProperties = [
-                autoFold: autoFold,
+            autoFold: autoFold,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
@@ -158,15 +158,15 @@ class TableFilters extends Form {
      * each filter control to submit the filter form on change.
      */
     private void setSubmitParams() {
-        searchButton.params = table.submitParams + (Map)[
-                _21Table: table.id,
-                _21FiltersSearch: true,
-                _21TableOffset: 0,
+        searchButton.params = table.submitParams + (Map) [
+            _21Table        : table.id,
+            _21FiltersSearch: true,
+            _21TableOffset  : 0,
         ]
-        resetButton.params = table.submitParams + (Map)[
-                _21Table: table.id,
-                _21FiltersReset: true,
-                _21TableOffset: 0,
+        resetButton.params = table.submitParams + (Map) [
+            _21Table       : table.id,
+            _21FiltersReset: true,
+            _21TableOffset : 0,
         ]
 
         for (field in components) {

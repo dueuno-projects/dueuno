@@ -83,7 +83,7 @@ trait LinkGeneratorAware {
     }
 
     private String generateResourceLink(String action, String tenantId, String root, String pathname, Boolean reload) {
-        String request = "/downloadResource/${action}?tenantId=${tenantId}&root=${root}&pathname=${pathname}${reload ? '&' + System.currentTimeMillis() : '' }"
+        String request = "/downloadResource/${action}?tenantId=${tenantId}&root=${root}&pathname=${pathname}${reload ? '&' + System.currentTimeMillis() : ''}"
         return contextPath + request
     }
 }

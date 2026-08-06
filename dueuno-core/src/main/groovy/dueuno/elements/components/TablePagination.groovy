@@ -69,8 +69,8 @@ class TablePagination extends Component {
      * known offset and max from the action session.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code table} ({@link Table}, required),
-     *             {@code total} ({@link Integer}),
+     * {@code table} ({@link Table}, required),
+     * {@code total} ({@link Integer}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     @Requires({ args.table })
@@ -81,68 +81,68 @@ class TablePagination extends Component {
         total = args.total as Integer
 
         goFirst = createControl(
-                class: Link,
-                id: 'goFirst',
-                controller: controllerName,
-                action: actionName,
-                submit: [table.filters.id],
-                params: [
-                        _21Table: table.id,
-                        _21TableOffset: 0,
-                ],
-                icon: 'fa-angles-left',
-                text: '',
-                scroll: table.id,
+            class: Link,
+            id: 'goFirst',
+            controller: controllerName,
+            action: actionName,
+            submit: [table.filters.id],
+            params: [
+                _21Table      : table.id,
+                _21TableOffset: 0,
+            ],
+            icon: 'fa-angles-left',
+            text: '',
+            scroll: table.id,
         )
         goPrev = createControl(
-                class: Link,
-                id: 'goPrev',
-                controller: controllerName,
-                action: actionName,
-                submit: [table.filters.id],
-                icon: 'fa-angle-left',
-                text: '',
-                scroll: table.id,
+            class: Link,
+            id: 'goPrev',
+            controller: controllerName,
+            action: actionName,
+            submit: [table.filters.id],
+            icon: 'fa-angle-left',
+            text: '',
+            scroll: table.id,
         )
         goNext = createControl(
-                class: Link,
-                id: 'goNext',
-                controller: controllerName,
-                action: actionName,
-                submit: [table.filters.id],
-                icon: 'fa-angle-right',
-                text: TextDefault.NEXT,
-                scroll: table.id,
+            class: Link,
+            id: 'goNext',
+            controller: controllerName,
+            action: actionName,
+            submit: [table.filters.id],
+            icon: 'fa-angle-right',
+            text: TextDefault.NEXT,
+            scroll: table.id,
         )
         goMax20 = createControl(
-                class: Link,
-                id: 'goMax20',
-                controller: controllerName,
-                action: actionName,
-                submit: [table.filters.id],
-                params: [
-                        _21Table: table.id,
-                        _21TableOffset: 0,
-                        _21TableMax: 20,
-                ],
-                text: 'component.table.pagination.display',
-                textArgs: [20],
-                scroll: table.id,
+            class: Link,
+            id: 'goMax20',
+            controller: controllerName,
+            action: actionName,
+            submit: [table.filters.id],
+            params: [
+                _21Table      : table.id,
+                _21TableOffset: 0,
+                _21TableMax   : 20,
+            ],
+            text: 'component.table.pagination.display',
+            textArgs: [20],
+            scroll: table.id,
         )
         goMax50 = createControl(
-                class: Link,
-                id: 'goMax50',
-                controller: controllerName,
-                action: actionName,
-                submit: [table.filters.id],
-                params: [
-                        _21Table: table.id,
-                        _21TableOffset: 0,
-                        _21TableMax: 50,
-                ],
-                text: 'component.table.pagination.display',
-                textArgs: [50],
-                scroll: table.id,
+            class: Link,
+            id: 'goMax50',
+            controller: controllerName,
+            action: actionName,
+            submit: [table.filters.id],
+            params: [
+                _21Table      : table.id,
+                _21TableOffset: 0,
+                _21TableMax   : 50,
+            ],
+            text: 'component.table.pagination.display',
+            textArgs: [50],
+            scroll: table.id,
         )
 
         initializeDefaultParams()
@@ -193,8 +193,8 @@ class TablePagination extends Component {
     void setOffset(Integer value) {
         Integer currentOffset = actionSession[requestedOffsetName] as Integer ?: value
         Integer requestedOffset = requestParams._21TableOffset != null
-                ? requestParams._21TableOffset as Integer
-                : currentOffset
+            ? requestParams._21TableOffset as Integer
+            : currentOffset
         Boolean hasTableRequest = requestParams._21Table == table.id
 
         if (hasTableRequest && requestParams._21TableOffset != null) {
@@ -233,12 +233,12 @@ class TablePagination extends Component {
         }
 
         goPrev.params = [
-                _21Table: table.id,
-                _21TableOffset: offset - (max ?: 0),
+            _21Table      : table.id,
+            _21TableOffset: offset - (max ?: 0),
         ]
         goNext.params = [
-                _21Table: table.id,
-                _21TableOffset: offset + (max ?: 0),
+            _21Table      : table.id,
+            _21TableOffset: offset + (max ?: 0),
         ]
         requestParams.max = max
     }
@@ -257,8 +257,8 @@ class TablePagination extends Component {
         table.fetchParams.offset = 0
         requestParams._21TableOffset = 0
         goNext.params = [
-                _21Table: table.id,
-                _21TableOffset: max ?: 0,
+            _21Table      : table.id,
+            _21TableOffset: max ?: 0,
         ]
     }
 
@@ -328,6 +328,6 @@ class TablePagination extends Component {
         Number last = (offset + (max ?: 0) < total) ? offset + (max ?: 0) : total
         String of = message('component.table.pagination.of')
 
-        return  first + '-' + last + " ${of} " + prettyPrint(total)
+        return first + '-' + last + " ${of} " + prettyPrint(total)
     }
 }

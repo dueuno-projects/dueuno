@@ -15,11 +15,11 @@
 package dueuno.elements.components
 
 import dueuno.commons.utils.ObjectUtils
+import dueuno.elements.ElementsException
+import dueuno.elements.controls.HiddenField
 import dueuno.elements.core.Component
 import dueuno.elements.core.Control
 import dueuno.elements.core.Elements
-import dueuno.elements.controls.HiddenField
-import dueuno.elements.ElementsException
 import dueuno.types.Type
 import dueuno.types.Types
 import grails.gorm.validation.ConstrainedProperty
@@ -67,9 +67,9 @@ class Form extends Component {
      * Creates a {@code Form} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code validate}/{@code constraints} ({@link Class}) — domain or command class for constraint lookup,
-     *             {@code autocomplete} ({@link Boolean}, default {@code false}),
-     *             {@code autofocus} ({@link Boolean}, default {@code true}),
+     * {@code validate}/{@code constraints} ({@link Class}) — domain or command class for constraint lookup,
+     * {@code autocomplete} ({@link Boolean}, default {@code false}),
+     * {@code autofocus} ({@link Boolean}, default {@code true}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     Form(Map args) {
@@ -112,9 +112,9 @@ class Form extends Component {
      * </p>
      *
      * @param args field configuration; required keys: {@code id} ({@link String}),
-     *             {@code class} ({@link Class}); optional keys include {@code nullable},
-     *             {@code maxSize}, {@code label}, {@code help}, {@code cols}, {@code submit},
-     *             {@code readonly}, and all keys accepted by the target control/component
+     * {@code class} ({@link Class}); optional keys include {@code nullable},
+     * {@code maxSize}, {@code label}, {@code help}, {@code cols}, {@code submit},
+     * {@code readonly}, and all keys accepted by the target control/component
      * @return the newly created {@link FormField}
      */
     @Requires({ args.class && args.id })
@@ -175,7 +175,7 @@ class Form extends Component {
      * is neither a domain class nor a {@code Validateable}.
      *
      * @param domainOrCommandClass the domain or command class to inspect
-     * @param fieldName            the field name or dot-separated path (e.g. {@code "address.city"})
+     * @param fieldName the field name or dot-separated path (e.g. {@code "address.city"})
      * @return a map with {@code nullable} and {@code maxSize} keys, or an empty map
      * @throws ElementsException if the class is neither a GORM domain nor a {@code Validateable}
      */
@@ -193,13 +193,13 @@ class Form extends Component {
         Boolean isCommandClass = Validateable.isAssignableFrom(domainOrCommandClass)
         if (!isDomainClass && !isCommandClass) {
             throw new ElementsException(
-                    "Cannot retrieve constraints from class '${domainOrCommandClass}', " +
-                            "please specify a GORM Domain class or a class that implements '${Validateable.name}'")
+                "Cannot retrieve constraints from class '${domainOrCommandClass}', " +
+                    "please specify a GORM Domain class or a class that implements '${Validateable.name}'")
         }
 
         Map<String, ConstrainedProperty> constraintsMap = isDomainClass
-                ? domainOrCommandClass['constrainedProperties'] as Map<String, ConstrainedProperty>
-                : domainOrCommandClass['constraintsMap'] as Map<String, ConstrainedProperty>
+            ? domainOrCommandClass['constrainedProperties'] as Map<String, ConstrainedProperty>
+            : domainOrCommandClass['constraintsMap'] as Map<String, ConstrainedProperty>
 
         Boolean isSimpleField = (fieldParts.size() == 1)
         if (isSimpleField) {
@@ -221,7 +221,7 @@ class Form extends Component {
     /**
      * Adds a hidden key field whose type is inferred automatically from the given value.
      *
-     * @param id    the field identifier (maps to the corresponding parameter name on submission)
+     * @param id the field identifier (maps to the corresponding parameter name on submission)
      * @param value the key value; its type is detected via {@link Types#getType(Object)}
      */
     void addKeyField(String id, Object value = null) {
@@ -232,9 +232,9 @@ class Form extends Component {
     /**
      * Adds a hidden key field with an explicit {@link Type} constant.
      *
-     * @param id        the field identifier
+     * @param id the field identifier
      * @param valueType the {@link Type} of the key value
-     * @param value     the key value
+     * @param value the key value
      */
     void addKeyField(String id, Type valueType, Object value) {
         addKeyField(id, valueType.toString(), value)
@@ -246,9 +246,9 @@ class Form extends Component {
      * Enum values are automatically coerced to their {@link String} representation with type
      * {@link Type#STRING}.
      *
-     * @param id        the field identifier
+     * @param id the field identifier
      * @param valueType the type name string (must be a registered type)
-     * @param value     the key value
+     * @param value the key value
      * @throws ElementsException if {@code valueType} is not a registered type
      */
     // We are using a Sting instead of a Type to accomodate custom types (Eg. Money, Quantity, etc)
@@ -263,10 +263,10 @@ class Form extends Component {
         }
 
         FormField field = addField(
-                class: HiddenField,
-                id: id,
-                valueType: valueType,
-                value: value,
+            class: HiddenField,
+            id: id,
+            valueType: valueType,
+            value: value,
         )
         keyFields += field
     }
@@ -281,7 +281,7 @@ class Form extends Component {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                autofocus: autofocus,
+            autofocus: autofocus,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
@@ -333,7 +333,7 @@ class Form extends Component {
      * </p>
      *
      * @param control the control to populate
-     * @param obj     the source object; may be {@code null}
+     * @param obj the source object; may be {@code null}
      */
     private void setValue(Control control, Object obj = null) {
         if (control.value == control.defaultValue) {

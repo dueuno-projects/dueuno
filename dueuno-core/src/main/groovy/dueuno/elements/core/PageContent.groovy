@@ -58,10 +58,10 @@ abstract class PageContent extends Component {
      * All {@link Component} arguments are supported, plus:
      * <ul>
      *     <li>{@code title} — i18n key or literal title text; defaults to
-     *         {@code <controllerName>.<actionName>.title}</li>
+     * {@code <controllerName>.<actionName>.title}</li>
      *     <li>{@code titleArgs} — interpolation arguments for the title message</li>
      *     <li>Any {@link PageRenderProperties} key (e.g. {@code modal}, {@code animate},
-     *         {@code scroll})</li>
+     * {@code scroll})</li>
      * </ul>
      *
      * @param args map of content properties
@@ -109,9 +109,9 @@ abstract class PageContent extends Component {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                controller: controllerName,
-                action: actionName,
-                renderProperties: renderProperties.asMap(),
+            controller      : controllerName,
+            action          : actionName,
+            renderProperties: renderProperties.asMap(),
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

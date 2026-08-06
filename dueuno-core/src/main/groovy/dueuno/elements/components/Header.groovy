@@ -62,9 +62,9 @@ class Header extends Component {
      * without registering default actions.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code text} ({@link String}) — header title (defaults to {@code controller.action.id}),
-     *             {@code textArgs} ({@link List}),
-     *             {@code icon} ({@link String}),
+     * {@code text} ({@link String}) — header title (defaults to {@code controller.action.id}),
+     * {@code textArgs} ({@link List}),
+     * {@code icon} ({@link String}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     Header(Map args) {
@@ -79,13 +79,13 @@ class Header extends Component {
         hasNextButton = false
 
         backButton = createControl(
-                class: Button,
-                id: 'backButton',
+            class: Button,
+            id: 'backButton',
         )
         nextButton = createControl(
-                class: Button,
-                id: 'nextButton',
-                primary: true,
+            class: Button,
+            id: 'nextButton',
+            primary: true,
         )
     }
 
@@ -175,7 +175,7 @@ class Header extends Component {
             args.params = args.params ?: [:]
         }
 
-        args.text = (args.text == null) ? TextDefault.BACK: args.text
+        args.text = (args.text == null) ? TextDefault.BACK : args.text
         args.icon = (args.icon == null) ? 'fa-angle-left' : args.icon
         if (args.group) nextButton.group = args.group
 
@@ -222,7 +222,7 @@ class Header extends Component {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                sticky: sticky == null ? isSticky : sticky,
+            sticky: sticky == null ? isSticky : sticky,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

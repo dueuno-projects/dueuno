@@ -33,15 +33,15 @@ class PwaManifestController implements ElementsController {
 
         response.contentType = 'application/manifest+json'
         Map manifest = [
-                name: appname,
-                short_name: appname,
-                id: contextPath,
-                start_url: contextPath,
-                display: 'standalone',
-                icons: [
-                        [src: appicon, sizes: '192x192', type: 'image/png'],
-                        [src: appicon, sizes: '512x512', type: 'image/png']
-                ]
+            name      : appname,
+            short_name: appname,
+            id        : contextPath,
+            start_url : contextPath,
+            display   : 'standalone',
+            icons     : [
+                [src: appicon, sizes: '192x192', type: 'image/png'],
+                [src: appicon, sizes: '512x512', type: 'image/png']
+            ]
         ]
 
         render manifest as JSON

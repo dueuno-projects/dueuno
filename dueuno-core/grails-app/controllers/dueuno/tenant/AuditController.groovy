@@ -43,53 +43,53 @@ class AuditController implements ElementsController {
             filters.with {
                 fold = false
                 addField(
-                        class: DateField,
-                        id: 'dateFrom',
-                        defaultValue: LocalDate.now(),
-                        cols: 2,
+                    class: DateField,
+                    id: 'dateFrom',
+                    defaultValue: LocalDate.now(),
+                    cols: 2,
                 )
                 addField(
-                        class: DateField,
-                        id: 'dateTo',
-                        defaultValue: LocalDate.now(),
-                        cols: 2,
+                    class: DateField,
+                    id: 'dateTo',
+                    defaultValue: LocalDate.now(),
+                    cols: 2,
                 )
                 addField(
-                        class: Select,
-                        id: 'username',
-                        optionsFromList: securityService.listAllUsername(),
-                        renderTextPrefix: false,
-                        search: true,
-                        cols: 2,
+                    class: Select,
+                    id: 'username',
+                    optionsFromList: securityService.listAllUsername(),
+                    renderTextPrefix: false,
+                    search: true,
+                    cols: 2,
                 )
                 addField(
-                        class: Select,
-                        id: 'operation',
-                        optionsFromEnum: AuditOperation,
-                        cols: 2,
+                    class: Select,
+                    id: 'operation',
+                    optionsFromEnum: AuditOperation,
+                    cols: 2,
                 )
                 addField(
-                        class: TextField,
-                        id: 'find',
-                        label: TextDefault.FIND,
-                        cols: 4,
+                    class: TextField,
+                    id: 'find',
+                    label: TextDefault.FIND,
+                    cols: 4,
                 )
             }
             sortable = [
-                    dateCreated: 'desc',
+                dateCreated: 'desc',
             ]
             columns = [
-                    'dateCreated',
-                    'username',
-                    'operation',
-                    'message',
-                    'objectName',
-                    'stateBefore',
-                    'stateAfter',
-                    'ip',
-                    'port',
-                    'requestInfo',
-                    'userAgent',
+                'dateCreated',
+                'username',
+                'operation',
+                'message',
+                'objectName',
+                'stateBefore',
+                'stateAfter',
+                'ip',
+                'port',
+                'requestInfo',
+                'userAgent',
             ]
             actions.removeAllActions()
             actions.addDefaultAction(action: 'verify', icon: 'fa-bookmark', tooltip: 'audit.verify.tooltip')

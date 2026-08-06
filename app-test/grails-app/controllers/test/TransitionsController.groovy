@@ -14,6 +14,7 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.components.Button
 import dueuno.elements.components.Form
 import dueuno.elements.components.Label
@@ -21,9 +22,8 @@ import dueuno.elements.components.Separator
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.controls.*
 import dueuno.elements.core.ComponentEvent
-import dueuno.elements.ElementsController
-import dueuno.security.SecurityService
 import dueuno.elements.style.TextStyle
+import dueuno.security.SecurityService
 import dueuno.types.Money
 import dueuno.types.Quantity
 import dueuno.types.QuantityUnit
@@ -47,157 +47,157 @@ class TransitionsController implements ElementsController {
         c.form.with {
             if (params.transitioned) {
                 addField(
-                        class: Label,
-                        id: 'transitioned',
-                        text: 'Hai confermato, bravo!',
-                        textColor: '#aa0000',
-                        backgroundColor: "rgba(${primaryBackgroundColorInt.join(', ')}, ${primaryBackgroundColorAlpha})",
-                        tag: true,
-                        displayLabel: false,
-                        cols: 12,
+                    class: Label,
+                    id: 'transitioned',
+                    text: 'Hai confermato, bravo!',
+                    textColor: '#aa0000',
+                    backgroundColor: "rgba(${primaryBackgroundColorInt.join(', ')}, ${primaryBackgroundColorAlpha})",
+                    tag: true,
+                    displayLabel: false,
+                    cols: 12,
                 )
             }
 
             addField(
-                    class: Button,
-                    id: 'messageButton',
-                    action: 'showMessage',
-                    displayLabel: false,
-                    cols: 4,
+                class: Button,
+                id: 'messageButton',
+                action: 'showMessage',
+                displayLabel: false,
+                cols: 4,
             )
             addField(
-                    class: Button,
-                    id: 'errorButton',
-                    action: 'showError',
-                    displayLabel: false,
-                    cols: 4,
+                class: Button,
+                id: 'errorButton',
+                action: 'showError',
+                displayLabel: false,
+                cols: 4,
             )
             addField(
-                    class: Button,
-                    id: 'confirmButton',
-                    action: 'showConfirm',
-                    displayLabel: false,
-                    cols: 4,
+                class: Button,
+                id: 'confirmButton',
+                action: 'showConfirm',
+                displayLabel: false,
+                cols: 4,
             )
             addField(
-                    class: Button,
-                    id: 'btn1',
-                    cols: 6,
+                class: Button,
+                id: 'btn1',
+                cols: 6,
             ).display = true
             addField(
-                    class: Button,
-                    id: 'btn2',
-                    icon: 'fa-user',
-                    cols: 6,
+                class: Button,
+                id: 'btn2',
+                icon: 'fa-user',
+                cols: 6,
             ).display = false
             addField(
-                    class: Button,
-                    id: 'btn3',
-                    cols: 6,
+                class: Button,
+                id: 'btn3',
+                cols: 6,
             ).display = true
             addField(
-                    class: Button,
-                    id: 'btn4',
-                    cols: 6,
+                class: Button,
+                id: 'btn4',
+                cols: 6,
             ).display = false
 
             addField(
-                    class: Label,
-                    id: 'label',
-                    text: 'Replace me or add something below me',
-                    tag: true,
-                    backgroundColor: primaryBackgroundColor,
-                    cols: 12,
+                class: Label,
+                id: 'label',
+                text: 'Replace me or add something below me',
+                tag: true,
+                backgroundColor: primaryBackgroundColor,
+                cols: 12,
             )
 
             addField(
-                    class: Select,
-                    id: 'user1',
-                    optionsFromRecordset: personService.list(),
-                    keys: ['id'],
-                    loading: true,
-                    onChange: 'onSelectChange',
-                    submit: 'form',
-                    params: [id: 10],
-                    textStyle: TextStyle.LINE_THROUGH,
-                    cols: 12,
+                class: Select,
+                id: 'user1',
+                optionsFromRecordset: personService.list(),
+                keys: ['id'],
+                loading: true,
+                onChange: 'onSelectChange',
+                submit: 'form',
+                params: [id: 10],
+                textStyle: TextStyle.LINE_THROUGH,
+                cols: 12,
             )
 //            .on(event: 'change', submit: 'form', params: [test: [a:1, b:2]], action: 'onSelectChange')
 
             addField(
-                    class: Select,
-                    id: 'select2',
-                    readonly: true,
+                class: Select,
+                id: 'select2',
+                readonly: true,
 //                    onChange: 'onSelect2Change',
-                    textStyle: TextStyle.BOLD,
-                    cols: 12,
+                textStyle: TextStyle.BOLD,
+                cols: 12,
             ).on(event: 'change', submit: 'form', action: 'onSelect2Change')
 
             addField(
-                    class: Select,
-                    id: 'select3',
-                    textStyle: TextStyle.ITALIC,
-                    cols: 12,
+                class: Select,
+                id: 'select3',
+                textStyle: TextStyle.ITALIC,
+                cols: 12,
             )
             addField(
-                    class: MoneyField,
-                    id: 'moneyfield',
-                    decimals: 2,
-                    cols: 12,
+                class: MoneyField,
+                id: 'moneyfield',
+                decimals: 2,
+                cols: 12,
             )
             addField(
-                    class: TextField,
-                    id: 'textfield',
-                    cols: 12,
+                class: TextField,
+                id: 'textfield',
+                cols: 12,
             )
             addField(
-                    class: NumberField,
-                    id: 'numberfield',
-                    decimals: 5,
-                    cols: 12,
+                class: NumberField,
+                id: 'numberfield',
+                decimals: 5,
+                cols: 12,
             )
             addField(
-                    class: QuantityField,
-                    id: 'quantityfield',
-                    unit: QuantityUnit.KM,
-                    cols: 12,
+                class: QuantityField,
+                id: 'quantityfield',
+                unit: QuantityUnit.KM,
+                cols: 12,
             )
             addField(
-                    class: DateTimeField,
-                    id: 'datetimefield',
-                    value: LocalDateTime.now(),
-                    cols: 12,
+                class: DateTimeField,
+                id: 'datetimefield',
+                value: LocalDateTime.now(),
+                cols: 12,
             )
             addField(
-                    class: DateField,
-                    id: 'datefield',
-                    value: LocalDate.now(),
-                    cols: 12,
+                class: DateField,
+                id: 'datefield',
+                value: LocalDate.now(),
+                cols: 12,
             )
             addField(
-                    class: TimeField,
-                    id: 'timefield',
-                    value: LocalTime.now(),
-                    cols: 12,
+                class: TimeField,
+                id: 'timefield',
+                value: LocalTime.now(),
+                cols: 12,
             )
 
             addField(
-                    class: Textarea,
-                    id: 'textarea',
-                    maxSize: 160,
-                    cols: 12,
+                class: Textarea,
+                id: 'textarea',
+                maxSize: 160,
+                cols: 12,
             )
             addField(
-                    class: Checkbox,
-                    id: 'checkbox',
-                    cols: 12,
+                class: Checkbox,
+                id: 'checkbox',
+                cols: 12,
             )
             addField(
-                    class: MultipleCheckbox,
-                    id: 'multiple',
-                    optionsFromRecordset: personService.list(max: 5),
-                    keys: ['id'],
-                    cols: 12,
+                class: MultipleCheckbox,
+                id: 'multiple',
+                optionsFromRecordset: personService.list(max: 5),
+                keys: ['id'],
+                cols: 12,
             )
         }
 
@@ -235,9 +235,9 @@ class TransitionsController implements ElementsController {
 
     def showConfirm() {
         def onConfirm = new ComponentEvent(
-                controller    : 'transitions',
-                action        : 'index',
-                params: [transitioned: true],
+            controller: 'transitions',
+            action: 'index',
+            params: [transitioned: true],
 //                url           : 'https://www.google.com',
         )
         def t = createTransition()
@@ -258,10 +258,10 @@ class TransitionsController implements ElementsController {
         def t = createTransition()
 
         t.addComponent(
-                class: Label,
-                id: 'label',
-                tag: true,
-                backgroundColor: 'green',
+            class: Label,
+            id: 'label',
+            tag: true,
+            backgroundColor: 'green',
         )
         t.replace('label', 'label')
         t.set('content.nextButton', 'text', "New is cool! B-)")
@@ -281,14 +281,14 @@ class TransitionsController implements ElementsController {
             addField(class: TextField, id: 'fa2', value: 'A second appended field...', cols: 4)
             addField(class: TextField, id: 'fa3', value: 'A third appended field...', cols: 4)
             addField(
-                    class: Button,
-                    id: 'removeButton',
-                    action: 'removeForm',
-                    params: [formName: formName],
-                    text: "Remove '${formName}'",
-                    displayLabel: false,
-                    loading: false,
-                    cols: 12,
+                class: Button,
+                id: 'removeButton',
+                action: 'removeForm',
+                params: [formName: formName],
+                text: "Remove '${formName}'",
+                displayLabel: false,
+                loading: false,
+                cols: 12,
             )
         }
         t.append('formReplace', formName)
@@ -301,10 +301,10 @@ class TransitionsController implements ElementsController {
         t.set('btn4Field', 'display', true)
         t.set('btn4Field', 'display', true)
         t.set('select2', 'options',
-                Select.optionsFromRecordset(
-                        recordset: personService.list(),
-                        keys: ['id'],
-                ))
+            Select.optionsFromRecordset(
+                recordset: personService.list(),
+                keys: ['id'],
+            ))
         t.set('modal.select2', 'readonly', false)
         t.setValue('modal.select2', 3, true)
 
@@ -350,10 +350,10 @@ class TransitionsController implements ElementsController {
     def onSelect2Change() {
         def t = createTransition()
         t.set('select3', 'options',
-                Select.optionsFromRecordset(
-                        recordset: personService.list(),
-                        keys: ['name'],
-                ))
+            Select.optionsFromRecordset(
+                recordset: personService.list(),
+                keys: ['name'],
+            ))
         t.setValue('select3', 'admin')
         //c.set('select3', 'readonly', false)
 
@@ -363,10 +363,10 @@ class TransitionsController implements ElementsController {
     def onSearchfieldSearch() {
         def t = createTransition()
         t.set('searchfield', 'options',
-                Select.optionsFromRecordset(
-                        recordset: personService.list(name: params.searchfield),
-                        keys: ['id'],
-                )
+            Select.optionsFromRecordset(
+                recordset: personService.list(name: params.searchfield),
+                keys: ['id'],
+            )
         )
 
         display transition: t

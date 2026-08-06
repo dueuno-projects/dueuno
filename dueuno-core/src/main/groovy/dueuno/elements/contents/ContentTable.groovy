@@ -45,9 +45,9 @@ class ContentTable extends ContentHeader {
         super(args)
 
         header.addNextButton(
-                action: 'create',
-                text: TextDefault.NEW,
-                icon: 'fa-plus',
+            action: 'create',
+            text: TextDefault.NEW,
+            icon: 'fa-plus',
         )
 
         table = addComponent(Table)

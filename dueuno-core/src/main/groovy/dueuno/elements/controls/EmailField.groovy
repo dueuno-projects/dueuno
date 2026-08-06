@@ -25,7 +25,7 @@ import groovy.transform.CompileStatic
  *       on mobile devices).</li>
  *   <li>A client-side validation pattern that allows a single {@code @} character,
  *       prevents consecutive dots, and restricts characters to letters, digits, and
- *       {@code _}, {@code -}, {@code .}, {@code @}.</li>
+ * {@code _}, {@code -}, {@code .}, {@code @}.</li>
  *   <li>An {@code fa-at} icon displayed inside the input.</li>
  * </ul>
  * </p>
@@ -42,8 +42,8 @@ class EmailField extends TextField {
      * {@code args}.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code inputMode} ({@link TextFieldInputMode}, default {@link TextFieldInputMode#EMAIL}),
-     *             {@code pattern} ({@link String}) — overrides the default e-mail regex,
+     * {@code inputMode} ({@link TextFieldInputMode}, default {@link TextFieldInputMode#EMAIL}),
+     * {@code pattern} ({@link String}) — overrides the default e-mail regex,
      *             plus all keys accepted by {@link TextField#TextField(Map)}
      */
     EmailField(Map args) {

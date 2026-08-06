@@ -66,12 +66,12 @@ class ObjectUtils {
 
     static Boolean isBasicType(Object object) {
         return false
-                || object in Boolean
-                || object in String
-                || object in Number
-                || object in LocalDate
-                || object in LocalTime
-                || object in LocalDateTime
+            || object in Boolean
+            || object in String
+            || object in Number
+            || object in LocalDate
+            || object in LocalTime
+            || object in LocalDateTime
     }
 
     /**
@@ -140,11 +140,11 @@ class ObjectUtils {
 
         } catch (Exception e) {
             throw new Exception(
-                    "Cannot read property '${fieldName}' from object '${object.getClass().getName()}'. " +
-                            "If this is a domain object please make sure to set eager fetching" +
-                            "for each field that you want to access whose type is a domain class " +
-                            "(eg. DomainClass.list(fetch: [fieldName: 'join']): " +
-                            e)
+                "Cannot read property '${fieldName}' from object '${object.getClass().getName()}'. " +
+                    "If this is a domain object please make sure to set eager fetching" +
+                    "for each field that you want to access whose type is a domain class " +
+                    "(eg. DomainClass.list(fetch: [fieldName: 'join']): " +
+                    e)
         }
     }
 
@@ -160,7 +160,7 @@ class ObjectUtils {
      *         ]
      *     ]
      * ]
-     * }</pre>
+     *}</pre>
      *
      * @param map the flat map to convert
      * @return a nested map representing the same key/value pairs

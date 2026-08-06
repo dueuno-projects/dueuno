@@ -14,9 +14,9 @@
  */
 package dueuno.elements.controls
 
+import dueuno.elements.components.Button
 import dueuno.elements.core.Control
 import dueuno.elements.core.Elements
-import dueuno.elements.components.Button
 import dueuno.elements.style.TextTransform
 import dueuno.types.Type
 import groovy.transform.CompileStatic
@@ -75,17 +75,17 @@ class TextField extends Control {
      * Creates a {@code TextField} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code inputType} ({@link TextFieldInputType}, default {@link TextFieldInputType#TEXT}),
-     *             {@code inputMode} ({@link TextFieldInputMode}, default {@link TextFieldInputMode#TEXT}),
-     *             {@code icon} ({@link String}),
-     *             {@code prefix} ({@link String}),
-     *             {@code maxSize} ({@link Integer}),
-     *             {@code placeholder} ({@link String}),
-     *             {@code autocomplete} ({@link Boolean}, default {@code false}),
-     *             {@code autoSelect} ({@link Boolean}, default {@code true}),
-     *             {@code textTransform} ({@link TextTransform}, default {@link TextTransform#NONE}),
-     *             {@code renderTextPrefix} ({@link Boolean}, default {@code false}),
-     *             {@code onChangeAsync} ({@link Boolean}, default {@code false}),
+     * {@code inputType} ({@link TextFieldInputType}, default {@link TextFieldInputType#TEXT}),
+     * {@code inputMode} ({@link TextFieldInputMode}, default {@link TextFieldInputMode#TEXT}),
+     * {@code icon} ({@link String}),
+     * {@code prefix} ({@link String}),
+     * {@code maxSize} ({@link Integer}),
+     * {@code placeholder} ({@link String}),
+     * {@code autocomplete} ({@link Boolean}, default {@code false}),
+     * {@code autoSelect} ({@link Boolean}, default {@code true}),
+     * {@code textTransform} ({@link TextTransform}, default {@link TextTransform#NONE}),
+     * {@code renderTextPrefix} ({@link Boolean}, default {@code false}),
+     * {@code onChangeAsync} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link Control#Control(Map)}
      */
     TextField(Map args) {
@@ -108,10 +108,10 @@ class TextField extends Control {
         //onChangeMinChars = args.onChangeMinChars ?: 0 // forse in futuro
 
         actions = createControl(
-                class: Button,
-                id: 'actions',
-                group: true,
-                dontCreateDefaultAction: true,
+            class: Button,
+            id: 'actions',
+            group: true,
+            dontCreateDefaultAction: true,
         )
     }
 
@@ -165,10 +165,10 @@ class TextField extends Control {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                autocomplete: autocomplete,
-                autoSelect: autoSelect,
-                textTransform: textTransform as String,
-                onChangeAsync: onChangeAsync,
+            autocomplete : autocomplete,
+            autoSelect   : autoSelect,
+            textTransform: textTransform as String,
+            onChangeAsync: onChangeAsync,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
@@ -182,8 +182,8 @@ class TextField extends Control {
     @Override
     String getValueAsJSON() {
         Map valueMap = [
-                type: valueType,
-                value: prettyPrint(value, prettyPrinterProperties),
+            type : valueType,
+            value: prettyPrint(value, prettyPrinterProperties),
         ]
 
         return Elements.encodeAsJSON(valueMap)

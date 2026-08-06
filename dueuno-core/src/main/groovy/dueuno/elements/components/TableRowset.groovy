@@ -63,9 +63,9 @@ class TableRowset extends Component {
      * Creates a {@code TableRowset} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code table} ({@link Table}, required),
-     *             {@code isHeader} ({@link Boolean}, default {@code false}),
-     *             {@code isFooter} ({@link Boolean}, default {@code false}),
+     * {@code table} ({@link Table}, required),
+     * {@code isHeader} ({@link Boolean}, default {@code false}),
+     * {@code isFooter} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     @Requires({ args.table })
@@ -147,18 +147,18 @@ class TableRowset extends Component {
      * Creates a {@link TableRow} for the given record, registers it in {@link #rows},
      * and returns it.
      *
-     * @param index  the zero-based row index
+     * @param index the zero-based row index
      * @param values the record data for this row
      * @return the newly created {@link TableRow}
      */
     private TableRow addRow(Integer index, Object values) {
         TableRow row = createComponent(TableRow, buildRowName(index), [
-                table: table,
-                rowset: this,
-                index: index,
-                isHeader: isHeader,
-                isFooter: isFooter,
-                values: values,
+            table   : table,
+            rowset  : this,
+            index   : index,
+            isHeader: isHeader,
+            isFooter: isFooter,
+            values  : values,
         ])
 
         rows.add(row)

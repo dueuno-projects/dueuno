@@ -14,14 +14,14 @@
  */
 package dueuno.elements.pages
 
-import dueuno.elements.core.KeyPress
-import dueuno.elements.core.Page
 import dueuno.elements.components.Button
 import dueuno.elements.components.Form
 import dueuno.elements.components.Label
 import dueuno.elements.components.Link
 import dueuno.elements.controls.PasswordField
 import dueuno.elements.controls.TextField
+import dueuno.elements.core.KeyPress
+import dueuno.elements.core.Page
 import dueuno.elements.style.TextAlign
 import groovy.transform.CompileStatic
 
@@ -63,54 +63,54 @@ class Login extends Page {
         form = createComponent(Form, 'loginForm')
         form.with {
             addField(
-                    class: TextField,
-                    id: 'username',
-                    placeholder: 'authentication.username.placeholder',
-                    displayLabel: false,
+                class: TextField,
+                id: 'username',
+                placeholder: 'authentication.username.placeholder',
+                displayLabel: false,
             )
             addField(
-                    class: PasswordField,
-                    id: 'password',
-                    icon: '',
-                    placeholder: 'authentication.password.placeholder',
-                    displayLabel: false,
+                class: PasswordField,
+                id: 'password',
+                icon: '',
+                placeholder: 'authentication.password.placeholder',
+                displayLabel: false,
             )
             addField(
-                    class: Button,
-                    id: 'login',
-                    action: 'authenticate',
-                    submit: 'form',
-                    displayLabel: false,
-                    stretch: true,
-                    primary: true,
+                class: Button,
+                id: 'login',
+                action: 'authenticate',
+                submit: 'form',
+                displayLabel: false,
+                stretch: true,
+                primary: true,
             )
             if (passwordRecoveryUrl) {
                 addField(
-                        class: Link,
-                        id: 'passwordRecoveryLink',
-                        url: passwordRecoveryUrl,
-                        direct: false,
-                        textAlign: TextAlign.CENTER,
-                        displayLabel: false,
-                        cssClass: 'w-100',
+                    class: Link,
+                    id: 'passwordRecoveryLink',
+                    url: passwordRecoveryUrl,
+                    direct: false,
+                    textAlign: TextAlign.CENTER,
+                    displayLabel: false,
+                    cssClass: 'w-100',
                 )
             }
             if (registerUrl) {
                 addField(
-                        class: Button,
-                        id: 'register',
-                        url: registerUrl,
-                        direct: false,
-                        label: '',
+                    class: Button,
+                    id: 'register',
+                    url: registerUrl,
+                    direct: false,
+                    label: '',
                 )
             }
             if (copy) {
                 addField(
-                        class: Label,
-                        id: 'copy',
-                        html: copy,
-                        textAlign: TextAlign.CENTER,
-                        displayLabel: false,
+                    class: Label,
+                    id: 'copy',
+                    html: copy,
+                    textAlign: TextAlign.CENTER,
+                    displayLabel: false,
                 )
             }
         }

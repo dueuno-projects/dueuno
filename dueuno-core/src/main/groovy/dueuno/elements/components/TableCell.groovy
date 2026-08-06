@@ -15,9 +15,9 @@
 package dueuno.elements.components
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.elements.core.PrettyPrinterProperties
-import dueuno.elements.core.Component
 import dueuno.elements.controls.HiddenField
+import dueuno.elements.core.Component
+import dueuno.elements.core.PrettyPrinterProperties
 import dueuno.elements.style.TextAlign
 import dueuno.elements.style.TextStyle
 import dueuno.elements.style.TextWrap
@@ -71,10 +71,10 @@ class TableCell extends Component {
      * otherwise a {@link Label} is created automatically.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code table} ({@link Table}, required),
-     *             {@code row} ({@link TableRow}, required),
-     *             {@code column} ({@link String}, required),
-     *             {@code component} ({@link Component}),
+     * {@code table} ({@link Table}, required),
+     * {@code row} ({@link TableRow}, required),
+     * {@code column} ({@link String}, required),
+     * {@code component} ({@link Component}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     @Requires({ args.table && args.row && args.column })
@@ -104,7 +104,7 @@ class TableCell extends Component {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                column: column,
+            column: column,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
@@ -128,12 +128,12 @@ class TableCell extends Component {
      */
     private void setLabel() {
         addComponent(
-                class: Label,
-                id: componentId,
-                replace: true,
-                textPrefix: controllerName,
-                textWrap: TextWrap.NO_WRAP,
-                tag: false,
+            class: Label,
+            id: componentId,
+            replace: true,
+            textPrefix: controllerName,
+            textWrap: TextWrap.NO_WRAP,
+            tag: false,
         )
     }
 
@@ -206,10 +206,10 @@ class TableCell extends Component {
      */
     void setSubmitValue(Object value) {
         addComponent(
-                class: HiddenField,
-                id: getId() + '-value',
-                value: value,
-                replace: true,
+            class: HiddenField,
+            id: getId() + '-value',
+            value: value,
+            replace: true,
         )
     }
 
@@ -336,14 +336,14 @@ class TableCell extends Component {
 
         if (label && (labelValue != null || label.icon)) {
             String backgroundColor = table.rowStriped
-                    ? (row.index % 2 == 0 ? mainForegroundColor : mainBackgroundColor)
-                    : mainBackgroundColor
+                ? (row.index % 2 == 0 ? mainForegroundColor : mainBackgroundColor)
+                : mainBackgroundColor
 
             textAlign = TextAlign.CENTER
             label.tag = value
             label.backgroundColor = value
-                    ? backgroundColor
-                    : null
+                ? backgroundColor
+                : null
         }
     }
 

@@ -15,7 +15,7 @@ import groovy.transform.CompileStatic
  * // Lookup by extension
  * ImageFormat fromExt = ImageFormat.get("jpg"); // ImageFormat.JPEG
  * ImageFormat unknown = ImageFormat.get("bmp"); // null
- * }</pre>
+ *}</pre>
  *
  * Supported formats:
  * <ul>
@@ -65,7 +65,7 @@ enum ImageFormat {
      * <pre>{@code
      * ImageFormat format = ImageFormat.get("png"); // ImageFormat.PNG
      * ImageFormat unknown = ImageFormat.get("bmp"); // null
-     * }</pre>
+     *}</pre>
      */
     static ImageFormat get(String extension) {
         return values().find { it.extension == extension }

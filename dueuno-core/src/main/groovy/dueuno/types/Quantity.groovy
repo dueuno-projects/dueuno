@@ -14,10 +14,10 @@
  */
 package dueuno.types
 
+import dueuno.elements.ElementsException
+import dueuno.elements.controls.QuantityField
 import dueuno.elements.core.PrettyPrinter
 import dueuno.elements.core.PrettyPrinterProperties
-import dueuno.elements.controls.QuantityField
-import dueuno.elements.ElementsException
 import groovy.transform.CompileDynamic
 import org.grails.datastore.gorm.GormEntity
 
@@ -78,7 +78,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      * {@link BigDecimal} via its {@code double} representation.
      *
      * @param amount the numeric amount
-     * @param unit   the unit of measurement; defaults to {@link QuantityUnit#PCS}
+     * @param unit the unit of measurement; defaults to {@link QuantityUnit#PCS}
      */
     Quantity(Number amount, QuantityUnit unit = QuantityUnit.PCS) {
         this(new BigDecimal(amount as Double), unit)
@@ -88,7 +88,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      * Creates a {@code Quantity} from a {@link BigDecimal} amount.
      *
      * @param amount the numeric amount
-     * @param unit   the unit of measurement; defaults to {@link QuantityUnit#PCS}
+     * @param unit the unit of measurement; defaults to {@link QuantityUnit#PCS}
      */
     Quantity(BigDecimal amount, QuantityUnit unit = QuantityUnit.PCS) {
         this.amount = amount
@@ -103,11 +103,11 @@ class Quantity extends Number implements CustomType, GormEntity {
      */
     Map serialize() {
         return [
-                type : TYPE_NAME,
-                value: [
-                        amount: amount,
-                        unit: unit as String,
-                ]
+            type : TYPE_NAME,
+            value: [
+                amount: amount,
+                unit  : unit as String,
+            ]
         ]
     }
 
@@ -126,8 +126,8 @@ class Quantity extends Number implements CustomType, GormEntity {
 
         unit = value.unit ? (QuantityUnit) value.unit : QuantityUnit.NR
         amount = Types.deserializeBigDecimal(
-                value.amount as String,
-                value.decimals as Integer
+            value.amount as String,
+            value.decimals as Integer
         )
     }
 
@@ -149,8 +149,8 @@ class Quantity extends Number implements CustomType, GormEntity {
 
         Boolean prefixedUnit = properties.prefixedUnit == null ? false : properties.prefixedUnit
         return prefixedUnit
-                ? unit + ' ' + amount
-                : amount + ' ' + unit
+            ? unit + ' ' + amount
+            : amount + ' ' + unit
     }
 
     /**
@@ -323,7 +323,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      * Converts a raw number of seconds into a {@code Quantity} expressed in the given time unit.
      *
      * @param seconds the number of seconds to convert
-     * @param unit    the target time unit; must belong to the {@code TIME} dimension
+     * @param unit the target time unit; must belong to the {@code TIME} dimension
      * @return a new {@code Quantity} in the requested time unit
      * @throws ElementsException if {@code unit} is not a {@code TIME} unit
      *         or if the unit is not one of the supported time units

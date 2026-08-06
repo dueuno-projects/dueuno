@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 @Slf4j
 class CustomUserDetailsService extends GormUserDetailsService {
 
-    @Transactional(readOnly=true, noRollbackFor=[IllegalArgumentException, UsernameNotFoundException])
+    @Transactional(readOnly = true, noRollbackFor = [IllegalArgumentException, UsernameNotFoundException])
     UserDetails loadUserByExternalId(String externalId, boolean loadRoles) throws UsernameNotFoundException {
 
         def conf = SpringSecurityUtils.securityConfig
@@ -62,6 +62,6 @@ class CustomUserDetailsService extends GormUserDetailsService {
         boolean passwordExpired = passwordExpiredPropertyName ? user."$passwordExpiredPropertyName" : false
 
         new CustomGrailsUser(username, password, enabled, !accountExpired, !passwordExpired,
-                !accountLocked, authorities, user.id, username)
+            !accountLocked, authorities, user.id, username)
     }
 }

@@ -15,12 +15,12 @@
 package dueuno.security
 
 import dueuno.application.ApplicationService
-import dueuno.elements.core.PrettyPrinterDecimalFormat
 import dueuno.elements.ElementsController
-import dueuno.elements.style.GuiStyle
 import dueuno.elements.components.Separator
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.controls.*
+import dueuno.elements.core.PrettyPrinterDecimalFormat
+import dueuno.elements.style.GuiStyle
 import dueuno.elements.style.TextDefault
 import dueuno.tenant.TenantPropertyService
 import grails.plugin.springsecurity.annotation.Secured
@@ -40,24 +40,24 @@ class UserProfileController implements ElementsController {
     private buildSensitiveDataForm(ContentForm c) {
         c.form.with {
             addField(
-                    class: TextField,
-                    id: 'firstname',
-                    cols: 6,
+                class: TextField,
+                id: 'firstname',
+                cols: 6,
             )
             addField(
-                    class: TextField,
-                    id: 'lastname',
-                    cols: 6,
+                class: TextField,
+                id: 'lastname',
+                cols: 6,
             )
             addField(
-                    class: EmailField,
-                    id: 'email',
-                    cols: 6,
+                class: EmailField,
+                id: 'email',
+                cols: 6,
             )
             addField(
-                    class: TelephoneField,
-                    id: 'telephone',
-                    cols: 6,
+                class: TelephoneField,
+                id: 'telephone',
+                cols: 6,
             )
         }
     }
@@ -65,105 +65,105 @@ class UserProfileController implements ElementsController {
     private buildPreferencesForm(ContentForm c) {
         c.form.with {
             addField(
-                    class: Separator,
-                    id: 'preferences',
-                    icon: 'fa-earth-americas',
+                class: Separator,
+                id: 'preferences',
+                icon: 'fa-earth-americas',
             )
             addField(
-                    class: Select,
-                    id: 'language',
-                    optionsFromList: applicationService.languages,
-                    textPrefix: 'default.language',
-                    search: false,
-                    cols: 6,
+                class: Select,
+                id: 'language',
+                optionsFromList: applicationService.languages,
+                textPrefix: 'default.language',
+                search: false,
+                cols: 6,
             )
             addField(
-                    class: Select,
-                    id: 'firstDaySunday',
-                    options: [false: 'false', true: 'true'],
-                    textPrefix: 'default.firstDaySunday',
-                    search: false,
-                    cols: 6,
+                class: Select,
+                id: 'firstDaySunday',
+                options: [false: 'false', true: 'true'],
+                textPrefix: 'default.firstDaySunday',
+                search: false,
+                cols: 6,
             )
             addField(
-                    class: Select,
-                    id: 'invertedMonth',
-                    options: [false: 'false', true: 'true'],
-                    textPrefix: 'default.invertedMonth',
-                    search: false,
-                    cols: 6,
-                    colsSmall: 6,
+                class: Select,
+                id: 'invertedMonth',
+                options: [false: 'false', true: 'true'],
+                textPrefix: 'default.invertedMonth',
+                search: false,
+                cols: 6,
+                colsSmall: 6,
             )
             addField(
-                    class: Select,
-                    id: 'twelveHours',
-                    options: [false: 'false', true: 'true'],
-                    textPrefix: 'default.twelveHours',
-                    search: false,
-                    cols: 6,
-                    colsSmall: 6,
+                class: Select,
+                id: 'twelveHours',
+                options: [false: 'false', true: 'true'],
+                textPrefix: 'default.twelveHours',
+                search: false,
+                cols: 6,
+                colsSmall: 6,
             )
             addField(
-                    class: Select,
-                    id: 'decimalFormat',
-                    optionsFromEnum: PrettyPrinterDecimalFormat,
-                    textPrefix: 'default.decimalFormat',
-                    search: false,
-                    cols: 6,
-                    colsSmall: 6,
+                class: Select,
+                id: 'decimalFormat',
+                optionsFromEnum: PrettyPrinterDecimalFormat,
+                textPrefix: 'default.decimalFormat',
+                search: false,
+                cols: 6,
+                colsSmall: 6,
             )
             addField(
-                    class: Select,
-                    id: 'prefixedUnit',
-                    options: [false: 'false', true: 'true'],
-                    textPrefix: 'default.prefixedUnit',
-                    search: false,
-                    cols: 6,
-                    colsSmall: 6,
+                class: Select,
+                id: 'prefixedUnit',
+                options: [false: 'false', true: 'true'],
+                textPrefix: 'default.prefixedUnit',
+                search: false,
+                cols: 6,
+                colsSmall: 6,
             )
             addField(
-                    class: Select,
-                    id: 'symbolicCurrency',
-                    options: [false: 'false', true: 'true'],
-                    textPrefix: 'default.symbolicCurrency',
-                    search: false,
-                    cols: 6,
+                class: Select,
+                id: 'symbolicCurrency',
+                options: [false: 'false', true: 'true'],
+                textPrefix: 'default.symbolicCurrency',
+                search: false,
+                cols: 6,
             )
             addField(
-                    class: Select,
-                    id: 'symbolicQuantity',
-                    options: [false: 'false', true: 'true'],
-                    textPrefix: 'default.symbolicQuantity',
-                    search: false,
-                    cols: 6,
+                class: Select,
+                id: 'symbolicQuantity',
+                options: [false: 'false', true: 'true'],
+                textPrefix: 'default.symbolicQuantity',
+                search: false,
+                cols: 6,
             )
 
             addField(
-                    class: Separator,
-                    id: 'appearance',
-                    icon: 'fa-circle-half-stroke',
+                class: Separator,
+                id: 'appearance',
+                icon: 'fa-circle-half-stroke',
             )
             addField(
-                    class: Select,
-                    id: 'fontSize',
-                    optionsFromList: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
-                    defaultValue: 14,
-                    renderTextPrefix: false,
-                    cols: 4,
-                    colsSmall: 6,
+                class: Select,
+                id: 'fontSize',
+                optionsFromList: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+                defaultValue: 14,
+                renderTextPrefix: false,
+                cols: 4,
+                colsSmall: 6,
             )
             addField(
-                    class: Select,
-                    id: 'guiStyle',
-                    optionsFromEnum: GuiStyle,
-                    textPrefix: 'default',
-                    cols: 4,
-                    colsSmall: 6,
+                class: Select,
+                id: 'guiStyle',
+                optionsFromEnum: GuiStyle,
+                textPrefix: 'default',
+                cols: 4,
+                colsSmall: 6,
             )
             addField(
-                    class: Checkbox,
-                    id: 'animations',
-                    cols: 4,
+                class: Checkbox,
+                id: 'animations',
+                cols: 4,
             )
         }
     }
@@ -179,20 +179,20 @@ class UserProfileController implements ElementsController {
         c.form.with {
             if (devDisplayHints) {
                 addField(
-                        class: Textarea,
-                        id: 'authorities',
-                        text: '',
-                        readonly: true,
-                        cols: 12,
+                    class: Textarea,
+                    id: 'authorities',
+                    text: '',
+                    readonly: true,
+                    cols: 12,
                 )
             }
             addField(
-                    class: TextField,
-                    id: 'username',
-                    readonly: true,
-                    icon: 'fa-user',
-                    help: 'userProfile.edit.username.help',
-                    cols: 12,
+                class: TextField,
+                id: 'username',
+                readonly: true,
+                icon: 'fa-user',
+                help: 'userProfile.edit.username.help',
+                cols: 12,
             )
         }
 
@@ -204,19 +204,19 @@ class UserProfileController implements ElementsController {
         if (canChangePassword) {
             c.form.with {
                 addField(
-                        class: Separator,
-                        id: 'change.password',
-                        icon: 'fa-key',
+                    class: Separator,
+                    id: 'change.password',
+                    icon: 'fa-key',
                 )
                 addField(
-                        class: PasswordField,
-                        id: 'newPassword',
-                        cols: 6,
+                    class: PasswordField,
+                    id: 'newPassword',
+                    cols: 6,
                 )
                 addField(
-                        class: PasswordField,
-                        id: 'confirmNewPassword',
-                        cols: 6,
+                    class: PasswordField,
+                    id: 'confirmNewPassword',
+                    cols: 6,
                 )
             }
 

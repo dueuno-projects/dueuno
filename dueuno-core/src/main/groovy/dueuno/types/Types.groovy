@@ -154,8 +154,8 @@ class Types {
      * @return a list of strings in the form {@code "TYPE_NAME (fully.qualified.ClassName)"}
      */
     static List<String> getAvailableTypeNames() {
-        List primitiveTypes = Type.values().collect {"${it.name()} (${it.clazz?.name})" }
-        List customTypes = registry.collect { "${it.key} (${it.value.name})"}
+        List primitiveTypes = Type.values().collect { "${it.name()} (${it.clazz?.name})" }
+        List customTypes = registry.collect { "${it.key} (${it.value.name})" }
         return (primitiveTypes + customTypes) as List<String>
     }
 
@@ -242,7 +242,7 @@ class Types {
      *     <li>All other known types are wrapped as-is.</li>
      * </ul>
      *
-     * @param value     the object to serialise; may be {@code null}
+     * @param value the object to serialise; may be {@code null}
      * @param valueType optional type override used only when {@code value} is {@code null}
      *                  or falls through to the {@code default} branch
      * @return a map with {@code type} and {@code value} keys
@@ -250,8 +250,8 @@ class Types {
     static Map serializeValue(Object value, String valueType = null) {
         if (value == null) {
             return [
-                    type: valueType ?: Type.NA.toString(),
-                    value: value,
+                type : valueType ?: Type.NA.toString(),
+                value: value,
             ]
         }
 
@@ -263,75 +263,75 @@ class Types {
         switch (value) {
             case Boolean:
                 return [
-                        type : Type.BOOL.toString(),
-                        value: value,
+                    type : Type.BOOL.toString(),
+                    value: value,
                 ]
 
             case Number:
                 return [
-                        type : Type.NUMBER.toString(),
-                        value: value,
+                    type : Type.NUMBER.toString(),
+                    value: value,
                 ]
 
             case String:
                 return [
-                        type : Type.STRING.toString(),
-                        value: value,
+                    type : Type.STRING.toString(),
+                    value: value,
                 ]
 
             case Map:
                 return [
-                        type : Type.MAP.toString(),
-                        value: value,
+                    type : Type.MAP.toString(),
+                    value: value,
                 ]
 
             case List:
                 return [
-                        type : Type.LIST.toString(),
-                        value: value,
+                    type : Type.LIST.toString(),
+                    value: value,
                 ]
 
             case LocalDateTime:
                 return [
-                        type : Type.DATETIME.toString(),
-                        value: [
-                                year  : (value as LocalDateTime).year,
-                                month : (value as LocalDateTime).monthValue,
-                                day   : (value as LocalDateTime).dayOfMonth,
-                                hour  : (value as LocalDateTime).hour,
-                                minute: (value as LocalDateTime).minute,
-                        ]
+                    type : Type.DATETIME.toString(),
+                    value: [
+                        year  : (value as LocalDateTime).year,
+                        month : (value as LocalDateTime).monthValue,
+                        day   : (value as LocalDateTime).dayOfMonth,
+                        hour  : (value as LocalDateTime).hour,
+                        minute: (value as LocalDateTime).minute,
+                    ]
                 ]
 
             case LocalDate:
                 return [
-                        type : Type.DATE.toString(),
-                        value: [
-                                year : (value as LocalDate).year,
-                                month: (value as LocalDate).monthValue,
-                                day  : (value as LocalDate).dayOfMonth,
-                        ]
+                    type : Type.DATE.toString(),
+                    value: [
+                        year : (value as LocalDate).year,
+                        month: (value as LocalDate).monthValue,
+                        day  : (value as LocalDate).dayOfMonth,
+                    ]
                 ]
 
             case LocalTime:
                 return [
-                        type : Type.TIME.toString(),
-                        value: [
-                                hour  : (value as LocalTime).hour,
-                                minute: (value as LocalTime).minute,
-                        ]
+                    type : Type.TIME.toString(),
+                    value: [
+                        hour  : (value as LocalTime).hour,
+                        minute: (value as LocalTime).minute,
+                    ]
                 ]
 
             case Enum:
                 return [
-                        type: Type.STRING.toString(),
-                        value: (value as Enum).name(),
+                    type : Type.STRING.toString(),
+                    value: (value as Enum).name(),
                 ]
 
             default:
                 return [
-                        type: valueType ?: Type.NA.toString(),
-                        value: value,
+                    type : valueType ?: Type.NA.toString(),
+                    value: value,
                 ]
         }
     }
@@ -475,7 +475,7 @@ class Types {
             return [:]
         }
 
-        return deserialize(valueMap.value as Map)?: [:]
+        return deserialize(valueMap.value as Map) ?: [:]
     }
 
     /**
@@ -503,7 +503,7 @@ class Types {
      * Parses a string representation of a decimal number and returns it as a
      * {@link BigDecimal} with the requested scale (defaulting to 2 decimal places).
      *
-     * @param value    the string to parse
+     * @param value the string to parse
      * @param decimals the number of decimal places for scaling; defaults to {@code 2} if {@code null}
      * @return the parsed {@link BigDecimal}, or {@code null} if parsing fails
      */

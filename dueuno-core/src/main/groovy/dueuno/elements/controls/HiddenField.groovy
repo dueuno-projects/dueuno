@@ -40,8 +40,8 @@ class HiddenField extends Control {
      * The field is hidden from both the UI and the form layout.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code value} — the value to carry (type is auto-detected if not specified),
-     *             {@code valueType} ({@link String} or {@link Type}) — explicit type override,
+     * {@code value} — the value to carry (type is auto-detected if not specified),
+     * {@code valueType} ({@link String} or {@link Type}) — explicit type override,
      *             plus all keys accepted by {@link Control#Control(Map)}
      */
     HiddenField(Map args) {

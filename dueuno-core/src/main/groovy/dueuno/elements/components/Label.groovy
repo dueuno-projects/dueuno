@@ -14,8 +14,8 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.core.PrettyPrinterProperties
 import dueuno.elements.core.Component
+import dueuno.elements.core.PrettyPrinterProperties
 import dueuno.elements.style.TextAlign
 import dueuno.elements.style.TextStyle
 import dueuno.elements.style.TextWrap
@@ -96,21 +96,21 @@ class Label extends Component {
      * Creates a {@code Label} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code text} (the display value),
-     *             {@code html} ({@link String}),
-     *             {@code url} ({@link String}),
-     *             {@code icon} ({@link String}), {@code iconClass} ({@link String}),
-     *             {@code image} ({@link String}), {@code imageClass} ({@link String}),
-     *             {@code tooltip} ({@link String}),
-     *             {@code verticalAlign} ({@link VerticalAlign}),
-     *             {@code textAlign} ({@link TextAlign}),
-     *             {@code textWrap} ({@link TextWrap}),
-     *             {@code textStyle} ({@link TextStyle} or {@link List}),
-     *             {@code userSelect} ({@link Boolean}, default {@code false}),
-     *             {@code tag} ({@link Boolean}),
-     *             {@code renderTextPrefix} ({@link Boolean}, default {@code false}),
-     *             {@code renderBoolean} ({@link Boolean}, default {@code true}),
-     *             {@code highlightNegative} ({@link Boolean}, default {@code true}),
+     * {@code text} (the display value),
+     * {@code html} ({@link String}),
+     * {@code url} ({@link String}),
+     * {@code icon} ({@link String}), {@code iconClass} ({@link String}),
+     * {@code image} ({@link String}), {@code imageClass} ({@link String}),
+     * {@code tooltip} ({@link String}),
+     * {@code verticalAlign} ({@link VerticalAlign}),
+     * {@code textAlign} ({@link TextAlign}),
+     * {@code textWrap} ({@link TextWrap}),
+     * {@code textStyle} ({@link TextStyle} or {@link List}),
+     * {@code userSelect} ({@link Boolean}, default {@code false}),
+     * {@code tag} ({@link Boolean}),
+     * {@code renderTextPrefix} ({@link Boolean}, default {@code false}),
+     * {@code renderBoolean} ({@link Boolean}, default {@code true}),
+     * {@code highlightNegative} ({@link Boolean}, default {@code true}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      *             and {@link PrettyPrinterProperties#PrettyPrinterProperties(Map)}
      */
@@ -151,7 +151,7 @@ class Label extends Component {
      *   <li>{@code null} — the label is auto-generated from the component {@code id}.</li>
      *   <li>{@link Boolean} — a check-mark icon is shown when {@code true}; text is cleared.</li>
      *   <li>{@link Number} — negative values are highlighted in red when
-     *       {@link PrettyPrinterProperties#highlightNegative} is {@code true}.</li>
+     * {@link PrettyPrinterProperties#highlightNegative} is {@code true}.</li>
      *   <li>Any other value — stored as-is for later pretty-printing by {@link #getText()}.</li>
      * </ul>
      *
@@ -215,7 +215,7 @@ class Label extends Component {
      * Sets the text style(s) for this label. Accepts a single {@link TextStyle} constant or
      * a {@link List} of constants; any other value resets the style to {@link TextStyle#NONE}.
      *
-     * @param value a {@link TextStyle}, a {@link List}{@code <TextStyle>}, or {@code null}
+     * @param value a {@link TextStyle}, a {@link List} {@code <TextStyle>}, or {@code null}
      */
     void setTextStyle(Object value) {
         switch (value) {

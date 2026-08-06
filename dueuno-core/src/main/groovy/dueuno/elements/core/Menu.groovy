@@ -89,7 +89,7 @@ class Menu extends Component {
      * </p>
      *
      * @param args map of menu properties; all {@link Component} args are supported, plus
-     *             {@code separator}, {@code textPrefix}, {@code order}, and {@code authorities}
+     * {@code separator}, {@code textPrefix}, {@code order}, and {@code authorities}
      */
     Menu(Map args = [:]) {
         super(args)
@@ -175,7 +175,7 @@ class Menu extends Component {
      * {@link Feature#order} and {@link Feature#authorities}.
      *
      * @param feature the feature whose metadata is used to configure the separator
-     * @param text    optional display text for the separator label; defaults to empty
+     * @param text optional display text for the separator label; defaults to empty
      * @return the newly added separator {@code Menu} item
      */
     Menu addSeparator(Feature feature, String text = '') {
@@ -215,7 +215,7 @@ class Menu extends Component {
      */
     List<Menu> listAllItems() {
         List<Menu> results = listItemsRecursive(true)
-        return results.tail().sort {it.order }
+        return results.tail().sort { it.order }
     }
 
     /**
@@ -318,7 +318,7 @@ class Menu extends Component {
     /**
      * Clears this node's subtree and rebuilds it from the given {@link Feature} hierarchy.
      *
-     * @param f          the root {@link Feature} to build the menu from
+     * @param f the root {@link Feature} to build the menu from
      * @param favourites when {@code true}, only the features marked as favourites are included
      */
     void createFromFeature(Feature f, Boolean favourites = false) {
@@ -331,7 +331,7 @@ class Menu extends Component {
      * Features without a controller are turned into separators; features with a controller
      * are turned into navigable menu items.
      *
-     * @param f          the {@link Feature} to convert
+     * @param f the {@link Feature} to convert
      * @param favourites when {@code true}, only favourite sub-features are included
      * @return the root {@code Menu} node for the converted feature
      */

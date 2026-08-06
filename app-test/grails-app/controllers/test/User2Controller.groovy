@@ -14,8 +14,8 @@
  */
 package test
 
-import dueuno.elements.components.Table
 import dueuno.elements.ElementsController
+import dueuno.elements.components.Table
 import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['ROLE_2'])

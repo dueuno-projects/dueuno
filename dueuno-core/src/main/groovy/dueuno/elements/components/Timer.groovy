@@ -47,10 +47,10 @@ class Timer extends Link {
      * Registers the interval event handler from the {@code onInterval} argument.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code enabled} ({@link Boolean}, default {@code true}),
-     *             {@code interval} ({@link Integer}, default {@code 1000}),
-     *             {@code executeImmediately} ({@link Boolean}, default {@code true}),
-     *             {@code onInterval} ({@link String}) — the event-handler expression,
+     * {@code enabled} ({@link Boolean}, default {@code true}),
+     * {@code interval} ({@link Integer}, default {@code 1000}),
+     * {@code executeImmediately} ({@link Boolean}, default {@code true}),
+     * {@code onInterval} ({@link String}) — the event-handler expression,
      *             plus all keys accepted by {@link Link#Link(Map)}
      */
     Timer(Map args) {
@@ -74,9 +74,9 @@ class Timer extends Link {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                enabled: enabled,
-                interval: interval,
-                executeImmediately: executeImmediately,
+            enabled           : enabled,
+            interval          : interval,
+            executeImmediately: executeImmediately,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

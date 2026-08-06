@@ -29,10 +29,10 @@ class HttpStatusController {
             json {
                 Exception e = request.exception
                 String message = e
-                        ? e.message ?: e.cause.message ?: e.toString()
-                        : "Internal server error."
+                    ? e.message ?: e.cause.message ?: e.toString()
+                    : "Internal server error."
                 Map obj = [
-                        error: message
+                    error: message
                 ]
                 respond obj
             }

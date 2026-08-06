@@ -68,15 +68,15 @@ class ApplicationPropertyService extends PropertyService {
                 String search = filters.find.replaceAll('\\*', '%')
                 query = query.where {
                     true
-                            || name =~ "%${search}%"
-                            || string =~ "%${search}%"
-                            || stringDefault =~ "%${search}%"
-                            || filename =~ "%${search}%"
-                            || filenameDefault =~ "%${search}%"
-                            || directory =~ "%${search}%"
-                            || directoryDefault =~ "%${search}%"
-                            || url =~ "%${search}%"
-                            || urlDefault =~ "%${search}%"
+                        || name =~ "%${search}%"
+                        || string =~ "%${search}%"
+                        || stringDefault =~ "%${search}%"
+                        || filename =~ "%${search}%"
+                        || filenameDefault =~ "%${search}%"
+                        || directory =~ "%${search}%"
+                        || directoryDefault =~ "%${search}%"
+                        || url =~ "%${search}%"
+                        || urlDefault =~ "%${search}%"
                 }
             }
         }
@@ -140,9 +140,9 @@ class ApplicationPropertyService extends PropertyService {
         if (property) {
             oldValue = property[typeName]
             Map updatedProperty = [
-                    id        : property.id,
-                    (typeName): value,
-                    validation: validation ?: property.validation,
+                id        : property.id,
+                (typeName): value,
+                validation: validation ?: property.validation,
             ]
             if (type != PropertyType.PASSWORD) {
                 updatedProperty[typeNameDefault] = defaultValue ?: property[typeNameDefault]
@@ -151,10 +151,10 @@ class ApplicationPropertyService extends PropertyService {
 
         } else {
             Map newProperty = [
-                    name      : name,
-                    type      : type,
-                    (typeName): value,
-                    validation: validation,
+                name      : name,
+                type      : type,
+                (typeName): value,
+                validation: validation,
             ]
             if (type != PropertyType.PASSWORD) {
                 newProperty[typeNameDefault] = defaultValue

@@ -44,16 +44,16 @@ class TenantController implements ElementsController {
             filters.with {
             }
             sortable = [
-                    tenantId: 'asc',
+                tenantId: 'asc',
             ]
             columns = [
-                    'tenantId',
-                    'description',
-                    'host',
-                    'connectionSource.url',
+                'tenantId',
+                'description',
+                'host',
+                'connectionSource.url',
             ]
             labels = [
-                    'connectionSource.url': 'tenant.connection.info',
+                'connectionSource.url': 'tenant.connection.info',
             ]
 
             actions.tailAction.confirmMessage = 'tenant.confirm.delete'
@@ -74,8 +74,8 @@ class TenantController implements ElementsController {
 
     private buildForm(TTenant obj = null) {
         def c = obj
-                ? createContent(ContentEdit)
-                : createContent(ContentCreate)
+            ? createContent(ContentEdit)
+            : createContent(ContentCreate)
 
         def isReadonly = obj?.tenantId == tenantService.defaultTenantId
         if (isReadonly) {
@@ -86,62 +86,62 @@ class TenantController implements ElementsController {
             validate = TTenant
             if (!obj && EnvUtils.isDevelopment()) {
                 addField(
-                        class: Label,
-                        id: 'info',
-                        html: 'tenant.info',
-                        color: Color.WARNING_TEXT,
-                        backgroundColor: Color.WARNING_BACKGROUND,
-                        displayLabel: false,
-                        tag: true,
+                    class: Label,
+                    id: 'info',
+                    html: 'tenant.info',
+                    color: Color.WARNING_TEXT,
+                    backgroundColor: Color.WARNING_BACKGROUND,
+                    displayLabel: false,
+                    tag: true,
                 )
             }
             addField(
-                    class: TextField,
-                    id: 'tenantId',
-                    textTransform: TextTransform.UPPERCASE,
-                    invalidChars: ' ',
-                    cols: 6,
+                class: TextField,
+                id: 'tenantId',
+                textTransform: TextTransform.UPPERCASE,
+                invalidChars: ' ',
+                cols: 6,
             )
             addField(
-                    class: TextField,
-                    id: 'host',
-                    cols: 6,
+                class: TextField,
+                id: 'host',
+                cols: 6,
             )
             addField(
-                    class: TextField,
-                    id: 'description',
+                class: TextField,
+                id: 'description',
             )
             addField(
-                    class: Separator,
-                    id: 'connection.info',
-                    icon: 'fa-database',
+                class: Separator,
+                id: 'connection.info',
+                icon: 'fa-database',
             )
             addField(
-                    class: Select,
-                    id: 'connectionSource.driverClassName',
-                    optionsFromList: connectionSourceService.listAvailableDrivers(),
-                    textPrefix: 'jdbc',
-                    search: true,
-                    cols: 6,
+                class: Select,
+                id: 'connectionSource.driverClassName',
+                optionsFromList: connectionSourceService.listAvailableDrivers(),
+                textPrefix: 'jdbc',
+                search: true,
+                cols: 6,
             )
             addField(
-                    class: TextField,
-                    id: 'connectionSource.dialect',
-                    cols: 6,
+                class: TextField,
+                id: 'connectionSource.dialect',
+                cols: 6,
             )
             addField(
-                    class: TextField,
-                    id: 'connectionSource.url',
+                class: TextField,
+                id: 'connectionSource.url',
             )
             addField(
-                    class: TextField,
-                    id: 'connectionSource.username',
-                    cols: 6,
+                class: TextField,
+                id: 'connectionSource.username',
+                cols: 6,
             )
             addField(
-                    class: TextField,
-                    id: 'connectionSource.password',
-                    cols: 6,
+                class: TextField,
+                id: 'connectionSource.password',
+                cols: 6,
             )
         }
 

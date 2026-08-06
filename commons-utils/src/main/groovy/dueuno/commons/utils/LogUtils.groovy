@@ -48,9 +48,9 @@ class LogUtils {
      * @param errorArray the list of error messages
      * @return a string containing all errors separated by newline characters
      */
-    static String logStackTrace(List<String> errorArray){
+    static String logStackTrace(List<String> errorArray) {
         StringBuilder builder = new StringBuilder()
-        for(String s : errorArray) {
+        for (String s : errorArray) {
             builder.append(s + '\n')
         }
         return builder.toString()

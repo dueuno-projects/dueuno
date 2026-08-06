@@ -14,8 +14,8 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.core.Component
 import dueuno.elements.ElementsException
+import dueuno.elements.core.Component
 import groovy.transform.CompileStatic
 
 /**
@@ -82,18 +82,18 @@ class FormField extends Component {
      * Creates a {@code FormField} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code component} ({@link Component}) — the wrapped control (required),
-     *             {@code label} ({@link String}), {@code labelArgs} ({@link List}),
-     *             {@code help} ({@link String}), {@code helpArgs} ({@link List}),
-     *             {@code helpCollapsed} ({@link Boolean}, default {@code false}),
-     *             {@code nullable} ({@link Boolean}, default {@code true}),
-     *             {@code displayLabel} ({@link Boolean}, default {@code true}),
-     *             {@code highlight} ({@link Boolean}, default {@code false}),
-     *             {@code multiline} ({@link Boolean}, default {@code false}),
-     *             {@code cols} ({@link Integer}, default {@code 12}),
-     *             {@code colsSmall} ({@link Integer}, default {@code 12}),
-     *             {@code rows} ({@link Integer}, default {@code 3}),
-     *             {@code acceptedCols} ({@link List}), {@code acceptedRows} ({@link List}),
+     * {@code component} ({@link Component}) — the wrapped control (required),
+     * {@code label} ({@link String}), {@code labelArgs} ({@link List}),
+     * {@code help} ({@link String}), {@code helpArgs} ({@link List}),
+     * {@code helpCollapsed} ({@link Boolean}, default {@code false}),
+     * {@code nullable} ({@link Boolean}, default {@code true}),
+     * {@code displayLabel} ({@link Boolean}, default {@code true}),
+     * {@code highlight} ({@link Boolean}, default {@code false}),
+     * {@code multiline} ({@link Boolean}, default {@code false}),
+     * {@code cols} ({@link Integer}, default {@code 12}),
+     * {@code colsSmall} ({@link Integer}, default {@code 12}),
+     * {@code rows} ({@link Integer}, default {@code 3}),
+     * {@code acceptedCols} ({@link List}), {@code acceptedRows} ({@link List}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     FormField(Map args) {
@@ -151,7 +151,7 @@ class FormField extends Component {
      * Sets the Bootstrap column span for this field, validating both values against
      * {@link #acceptedCols}.
      *
-     * @param columns      the column span for medium and larger screens (sm breakpoint)
+     * @param columns the column span for medium and larger screens (sm breakpoint)
      * @param columnsSmall the column span for small (xs) screens
      * @throws ElementsException if either value is not in {@link #acceptedCols}
      */

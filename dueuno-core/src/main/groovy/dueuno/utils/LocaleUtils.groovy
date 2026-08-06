@@ -32,16 +32,16 @@ class LocaleUtils {
         // - Locale uses ISO 639 Alpha 2 codes:    https://www.loc.gov/standards/iso639-2/php/English_list.php
         // - Flags uses ISO 3166-1 Alpha 2 codes:  https://www.iso.org/obp/ui/
         Map localeToFlag = [
-                en   : 'gb',    // defaults to UK (cause we're european ;-)
-                en_gb: 'gb',
-                en_us: 'us',
-                pt_pt: 'pt',
-                pt_br: 'br',
-                zh_cn: 'cn',
-                cs   : 'cs_cz',
-                da   : 'dk',
-                ja   : 'jp',
-                nb   : 'no',
+            en   : 'gb',    // defaults to UK (cause we're european ;-)
+            en_gb: 'gb',
+            en_us: 'us',
+            pt_pt: 'pt',
+            pt_br: 'br',
+            zh_cn: 'cn',
+            cs   : 'cs_cz',
+            da   : 'dk',
+            ja   : 'jp',
+            nb   : 'no',
         ]
         String lang = languageCode.toLowerCase()
         String langFlag = localeToFlag[lang] ?: lang

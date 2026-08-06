@@ -250,7 +250,7 @@ class StringUtils {
     static String inputStreamToString(InputStream inputStream) {
         ByteArrayOutputStream result = new ByteArrayOutputStream()
         byte[] buffer = new byte[1024]
-        for (int length; (length = inputStream.read(buffer)) != -1; ) {
+        for (int length; (length = inputStream.read(buffer)) != -1;) {
             result.write(buffer, 0, length)
         }
 

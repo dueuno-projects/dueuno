@@ -14,8 +14,8 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.core.LinkDefinition
 import dueuno.elements.core.ComponentEvent
+import dueuno.elements.core.LinkDefinition
 import groovy.transform.CompileStatic
 
 /**
@@ -80,10 +80,10 @@ class Link extends Label {
      */
     void setOnEvent(String onEvent = null) {
         on(linkDefinition.properties + [
-                event: eventName,
-                action: onEvent ?: linkDefinition.action,
-                infoMessage: message(linkDefinition.infoMessage, linkDefinition.infoMessageArgs),
-                confirmMessage: message(linkDefinition.confirmMessage, linkDefinition.confirmMessageArgs),
+            event         : eventName,
+            action        : onEvent ?: linkDefinition.action,
+            infoMessage   : message(linkDefinition.infoMessage, linkDefinition.infoMessageArgs),
+            confirmMessage: message(linkDefinition.confirmMessage, linkDefinition.confirmMessageArgs),
         ])
     }
 
@@ -97,7 +97,7 @@ class Link extends Label {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                loading: loading,
+            loading: loading,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

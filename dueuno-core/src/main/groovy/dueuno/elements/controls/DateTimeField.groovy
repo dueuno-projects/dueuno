@@ -61,10 +61,10 @@ class DateTimeField extends Control {
      * a {@link LocalDate}, {@link LocalTime}, or {@link LocalDateTime} is supplied.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code min} ({@link LocalDateTime}/{@link LocalDate}/{@link LocalTime}),
-     *             {@code max} ({@link LocalDateTime}/{@link LocalDate}/{@link LocalTime}),
-     *             {@code timeStep} ({@link Integer}),
-     *             {@code autoPopulate} ({@link Boolean}, default {@code false}),
+     * {@code min} ({@link LocalDateTime}/{@link LocalDate}/{@link LocalTime}),
+     * {@code max} ({@link LocalDateTime}/{@link LocalDate}/{@link LocalTime}),
+     * {@code timeStep} ({@link Integer}),
+     * {@code autoPopulate} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link Control#Control(Map)}
      */
     DateTimeField(Map args) {
@@ -132,11 +132,11 @@ class DateTimeField extends Control {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                min         : min?.toString(),
-                max         : max?.toString(),
-                pattern     : properties.pattern ?: '^[0-9/: ]*$',
-                timeStep: timeStep,
-                autoPopulate: autoPopulate,
+            min         : min?.toString(),
+            max         : max?.toString(),
+            pattern     : properties.pattern ?: '^[0-9/: ]*$',
+            timeStep    : timeStep,
+            autoPopulate: autoPopulate,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

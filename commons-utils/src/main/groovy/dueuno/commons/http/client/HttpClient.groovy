@@ -71,8 +71,8 @@ class HttpClient {
      */
     static CloseableHttpClient create(Integer timeoutSeconds = 30, Boolean forceCertificateVerification = true) {
         return forceCertificateVerification
-                ? createValidCertHttpClient(timeoutSeconds)
-                : createNoCertHttpClient(timeoutSeconds)
+            ? createValidCertHttpClient(timeoutSeconds)
+            : createNoCertHttpClient(timeoutSeconds)
     }
 
     /**
@@ -83,13 +83,13 @@ class HttpClient {
      */
     private static CloseableHttpClient createValidCertHttpClient(Integer timeoutSeconds) {
         RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectionRequestTimeout(Timeout.ofSeconds(timeoutSeconds))
-                .setResponseTimeout(Timeout.ofSeconds(timeoutSeconds))
-                .build()
+            .setConnectionRequestTimeout(Timeout.ofSeconds(timeoutSeconds))
+            .setResponseTimeout(Timeout.ofSeconds(timeoutSeconds))
+            .build()
 
         return HttpClients.custom()
-                .setDefaultRequestConfig(requestConfig)
-                .build()
+            .setDefaultRequestConfig(requestConfig)
+            .build()
     }
 
     /**
@@ -100,28 +100,28 @@ class HttpClient {
      */
     private static CloseableHttpClient createNoCertHttpClient(Integer timeoutSeconds) {
         SSLContext sslContext = SSLContextBuilder.create()
-                .loadTrustMaterial(TrustAllStrategy.INSTANCE)
-                .build()
+            .loadTrustMaterial(TrustAllStrategy.INSTANCE)
+            .build()
 
         DefaultClientTlsStrategy tlsStrategy = new DefaultClientTlsStrategy(
-                sslContext,
-                HostnameVerificationPolicy.BOTH,
-                NoopHostnameVerifier.INSTANCE
+            sslContext,
+            HostnameVerificationPolicy.BOTH,
+            NoopHostnameVerifier.INSTANCE
         )
 
         PoolingHttpClientConnectionManager connManager = PoolingHttpClientConnectionManagerBuilder.create()
-                .setTlsSocketStrategy(tlsStrategy)
-                .build()
+            .setTlsSocketStrategy(tlsStrategy)
+            .build()
 
         RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectionRequestTimeout(Timeout.ofSeconds(timeoutSeconds))
-                .setResponseTimeout(Timeout.ofSeconds(timeoutSeconds))
-                .build()
+            .setConnectionRequestTimeout(Timeout.ofSeconds(timeoutSeconds))
+            .setResponseTimeout(Timeout.ofSeconds(timeoutSeconds))
+            .build()
 
         CloseableHttpClient httpClient = HttpClients.custom()
-                .setDefaultRequestConfig(requestConfig)
-                .setConnectionManager(connManager)
-                .build()
+            .setDefaultRequestConfig(requestConfig)
+            .setConnectionManager(connManager)
+            .build()
 
         return httpClient
     }
@@ -164,8 +164,8 @@ class HttpClient {
 
             case String:
                 ContentType contentType = request.getHeader("Content-Type")
-                        ? ContentType.parse(request.getHeader("Content-Type").value)
-                        : ContentType.TEXT_PLAIN
+                    ? ContentType.parse(request.getHeader("Content-Type").value)
+                    : ContentType.TEXT_PLAIN
                 httpRequest.entity = new StringEntity(body as String, contentType)
 
                 if (!request.getHeader("Accept")) {
@@ -180,8 +180,8 @@ class HttpClient {
                 try {
                     String jsonBody = JsonOutput.toJson(body)
                     ContentType contentType = request.getHeader("Content-Type")
-                            ? ContentType.parse(request.getHeader("Content-Type").value)
-                            : ContentType.APPLICATION_JSON
+                        ? ContentType.parse(request.getHeader("Content-Type").value)
+                        : ContentType.APPLICATION_JSON
                     httpRequest.entity = new StringEntity(jsonBody, contentType)
 
                     if (!request.getHeader("Accept")) {

@@ -48,11 +48,11 @@ class TenantService {
 
     void install() {
         create(
-                tenantId: defaultTenantId,
-                description: 'Default Tenant',
-                deletable: false,
-                failOnError: true,
-                connectionSource: connectionSourceService.default,
+            tenantId: defaultTenantId,
+            description: 'Default Tenant',
+            deletable: false,
+            failOnError: true,
+            connectionSource: connectionSourceService.default,
         )
     }
 
@@ -195,10 +195,10 @@ class TenantService {
             applicationPropertyService.validateAll()
 
             ResourceUtils.extractDirectoryFromPlugin(
-                    DueunoGrailsPlugin,
-                    DueunoGrailsPlugin.NAME,
-                    '/brand',
-                    publicDir
+                DueunoGrailsPlugin,
+                DueunoGrailsPlugin.NAME,
+                '/brand',
+                publicDir
             )
 
             if (obj.tenantId != defaultTenantId) { // Default tenant gets its 'dataSource' from application.yml

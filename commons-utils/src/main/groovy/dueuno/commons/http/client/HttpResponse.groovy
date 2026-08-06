@@ -43,13 +43,13 @@ class HttpResponse {
     /**
      * Creates a new HttpResponse instance.
      * This constructor is private; use the factory methods
-     * {@link #success(Integer, Header[], Object)} or
-     * {@link #error(Integer, String, Header[], String)}.
+     * {@link #success(Integer, Header [ ], Object)} or
+     * {@link #error(Integer, String, Header [ ], String)}.
      *
-     * @param status  the HTTP status code
+     * @param status the HTTP status code
      * @param message the message for error responses
      * @param headers the headers returned by the server
-     * @param body    the response body
+     * @param body the response body
      */
     private HttpResponse(Integer status, String message, Header[] headers, Object body) {
         this.status = status
@@ -65,11 +65,11 @@ class HttpResponse {
      * <p>Example:
      * <pre>{@code
      * HttpResponse resp = HttpResponse.success(200, headers, responseBody)
-     * }</pre>
+     *}</pre>
      *
-     * @param status  the response status code
+     * @param status the response status code
      * @param headers the response headers
-     * @param body    the response body
+     * @param body the response body
      * @return a new HttpResponse instance
      */
     static HttpResponse success(Integer status, Header[] headers, Object body) {
@@ -82,12 +82,12 @@ class HttpResponse {
      * <p>Example:
      * <pre>{@code
      * HttpResponse resp = HttpResponse.error(404, "Not Found", headers, "No resource found")
-     * }</pre>
+     *}</pre>
      *
-     * @param status  the HTTP status code
+     * @param status the HTTP status code
      * @param message the error message
      * @param headers the response headers
-     * @param body    the response body
+     * @param body the response body
      * @return a new HttpResponse instance
      */
     static HttpResponse error(Integer status, String message, Header[] headers, Object body) {

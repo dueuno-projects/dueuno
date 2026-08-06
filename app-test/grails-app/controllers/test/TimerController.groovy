@@ -37,20 +37,20 @@ class TimerController implements ElementsController {
         def c = createContent(ContentForm)
         c.header.removeNextButton()
         c.form.addField(
-                class: Button,
-                id: 'show',
-                action: 'show',
-                displayLabel: false,
-                cols: 3,
+            class: Button,
+            id: 'show',
+            action: 'show',
+            displayLabel: false,
+            cols: 3,
         )
         c.form.addField(
-                class: Button,
-                id: 'showModal',
-                action: 'show',
-                modal: true,
-                fullscreen: true,
-                displayLabel: false,
-                cols: 3,
+            class: Button,
+            id: 'showModal',
+            action: 'show',
+            modal: true,
+            fullscreen: true,
+            displayLabel: false,
+            cols: 3,
         )
         display content: c
     }
@@ -66,25 +66,25 @@ class TimerController implements ElementsController {
         }
 
         c.addComponent(Timer, 'timer1', [
-                interval: 1300,
-                action: 'reload1',
-                enabled: false,
-                executeImmediately: true,
+            interval          : 1300,
+            action            : 'reload1',
+            enabled           : false,
+            executeImmediately: true,
         ])
 
         c.addComponent(Timer, 'timer2', [
-                interval: 2000,
-                action: 'reload2',
-                enabled: false,
-                executeImmediately: true,
+            interval          : 2000,
+            action            : 'reload2',
+            enabled           : false,
+            executeImmediately: true,
         ])
 
         c.addComponent(Grid).with {
             addColumn(sm: 9).with {
                 addComponent(Form, 'formNum').with {
                     addField(
-                            class: NumberField,
-                            id: 'number',
+                        class: NumberField,
+                        id: 'number',
                     )
                 }
                 addComponent(timerService.createGrid(7))

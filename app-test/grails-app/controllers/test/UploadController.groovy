@@ -14,11 +14,11 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.components.Button
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.controls.TextField
 import dueuno.elements.controls.Upload
-import dueuno.elements.ElementsController
 import dueuno.tenant.TenantService
 
 class UploadController implements ElementsController {
@@ -32,50 +32,50 @@ class UploadController implements ElementsController {
         c.with {
             form.with {
                 addField(
-                        class: Button,
-                        id: 'file',
-                        action: 'onDownloadAttachment',
-                        params: [filename: obj.filename],
-                        icon: 'fa-file-download',
-                        text: obj.filename,
-                        targetNew: true,
+                    class: Button,
+                    id: 'file',
+                    action: 'onDownloadAttachment',
+                    params: [filename: obj.filename],
+                    icon: 'fa-file-download',
+                    text: obj.filename,
+                    targetNew: true,
                 )
                 addField(
-                        class: TextField,
-                        id: 'test1',
-                        value: 'This is a test',
+                    class: TextField,
+                    id: 'test1',
+                    value: 'This is a test',
                 )
                 addField(
-                        class: Button,
-                        id: 'enable',
-                        action: 'onEnable',
-                        loading: false,
-                        cols: 6,
+                    class: Button,
+                    id: 'enable',
+                    action: 'onEnable',
+                    loading: false,
+                    cols: 6,
                 )
                 addField(
-                        class: Button,
-                        id: 'disable',
-                        action: 'onDisable',
-                        loading: false,
-                        cols: 6,
+                    class: Button,
+                    id: 'disable',
+                    action: 'onDisable',
+                    loading: false,
+                    cols: 6,
                 )
                 addField(
-                        class: Upload,
-                        id: 'somefile',
+                    class: Upload,
+                    id: 'somefile',
 //                        onAddFile: 'onAddFile',
 //                        onRemoveFile: 'onRemoveFile',
-                        onUpload: 'onUploadFile',
-                        onSuccess: 'onUploadSuccess',
-                        maxFiles: 1,
-                        acceptedFiles: ['.jpg', '.jpeg'],
-                        submit: 'form',
-                        loading: true,
-                        rows: 5,
+                    onUpload: 'onUploadFile',
+                    onSuccess: 'onUploadSuccess',
+                    maxFiles: 1,
+                    acceptedFiles: ['.jpg', '.jpeg'],
+                    submit: 'form',
+                    loading: true,
+                    rows: 5,
                 )
                 addField(
-                        class: TextField,
-                        id: 'test2',
-                        value: 'This is another test',
+                    class: TextField,
+                    id: 'test2',
+                    value: 'This is another test',
                 )
             }
         }

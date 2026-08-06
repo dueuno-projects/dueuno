@@ -35,8 +35,8 @@ class ExternalIdAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         Assert.isInstanceOf(ExternalIdAuthenticationToken.class, authentication,
-                () -> this.messages.getMessage("AbstractUserDetailsAuthenticationProvider.onlySupports",
-                        "Only ExternalIdAuthenticationToken is supported"))
+            () -> this.messages.getMessage("AbstractUserDetailsAuthenticationProvider.onlySupports",
+                "Only ExternalIdAuthenticationToken is supported"))
         String externalId = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName()
         UserDetails user
         try {
@@ -48,7 +48,7 @@ class ExternalIdAuthenticationProvider implements AuthenticationProvider {
                 throw ex
             }
             throw new BadCredentialsException(this.messages
-                    .getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"))
+                .getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"))
         }
         Assert.notNull(user, "retrieveUser returned null - a violation of the interface contract")
 
@@ -64,19 +64,19 @@ class ExternalIdAuthenticationProvider implements AuthenticationProvider {
 
     protected Authentication createSuccessAuthentication(UserDetails user, Authentication authentication) {
         ExternalIdAuthenticationToken result = ExternalIdAuthenticationToken.authenticated(user,
-                this.authoritiesMapper.mapAuthorities(user.getAuthorities()))
+            this.authoritiesMapper.mapAuthorities(user.getAuthorities()))
         result.setDetails(authentication.getDetails())
         this.logger.debug("Authenticated user")
         return result
     }
 
     protected final UserDetails retrieveUser(String externalId)
-            throws AuthenticationException {
+        throws AuthenticationException {
         try {
             UserDetails loadedUser = this.getCustomUserDetailsService().loadUserByExternalId(externalId)
             if (loadedUser == null) {
                 throw new InternalAuthenticationServiceException(
-                        "UserDetailsService returned null, which is an interface contract violation")
+                    "UserDetailsService returned null, which is an interface contract violation")
             }
             return loadedUser
         }
@@ -105,21 +105,21 @@ class ExternalIdAuthenticationProvider implements AuthenticationProvider {
         public void check(UserDetails user) {
             if (!user.isAccountNonLocked()) {
                 ExternalIdAuthenticationProvider.this.logger
-                        .debug("Failed to authenticate since user account is locked")
+                    .debug("Failed to authenticate since user account is locked")
                 throw new LockedException(ExternalIdAuthenticationProvider.this.messages
-                        .getMessage("AbstractUserDetailsAuthenticationProvider.locked", "User account is locked"))
+                    .getMessage("AbstractUserDetailsAuthenticationProvider.locked", "User account is locked"))
             }
             if (!user.isEnabled()) {
                 ExternalIdAuthenticationProvider.this.logger
-                        .debug("Failed to authenticate since user account is disabled")
+                    .debug("Failed to authenticate since user account is disabled")
                 throw new DisabledException(ExternalIdAuthenticationProvider.this.messages
-                        .getMessage("AbstractUserDetailsAuthenticationProvider.disabled", "User is disabled"))
+                    .getMessage("AbstractUserDetailsAuthenticationProvider.disabled", "User is disabled"))
             }
             if (!user.isAccountNonExpired()) {
                 ExternalIdAuthenticationProvider.this.logger
-                        .debug("Failed to authenticate since user account has expired")
+                    .debug("Failed to authenticate since user account has expired")
                 throw new AccountExpiredException(ExternalIdAuthenticationProvider.this.messages
-                        .getMessage("AbstractUserDetailsAuthenticationProvider.expired", "User account has expired"))
+                    .getMessage("AbstractUserDetailsAuthenticationProvider.expired", "User account has expired"))
             }
         }
 
@@ -131,10 +131,10 @@ class ExternalIdAuthenticationProvider implements AuthenticationProvider {
         public void check(UserDetails user) {
             if (!user.isCredentialsNonExpired()) {
                 ExternalIdAuthenticationProvider.this.logger
-                        .debug("Failed to authenticate since user account credentials have expired")
+                    .debug("Failed to authenticate since user account credentials have expired")
                 throw new CredentialsExpiredException(ExternalIdAuthenticationProvider.this.messages
-                        .getMessage("AbstractUserDetailsAuthenticationProvider.credentialsExpired",
-                                "User credentials have expired"))
+                    .getMessage("AbstractUserDetailsAuthenticationProvider.credentialsExpired",
+                        "User credentials have expired"))
             }
         }
 

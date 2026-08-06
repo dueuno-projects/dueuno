@@ -35,7 +35,7 @@ class TableDataset extends Component {
      * Creates a {@code TableDataset} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code table} ({@link Table}, required),
+     * {@code table} ({@link Table}, required),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     @Requires({ args.table })

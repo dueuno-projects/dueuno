@@ -176,7 +176,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      * Creates and returns a new instance of the specified {@link Page} subclass.
      *
      * @param clazz the {@link Page} subclass to instantiate
-     * @param args  optional map of constructor/property arguments
+     * @param args optional map of constructor/property arguments
      * @return the newly created page instance
      */
     public <T> T createPage(Class<T> clazz, Map args = [:]) {
@@ -196,7 +196,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      * Creates and returns a new instance of the specified {@link dueuno.elements.core.PageContent} subclass.
      *
      * @param clazz the {@link dueuno.elements.core.PageContent} subclass to instantiate
-     * @param args  optional map of constructor/property arguments
+     * @param args optional map of constructor/property arguments
      * @return the newly created content instance
      */
     public <T> T createContent(Class<T> clazz, Map args = [:]) {
@@ -216,8 +216,8 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      * Returns an {@link OutputStream} that streams a file to the browser.
      *
      * @param pathname the server-side path of the file to stream
-     * @param inline   {@code true} to suggest inline display (e.g. PDF preview);
-     *                 {@code false} (default) to force a download prompt
+     * @param inline {@code true} to suggest inline display (e.g. PDF preview);
+     * {@code false} (default) to force a download prompt
      * @return the output stream to write the file content to
      */
     OutputStream getDownloadOutputStream(String pathname, Boolean inline = false) {
@@ -228,7 +228,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      * Streams a file from the server to the browser as a download (or inline display).
      *
      * @param pathname the server-side path of the file to send
-     * @param inline   {@code true} to suggest inline display; {@code false} (default) to force download
+     * @param inline {@code true} to suggest inline display; {@code false} (default) to force download
      */
     void download(String pathname, Boolean inline = false) {
         getPageService().download(pathname, inline)
@@ -270,7 +270,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
             Exception e = args.exception as Exception
             log.error LogUtils.logStackTrace(e)
             String message = e.message ?: e.cause.message ?: "${e.toString()} caused by ${e.cause.toString()}"
-            t.errorMessage(message , new ComponentEvent(args))
+            t.errorMessage(message, new ComponentEvent(args))
 
         } else if (args.errors) {
             Integer submittedComponentCount = requestParams._21SubmittedCount as Integer
@@ -318,8 +318,8 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         }
 
         return [
-                template: t.view,
-                model   : t.model,
+            template: t.view,
+            model   : t.model,
         ]
     }
 
@@ -328,7 +328,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      * format expected by the Elements frontend component.
      *
      * @param componentName the identifier of the target component (used for debug logging)
-     * @param errorsMap     a map of field names to i18n error message keys or literal messages
+     * @param errorsMap a map of field names to i18n error message keys or literal messages
      * @return a map with an {@code errors} key holding a list of {@code {field, message}} maps
      */
     private Map getErrorsFromMap(String componentName, Map errorsMap) {
@@ -338,8 +338,8 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
             String fieldName = error.key
             String fieldError = message(error.value as String)
             errors.add([
-                    field  : fieldName,
-                    message: fieldError,
+                field  : fieldName,
+                message: fieldError,
             ])
             log.debug "[${componentName}] ${fieldName}: ${fieldError}"
         }
@@ -352,7 +352,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      * Grails {@link grails.validation.Validateable} (or GORM domain) instance and logs each error.
      *
      * @param componentName the identifier of the target component (used for debug logging)
-     * @param validateable  a Grails {@link grails.validation.Validateable} or GORM domain instance
+     * @param validateable a Grails {@link grails.validation.Validateable} or GORM domain instance
      * @return the {@link org.springframework.validation.Errors} object from the validateable
      */
     private Errors getErrorsFromValidatable(String componentName, Object validateable) {
@@ -372,8 +372,8 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      *     <li>Anything else — adds an error message to {@code t} and returns an empty map</li>
      * </ul>
      *
-     * @param t               the current {@link Transition} (used to display an error message on unsupported types)
-     * @param componentName   the identifier of the target component
+     * @param t the current {@link Transition} (used to display an error message on unsupported types)
+     * @param componentName the identifier of the target component
      * @param componentErrors the errors object (a {@link Map}, a validateable, or a GORM domain instance)
      * @return the resolved error structure to set on the component
      */
@@ -417,8 +417,8 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         }
 
         return [
-                template: p.view,
-                model   : p.model + args,
+            template: p.view,
+            model   : p.model + args,
         ]
     }
 }

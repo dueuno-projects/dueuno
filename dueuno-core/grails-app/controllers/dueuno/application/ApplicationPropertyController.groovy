@@ -45,18 +45,18 @@ class ApplicationPropertyController implements ElementsController {
             c.header.nextButton.with {
                 removeAllActions()
                 addAction(
-                        action: 'create',
-                        params: [type: 'STRING'],
-                        text: message("applicationProperty.STRING"),
-                        icon: 'fa-plus'
+                    action: 'create',
+                    params: [type: 'STRING'],
+                    text: message("applicationProperty.STRING"),
+                    icon: 'fa-plus'
                 )
                 for (String type in PropertyType.values()*.name()) {
                     if (type == 'STRING') continue
                     if (type == 'PASSWORD') continue
                     addAction(
-                            action: 'create',
-                            params: [type: type],
-                            text: message("applicationProperty.${type}"),
+                        action: 'create',
+                        params: [type: type],
+                        text: message("applicationProperty.${type}"),
                     )
                 }
             }
@@ -68,37 +68,37 @@ class ApplicationPropertyController implements ElementsController {
             filters.with {
                 fold = false
                 addField(
-                        class: TextField,
-                        id: 'find',
-                        label: TextDefault.FIND,
-                        cols: 8,
+                    class: TextField,
+                    id: 'find',
+                    label: TextDefault.FIND,
+                    cols: 8,
                 )
                 addField(
-                        class: Select,
-                        id: 'type',
-                        optionsFromEnum: PropertyType,
-                        noSelection: true,
-                        cols: 2,
+                    class: Select,
+                    id: 'type',
+                    optionsFromEnum: PropertyType,
+                    noSelection: true,
+                    cols: 2,
                 )
                 addField(
-                        class: Select,
-                        id: 'validation',
-                        optionsFromList: ['error'],
-                        search: false,
-                        noSelection: true,
+                    class: Select,
+                    id: 'validation',
+                    optionsFromList: ['error'],
+                    search: false,
+                    noSelection: true,
 //                        textPrefix: 'applicationProperty.validation',
-                        cols: 2,
+                    cols: 2,
                 )
             }
             sortable = [
-                    name: 'asc',
+                name: 'asc',
             ]
             columns = [
-                    'issues',
-                    'name',
-                    'type',
-                    'value',
-                    'description',
+                'issues',
+                'name',
+                'type',
+                'value',
+                'description',
             ]
 
             if (!isDeveloper) {
@@ -149,180 +149,180 @@ class ApplicationPropertyController implements ElementsController {
             String description = messageOrBlank(descriptionCode)
             if (description) {
                 addField(
-                        class: Label,
-                        id: 'description',
-                        html: description,
-                        displayLabel: false,
-                        tag: true,
-                        backgroundColor: mainBackgroundColor,
+                    class: Label,
+                    id: 'description',
+                    html: description,
+                    displayLabel: false,
+                    tag: true,
+                    backgroundColor: mainBackgroundColor,
                 )
             }
 
             addField(
-                    class: TextField,
-                    id: 'name',
-                    textStyle: TextStyle.MONOSPACE,
-                    textTransform: TextTransform.UPPERCASE,
-                    readonly: obj.name,
-                    cols: 9,
+                class: TextField,
+                id: 'name',
+                textStyle: TextStyle.MONOSPACE,
+                textTransform: TextTransform.UPPERCASE,
+                readonly: obj.name,
+                cols: 9,
             )
 
             addField(
-                    class: Select,
-                    id: 'type',
-                    optionsFromEnum: PropertyType,
-                    textStyle: TextStyle.MONOSPACE,
-                    readonly: true,
-                    nullable: true,
-                    cols: 3,
+                class: Select,
+                id: 'type',
+                optionsFromEnum: PropertyType,
+                textStyle: TextStyle.MONOSPACE,
+                readonly: true,
+                nullable: true,
+                cols: 3,
             )
 
             switch (obj.type) {
                 case PropertyType.STRING:
                     if (obj.stringDefault) {
                         addField(
-                                class: Textarea,
-                                id: 'defaultValue',
-                                textStyle: TextStyle.MONOSPACE,
-                                readonly: true,
-                                rows: 2,
+                            class: Textarea,
+                            id: 'defaultValue',
+                            textStyle: TextStyle.MONOSPACE,
+                            readonly: true,
+                            rows: 2,
                         )
                     }
                     addField(
-                            class: Textarea,
-                            id: 'value',
-                            textStyle: TextStyle.MONOSPACE,
-                            rows: 2,
+                        class: Textarea,
+                        id: 'value',
+                        textStyle: TextStyle.MONOSPACE,
+                        rows: 2,
                     )
                     break
 
                 case PropertyType.FILENAME:
                     if (obj.filenameDefault) {
                         addField(
-                                class: TextField,
-                                id: 'defaultValue',
-                                textStyle: TextStyle.MONOSPACE,
-                                readonly: true,
+                            class: TextField,
+                            id: 'defaultValue',
+                            textStyle: TextStyle.MONOSPACE,
+                            readonly: true,
                         )
                     }
                     addField(
-                            class: TextField,
-                            id: 'value',
-                            textStyle: TextStyle.MONOSPACE,
-                            onLoad: 'onValidate',
-                            onChange: 'onValidate',
+                        class: TextField,
+                        id: 'value',
+                        textStyle: TextStyle.MONOSPACE,
+                        onLoad: 'onValidate',
+                        onChange: 'onValidate',
                     )
                     break
 
                 case PropertyType.DIRECTORY:
                     if (obj.directoryDefault) {
                         addField(
-                                class: TextField,
-                                id: 'defaultValue',
-                                textStyle: TextStyle.MONOSPACE,
-                                readonly: true,
+                            class: TextField,
+                            id: 'defaultValue',
+                            textStyle: TextStyle.MONOSPACE,
+                            readonly: true,
                         )
                     }
                     addField(
-                            class: TextField,
-                            id: 'value',
-                            textStyle: TextStyle.MONOSPACE,
-                            onLoad: 'onValidate',
-                            onChange: 'onValidate',
+                        class: TextField,
+                        id: 'value',
+                        textStyle: TextStyle.MONOSPACE,
+                        onLoad: 'onValidate',
+                        onChange: 'onValidate',
                     )
                     break
 
                 case PropertyType.URL:
                     if (obj.urlDefault) {
                         addField(
-                                class: TextField,
-                                id: 'defaultValue',
-                                textStyle: TextStyle.MONOSPACE,
-                                readonly: true,
+                            class: TextField,
+                            id: 'defaultValue',
+                            textStyle: TextStyle.MONOSPACE,
+                            readonly: true,
                         )
                     }
                     addField(
-                            class: TextField,
-                            id: 'value',
-                            textStyle: TextStyle.MONOSPACE,
-                            onLoad: 'onValidate',
-                            onChange: 'onValidate',
+                        class: TextField,
+                        id: 'value',
+                        textStyle: TextStyle.MONOSPACE,
+                        onLoad: 'onValidate',
+                        onChange: 'onValidate',
                     )
                     break
 
                 case PropertyType.NUMBER:
                     if (obj.numberDefault) {
                         addField(
-                                class: NumberField,
-                                id: 'defaultValue',
-                                textStyle: TextStyle.MONOSPACE,
-                                decimals: 5,
-                                readonly: true,
+                            class: NumberField,
+                            id: 'defaultValue',
+                            textStyle: TextStyle.MONOSPACE,
+                            decimals: 5,
+                            readonly: true,
                         )
                     }
                     addField(
-                            class: NumberField,
-                            id: 'value',
-                            textStyle: TextStyle.MONOSPACE,
-                            decimals: 5,
+                        class: NumberField,
+                        id: 'value',
+                        textStyle: TextStyle.MONOSPACE,
+                        decimals: 5,
                     )
                     break
 
                 case PropertyType.BOOL:
                     if (obj.boolDefault) {
                         addField(
-                                class: Checkbox,
-                                id: 'defaultValue',
-                                readonly: true,
-                                label: '',
+                            class: Checkbox,
+                            id: 'defaultValue',
+                            readonly: true,
+                            label: '',
                         )
                     }
                     addField(
-                            class: Checkbox,
-                            id: 'value',
-                            label: '',
+                        class: Checkbox,
+                        id: 'value',
+                        label: '',
                     )
                     break
 
                 case PropertyType.DATETIME:
                     if (obj.datetimeDefault) {
                         addField(
-                                class: DateTimeField,
-                                id: 'defaultValue',
-                                readonly: true,
+                            class: DateTimeField,
+                            id: 'defaultValue',
+                            readonly: true,
                         )
                     }
                     addField(
-                            class: DateTimeField,
-                            id: 'value',
+                        class: DateTimeField,
+                        id: 'value',
                     )
                     break
 
                 case PropertyType.DATE:
                     if (obj.dateDefault) {
                         addField(
-                                class: DateField,
-                                id: 'defaultValue',
-                                readonly: true,
+                            class: DateField,
+                            id: 'defaultValue',
+                            readonly: true,
                         )
                     }
                     addField(
-                            class: DateField,
-                            id: 'value',
+                        class: DateField,
+                        id: 'value',
                     )
                     break
 
                 case PropertyType.TIME:
                     if (obj.timeDefault) {
                         addField(
-                                class: TimeField,
-                                id: 'defaultValue',
-                                readonly: true,
+                            class: TimeField,
+                            id: 'defaultValue',
+                            readonly: true,
                         )
                     }
                     addField(
-                            class: TimeField,
-                            id: 'value',
+                        class: TimeField,
+                        id: 'value',
                     )
                     break
             }

@@ -72,12 +72,12 @@ class Button extends Component {
      * unless {@code dontCreateDefaultAction} is set.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code primary} ({@link Boolean}),
-     *             {@code stretch} ({@link Boolean}),
-     *             {@code group} ({@link Boolean}),
-     *             {@code maxWidth} ({@link Integer}),
-     *             {@code text} ({@link String}) — label for the default action,
-     *             {@code dontCreateDefaultAction} ({@link Boolean}) — skip auto-creation of the default action,
+     * {@code primary} ({@link Boolean}),
+     * {@code stretch} ({@link Boolean}),
+     * {@code group} ({@link Boolean}),
+     * {@code maxWidth} ({@link Integer}),
+     * {@code text} ({@link String}) — label for the default action,
+     * {@code dontCreateDefaultAction} ({@link Boolean}) — skip auto-creation of the default action,
      *             plus all keys accepted by {@link Component#Component(Map)} and {@link Menu}
      */
     Button(Map args) {
@@ -188,7 +188,7 @@ class Button extends Component {
         }
     }
 
-    /** @return whether the default action opens in a modal window */
+    /** @return whether the default action opens in a modal window  */
     Boolean getModal() {
         return defaultAction.modal
     }
@@ -202,7 +202,7 @@ class Button extends Component {
         defaultAction.modal = value
     }
 
-    /** @return whether the default action uses a small button style */
+    /** @return whether the default action uses a small button style  */
     Boolean getSmall() {
         return defaultAction.small
     }
@@ -216,7 +216,7 @@ class Button extends Component {
         defaultAction.small = value
     }
 
-    /** @return whether the default action uses a large button style */
+    /** @return whether the default action uses a large button style  */
     Boolean getLarge() {
         return defaultAction.large
     }
@@ -230,7 +230,7 @@ class Button extends Component {
         defaultAction.large = value
     }
 
-    /** @return the animation name applied to the default action transition */
+    /** @return the animation name applied to the default action transition  */
     String getAnimate() {
         return defaultAction.animate
     }
@@ -244,7 +244,7 @@ class Button extends Component {
         defaultAction.animate = value
     }
 
-    /** @return whether the default action performs a direct (non-AJAX) navigation */
+    /** @return whether the default action performs a direct (non-AJAX) navigation  */
     Boolean getDirect() {
         return defaultAction.direct
     }
@@ -258,7 +258,7 @@ class Button extends Component {
         defaultAction.direct = value
     }
 
-    /** @return whether the default action renders as a modal close button */
+    /** @return whether the default action renders as a modal close button  */
     Boolean getCloseButton() {
         return defaultAction.closeButton
     }
@@ -272,7 +272,7 @@ class Button extends Component {
         defaultAction.closeButton = value
     }
 
-    /** @return the scroll target of the default action */
+    /** @return the scroll target of the default action  */
     String getScroll() {
         return defaultAction.scroll
     }
@@ -394,7 +394,7 @@ class Button extends Component {
      * when not supplied.
      *
      * @param args action configuration; recognised keys: {@code action}, {@code controller},
-     *             {@code id}, {@code loading}, and all keys accepted by {@link Menu}
+     * {@code id}, {@code loading}, and all keys accepted by {@link Menu}
      * @return the newly created {@link Menu} item
      * @see Menu
      */
@@ -437,8 +437,8 @@ class Button extends Component {
      */
     Button addSeparator(String text = null) {
         addMenu(
-                separator: true,
-                text: text,
+            separator: true,
+            text: text,
         )
         return this
     }
@@ -585,7 +585,7 @@ class Button extends Component {
     List<Menu> getMenuActions() {
         List<Menu> result = []
 
-        for (action in actionMenu.items.sort {it.order }) {
+        for (action in actionMenu.items.sort { it.order }) {
             if (action != defaultAction && action != tailAction) {
                 result.add(action)
             }

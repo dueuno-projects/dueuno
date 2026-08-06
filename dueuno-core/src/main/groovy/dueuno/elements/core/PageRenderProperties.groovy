@@ -89,14 +89,14 @@ class PageRenderProperties implements Serializable {
      */
     Map asMap() {
         return [
-                modal: modal,
-                small: small,
-                large: large,
-                fullscreen: fullscreen,
-                closeButton: closeButton,
-                updateUrl: updateUrl,
-                animate: animate,
-                scroll: scroll,
+            modal      : modal,
+            small      : small,
+            large      : large,
+            fullscreen : fullscreen,
+            closeButton: closeButton,
+            updateUrl  : updateUrl,
+            animate    : animate,
+            scroll     : scroll,
         ]
     }
 }

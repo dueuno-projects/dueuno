@@ -35,7 +35,7 @@ import groovy.transform.CompileStatic
  * }
  * // Registration (e.g. in Bootstrap):
  * Types.register(MyType)
- * }</pre>
+ *}</pre>
  *
  * @author Gianluca Sartori
  * @see Types

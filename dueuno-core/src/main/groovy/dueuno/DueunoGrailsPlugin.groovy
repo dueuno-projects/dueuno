@@ -72,28 +72,30 @@ class DueunoGrailsPlugin extends Plugin {
 //    def scm = [ url: 'http://svn.codehaus.org/grails-plugins/' ]
 
     @CompileDynamic
-    Closure doWithSpring() { {->
-        tenantForCurrentUserResolver(TenantForCurrentUserResolver)
-        sessionInitializer(SessionInitializer)
+    Closure doWithSpring() {
+        { ->
+            tenantForCurrentUserResolver(TenantForCurrentUserResolver)
+            sessionInitializer(SessionInitializer)
 
-        customUserDetailsService(CustomUserDetailsService) {
-            grailsApplication = ref('grailsApplication')
-        }
+            customUserDetailsService(CustomUserDetailsService) {
+                grailsApplication = ref('grailsApplication')
+            }
 
-        externalIdAuthenticationProvider(ExternalIdAuthenticationProvider) {
-            customUserDetailsService = ref('customUserDetailsService')
-        }
+            externalIdAuthenticationProvider(ExternalIdAuthenticationProvider) {
+                customUserDetailsService = ref('customUserDetailsService')
+            }
 
-        ConfigObject conf = SpringSecurityUtils.securityConfig
-        externalIdAuthenticationFilter(ExternalIdAuthenticationFilter, conf.externalId.filterProcessesUrl) {
-            authenticationManager = ref('authenticationManager')
-            authenticationSuccessHandler = ref('authenticationSuccessHandler')
-            authenticationFailureHandler = ref('authenticationFailureHandler')
-            sessionAuthenticationStrategy = ref('sessionAuthenticationStrategy')
-            rememberMeServices = ref('rememberMeServices')
-            securityContextRepository = ref('securityContextRepository')
+            ConfigObject conf = SpringSecurityUtils.securityConfig
+            externalIdAuthenticationFilter(ExternalIdAuthenticationFilter, conf.externalId.filterProcessesUrl) {
+                authenticationManager = ref('authenticationManager')
+                authenticationSuccessHandler = ref('authenticationSuccessHandler')
+                authenticationFailureHandler = ref('authenticationFailureHandler')
+                sessionAuthenticationStrategy = ref('sessionAuthenticationStrategy')
+                rememberMeServices = ref('rememberMeServices')
+                securityContextRepository = ref('securityContextRepository')
+            }
         }
-    } }
+    }
 
     void doWithDynamicMethods() {
         // TODO Implement registering dynamic methods to classes (optional)

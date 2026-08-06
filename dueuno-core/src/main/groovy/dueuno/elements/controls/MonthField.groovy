@@ -52,7 +52,7 @@ class MonthField extends DateTimeField {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                pattern: '^[0-9/]*$',
+            pattern: '^[0-9/]*$',
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

@@ -41,8 +41,8 @@ class Separator extends Label {
      * full-width (12-column) layout.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code squeeze} ({@link Boolean}, default {@code false}),
-     *             {@code cols} ({@link Integer}, default {@code 12}),
+     * {@code squeeze} ({@link Boolean}, default {@code false}),
+     * {@code cols} ({@link Integer}, default {@code 12}),
      *             plus all keys accepted by {@link Label#Label(Map)}
      */
     Separator(Map args) {

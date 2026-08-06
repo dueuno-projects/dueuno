@@ -64,9 +64,9 @@ class PageWhitespacesStripper implements GroovyPageSourceDecorator {
             }
 
             boolean skipChar = false
-                    || c == Chars.LF
-                    || process && Character.isWhitespace(c)
-                    || !process && prev != Chars.LF && Character.isWhitespace(prev) && Character.isWhitespace(c)
+                || c == Chars.LF
+                || process && Character.isWhitespace(c)
+                || !process && prev != Chars.LF && Character.isWhitespace(prev) && Character.isWhitespace(c)
 
             if (!skipChar) {
                 sb.setCharAt(j, c)

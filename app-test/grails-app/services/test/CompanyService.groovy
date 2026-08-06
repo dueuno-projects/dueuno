@@ -48,7 +48,7 @@ class CompanyService {
     TCompany get(Serializable id) {
         // Add single-sided relationships here (Eg. references to other Domain Objects)
         Map fetch = [
-                employees: 'join',
+            employees: 'join',
         ]
 
         return buildQuery(id: id).get(fetch: fetch)

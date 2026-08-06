@@ -15,13 +15,9 @@
 package dueuno.elements.controls
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.elements.core.PrettyPrinter
-import dueuno.elements.core.PrettyPrinterProperties
-import dueuno.elements.core.Component
-import dueuno.elements.core.Control
-import dueuno.elements.core.Elements
-import dueuno.elements.components.Button
 import dueuno.elements.ElementsException
+import dueuno.elements.components.Button
+import dueuno.elements.core.*
 import dueuno.types.Type
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -84,15 +80,15 @@ class Select extends Control {
      * creates the adjacent action button.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code autoSelect} ({@link Boolean}, default {@code true}),
-     *             {@code multiple} ({@link Boolean}, default {@code false}),
-     *             {@code search} ({@link Boolean}),
-     *             {@code allowClear} ({@link Boolean}),
-     *             {@code placeholder} ({@link String}),
-     *             {@code searchMinInputLength} ({@link Integer}, default {@code 0}),
-     *             {@code optionsFromRecordset}, {@code optionsFromList}, {@code optionsFromEnum},
-     *             {@code options}, {@code keys}, {@code keysSeparator}, {@code exclude},
-     *             {@code transformer}, {@code renderTextPrefix}, {@code forEachOption} ({@link Closure}),
+     * {@code autoSelect} ({@link Boolean}, default {@code true}),
+     * {@code multiple} ({@link Boolean}, default {@code false}),
+     * {@code search} ({@link Boolean}),
+     * {@code allowClear} ({@link Boolean}),
+     * {@code placeholder} ({@link String}),
+     * {@code searchMinInputLength} ({@link Integer}, default {@code 0}),
+     * {@code optionsFromRecordset}, {@code optionsFromList}, {@code optionsFromEnum},
+     * {@code options}, {@code keys}, {@code keysSeparator}, {@code exclude},
+     * {@code transformer}, {@code renderTextPrefix}, {@code forEachOption} ({@link Closure}),
      *             plus all keys accepted by {@link Control#Control(Map)}
      */
     Select(Map args) {
@@ -109,56 +105,56 @@ class Select extends Control {
             search = (args.search == null) ? true : args.search
             allowClear = (args.allowClear == null) ? true : args.allowClear
             options = optionsFromRecordset(
-                    recordset: args.optionsFromRecordset,
-                    keys: args.keys,
-                    keysSeparator: args.keysSeparator,
-                    prettyPrinter: prettyPrinter,
-                    transformer: args.transformer,
-                    forEachOption: args.forEachOption,
-                    textPrefix: prettyPrinterProperties.textPrefix,
-                    renderTextPrefix: args.renderTextPrefix == null ? false : args.renderTextPrefix,
-                    locale: locale,
+                recordset: args.optionsFromRecordset,
+                keys: args.keys,
+                keysSeparator: args.keysSeparator,
+                prettyPrinter: prettyPrinter,
+                transformer: args.transformer,
+                forEachOption: args.forEachOption,
+                textPrefix: prettyPrinterProperties.textPrefix,
+                renderTextPrefix: args.renderTextPrefix == null ? false : args.renderTextPrefix,
+                locale: locale,
             )
 
         } else if (args.optionsFromList) {
             search = (args.search == null) ? false : args.search
             allowClear = (args.allowClear == null) ? false : args.allowClear
             options = optionsFromList(
-                    list: args.optionsFromList,
-                    exclude: args.exclude,
-                    prettyPrinter: prettyPrinter,
-                    transformer: args.transformer,
-                    forEachOption: args.forEachOption,
-                    textPrefix: prettyPrinterProperties.textPrefix,
-                    renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
-                    locale: locale,
+                list: args.optionsFromList,
+                exclude: args.exclude,
+                prettyPrinter: prettyPrinter,
+                transformer: args.transformer,
+                forEachOption: args.forEachOption,
+                textPrefix: prettyPrinterProperties.textPrefix,
+                renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
+                locale: locale,
             )
 
         } else if (args.optionsFromEnum) {
             search = (args.search == null) ? false : args.search
             allowClear = (args.allowClear == null) ? false : args.allowClear
             options = optionsFromEnum(
-                    enum: args.optionsFromEnum,
-                    exclude: args.exclude,
-                    prettyPrinter: prettyPrinter,
-                    transformer: args.transformer,
-                    forEachOption: args.forEachOption,
-                    textPrefix: prettyPrinterProperties.textPrefix,
-                    renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
-                    locale: locale,
+                enum: args.optionsFromEnum,
+                exclude: args.exclude,
+                prettyPrinter: prettyPrinter,
+                transformer: args.transformer,
+                forEachOption: args.forEachOption,
+                textPrefix: prettyPrinterProperties.textPrefix,
+                renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
+                locale: locale,
             )
 
         } else {
             search = (args.search == null) ? true : args.search
             allowClear = (args.allowClear == null) ? false : args.allowClear
             options = options(
-                    options: args.options,
-                    prettyPrinter: prettyPrinter,
-                    transformer: args.transformer,
-                    forEachOption: args.forEachOption,
-                    textPrefix: prettyPrinterProperties.textPrefix,
-                    renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
-                    locale: locale,
+                options: args.options,
+                prettyPrinter: prettyPrinter,
+                transformer: args.transformer,
+                forEachOption: args.forEachOption,
+                textPrefix: prettyPrinterProperties.textPrefix,
+                renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
+                locale: locale,
             )
         }
 
@@ -174,11 +170,11 @@ class Select extends Control {
         }
 
         actions = createControl(
-                class: Button,
-                id: 'actions',
-                group: true,
-                dontCreateDefaultAction: true,
-                cssClass: 'hide',
+            class: Button,
+            id: 'actions',
+            group: true,
+            dontCreateDefaultAction: true,
+            cssClass: 'hide',
         )
     }
 
@@ -200,7 +196,7 @@ class Select extends Control {
      * @return a map of option key strings to their localised display labels
      */
     Map getOptions() {
-        return options.collectEntries { [(it.id): it.text]}
+        return options.collectEntries { [(it.id): it.text] }
     }
 
     /**
@@ -283,12 +279,12 @@ class Select extends Control {
      * </p>
      *
      * @param args configuration map; recognised keys:
-     *             {@code recordset} ({@link Collection}),
-     *             {@code keys} ({@link List}&lt;{@link String}&gt;),
-     *             {@code keysSeparator} ({@link String}, default {@code ","}),
-     *             {@code forEachOption} ({@link Closure}),
-     *             {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
-     *             {@code renderTextPrefix}, {@code locale}
+     * {@code recordset} ({@link Collection}),
+     * {@code keys} ({@link List}&lt;{@link String}&gt;),
+     * {@code keysSeparator} ({@link String}, default {@code ","}),
+     * {@code forEachOption} ({@link Closure}),
+     * {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
+     * {@code renderTextPrefix}, {@code locale}
      * @return a list of {@code [id: key, text: label]} maps
      * @throws ElementsException if the record has no {@code id} and no {@code keys} are given
      */
@@ -336,11 +332,11 @@ class Select extends Control {
      * Values present in the {@code exclude} list are omitted.
      *
      * @param args configuration map; recognised keys:
-     *             {@code list} ({@link List}),
-     *             {@code exclude} ({@link List}),
-     *             {@code forEachOption} ({@link Closure}),
-     *             {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
-     *             {@code renderTextPrefix}, {@code locale}
+     * {@code list} ({@link List}),
+     * {@code exclude} ({@link List}),
+     * {@code forEachOption} ({@link Closure}),
+     * {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
+     * {@code renderTextPrefix}, {@code locale}
      * @return a list of {@code [id: value, text: label]} maps
      */
     static List<Map<String, String>> optionsFromList(Map args) {
@@ -371,7 +367,7 @@ class Select extends Control {
      * Delegates to {@link #optionsFromList(Map)} after converting the enum constants to a list.
      *
      * @param args configuration map; recognised keys:
-     *             {@code enum} (enum {@link Class}),
+     * {@code enum} (enum {@link Class}),
      *             plus all keys accepted by {@link #optionsFromList(Map)}
      * @return a list of {@code [id: enumName, text: label]} maps
      */
@@ -385,10 +381,10 @@ class Select extends Control {
      * Builds a list of {@code [id, text]} option maps from a pre-built {@code [key: label]} map.
      *
      * @param args configuration map; recognised keys:
-     *             {@code options} ({@link Map}),
-     *             {@code forEachOption} ({@link Closure}),
-     *             {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
-     *             {@code renderTextPrefix}, {@code locale}
+     * {@code options} ({@link Map}),
+     * {@code forEachOption} ({@link Closure}),
+     * {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
+     * {@code renderTextPrefix}, {@code locale}
      * @return a list of {@code [id: key, text: label]} maps
      */
     static List<Map<String, String>> options(Map args) {
@@ -413,8 +409,8 @@ class Select extends Control {
      * Initialises a {@link PrettyPrinterProperties} instance from the given argument map,
      * auto-detecting the pretty-printer from the first item when not explicitly provided.
      *
-     * @param args  configuration map containing {@code textPrefix}, {@code renderTextPrefix},
-     *              {@code locale}, {@code transformer}, and optionally {@code prettyPrinter}
+     * @param args configuration map containing {@code textPrefix}, {@code renderTextPrefix},
+     * {@code locale}, {@code transformer}, and optionally {@code prettyPrinter}
      * @param firstItem the first item in the option source, used for auto-detecting the pretty-printer
      * @return a configured {@link PrettyPrinterProperties} instance
      */
@@ -444,8 +440,8 @@ class Select extends Control {
      * Builds a composite key string from the specified properties of an object,
      * joining multiple key values with the given separator.
      *
-     * @param obj       the source object to read key values from
-     * @param keys      the list of property names to use as key parts
+     * @param obj the source object to read key values from
+     * @param keys the list of property names to use as key parts
      * @param separator the string used to join multiple key parts
      * @return the composite key string
      */
@@ -480,13 +476,13 @@ class Select extends Control {
 
         if (value in Collection) {
             valueMap = [
-                    type : Type.LIST.toString(),
-                    value: value.collect { it != null ? it as String : null },
+                type : Type.LIST.toString(),
+                value: value.collect { it != null ? it as String : null },
             ]
         } else {
             valueMap = [
-                    type : Type.STRING.toString(),
-                    value: value != null ? value as String : null,
+                type : Type.STRING.toString(),
+                value: value != null ? value as String : null,
             ]
         }
 
@@ -504,18 +500,18 @@ class Select extends Control {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                multiple            : multiple,
-                searchMinInputLength: searchMinInputLength,
-                allowClear          : allowClear,
-                autoSelect          : autoSelect,
-                placeholder         : placeholder,
-                search              : search,
-                text                : [
-                        inputTooShort: message('control.select.inputTooShort'),
-                        errorLoading : message('control.select.errorLoading'),
-                        noResults    : message('control.select.noResults'),
-                        searching    : message('control.select.searching'),
-                ]
+            multiple            : multiple,
+            searchMinInputLength: searchMinInputLength,
+            allowClear          : allowClear,
+            autoSelect          : autoSelect,
+            placeholder         : placeholder,
+            search              : search,
+            text                : [
+                inputTooShort: message('control.select.inputTooShort'),
+                errorLoading : message('control.select.errorLoading'),
+                noResults    : message('control.select.noResults'),
+                searching    : message('control.select.searching'),
+            ]
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

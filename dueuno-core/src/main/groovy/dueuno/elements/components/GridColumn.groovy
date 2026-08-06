@@ -63,7 +63,7 @@ class GridColumn extends Component {
      *
      * @param args initialisation arguments; required key: {@code grid} ({@link Grid});
      *             optional keys: {@code xs}, {@code sm}, {@code md}, {@code lg}, {@code xl},
-     *             {@code xxl} ({@link Integer}), plus all keys accepted by {@link Component#Component(Map)}
+     * {@code xxl} ({@link Integer}), plus all keys accepted by {@link Component#Component(Map)}
      */
     @Requires({ args.grid })
     GridColumn(Map args) {

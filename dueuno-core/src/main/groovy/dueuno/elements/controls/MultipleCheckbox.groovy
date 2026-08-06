@@ -14,8 +14,8 @@
  */
 package dueuno.elements.controls
 
-import dueuno.elements.core.Control
 import dueuno.elements.ElementsException
+import dueuno.elements.core.Control
 import dueuno.types.Type
 import groovy.transform.CompileStatic
 
@@ -57,11 +57,11 @@ class MultipleCheckbox extends Control {
      * {@code optionsFromEnum}, or {@code options}, then creates a {@link Checkbox} for each.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code simple} ({@link Boolean}, default {@code false}),
-     *             {@code textPrefix} ({@link String}, default: controller name),
-     *             {@code optionsFromRecordset}, {@code optionsFromList}, {@code optionsFromEnum},
-     *             {@code options}, {@code keys}, {@code keysSeparator}, {@code exclude},
-     *             {@code forEachOption} ({@link Closure}),
+     * {@code simple} ({@link Boolean}, default {@code false}),
+     * {@code textPrefix} ({@link String}, default: controller name),
+     * {@code optionsFromRecordset}, {@code optionsFromList}, {@code optionsFromEnum},
+     * {@code options}, {@code keys}, {@code keysSeparator}, {@code exclude},
+     * {@code forEachOption} ({@link Closure}),
      *             plus all keys accepted by {@link Control#Control(Map)}
      */
     MultipleCheckbox(Map args) {
@@ -74,39 +74,39 @@ class MultipleCheckbox extends Control {
 
         if (args.optionsFromRecordset) {
             options = Select.optionsFromRecordset(
-                    recordset: args.optionsFromRecordset,
-                    keys: args.keys,
-                    keysSeparator: args.keysSeparator,
-                    forEachOption: args.forEachOption,
-                    textPrefix: prettyPrinterProperties.textPrefix,
-                    renderTextPrefix: false,
-                    locale: locale,
+                recordset: args.optionsFromRecordset,
+                keys: args.keys,
+                keysSeparator: args.keysSeparator,
+                forEachOption: args.forEachOption,
+                textPrefix: prettyPrinterProperties.textPrefix,
+                renderTextPrefix: false,
+                locale: locale,
             )
 
         } else if (args.optionsFromList) {
             options = Select.optionsFromList(
-                    list: args.optionsFromList,
-                    exclude: args.exclude,
-                    forEachOption: args.forEachOption,
-                    textPrefix: prettyPrinterProperties.textPrefix,
-                    locale: locale,
+                list: args.optionsFromList,
+                exclude: args.exclude,
+                forEachOption: args.forEachOption,
+                textPrefix: prettyPrinterProperties.textPrefix,
+                locale: locale,
             )
 
         } else if (args.optionsFromEnum) {
             options = Select.optionsFromEnum(
-                    enum: args.optionsFromEnum,
-                    exclude: args.exclude,
-                    forEachOption: args.forEachOption,
-                    textPrefix: prettyPrinterProperties.textPrefix,
-                    locale: locale,
+                enum: args.optionsFromEnum,
+                exclude: args.exclude,
+                forEachOption: args.forEachOption,
+                textPrefix: prettyPrinterProperties.textPrefix,
+                locale: locale,
             )
 
         } else {
             options = Select.options(
-                    options: args.options,
-                    forEachOption: args.forEachOption,
-                    textPrefix: prettyPrinterProperties.textPrefix,
-                    locale: locale,
+                options: args.options,
+                forEachOption: args.forEachOption,
+                textPrefix: prettyPrinterProperties.textPrefix,
+                locale: locale,
             )
         }
 
@@ -116,14 +116,14 @@ class MultipleCheckbox extends Control {
             Object text = option.text
 
             Checkbox checkbox = new Checkbox(
-                    id: getId() + '_' + id,
-                    optionKey: id,
-                    optionValue: text,
-                    simple: simple,
-                    readonly: readonly,
-                    primaryTextColor: primaryTextColor,
-                    primaryBackgroundColor: primaryBackgroundColor,
-                    primaryBackgroundColorAlpha: primaryBackgroundColorAlpha,
+                id: getId() + '_' + id,
+                optionKey: id,
+                optionValue: text,
+                simple: simple,
+                readonly: readonly,
+                primaryTextColor: primaryTextColor,
+                primaryBackgroundColor: primaryBackgroundColor,
+                primaryBackgroundColorAlpha: primaryBackgroundColorAlpha,
             )
             checkboxes.put(id, checkbox)
         }
@@ -142,7 +142,7 @@ class MultipleCheckbox extends Control {
      * checkbox states.
      *
      * @param value the selected option key(s); accepts {@code null}, {@link String},
-     *              {@link Set}, or {@link List}
+     * {@link Set}, or {@link List}
      * @throws ElementsException if {@code value} is of an unsupported type
      */
     @Override

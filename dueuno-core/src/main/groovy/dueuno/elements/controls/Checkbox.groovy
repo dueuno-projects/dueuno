@@ -14,9 +14,9 @@
  */
 package dueuno.elements.controls
 
-import dueuno.elements.core.PrettyPrinterProperties
 import dueuno.elements.core.Component
 import dueuno.elements.core.Control
+import dueuno.elements.core.PrettyPrinterProperties
 import dueuno.types.Type
 import groovy.transform.CompileStatic
 
@@ -24,10 +24,10 @@ import groovy.transform.CompileStatic
  * A boolean checkbox control that can operate in two modes:
  * <ul>
  *   <li><b>Simple mode</b> — stores {@code true}/{@code false}; {@link #getChecked()} returns
- *       {@code true} when the value is {@code true}.</li>
+ * {@code true} when the value is {@code true}.</li>
  *   <li><b>Option mode</b> — stores an arbitrary key/value pair set via {@link #setOption(Map)};
- *       {@link #getChecked()} returns {@code true} when the current value equals
- *       {@link #optionKey}.</li>
+ * {@link #getChecked()} returns {@code true} when the current value equals
+ * {@link #optionKey}.</li>
  * </ul>
  * <p>
  * The value type is always {@link dueuno.types.Type#BOOL}. An optional inline label
@@ -62,11 +62,11 @@ class Checkbox extends Control {
      * Creates a {@code Checkbox} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code text} ({@link String}) — inline label (defaults to {@code id.text} i18n key),
-     *             {@code textArgs} ({@link List}),
-     *             {@code simple} ({@link Boolean}, default {@code false}),
-     *             {@code option} ({@link Map}) — single-entry map {@code {key: value}} for option mode,
-     *             {@code optionKey}, {@code optionValue} — alternative to {@code option},
+     * {@code text} ({@link String}) — inline label (defaults to {@code id.text} i18n key),
+     * {@code textArgs} ({@link List}),
+     * {@code simple} ({@link Boolean}, default {@code false}),
+     * {@code option} ({@link Map}) — single-entry map {@code {key: value}} for option mode,
+     * {@code optionKey}, {@code optionValue} — alternative to {@code option},
      *             plus all keys accepted by {@link Control#Control(Map)}
      */
     Checkbox(Map args) {
@@ -94,7 +94,7 @@ class Checkbox extends Control {
      *   <li>Returns {@code false} when the value is {@code null} or falsy.</li>
      *   <li>Returns {@code true} when the value is {@code true} (simple mode).</li>
      *   <li>Returns {@code true} when {@link #optionKey} is set and the value equals
-     *       {@link #optionKey} (option mode).</li>
+     * {@link #optionKey} (option mode).</li>
      * </ul>
      *
      * @return {@code true} if the checkbox should appear checked
@@ -113,7 +113,7 @@ class Checkbox extends Control {
      * @param option a single-entry map {@code {key: value}} representing the option
      */
     void setOption(Map option) {
-        option.find {key, value ->
+        option.find { key, value ->
             optionKey = key
             optionValue = value
             return true
@@ -159,9 +159,9 @@ class Checkbox extends Control {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                simple: simple,
-                toggle: 'toggle',
-                option: optionKey,
+            simple: simple,
+            toggle: 'toggle',
+            option: optionKey,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

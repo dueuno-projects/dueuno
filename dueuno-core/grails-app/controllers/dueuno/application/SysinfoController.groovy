@@ -39,8 +39,8 @@ class SysinfoController implements ElementsController {
 
         c.table.with {
             columns = [
-                    'key',
-                    'value',
+                'key',
+                'value',
             ]
             hasHeader = false
             rowActions = false
@@ -50,7 +50,7 @@ class SysinfoController implements ElementsController {
                 row.textStyle = TextStyle.MONOSPACE
                 row.cells.value.textWrap = TextWrap.SOFT_WRAP
             }
-            body = systemInfoService.info.collect {[key: it.key, value: it.value]}
+            body = systemInfoService.info.collect { [key: it.key, value: it.value] }
         }
 
         display content: c, modal: true, large: true

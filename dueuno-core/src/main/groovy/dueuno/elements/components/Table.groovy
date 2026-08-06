@@ -222,59 +222,59 @@ class Table extends Component {
         // COMPONENTS
         //
         title = createControl(
-                class: Separator,
-                id: 'title',
-                text: buildLabel(getId()),
-                squeeze: true,
-                display: false,
+            class: Separator,
+            id: 'title',
+            text: buildLabel(getId()),
+            squeeze: true,
+            display: false,
         )
         header = createComponent(TableRowset, 'header', [
-                table: this,
-                isHeader: true,
+            table   : this,
+            isHeader: true,
         ])
         body = createComponent(TableRowset, 'body', [
-                table: this,
+            table: this,
         ])
         footer = createComponent(TableRowset, 'footer', [
-                table: this,
-                isFooter: true,
+            table   : this,
+            isFooter: true,
         ])
         filters = createComponent(TableFilters, 'filters', [
-                table: this,
+            table: this,
         ])
         actionbar = filters.actionbar
         dataset = createComponent(TableDataset, 'dataset', [
-                table: this,
+            table: this,
         ])
         pagination = createComponent(TablePagination, 'pagination', [
-                table: this,
+            table: this,
         ])
 
         // CONTROLS
         //
         actions = createControl(
-                class: Button,
-                id: 'commonActions',
-                dontCreateDefaultAction: true,
+            class: Button,
+            id: 'commonActions',
+            dontCreateDefaultAction: true,
         )
         actions.addDefaultAction(
-                action: 'edit',
-                text: '',
-                icon: 'fa-pencil-alt',
-                tooltip: TextDefault.EDIT,
+            action: 'edit',
+            text: '',
+            icon: 'fa-pencil-alt',
+            tooltip: TextDefault.EDIT,
         )
         actions.addTailAction(
-                action: 'onDelete',
-                text: '',
-                icon: 'fa-solid fa-trash-alt',
-                tooltip: TextDefault.HARD_DELETE,
-                confirmMessage: TextDefault.MESSAGE_CONFIRM_UNRECOVERABLE_OPERATION,
+            action: 'onDelete',
+            text: '',
+            icon: 'fa-solid fa-trash-alt',
+            tooltip: TextDefault.HARD_DELETE,
+            confirmMessage: TextDefault.MESSAGE_CONFIRM_UNRECOVERABLE_OPERATION,
         )
         groupActions = createControl(
-                class: Button,
-                id: 'groupActions',
-                dontCreateDefaultAction: true,
-                display: false,
+            class: Button,
+            id: 'groupActions',
+            dontCreateDefaultAction: true,
+            display: false,
         )
     }
 
@@ -300,9 +300,9 @@ class Table extends Component {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                hasComponents: hasComponents,
-                stickyHeaderOffset: stickyHeaderOffset,
-                stickyHeaderZIndex: stickyHeaderZIndex,
+            hasComponents     : hasComponents,
+            stickyHeaderOffset: stickyHeaderOffset,
+            stickyHeaderZIndex: stickyHeaderZIndex,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

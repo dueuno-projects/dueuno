@@ -38,7 +38,7 @@ import java.nio.charset.Charset
  *     .addFile("file", new File("/tmp/test.pdf"))
  *
  * def response = HttpClient.post(client, "https://example.com/api/upload", multipart)
- * }</pre>
+ *}</pre>
  *
  * <p>Features:</p>
  * <ul>
@@ -94,7 +94,7 @@ class HttpMultipartBody {
      * {@code application/json; charset=UTF-8}.
      * </p>
      *
-     * @param name  the name of the form field to add
+     * @param name the name of the form field to add
      * @param value the object to serialize as JSON; must be serializable by {@link JsonOutput}
      * @return this {@link HttpMultipartBody} instance for chaining
      * @throws Exception if the object cannot be serialized to JSON

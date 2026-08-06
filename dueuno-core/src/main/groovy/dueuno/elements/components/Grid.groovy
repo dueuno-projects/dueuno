@@ -62,9 +62,9 @@ class Grid extends Component {
      * Breakpoints default to {@code null} (unset) unless explicitly provided.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code spacing} ({@link Integer}, default {@code 1}),
-     *             {@code tag} ({@link Boolean}, default {@code false}),
-     *             {@code xs}, {@code sm}, {@code md}, {@code lg}, {@code xl}, {@code xxl} ({@link Integer}),
+     * {@code spacing} ({@link Integer}, default {@code 1}),
+     * {@code tag} ({@link Boolean}, default {@code false}),
+     * {@code xs}, {@code sm}, {@code md}, {@code lg}, {@code xl}, {@code xxl} ({@link Integer}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     Grid(Map args) {
@@ -103,12 +103,12 @@ class Grid extends Component {
     /**
      * Sets all Bootstrap breakpoint column spans at once.
      *
-     * @param xs   column span for xs screens (default {@code 12})
-     * @param sm   column span for sm screens (default {@code 6})
-     * @param md   column span for md screens (default {@code 4})
-     * @param lg   column span for lg screens (default {@code 4})
-     * @param xl   column span for xl screens (default {@code 3})
-     * @param xxl  column span for xxl screens (default {@code 2})
+     * @param xs column span for xs screens (default {@code 12})
+     * @param sm column span for sm screens (default {@code 6})
+     * @param md column span for md screens (default {@code 4})
+     * @param lg column span for lg screens (default {@code 4})
+     * @param xl column span for xl screens (default {@code 3})
+     * @param xxl column span for xxl screens (default {@code 2})
      */
     void setBreakpoints(Integer xs = 12, Integer sm = 6, Integer md = 4, Integer lg = 4, Integer xl = 3, Integer xxl = 2) {
         this.xs = xs

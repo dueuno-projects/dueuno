@@ -26,8 +26,8 @@ import org.grails.datastore.gorm.GormEntity
  */
 
 @GrailsCompileStatic
-@EqualsAndHashCode(includes='name')
-@ToString(includes='name', includeNames=true, includePackage=false)
+@EqualsAndHashCode(includes = 'name')
+@ToString(includes = 'name', includeNames = true, includePackage = false)
 class TRoleGroup implements GormEntity, Serializable {
 
     private static final long serialVersionUID = 1

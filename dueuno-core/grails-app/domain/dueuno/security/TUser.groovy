@@ -26,7 +26,7 @@ import org.grails.datastore.gorm.GormEntity
  */
 
 @GrailsCompileStatic
-@EqualsAndHashCode(includes='username')
+@EqualsAndHashCode(includes = 'username')
 class TUser implements GormEntity, Serializable {
 
     private static final long serialVersionUID = 1

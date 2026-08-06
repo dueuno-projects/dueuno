@@ -51,11 +51,11 @@ class NumberField extends TextField {
      * based on whether decimal places are required.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code decimals} ({@link Integer}, default {@code 0}),
-     *             {@code negative} ({@link Boolean}, default {@code true}),
-     *             {@code min} ({@link Integer}),
-     *             {@code max} ({@link Integer}),
-     *             {@code pattern} ({@link String}) — overrides the default regex,
+     * {@code decimals} ({@link Integer}, default {@code 0}),
+     * {@code negative} ({@link Boolean}, default {@code true}),
+     * {@code min} ({@link Integer}),
+     * {@code max} ({@link Integer}),
+     * {@code pattern} ({@link String}) — overrides the default regex,
      *             plus all keys accepted by {@link TextField#TextField(Map)}
      */
     NumberField(Map args) {
@@ -111,10 +111,10 @@ class NumberField extends TextField {
     String getPropertiesAsJSON(Map properties = [:]) {
         pattern = buildPattern()
         Map thisProperties = [
-                decimals: decimals,
-                negative: negative,
-                min: min,
-                max: max,
+            decimals: decimals,
+            negative: negative,
+            min     : min,
+            max     : max,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
@@ -128,9 +128,9 @@ class NumberField extends TextField {
     @Override
     String getValueAsJSON() {
         Map valueMap = [
-                type: valueType,
-                value: value,
-                decimals: decimals,
+            type    : valueType,
+            value   : value,
+            decimals: decimals,
         ]
 
         return Elements.encodeAsJSON(valueMap)

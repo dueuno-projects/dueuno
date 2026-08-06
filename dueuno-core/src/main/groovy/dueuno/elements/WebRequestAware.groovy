@@ -127,9 +127,9 @@ trait WebRequestAware {
      */
     void setLocale(Locale locale) {
         WebUtils.setSessionAttribute(
-                request,
-                SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME,
-                locale
+            request,
+            SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME,
+            locale
         )
     }
 
@@ -191,9 +191,9 @@ trait WebRequestAware {
     Map returnPoint(Map params = [:]) {
         Map returnParams = returnPointParams + params
         return [
-                controller: returnPointController,
-                action    : returnPointAction,
-                params    : cleanupsParams(returnParams),
+            controller: returnPointController,
+            action    : returnPointAction,
+            params    : cleanupsParams(returnParams),
         ]
     }
 
@@ -240,7 +240,7 @@ trait WebRequestAware {
     /**
      * Returns the controller to which return when using
      * {@link WebRequestAware#setReturnPoint(java.util.Map }
-            * @ return the ' return point ' controller
+        * @ return the ' return point ' controller
      */
     String getReturnPointController() {
         return session ? (String) session['_21ReturnPointController'] : null
@@ -295,8 +295,8 @@ trait WebRequestAware {
 
         if (result == null) {
             throw new ElementsException("The required parameter '$paramName' has not been passed to the request and " +
-                    "no value was stored in the 'controllerSession': params = ${requestParams}, " +
-                    "controllerSession = ${controllerSession}")
+                "no value was stored in the 'controllerSession': params = ${requestParams}, " +
+                "controllerSession = ${controllerSession}")
         }
 
         return result

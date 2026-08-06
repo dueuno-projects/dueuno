@@ -11,10 +11,10 @@ class CartController implements ElementsController {
         def c = createContent(ContentTable)
 
         c.table.columns = [
-                'code',
-                'product',
-                'quantity',
-                'price',
+            'code',
+            'product',
+            'quantity',
+            'price',
         ]
 
         c.table.body.eachRow { TableRow row, Map values ->

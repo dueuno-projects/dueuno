@@ -39,7 +39,7 @@ class DownloadResourceController implements ElementsController {
     def system() {
         String root = applicationPropertyService.getDirectory(params.root)
         String pathname = params.pathname
-        String resource =  root + pathname
+        String resource = root + pathname
 
         if (!isValidPathname(pathname)) {
             render status: 404
@@ -55,7 +55,7 @@ class DownloadResourceController implements ElementsController {
         String tenantId = params.tenantId
         String root = tenantService.getPublicDir(tenantId)
         String pathname = params.pathname
-        String resource =  root + pathname
+        String resource = root + pathname
 
         if (!isValidPathname(pathname)) {
             render status: 404
@@ -70,7 +70,7 @@ class DownloadResourceController implements ElementsController {
     def currentTenant() {
         String root = tenantService.publicDir
         String pathname = params.pathname
-        String resource =  root + pathname
+        String resource = root + pathname
 
         if (!isValidPathname(pathname)) {
             render status: 404

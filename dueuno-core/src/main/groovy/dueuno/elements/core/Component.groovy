@@ -176,8 +176,8 @@ abstract class Component implements WebRequestAware, Serializable {
         List submit = []
         if (args.submit) {
             submit = args.submit in List
-                    ? args.submit as List
-                    : [args.submit as String]
+                ? args.submit as List
+                : [args.submit as String]
         }
 
         for (arg in args) {
@@ -188,11 +188,11 @@ abstract class Component implements WebRequestAware, Serializable {
                 Map actionMap = parseControllerAction(eventValue)
                 String event = (eventName - 'on').toLowerCase()
                 Map eventArgs = [
-                        event     : event,
-                        controller: actionMap.controller,
-                        action    : actionMap.action,
-                        submit    : submit ?: [getId()],
-                        loading   : event == 'load' ? false : args.loading,
+                    event     : event,
+                    controller: actionMap.controller,
+                    action    : actionMap.action,
+                    submit    : submit ?: [getId()],
+                    loading   : event == 'load' ? false : args.loading,
                 ]
                 on(args + eventArgs)
             }
@@ -203,8 +203,8 @@ abstract class Component implements WebRequestAware, Serializable {
         def parts = value.tokenize('.')
 
         return [
-                controller: parts.size() > 1 ? parts[0] : null,
-                action    : parts.size() > 1 ? parts[1] : parts[0]
+            controller: parts.size() > 1 ? parts[0] : null,
+            action    : parts.size() > 1 ? parts[1] : parts[0]
         ]
     }
 
@@ -634,8 +634,8 @@ abstract class Component implements WebRequestAware, Serializable {
         args.controller = args.controller ?: controllerName
 
         List eventList = (args.event in List)
-                ? (List) args.event
-                : [args.event]
+            ? (List) args.event
+            : [args.event]
         args.remove('event')
 
         Map<String, ComponentEvent> eventMap = [:]

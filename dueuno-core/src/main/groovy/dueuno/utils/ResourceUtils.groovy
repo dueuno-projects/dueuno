@@ -158,8 +158,8 @@ class ResourceUtils {
 
             // We need this for Windows
             String bootJarPath = tempPath.toString().contains(':')
-                    ? '/' + tempPath.toString().replace('\\', '/')
-                    : tempPath
+                ? '/' + tempPath.toString().replace('\\', '/')
+                : tempPath
 
             URI bootJarUri = new URI('jar:file:' + bootJarPath)
             log.debug "Reading resources from '${bootJarUri}'"

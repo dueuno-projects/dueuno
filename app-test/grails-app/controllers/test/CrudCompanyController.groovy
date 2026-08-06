@@ -14,9 +14,9 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentTable
-import dueuno.elements.ElementsController
 
 class CrudCompanyController implements ElementsController {
 
@@ -25,12 +25,12 @@ class CrudCompanyController implements ElementsController {
         c.with {
             table.with {
                 sortable = [
-                        name: 'asc',
+                    name: 'asc',
                 ]
                 columns = [
-                        'dateCreated',
-                        'name',
-                        'employees',
+                    'dateCreated',
+                    'name',
+                    'employees',
                 ]
 
                 body.eachRow { TableRow row, Map values ->

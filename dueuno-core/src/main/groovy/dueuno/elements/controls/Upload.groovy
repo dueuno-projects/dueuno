@@ -69,15 +69,15 @@ class Upload extends Control {
      * Creates an {@code Upload} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code text} ({@link String}, default {@code "control.upload.message"}),
-     *             {@code textDisabled} ({@link String}, default {@code "control.upload.disabled"}),
-     *             {@code acceptedFiles} ({@link List}),
-     *             {@code maxFiles} ({@link Integer}),
-     *             {@code maxFileSize} ({@link Integer}, default {@code 20}),
-     *             {@code maxThumbnailFilesize} ({@link Integer}, default {@code 17}),
-     *             {@code thumbnailWidth} ({@link Integer}),
-     *             {@code thumbnailHeight} ({@link Integer}),
-     *             {@code disablePreviews} ({@link Boolean}, default {@code false}),
+     * {@code text} ({@link String}, default {@code "control.upload.message"}),
+     * {@code textDisabled} ({@link String}, default {@code "control.upload.disabled"}),
+     * {@code acceptedFiles} ({@link List}),
+     * {@code maxFiles} ({@link Integer}),
+     * {@code maxFileSize} ({@link Integer}, default {@code 20}),
+     * {@code maxThumbnailFilesize} ({@link Integer}, default {@code 17}),
+     * {@code thumbnailWidth} ({@link Integer}),
+     * {@code thumbnailHeight} ({@link Integer}),
+     * {@code disablePreviews} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link Control#Control(Map)}
      */
     Upload(Map args) {
@@ -113,7 +113,7 @@ class Upload extends Control {
      * Does nothing if no file was uploaded. The file is saved using the original filename
      * unless {@code newFilename} is provided.
      *
-     * @param path        the target directory path (must end with a path separator)
+     * @param path the target directory path (must end with a path separator)
      * @param newFilename optional replacement filename; uses the original filename when {@code null}
      */
     static void save(String path, String newFilename = null) {
@@ -135,27 +135,27 @@ class Upload extends Control {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                acceptedFiles: acceptedFiles.join(','),
-                maxFiles: maxFiles,
-                maxFileSize: maxFileSize,
-                maxThumbnailFilesize: maxThumbnailFilesize,
-                thumbnailWidth: thumbnailWidth,
-                thumbnailHeight: thumbnailHeight,
-                disablePreviews: disablePreviews,
+            acceptedFiles       : acceptedFiles.join(','),
+            maxFiles            : maxFiles,
+            maxFileSize         : maxFileSize,
+            maxThumbnailFilesize: maxThumbnailFilesize,
+            thumbnailWidth      : thumbnailWidth,
+            thumbnailHeight     : thumbnailHeight,
+            disablePreviews     : disablePreviews,
 
-                messages: [
-                        upload: message(text),
-                        disabled: message(textDisabled),
-                        tooBig: message('control.upload.file.too.big'),
-                        invalidType: message('control.upload.invalid.file.type'),
-                        responseError: message('control.upload.response.error'),
-                        cancel: message('control.upload.cancel'),
-                        cancelConfirmation: message('control.upload.cancel.confirm'),
-                        canceled: message('control.upload.canceled'),
-                        remove: message('control.upload.remove'),
-                        removeConfirmation: message('control.upload.remove.confirm'),
-                        maxExceeded: message('control.upload.files.exceeded'),
-                ]
+            messages            : [
+                upload            : message(text),
+                disabled          : message(textDisabled),
+                tooBig            : message('control.upload.file.too.big'),
+                invalidType       : message('control.upload.invalid.file.type'),
+                responseError     : message('control.upload.response.error'),
+                cancel            : message('control.upload.cancel'),
+                cancelConfirmation: message('control.upload.cancel.confirm'),
+                canceled          : message('control.upload.canceled'),
+                remove            : message('control.upload.remove'),
+                removeConfirmation: message('control.upload.remove.confirm'),
+                maxExceeded       : message('control.upload.files.exceeded'),
+            ]
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

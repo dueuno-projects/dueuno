@@ -45,8 +45,8 @@ class TableActionbar extends Component {
      * Creates a {@code TableActionbar} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code table} ({@link Table}),
-     *             {@code filters} ({@link TableFilters}),
+     * {@code table} ({@link Table}),
+     * {@code filters} ({@link TableFilters}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     TableActionbar(Map args) {
@@ -56,9 +56,9 @@ class TableActionbar extends Component {
         filters = args.filters as TableFilters
 
         actions = createControl(
-                class: Button,
-                id: 'actions',
-                dontCreateDefaultAction: true,
+            class: Button,
+            id: 'actions',
+            dontCreateDefaultAction: true,
         )
     }
 
@@ -84,8 +84,8 @@ class TableActionbar extends Component {
         filters.display = true
 
         return actions.addAction(args + [
-                controller: controller,
-                action    : action,
+            controller: controller,
+            action    : action,
         ])
     }
 

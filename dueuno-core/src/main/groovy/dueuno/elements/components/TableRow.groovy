@@ -15,11 +15,11 @@
 package dueuno.elements.components
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.elements.core.Transformer
-import dueuno.elements.core.Component
-import dueuno.elements.core.Elements
 import dueuno.elements.controls.Checkbox
 import dueuno.elements.controls.HiddenField
+import dueuno.elements.core.Component
+import dueuno.elements.core.Elements
+import dueuno.elements.core.Transformer
 import dueuno.elements.style.TextAlign
 import dueuno.elements.style.TextStyle
 import dueuno.elements.style.TextWrap
@@ -99,15 +99,15 @@ class TableRow extends Component {
      * Initialises the per-row action button and selection checkbox.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code table} ({@link Table}, required),
-     *             {@code rowset} ({@link TableRowset}, required),
-     *             {@code index} ({@link Integer}, required),
-     *             {@code values} (record data),
-     *             {@code isHeader} ({@link Boolean}, default {@code false}),
-     *             {@code isFooter} ({@link Boolean}, default {@code false}),
-     *             {@code hasSelection} ({@link Boolean}, default {@code true}),
-     *             {@code checked} ({@link Boolean}, default {@code false}),
-     *             {@code textStyle} ({@link TextStyle} or {@link List}&lt;{@link TextStyle}&gt;),
+     * {@code table} ({@link Table}, required),
+     * {@code rowset} ({@link TableRowset}, required),
+     * {@code index} ({@link Integer}, required),
+     * {@code values} (record data),
+     * {@code isHeader} ({@link Boolean}, default {@code false}),
+     * {@code isFooter} ({@link Boolean}, default {@code false}),
+     * {@code hasSelection} ({@link Boolean}, default {@code true}),
+     * {@code checked} ({@link Boolean}, default {@code false}),
+     * {@code textStyle} ({@link TextStyle} or {@link List}&lt;{@link TextStyle}&gt;),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     @Requires({ args.table && args.rowset && args.index != null })
@@ -130,17 +130,17 @@ class TableRow extends Component {
         setTextStyle(args.textStyle)
 
         actions = createControl(
-                class: Button,
-                id: getId() + '-actions',
-                dontCreateDefaultAction: true,
+            class: Button,
+            id: getId() + '-actions',
+            dontCreateDefaultAction: true,
         )
 
         selected = createControl(
-                class: Checkbox,
-                id: getId() + '-selected',
-                simple: true,
-                cssClass: 'selectRow',
-                checked: (args.checked == null) ? false : args.checked,
+            class: Checkbox,
+            id: getId() + '-selected',
+            simple: true,
+            cssClass: 'selectRow',
+            checked: (args.checked == null) ? false : args.checked,
         )
     }
 
@@ -172,7 +172,7 @@ class TableRow extends Component {
         if (!isHeader && !isFooter) {
             // Adds key columns to actions params
             Map _21Params = [
-                    _21RowId: id,
+                _21RowId: id,
             ]
             actions.addParams(_21Params + getKeys())
         }
@@ -268,26 +268,26 @@ class TableRow extends Component {
 
         values['_index_'] = index
         submit['_index_'] = createControl(
-                class: HiddenField,
-                id: '_index_',
-                value: index,
+            class: HiddenField,
+            id: '_index_',
+            value: index,
         ) as HiddenField
 
         for (key in getKeys()) {
             String keyName = key.key
             HiddenField hiddenValue = createControl(
-                    class: HiddenField,
-                    id: keyName,
-                    value: key.value,
+                class: HiddenField,
+                id: keyName,
+                value: key.value,
             )
             submit[keyName] = hiddenValue
         }
 
         for (columnName in table.submit) {
             HiddenField hiddenValue = createControl(
-                    class: HiddenField,
-                    id: getId() + '-' + columnName + '-value',
-                    value: values[columnName],
+                class: HiddenField,
+                id: getId() + '-' + columnName + '-value',
+                value: values[columnName],
             )
             submit[columnName] = hiddenValue
         }
@@ -314,7 +314,7 @@ class TableRow extends Component {
             Label cellLabel = columnCell.label
             if (table.prettyPrinterProperties[columnName]) {
                 cellLabel.prettyPrinterProperties.set(
-                        table.prettyPrinterProperties[columnName]
+                    table.prettyPrinterProperties[columnName]
                 )
             }
 
@@ -493,7 +493,7 @@ class TableRow extends Component {
      * header cells.
      *
      * @param columnName the column whose cell alignment should be set
-     * @param value      the resolved cell value used to determine alignment
+     * @param value the resolved cell value used to determine alignment
      */
     private void setCellAlignment(String columnName, Object value) {
         if (value == null) {
@@ -537,18 +537,18 @@ class TableRow extends Component {
      * registers it in {@link #cells}.
      *
      * @param columnName the column name to create a cell for
-     * @param component  an optional custom {@link Component} to embed; uses a {@link Label} when {@code null}
+     * @param component an optional custom {@link Component} to embed; uses a {@link Label} when {@code null}
      * @return the newly created {@link TableCell}
      */
     private TableCell addCell(String columnName, Component component = null) {
         String cellName = getId() + '-' + columnName
         TableCell cell = createComponent(
-                class: TableCell,
-                id: cellName,
-                table: table,
-                column: columnName,
-                row: this,
-                component: component,
+            class: TableCell,
+            id: cellName,
+            table: table,
+            column: columnName,
+            row: this,
+            component: component,
         )
 
         cells.put(columnName, cell)
@@ -564,14 +564,14 @@ class TableRow extends Component {
      */
     private TableCell addCellHeader(String columnName) {
         Label header = createComponent(
-                class: Label,
-                id: columnName,
-                action: actionName,
-                textPrefix: controllerName,
-                renderTextPrefix: isHeader && !table.labels[columnName],
-                textWrap: TextWrap.NO_WRAP,
-                textStyle: TextStyle.BOLD,
-                tag: false,
+            class: Label,
+            id: columnName,
+            action: actionName,
+            textPrefix: controllerName,
+            renderTextPrefix: isHeader && !table.labels[columnName],
+            textWrap: TextWrap.NO_WRAP,
+            textStyle: TextStyle.BOLD,
+            tag: false,
         )
 
         return addCell(columnName, header)
@@ -587,17 +587,17 @@ class TableRow extends Component {
     private TableCell addCellHeaderSortable(String columnName) {
         String order = table.sort[columnName] == 'asc' ? 'desc' : 'asc'
         Link sortableHeader = createComponent(
-                class: Link,
-                id: columnName,
-                action: actionName,
-                params: table.submitParams + (Map) [
-                        _21Table    : table.id,
-                        _21TableSort: [(columnName): order],
-                ],
-                textPrefix: controllerName,
-                renderTextPrefix: isHeader && !table.labels[columnName],
-                textWrap: TextWrap.NO_WRAP,
-                textStyle: TextStyle.BOLD,
+            class: Link,
+            id: columnName,
+            action: actionName,
+            params: table.submitParams + (Map) [
+                _21Table    : table.id,
+                _21TableSort: [(columnName): order],
+            ],
+            textPrefix: controllerName,
+            renderTextPrefix: isHeader && !table.labels[columnName],
+            textWrap: TextWrap.NO_WRAP,
+            textStyle: TextStyle.BOLD,
         )
 
         return addCell(columnName, sortableHeader)

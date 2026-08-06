@@ -45,9 +45,9 @@ class Textarea extends TextField {
      * and marks the container as multi-line.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code autoSelect} ({@link Boolean}, default {@code false}),
-     *             {@code acceptNewLine} ({@link Boolean}, default {@code true}),
-     *             {@code encode} ({@link Boolean}, default {@code false}),
+     * {@code autoSelect} ({@link Boolean}, default {@code false}),
+     * {@code acceptNewLine} ({@link Boolean}, default {@code true}),
+     * {@code encode} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link TextField#TextField(Map)}
      */
     Textarea(Map args) {
@@ -71,9 +71,9 @@ class Textarea extends TextField {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                autoSelect: autoSelect,
-                acceptNewLine: acceptNewLine,
-                encode: encode,
+            autoSelect   : autoSelect,
+            acceptNewLine: acceptNewLine,
+            encode       : encode,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

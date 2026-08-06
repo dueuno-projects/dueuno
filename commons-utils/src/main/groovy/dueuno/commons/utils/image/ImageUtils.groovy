@@ -152,7 +152,7 @@ class ImageUtils {
      * BufferedImage scaled = ImageUtils.scaleWidth(image, 300)
      * </pre>
      */
-    static BufferedImage scaleWidth(BufferedImage image , Integer width) {
+    static BufferedImage scaleWidth(BufferedImage image, Integer width) {
         return resize(image, width, -1)
     }
 
@@ -169,7 +169,7 @@ class ImageUtils {
      * BufferedImage scaled = ImageUtils.scaleHeight(image, 200)
      * </pre>
      */
-    static BufferedImage scaleHeight(BufferedImage image , Integer height) {
+    static BufferedImage scaleHeight(BufferedImage image, Integer height) {
         return resize(image, -1, height)
     }
 
@@ -189,7 +189,7 @@ class ImageUtils {
      * BufferedImage resized = ImageUtils.resize(image, 1024, 768)
      * </pre>
      */
-    static BufferedImage resize(BufferedImage image , Integer width, Integer height = -1 /* auto calculate height by default */) {
+    static BufferedImage resize(BufferedImage image, Integer width, Integer height = -1 /* auto calculate height by default */) {
         Image resizedImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH)
         return imageToBufferedImage(resizedImage)
     }
@@ -219,11 +219,11 @@ class ImageUtils {
 
         Graphics2D g2 = dst.createGraphics()
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BICUBIC)
+            RenderingHints.VALUE_INTERPOLATION_BICUBIC)
         g2.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY)
+            RenderingHints.VALUE_RENDER_QUALITY)
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON)
+            RenderingHints.VALUE_ANTIALIAS_ON)
 
 
         g2.drawImage(src, 0, 0, targetWidth, targetHeight, null)
@@ -255,7 +255,7 @@ class ImageUtils {
 
         AffineTransform at = new AffineTransform()
         at.translate((h - w) / 2 as double, (w - h) / 2 as double)
-        at.rotate(Math.toRadians(angle), w/2 as double, h/2 as double)
+        at.rotate(Math.toRadians(angle), w / 2 as double, h / 2 as double)
         g2d.setTransform(at)
         g2d.drawImage(bi, 0, 0, null)
         g2d.dispose()
@@ -293,8 +293,8 @@ class ImageUtils {
 
         // Create a buffered image with transparency
         BufferedImage bi = new BufferedImage(
-                img.getWidth(null), img.getHeight(null),
-                BufferedImage.TYPE_INT_RGB)
+            img.getWidth(null), img.getHeight(null),
+            BufferedImage.TYPE_INT_RGB)
 
         Graphics2D graphics2D = bi.createGraphics()
         graphics2D.drawImage(img, 0, 0, null)
@@ -316,8 +316,8 @@ class ImageUtils {
      */
     static BufferedImage toGrayscale(BufferedImage src) {
         BufferedImage gray = new BufferedImage(
-                src.width, src.height,
-                BufferedImage.TYPE_BYTE_GRAY
+            src.width, src.height,
+            BufferedImage.TYPE_BYTE_GRAY
         )
         Graphics2D g = gray.createGraphics()
         g.drawImage(src, 0, 0, null)

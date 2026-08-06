@@ -14,10 +14,10 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
-import dueuno.elements.ElementsController
 
 class DomainController implements ElementsController {
 
@@ -30,9 +30,9 @@ class DomainController implements ElementsController {
                 'fullName',
             ]
             columns = [
-                    'shortName',
-                    'packageName',
-                    'pluginName',
+                'shortName',
+                'packageName',
+                'pluginName',
             ]
             actions.removeTailAction()
             actions.defaultAction.controller = 'domainCrud'

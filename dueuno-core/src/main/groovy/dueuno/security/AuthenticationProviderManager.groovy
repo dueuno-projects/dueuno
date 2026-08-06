@@ -16,8 +16,6 @@ package dueuno.security
 
 import groovy.transform.CompileStatic
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.AuthenticationProvider
-import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.core.Authentication
 
 /**

@@ -14,10 +14,10 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.TextField
-import dueuno.elements.ElementsController
 
 import java.time.LocalDateTime
 
@@ -29,14 +29,14 @@ class CrudPOGOController implements ElementsController {
             table.with {
                 filters.with {
                     addField(
-                            class: TextField,
-                            id: 'test',
-                            cols: 12,
+                        class: TextField,
+                        id: 'test',
+                        cols: 12,
                     )
                 }
                 columns = [
-                        'dateCreated',
-                        'name',
+                    'dateCreated',
+                    'name',
                 ]
 
                 body.eachRow { TableRow row, Map values ->
@@ -46,9 +46,9 @@ class CrudPOGOController implements ElementsController {
         }
 
         c.table.body = [
-                new Company(dateCreated: LocalDateTime.now(), name: 'POGO Company 1'),
-                new Company(dateCreated: LocalDateTime.now(), name: 'POGO Company 2'),
-                new Company(dateCreated: LocalDateTime.now(), name: 'POGO Company 3'),
+            new Company(dateCreated: LocalDateTime.now(), name: 'POGO Company 1'),
+            new Company(dateCreated: LocalDateTime.now(), name: 'POGO Company 2'),
+            new Company(dateCreated: LocalDateTime.now(), name: 'POGO Company 3'),
         ]
         c.table.paginate = 3
 

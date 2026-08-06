@@ -14,9 +14,9 @@
  */
 package dueuno.elements.pages
 
+import dueuno.elements.contents.ContentBlank
 import dueuno.elements.core.Page
 import dueuno.elements.core.PageContent
-import dueuno.elements.contents.ContentBlank
 import groovy.transform.CompileStatic
 
 /**

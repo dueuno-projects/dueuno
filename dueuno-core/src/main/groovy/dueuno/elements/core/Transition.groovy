@@ -111,8 +111,8 @@ class Transition implements WebRequestAware {
      * If no {@code id} is supplied, the lower-cased simple class name is used.
      *
      * @param clazz the component class to instantiate
-     * @param id    optional component identifier; defaults to the lower-cased simple class name
-     * @param args  optional map of constructor/property arguments passed to the component
+     * @param id optional component identifier; defaults to the lower-cased simple class name
+     * @param args optional map of constructor/property arguments passed to the component
      * @return the newly created component instance
      */
     public <T> T addComponent(Class<T> clazz, String id = null, Map args = [:]) {
@@ -147,16 +147,16 @@ class Transition implements WebRequestAware {
      * to the URL or controller/action described by {@code args}.
      *
      * @param args a map of link definition parameters (e.g. {@code controller}, {@code action},
-     *             {@code url}, {@code params})
+     * {@code url}, {@code params})
      */
     void redirect(Map args) {
         ComponentEvent event = new ComponentEvent(args)
         initializeWithRequestData(event)
         addCommand(
-                TransitionCommandMethod.REDIRECT,
-                null,
-                null,
-                event.asMap(),
+            TransitionCommandMethod.REDIRECT,
+            null,
+            null,
+            event.asMap(),
         )
     }
 
@@ -169,10 +169,10 @@ class Transition implements WebRequestAware {
     void renderContent(PageContent content) {
         addComponent(content)
         addCommand(
-                TransitionCommandMethod.CONTENT,
-                null,
-                null,
-                null,
+            TransitionCommandMethod.CONTENT,
+            null,
+            null,
+            null,
         )
     }
 
@@ -183,25 +183,25 @@ class Transition implements WebRequestAware {
      */
     void remove(String component) {
         addCommand(
-                TransitionCommandMethod.REMOVE,
-                component,
-                null,
-                null,
+            TransitionCommandMethod.REMOVE,
+            component,
+            null,
+            null,
         )
     }
 
     /**
      * Adds a command to replace an existing component in the DOM with a new one.
      *
-     * @param component    the identifier of the component to replace
+     * @param component the identifier of the component to replace
      * @param newComponent the identifier of the replacement component
      */
     void replace(String component, String newComponent) {
         addCommand(
-                TransitionCommandMethod.REPLACE,
-                component,
-                null,
-                newComponent,
+            TransitionCommandMethod.REPLACE,
+            component,
+            null,
+            newComponent,
         )
     }
 
@@ -209,14 +209,14 @@ class Transition implements WebRequestAware {
      * Adds a command to append a new component as a child of the specified parent component.
      *
      * @param parentComponent the identifier of the parent component
-     * @param newComponent    the identifier of the component to append
+     * @param newComponent the identifier of the component to append
      */
     void append(String parentComponent, String newComponent) {
         addCommand(
-                TransitionCommandMethod.APPEND,
-                parentComponent,
-                null,
-                newComponent,
+            TransitionCommandMethod.APPEND,
+            parentComponent,
+            null,
+            newComponent,
         )
     }
 
@@ -227,10 +227,10 @@ class Transition implements WebRequestAware {
      */
     void loading(Boolean show) {
         addCommand(
-                TransitionCommandMethod.LOADING,
-                null,
-                null,
-                show
+            TransitionCommandMethod.LOADING,
+            null,
+            null,
+            show
         )
     }
 
@@ -238,14 +238,14 @@ class Transition implements WebRequestAware {
      * Adds a command to trigger a named event on the specified component.
      *
      * @param component the identifier of the target component
-     * @param event     the name of the event to trigger
+     * @param event the name of the event to trigger
      */
     void trigger(String component, String event) {
         addCommand(
-                TransitionCommandMethod.TRIGGER,
-                component,
-                event,
-                null
+            TransitionCommandMethod.TRIGGER,
+            component,
+            event,
+            null
         )
     }
 
@@ -253,15 +253,15 @@ class Transition implements WebRequestAware {
      * Adds a command to invoke a client-side method on the specified component.
      *
      * @param component the identifier of the target component
-     * @param method    the name of the client-side method to call
-     * @param args      optional map of arguments to pass to the method
+     * @param method the name of the client-side method to call
+     * @param args optional map of arguments to pass to the method
      */
     void call(String component, String method, Map args = [:]) {
         addCommand(
-                TransitionCommandMethod.CALL,
-                component,
-                method,
-                args,
+            TransitionCommandMethod.CALL,
+            component,
+            method,
+            args,
         )
     }
 
@@ -277,8 +277,8 @@ class Transition implements WebRequestAware {
      * optionally triggering its change event.
      *
      * @param component the identifier of the target component
-     * @param value     the new value to assign
-     * @param trigger   if {@code true} (default), the component's change event is triggered
+     * @param value the new value to assign
+     * @param trigger if {@code true} (default), the component's change event is triggered
      */
     void setValue(String component, Object value, Boolean trigger = true) {
         set(component, 'value', value, [], trigger)
@@ -290,11 +290,11 @@ class Transition implements WebRequestAware {
      * converted to its string representation. String values are automatically
      * resolved through the i18n message source when a web request is present.
      *
-     * @param component  the identifier of the target component
-     * @param property   the name of the property to set
-     * @param value      the new value to assign
-     * @param valueArgs  optional list of arguments used for i18n message interpolation
-     * @param trigger    if {@code true} (default), the component's change event is triggered
+     * @param component the identifier of the target component
+     * @param property the name of the property to set
+     * @param value the new value to assign
+     * @param valueArgs optional list of arguments used for i18n message interpolation
+     * @param trigger if {@code true} (default), the component's change event is triggered
      */
     void set(String component, String property, Object value, List valueArgs = [], Boolean trigger = true) {
         if (property == 'value') {
@@ -306,18 +306,18 @@ class Transition implements WebRequestAware {
         }
 
         addCommand(
-                TransitionCommandMethod.SET,
-                component,
-                property,
-                value,
-                trigger
+            TransitionCommandMethod.SET,
+            component,
+            property,
+            value,
+            trigger
         )
     }
 
     /**
      * Displays an informational message box.
      *
-     * @param msg     the i18n message key or literal message text
+     * @param msg the i18n message key or literal message text
      * @param onClick optional {@link ComponentEvent} to invoke when the message is clicked
      */
     void infoMessage(String msg, ComponentEvent onClick = null) {
@@ -327,7 +327,7 @@ class Transition implements WebRequestAware {
     /**
      * Displays an informational message box with interpolation arguments.
      *
-     * @param msg     the i18n message key or literal message text
+     * @param msg the i18n message key or literal message text
      * @param msgArgs arguments used for i18n message interpolation
      * @param onCLick optional {@link ComponentEvent} to invoke when the message is clicked
      */
@@ -338,7 +338,7 @@ class Transition implements WebRequestAware {
     /**
      * Displays an error message box.
      *
-     * @param msg     the i18n message key or literal message text
+     * @param msg the i18n message key or literal message text
      * @param onCLick optional {@link ComponentEvent} to invoke when the message is clicked
      */
     void errorMessage(String msg, ComponentEvent onCLick = null) {
@@ -348,7 +348,7 @@ class Transition implements WebRequestAware {
     /**
      * Displays an error message box with interpolation arguments.
      *
-     * @param msg     the i18n message key or literal message text
+     * @param msg the i18n message key or literal message text
      * @param msgArgs arguments used for i18n message interpolation
      * @param onCLick optional {@link ComponentEvent} to invoke when the message is clicked
      */
@@ -360,15 +360,15 @@ class Transition implements WebRequestAware {
      * Internal helper that resolves the message text and dispatches a {@code call} command
      * targeting the {@code messagebox} component with the specified type.
      *
-     * @param type    the message type (e.g. {@code "info"} or {@code "error"})
-     * @param msg     the i18n message key or literal message text
+     * @param type the message type (e.g. {@code "info"} or {@code "error"})
+     * @param msg the i18n message key or literal message text
      * @param msgArgs optional arguments used for i18n message interpolation
      * @param onClick optional {@link ComponentEvent} to invoke when the message is clicked
      */
     void infoMessage(String type, String msg, List msgArgs = [], ComponentEvent onClick = null) {
         String infoMessage = hasRequest()
-                ? message(msg, msgArgs)
-                : msg
+            ? message(msg, msgArgs)
+            : msg
 
         Map args = [:]
         args.infoMessage = infoMessage
@@ -386,7 +386,7 @@ class Transition implements WebRequestAware {
      * Equivalent to calling {@link #optionsMessage(String, List, ComponentEvent, ComponentEvent)}
      * with no cancel action.
      *
-     * @param msg            the i18n message key or literal message text
+     * @param msg the i18n message key or literal message text
      * @param onClickConfirm the {@link ComponentEvent} invoked when the user confirms
      */
     void confirmMessage(String msg, ComponentEvent onClickConfirm) {
@@ -396,8 +396,8 @@ class Transition implements WebRequestAware {
     /**
      * Displays a confirmation message box with interpolation arguments and a single confirm button.
      *
-     * @param msg            the i18n message key or literal message text
-     * @param msgArgs        arguments used for i18n message interpolation
+     * @param msg the i18n message key or literal message text
+     * @param msgArgs arguments used for i18n message interpolation
      * @param onClickConfirm the {@link ComponentEvent} invoked when the user confirms
      */
     void confirmMessage(String msg, List msgArgs, ComponentEvent onClickConfirm) {
@@ -407,9 +407,9 @@ class Transition implements WebRequestAware {
     /**
      * Displays an options message box with both cancel and confirm buttons.
      *
-     * @param msg             the i18n message key or literal message text
-     * @param onClickCancel   the {@link ComponentEvent} invoked when the user cancels
-     * @param onClickConfirm  the {@link ComponentEvent} invoked when the user confirms
+     * @param msg the i18n message key or literal message text
+     * @param onClickCancel the {@link ComponentEvent} invoked when the user cancels
+     * @param onClickConfirm the {@link ComponentEvent} invoked when the user confirms
      */
     void optionsMessage(String msg, ComponentEvent onClickCancel, ComponentEvent onClickConfirm) {
         optionsMessage(msg, [], onClickCancel, onClickConfirm)
@@ -418,15 +418,15 @@ class Transition implements WebRequestAware {
     /**
      * Displays an options message box with interpolation arguments and both cancel and confirm buttons.
      *
-     * @param msg             the i18n message key or literal message text
-     * @param msgArgs         arguments used for i18n message interpolation
-     * @param onClickCancel   the {@link ComponentEvent} invoked when the user cancels; may be {@code null}
-     * @param onClickConfirm  the {@link ComponentEvent} invoked when the user confirms
+     * @param msg the i18n message key or literal message text
+     * @param msgArgs arguments used for i18n message interpolation
+     * @param onClickCancel the {@link ComponentEvent} invoked when the user cancels; may be {@code null}
+     * @param onClickConfirm the {@link ComponentEvent} invoked when the user confirms
      */
     void optionsMessage(String msg, List msgArgs, ComponentEvent onClickCancel, ComponentEvent onClickConfirm) {
         String confirmMessage = hasRequest()
-                ? message(msg, msgArgs)
-                : msg
+            ? message(msg, msgArgs)
+            : msg
 
         Map args = [:]
         args.confirmMessage = confirmMessage

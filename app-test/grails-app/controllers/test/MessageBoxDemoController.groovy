@@ -14,10 +14,10 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.controls.Select
 import dueuno.elements.core.Elements
-import dueuno.elements.ElementsController
 import dueuno.elements.style.TextDefault
 
 class MessageBoxDemoController implements ElementsController {
@@ -28,14 +28,14 @@ class MessageBoxDemoController implements ElementsController {
             header.removeNextButton()
             form.with {
                 addField(
-                        class: 'Label',
-                        id: 'paraghraph',
+                    class: 'Label',
+                    id: 'paraghraph',
                 ).value = 'Works with "TPerson" entities. Search or create.'
                 addField(
-                        class: 'Select',
-                        id: 'select',
-                        onSearch: 'onSelectSearch',
-                        onCreate: 'onSelectCreate',
+                    class: 'Select',
+                    id: 'select',
+                    onSearch: 'onSelectSearch',
+                    onCreate: 'onSelectCreate',
                 )
 //                .on(event: 'search', action: 'onSelectSearch')
 //                .on(event: 'create', action: 'onSelectCreate')
@@ -53,19 +53,19 @@ class MessageBoxDemoController implements ElementsController {
             labelArgs = ['TPerson']
             form.with {
                 addField(
-                        class: 'TextField',
-                        id: 'name',
-                        label: 'TPerson.name',
+                    class: 'TextField',
+                    id: 'name',
+                    label: 'TPerson.name',
                 )
                 addField(
-                        class: 'NumberField',
-                        id: 'postcode',
-                        label: 'TPerson.postcode',
+                    class: 'NumberField',
+                    id: 'postcode',
+                    label: 'TPerson.postcode',
                 )
                 addField(
-                        class: 'MoneyField',
-                        id: 'salary',
-                        label: 'TPerson.salary',
+                    class: 'MoneyField',
+                    id: 'salary',
+                    label: 'TPerson.salary',
                 )
                 addKeyField(id: 'checkbox', value: false)
             }
@@ -90,9 +90,9 @@ class MessageBoxDemoController implements ElementsController {
         obj.save(flush: true, failOnError: true)
 
         t.set('select', 'options',
-                Select.optionsFromRecordset(
-                        recordset: TPerson.where{ id == obj.id }.list(),
-                )
+            Select.optionsFromRecordset(
+                recordset: TPerson.where { id == obj.id }.list(),
+            )
         )
         t.setValue('select', obj.id)
         t.popup.hide()
@@ -101,7 +101,7 @@ class MessageBoxDemoController implements ElementsController {
 
     def onSelectSearch() {
         render Elements.encodeAsJSON(Select.optionsFromRecordset(
-                recordset: TPerson.where {name =~ "%${params.select}%"}.list(),
+            recordset: TPerson.where { name =~ "%${params.select}%" }.list(),
         ))
 
         //Select.searchResults { options: optionsFromRecordset ...

@@ -117,8 +117,8 @@ class LinkDefinition implements Serializable {
         params = args.params as Map ?: [:]
 
         args.submit in List
-                ? setSubmit(args.submit as List<String>)
-                : setSubmit(args.submit as String)
+            ? setSubmit(args.submit as List<String>)
+            : setSubmit(args.submit as String)
 
         target = args.target
         targetNew = args.targetNew
@@ -211,18 +211,18 @@ class LinkDefinition implements Serializable {
      */
     Map asMap() {
         return [
-                namespace: namespace,
-                controller: controller,
-                action: action,
-                url: url,
-                params: params,
-                submit: submit,
-                direct: direct,
-                target: target,
-                loading: loading,
-                infoMessage: infoMessage,
-                confirmMessage: confirmMessage,
-                renderProperties: renderProperties.asMap(),
+            namespace       : namespace,
+            controller      : controller,
+            action          : action,
+            url             : url,
+            params          : params,
+            submit          : submit,
+            direct          : direct,
+            target          : target,
+            loading         : loading,
+            infoMessage     : infoMessage,
+            confirmMessage  : confirmMessage,
+            renderProperties: renderProperties.asMap(),
         ]
     }
 }

@@ -57,7 +57,7 @@ class ElementsException extends Exception implements WebRequestAware {
      * and optional interpolation arguments.
      *
      * @param message an i18n message key or a literal error message
-     * @param args    optional interpolation arguments used during i18n message resolution
+     * @param args optional interpolation arguments used during i18n message resolution
      */
     ElementsException(String message, List args = []) {
         super(message)
@@ -69,7 +69,7 @@ class ElementsException extends Exception implements WebRequestAware {
      * No i18n interpolation arguments are set.
      *
      * @param message an i18n message key or a literal error message
-     * @param cause   the underlying cause
+     * @param cause the underlying cause
      */
     ElementsException(String message, Throwable cause) {
         super(message, cause)

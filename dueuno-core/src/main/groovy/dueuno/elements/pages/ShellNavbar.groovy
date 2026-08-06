@@ -14,10 +14,10 @@
  */
 package dueuno.elements.pages
 
-import dueuno.elements.core.Component
 import dueuno.elements.components.Button
 import dueuno.elements.components.Image
 import dueuno.elements.components.Link
+import dueuno.elements.core.Component
 import groovy.contracts.Requires
 import groovy.transform.CompileStatic
 
@@ -40,24 +40,24 @@ class ShellNavbar extends Component {
 
         shell = args.shell as Shell
         home = (Button) createComponent(
-                class: Button,
-                id: 'home',
-                controller: 'shell',
-                icon: 'fa-solid fa-home',
-                text: '',
-                tooltip: 'shell.home.menu',
-                animate: 'fade',
+            class: Button,
+            id: 'home',
+            controller: 'shell',
+            icon: 'fa-solid fa-home',
+            text: '',
+            tooltip: 'shell.home.menu',
+            animate: 'fade',
         )
         logo = (Link) createComponent(
-                class: Link,
-                id: 'logo',
-                controller: 'shell',
-                animate: 'fade',
+            class: Link,
+            id: 'logo',
+            controller: 'shell',
+            animate: 'fade',
         )
         logo.addComponent(
-                class: Image,
-                id: 'logoImg',
-                image: shell.config.display.logo,
+            class: Image,
+            id: 'logoImg',
+            image: shell.config.display.logo,
         )
     }
 }

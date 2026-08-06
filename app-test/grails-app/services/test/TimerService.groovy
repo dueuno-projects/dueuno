@@ -14,10 +14,10 @@ class TimerService {
         def result = []
         for (Integer i = 1; i <= total; i++) {
             result.add([
-                    id: i,
-                    name: "nome${i.toString()}",
-                    description: "desc${i.toString()}",
-                    quantity: (i * 2 - 1),
+                id         : i,
+                name       : "nome${i.toString()}",
+                description: "desc${i.toString()}",
+                quantity   : (i * 2 - 1),
             ])
         }
         return result
@@ -36,9 +36,9 @@ class TimerService {
 
         table.with {
             columns = [
-                    'name',
-                    'description',
-                    'quantity',
+                'name',
+                'description',
+                'quantity',
             ]
             actions.removeAllActions()
             actions.addAction(action: 'minus', text: '', icon: 'fa-check')
@@ -57,17 +57,17 @@ class TimerService {
 
         form.with {
             addField(
-                    class: Label,
-                    id: "labelHeadId${item.id}",
-                    displayLabel: false,
-                    text: item.name,
-                    textStyle: TextStyle.BOLD,
+                class: Label,
+                id: "labelHeadId${item.id}",
+                displayLabel: false,
+                text: item.name,
+                textStyle: TextStyle.BOLD,
             )
             addField(
-                    class: Label,
-                    id: "labelHeadDescId${item.id}",
-                    displayLabel: false,
-                    text: item.description,
+                class: Label,
+                id: "labelHeadDescId${item.id}",
+                displayLabel: false,
+                text: item.description,
             )
         }
 
@@ -82,37 +82,37 @@ class TimerService {
                 addComponent(Form, "formId${item.id}").with {
                     cssClass = 'ws2 formitem'
                     addField(
-                            class: Label,
-                            id: "labelId${item.id}",
-                            displayLabel: false,
-                            text: item.name,
-                            cssClass: 'lblname',
-                            cols: 9,
+                        class: Label,
+                        id: "labelId${item.id}",
+                        displayLabel: false,
+                        text: item.name,
+                        cssClass: 'lblname',
+                        cols: 9,
                     )
                     addField(
-                            class: Label,
-                            id: "labelNumId${item.id}",
-                            displayLabel: false,
-                            text: item.id,
-                            cssClass: 'lblname',
-                            textAlign: TextAlign.END,
-                            textStyle: TextStyle.BOLD,
-                            cols: 3,
+                        class: Label,
+                        id: "labelNumId${item.id}",
+                        displayLabel: false,
+                        text: item.id,
+                        cssClass: 'lblname',
+                        textAlign: TextAlign.END,
+                        textStyle: TextStyle.BOLD,
+                        cols: 3,
                     )
                     addField(
-                            class: Label,
-                            id: "labelDescId${item.id}",
-                            displayLabel: false,
-                            text: item.description,
+                        class: Label,
+                        id: "labelDescId${item.id}",
+                        displayLabel: false,
+                        text: item.description,
                     )
                     addField(
-                            class: Button,
-                            id: "btn1Id${item.id}",
-                            action: 'detail',
-                            displayLabel: false,
-                            text: 'Mostra',
-                            icon: 'fa-eye',
-                            params: [id: item.id],
+                        class: Button,
+                        id: "btn1Id${item.id}",
+                        action: 'detail',
+                        displayLabel: false,
+                        text: 'Mostra',
+                        icon: 'fa-eye',
+                        params: [id: item.id],
                     )
                     /*addField(
                             class: Button,

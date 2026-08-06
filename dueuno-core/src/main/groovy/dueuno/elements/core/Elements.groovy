@@ -67,7 +67,8 @@ class Elements {
         if (object in Map) {
             results.putAll(object as Map)
 
-        } else if (object in Collection) { // Collection elements will be assigned to each property following their order
+        } else if (object in Collection) {
+            // Collection elements will be assigned to each property following their order
             Integer i = 0
             for (property in properties) {
                 results[property] = (object as Collection)[i]

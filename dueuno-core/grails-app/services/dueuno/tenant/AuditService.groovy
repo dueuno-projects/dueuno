@@ -14,9 +14,9 @@
  */
 package dueuno.tenant
 
-import dueuno.elements.WebRequestAware
 import dueuno.audit.TAuditLog
 import dueuno.commons.utils.DateUtils
+import dueuno.elements.WebRequestAware
 import dueuno.elements.core.Elements
 import dueuno.security.CryptoService
 import dueuno.security.SecurityService
@@ -106,16 +106,16 @@ class AuditService implements WebRequestAware {
         String ip = getClientIp(request)
 
         Map log = [
-                ip         : ip,
-                userAgent  : userAgent,
-                operation  : sOperation,
-                message    : message?.take(TAuditLog.LOG_MESSAGE_MAX_SIZE),
-                objectName : objectName,
-                stateBefore: stateBefore?.take(TAuditLog.LOG_MESSAGE_MAX_SIZE),
-                stateAfter : stateAfter?.take(TAuditLog.LOG_MESSAGE_MAX_SIZE),
-                username   : username,
-                dateCreated: sDateCreated,
-                seed       : generateLogSeed(username, sOperation, sDateCreated),
+            ip         : ip,
+            userAgent  : userAgent,
+            operation  : sOperation,
+            message    : message?.take(TAuditLog.LOG_MESSAGE_MAX_SIZE),
+            objectName : objectName,
+            stateBefore: stateBefore?.take(TAuditLog.LOG_MESSAGE_MAX_SIZE),
+            stateAfter : stateAfter?.take(TAuditLog.LOG_MESSAGE_MAX_SIZE),
+            username   : username,
+            dateCreated: sDateCreated,
+            seed       : generateLogSeed(username, sOperation, sDateCreated),
         ]
 
         return log
@@ -125,7 +125,7 @@ class AuditService implements WebRequestAware {
         byte[] AESKey = cryptoService.getTenantAESKey()
 
         Map integrity = [
-                digest: computeHmac(log, AESKey),
+            digest: computeHmac(log, AESKey),
         ]
 
         return integrity
@@ -145,20 +145,20 @@ class AuditService implements WebRequestAware {
 
     private String getClientRequestInfo(HttpServletRequest request) {
         List relevantHeaders = [
-                'CF-Connecting-IP',        // Cloudflare: IP reale del client dietro il loro CDN
-                'True-Client-IP',          // Akamai / altri CDN: IP reale del client
-                'X-Forwarded-For',         // De facto standard proxy: lista IP client + proxy
-                'X-Real-IP',               // Nginx: IP reale del client
-                'X-Cluster-Client-IP',     // Alcuni load balancer / proxy cluster: IP client
-                'Client-IP',               // Proxy meno comuni: IP originale del client
-                'X-Originating-IP',        // Alcuni webmail / proxy: IP originale del client
-                'X-Remote-IP',             // Alcuni proxy privati: IP originale del client
-                'X-Client-IP',             // Proxy custom: IP reale del client
-                'Proxy-Client-IP',         // Proxy / servlet container legacy: IP client
-                'WL-Proxy-Client-IP',      // WebLogic: IP client dietro il proxy
-                'X-Forwarded',             // Variante generica di X-Forwarded-For
-                'X-Forwarded-Host',        // Non contiene IP, ma può aiutare a ricostruire la connessione
-                'Via'                      // RFC 7230: lista dei proxy attraversati, informativo
+            'CF-Connecting-IP',        // Cloudflare: IP reale del client dietro il loro CDN
+            'True-Client-IP',          // Akamai / altri CDN: IP reale del client
+            'X-Forwarded-For',         // De facto standard proxy: lista IP client + proxy
+            'X-Real-IP',               // Nginx: IP reale del client
+            'X-Cluster-Client-IP',     // Alcuni load balancer / proxy cluster: IP client
+            'Client-IP',               // Proxy meno comuni: IP originale del client
+            'X-Originating-IP',        // Alcuni webmail / proxy: IP originale del client
+            'X-Remote-IP',             // Alcuni proxy privati: IP originale del client
+            'X-Client-IP',             // Proxy custom: IP reale del client
+            'Proxy-Client-IP',         // Proxy / servlet container legacy: IP client
+            'WL-Proxy-Client-IP',      // WebLogic: IP client dietro il proxy
+            'X-Forwarded',             // Variante generica di X-Forwarded-For
+            'X-Forwarded-Host',        // Non contiene IP, ma può aiutare a ricostruire la connessione
+            'Via'                      // RFC 7230: lista dei proxy attraversati, informativo
         ]
 
         Map results = [:]
@@ -211,13 +211,13 @@ class AuditService implements WebRequestAware {
             String search = filterParams.find.replaceAll('\\*', '%')
             query = query.where {
                 true
-                        || ip =~ "%${search}%"
-                        || userAgent =~ "%${search}%"
-                        || username =~ "%${search}%"
-                        || message =~ "%${search}%"
-                        || objectName =~ "%${search}%"
-                        || stateBefore =~ "%${search}%"
-                        || stateAfter =~ "%${search}%"
+                    || ip =~ "%${search}%"
+                    || userAgent =~ "%${search}%"
+                    || username =~ "%${search}%"
+                    || message =~ "%${search}%"
+                    || objectName =~ "%${search}%"
+                    || stateBefore =~ "%${search}%"
+                    || stateAfter =~ "%${search}%"
             }
         }
 

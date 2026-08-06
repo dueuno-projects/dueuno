@@ -14,7 +14,8 @@
  */
 package test
 
-import dueuno.tenant.AuditService
+import dueuno.application.ApplicationService
+import dueuno.elements.ElementsController
 import dueuno.elements.components.Form
 import dueuno.elements.components.Label
 import dueuno.elements.components.TableRow
@@ -23,11 +24,10 @@ import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.*
-import dueuno.application.ApplicationService
-import dueuno.elements.ElementsController
 import dueuno.elements.style.Color
 import dueuno.elements.style.TextDefault
 import dueuno.elements.style.TextWrap
+import dueuno.tenant.AuditService
 import dueuno.types.QuantityService
 import dueuno.types.Type
 import grails.plugin.springsecurity.annotation.Secured
@@ -60,11 +60,11 @@ class CrudController implements ElementsController {
 
         if (isMobileDevice()) {
             c.addComponent(
-                    class: Label,
-                    id: 'isMobileDevice',
-                    text: "Running on a mobile device.",
-                    backgroundColor: Color.WARNING_BACKGROUND,
-                    textColor: Color.WARNING_TEXT,
+                class: Label,
+                id: 'isMobileDevice',
+                text: "Running on a mobile device.",
+                backgroundColor: Color.WARNING_BACKGROUND,
+                textColor: Color.WARNING_TEXT,
             )
         }
 
@@ -82,12 +82,12 @@ class CrudController implements ElementsController {
             def form = c.addComponentBefore('table', Form)
             form.with {
                 addField(
-                        class: Select,
-                        id: 'testLoadingScreen',
-                        optionsFromList: ['Select me...', 'Select me too!'],
-                        onChange: 'onTestLoadingScreen',
-                        loading: true,
-                        cols: 3,
+                    class: Select,
+                    id: 'testLoadingScreen',
+                    optionsFromList: ['Select me...', 'Select me too!'],
+                    onChange: 'onTestLoadingScreen',
+                    loading: true,
+                    cols: 3,
                 )
             }
 
@@ -102,47 +102,47 @@ class CrudController implements ElementsController {
                     fold = false
                     autoFold = true
                     addField(
-                            class: Select,
-                            id: 'company',
-                            optionsFromRecordset: companyService.list(),
-                            transformer: 'TRANSFORM_ME',
+                        class: Select,
+                        id: 'company',
+                        optionsFromRecordset: companyService.list(),
+                        transformer: 'TRANSFORM_ME',
 //                            renderTextPrefix: true,
-                            multiple: true,
-                            placeholder: 'Seleziona qualcosa',
-                            cols: 6,
+                        multiple: true,
+                        placeholder: 'Seleziona qualcosa',
+                        cols: 6,
                     )
                     addField(
-                            class: TextField,
-                            id: 'name',
-                            cols: 3,
+                        class: TextField,
+                        id: 'name',
+                        cols: 3,
                     )
                 }
 
                 actionbar.with {
                     addAction(
-                            action: 'doubleDisplay',
+                        action: 'doubleDisplay',
                     )
                     addAction(
-                            action: 'loadingScreenOnRedirect',
+                        action: 'loadingScreenOnRedirect',
                     )
                     addAction(
-                            controller: 'someController',
-                            params: [p1: 1, p2: 2],
+                        controller: 'someController',
+                        params: [p1: 1, p2: 2],
                     )
                 }
 
                 groupActions.addAction(
-                        action: 'onGroupAction1',
-                        submit: ['table'],
-                        params: [
-                                s: 'Stringa',
-                                n: 12345,
-                                l: [1, 2, 3], // TODO: Le liste non vengono passate come params
-                                m: [firstname: 'Giangio', lastname: 'Sartori'],
-                                ml: [ids: [1, 2, 3]],
-                                lm: [[id:1], [id:2], [id: 3]] // TODO: Le liste non vengono passate come params
-                        ],
-                        //confirmMessage: 'Vado?' // TODO: aggiungendo confirmMessage '_tableSelecttion' non viene passata
+                    action: 'onGroupAction1',
+                    submit: ['table'],
+                    params: [
+                        s : 'Stringa',
+                        n : 12345,
+                        l : [1, 2, 3], // TODO: Le liste non vengono passate come params
+                        m : [firstname: 'Giangio', lastname: 'Sartori'],
+                        ml: [ids: [1, 2, 3]],
+                        lm: [[id: 1], [id: 2], [id: 3]] // TODO: Le liste non vengono passate come params
+                    ],
+                    //confirmMessage: 'Vado?' // TODO: aggiungendo confirmMessage '_tableSelecttion' non viene passata
                 )
                 groupActions.addAction(action: 'onGroupAction2')
                 groupActions.addAction(controller: 'onGroupAction3', confirmMessage: 'Messaggio di conferma, sei sicuro?')
@@ -157,40 +157,40 @@ class CrudController implements ElementsController {
                 actions.defaultAction.tooltip = 'Modifica record'
 
                 sortable = [
-                        address: 'asc',
-                        name: 'desc',
+                    address: 'asc',
+                    name   : 'desc',
                 ]
                 columns = [
-                        'tagIcon',
-                        'company',
-                        'employeeCount',
-                        'name',
-                        'picture',
-                        'address',
-                        'postcode',
-                        'salary',
-                        'salaryPerMonth',
-                        'distanceKm',
-                        'dateStart',
-                        'dateEnd',
-                        'active',
-                        'prettyMap',
-                        'prettyHtml',
-                        'prettyObjectList',
+                    'tagIcon',
+                    'company',
+                    'employeeCount',
+                    'name',
+                    'picture',
+                    'address',
+                    'postcode',
+                    'salary',
+                    'salaryPerMonth',
+                    'distanceKm',
+                    'dateStart',
+                    'dateEnd',
+                    'active',
+                    'prettyMap',
+                    'prettyHtml',
+                    'prettyObjectList',
                 ]
                 includeValues = [
-                        'company.employees',
+                    'company.employees',
                 ]
                 prettyPrinterProperties = [
-                        salary: [renderZero: '-'],
-                        salaryPerMonth: [highlightNegative: false, renderZero: '-'],
-                        name: [renderTextPrefix: true],
+                    salary        : [renderZero: '-'],
+                    salaryPerMonth: [highlightNegative: false, renderZero: '-'],
+                    name          : [renderTextPrefix: true],
                 ]
                 prettyPrinters = [
-                        prettyMap: 'PRETTY_MAP',
+                    prettyMap: 'PRETTY_MAP',
                 ]
                 widths = [
-                        company: 300,
+                    company: 300,
                 ]
 
                 max = 10
@@ -221,10 +221,10 @@ class CrudController implements ElementsController {
                     if (values.salary) values.salaryPerMonth = values.salary / 12
                     if (row.actions.hasActions()) row.actions.addSeparator()
                     row.actions.addAction(
-                            controller: 'myController',
-                            action: 'rowAction3',
-                            params: [x: 1, y: 2],
-                            icon: 'fa-times-circle',
+                        controller: 'myController',
+                        action: 'rowAction3',
+                        params: [x: 1, y: 2],
+                        icon: 'fa-times-circle',
                     )
                     if (values.name == 'aaa') row.actions.setDefaultAction(controller: 'myController', action: 'rowAction3')
                     //row.tailAction.danger = true
@@ -260,11 +260,11 @@ class CrudController implements ElementsController {
 
         (1..100).each {
             personService.create(
-                    active: true,
-                    company: company,
-                    name: 'user' + it,
-                    address: 'Via del\'automazione, ' + it,
-                    postcode: 12345
+                active: true,
+                company: company,
+                name: 'user' + it,
+                address: 'Via del\'automazione, ' + it,
+                postcode: 12345
             )
         }
 
@@ -278,8 +278,8 @@ class CrudController implements ElementsController {
 
     private buildForm(TPerson obj = null) {
         def c = obj
-                ? createContent(ContentEdit)
-                : createContent(ContentCreate)
+            ? createContent(ContentEdit)
+            : createContent(ContentCreate)
 
         c.header.nextButton.confirmMessage = 'Are you sure?'
 
@@ -299,57 +299,57 @@ class CrudController implements ElementsController {
             addKeyField('embedded')
             addKeyField('selection', Type.LIST, [[id: 1]])
             addField(
-                    class: Select,
-                    id: 'company',
-                    optionsFromRecordset: companyService.list(),
-                    prettyPrinter: 'customCompanyPrinter',
-                    onChange: 'onCompanyChange',
+                class: Select,
+                id: 'company',
+                optionsFromRecordset: companyService.list(),
+                prettyPrinter: 'customCompanyPrinter',
+                onChange: 'onCompanyChange',
             )
             addField(
-                    class: TextField,
-                    id: 'companyName',
-                    readonly: true,
+                class: TextField,
+                id: 'companyName',
+                readonly: true,
             )
             addField(
-                    class: TextField,
-                    id: 'name',
-                    defaultValue: 'XXX',
+                class: TextField,
+                id: 'name',
+                defaultValue: 'XXX',
             )
             addField(
-                    class: Textarea,
-                    id: 'address',
+                class: Textarea,
+                id: 'address',
             )
             addField(
-                    class: NumberField,
-                    id: 'postcode',
+                class: NumberField,
+                id: 'postcode',
             )
             addField(
-                    class: MoneyField,
-                    id: 'salary',
-                    negative: true,
+                class: MoneyField,
+                id: 'salary',
+                negative: true,
             )
             addField(
-                    class: QuantityField,
-                    id: 'distanceKm',
-                    availableUnits: quantityService.listAllUnits(false, false, true, false, false, false, false),
+                class: QuantityField,
+                id: 'distanceKm',
+                availableUnits: quantityService.listAllUnits(false, false, true, false, false, false, false),
             )
             addField(
-                    class: DateField,
-                    id: 'dateStart',
-                    min: LocalDate.now().minusDays(3),
-                    max: LocalDate.now().plusDays(3),
+                class: DateField,
+                id: 'dateStart',
+                min: LocalDate.now().minusDays(3),
+                max: LocalDate.now().plusDays(3),
             )
             addField(
-                    class: DateField,
-                    id: 'dateEnd',
+                class: DateField,
+                id: 'dateEnd',
             )
             addField(
-                    class: Checkbox,
-                    id: 'active',
+                class: Checkbox,
+                id: 'active',
             )
             addField(
-                    class: Upload,
-                    id: 'picture',
+                class: Upload,
+                id: 'picture',
             )
         }
 

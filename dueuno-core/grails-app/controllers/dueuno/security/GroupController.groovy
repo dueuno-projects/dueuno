@@ -15,7 +15,6 @@
 package dueuno.security
 
 import dueuno.application.ApplicationService
-import dueuno.elements.core.Feature
 import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
@@ -24,6 +23,7 @@ import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.MultipleCheckbox
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
+import dueuno.elements.core.Feature
 import dueuno.elements.style.TextTransform
 import dueuno.tenant.TenantService
 import grails.plugin.springsecurity.annotation.Secured
@@ -45,8 +45,8 @@ class GroupController implements ElementsController {
         List cols = ['systemIcon']
         if (isSuperAdmin) cols += ['tenant']
         cols += [
-                'name',
-                'landingPage',
+            'name',
+            'landingPage',
         ]
         for (authority in (securityService.listAuthority())) {
             cols.add(authority)
@@ -58,27 +58,27 @@ class GroupController implements ElementsController {
                 fold = false
                 if (isSuperAdmin) {
                     addField(
-                            class: Select,
-                            id: 'tenant',
-                            optionsFromRecordset: tenantService.list(),
-                            cols: 2,
+                        class: Select,
+                        id: 'tenant',
+                        optionsFromRecordset: tenantService.list(),
+                        cols: 2,
                     )
                 }
                 addField(
-                        class: TextField,
-                        id: 'name',
-                        cols: isSuperAdmin ? 10 : 12,
+                    class: TextField,
+                    id: 'name',
+                    cols: isSuperAdmin ? 10 : 12,
                 )
             }
 
             sortable = [
-                    tenant: 'asc',
-                    name: 'asc',
+                tenant: 'asc',
+                name  : 'asc',
             ]
             keys = ['id']
             columns = cols
             labels = [
-                    systemIcon: '',
+                systemIcon: '',
             ]
 
             body.eachRow { TableRow row, Map values ->
@@ -100,11 +100,11 @@ class GroupController implements ElementsController {
         def groups = securityService.listAllGroup(filters, params)
         for (group in groups) {
             def cells = [
-                    id         : group.id,
-                    tenant     : group.tenant,
-                    name       : group.name,
-                    landingPage: group.landingPage,
-                    deletable     : group.deletable,
+                id         : group.id,
+                tenant     : group.tenant,
+                name       : group.name,
+                landingPage: group.landingPage,
+                deletable  : group.deletable,
             ]
             for (role in TRole.findAll()) {
                 cells[role.authority] = (group.authorities.any { it.authority == role.authority }) ?: null
@@ -121,32 +121,32 @@ class GroupController implements ElementsController {
     private buildForm(TRoleGroup obj = null) {
         Boolean isSuperAdmin = securityService.isSuperAdmin()
         def c = obj
-                ? createContent(ContentEdit)
-                : createContent(ContentCreate)
+            ? createContent(ContentEdit)
+            : createContent(ContentCreate)
 
         c.form.with {
             validate = TRoleGroup
             if (isSuperAdmin) {
                 addField(
-                        class: Select,
-                        id: 'tenant',
-                        optionsFromRecordset: tenantService.list(),
-                        defaultValue: tenantService.defaultTenant.id,
-                        search: false,
-                        noSelection: false,
+                    class: Select,
+                    id: 'tenant',
+                    optionsFromRecordset: tenantService.list(),
+                    defaultValue: tenantService.defaultTenant.id,
+                    search: false,
+                    noSelection: false,
                 )
             }
             addField(
-                    class: TextField,
-                    id: 'name',
-                    icon: 'fa-shield-halved',
-                    textTransform: TextTransform.UPPERCASE,
+                class: TextField,
+                id: 'name',
+                icon: 'fa-shield-halved',
+                textTransform: TextTransform.UPPERCASE,
             )
             addField(
-                    class: Select,
-                    id: 'landingPage',
-                    optionsFromRecordset: getLandingPages(),
-                    prettyPrinter: 'LANDING_PAGE',
+                class: Select,
+                id: 'landingPage',
+                optionsFromRecordset: getLandingPages(),
+                prettyPrinter: 'LANDING_PAGE',
             )
         }
 
@@ -179,9 +179,9 @@ class GroupController implements ElementsController {
     def create() {
         def c = buildForm()
         c.form.addField(
-                class: MultipleCheckbox,
-                id: 'authorities',
-                optionsFromList: securityService.listAuthority(),
+            class: MultipleCheckbox,
+            id: 'authorities',
+            optionsFromList: securityService.listAuthority(),
         )
         display content: c, modal: true
     }
@@ -204,18 +204,18 @@ class GroupController implements ElementsController {
         if (obj.name == SecurityService.GROUP_USERS) {
             c.form['name'].readonly = true
             c.form.addField(
-                    class: MultipleCheckbox,
-                    id: 'authorities',
-                    optionsFromList: ['ROLE_USER'],
-                    textPrefix: controllerName,
-                    readonly: true,
+                class: MultipleCheckbox,
+                id: 'authorities',
+                optionsFromList: ['ROLE_USER'],
+                textPrefix: controllerName,
+                readonly: true,
             )
         } else {
             c.form.addField(
-                    class: MultipleCheckbox,
-                    id: 'authorities',
-                    optionsFromList: securityService.listAuthority(),
-                    textPrefix: controllerName,
+                class: MultipleCheckbox,
+                id: 'authorities',
+                optionsFromList: securityService.listAuthority(),
+                textPrefix: controllerName,
             )
         }
 

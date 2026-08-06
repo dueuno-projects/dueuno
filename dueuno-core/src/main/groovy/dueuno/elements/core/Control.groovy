@@ -293,8 +293,8 @@ abstract class Control extends Component {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                nullable: nullable,
-                pattern: invalidChars ?: validChars ?: pattern,
+            nullable: nullable,
+            pattern : invalidChars ?: validChars ?: pattern,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

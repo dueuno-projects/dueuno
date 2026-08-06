@@ -30,7 +30,7 @@ import org.apache.hc.core5.http.message.BasicHeader
  *     .header("Accept", "application/json")
  *     .query("search", "keyword")
  *     .body("request body");
- * }</pre>
+ *}</pre>
  *
  * @author Gianluca Sartori
  */
@@ -67,7 +67,7 @@ class HttpRequest {
      * <p>Example:
      * <pre>{@code
      * request.setUrl("https://example.com/resource");
-     * }</pre>
+     *}</pre>
      *
      * @param url the URL to set
      * @return this request instance
@@ -99,7 +99,7 @@ class HttpRequest {
      * <p>Example:
      * <pre>{@code
      * String fullUrl = request.getUrl();
-     * }</pre>
+     *}</pre>
      *
      * @return the base URL optionally followed by a query string
      */
@@ -117,22 +117,22 @@ class HttpRequest {
      * Creates a GET {@link HttpRequest}.
      * <pre>{@code
      * HttpRequest req = HttpRequest.GET("https://example.com");
-     * }</pre>
+     *}</pre>
      */
-    static HttpRequest GET(String url)    { new HttpRequest(HttpMethod.GET, url) }
+    static HttpRequest GET(String url) { new HttpRequest(HttpMethod.GET, url) }
 
     /**
      * Creates a POST {@link HttpRequest}.
      * <pre>{@code
      * HttpRequest req = HttpRequest.POST("https://example.com");
-     * }</pre>
+     *}</pre>
      */
-    static HttpRequest POST(String url)   { new HttpRequest(HttpMethod.POST, url) }
+    static HttpRequest POST(String url) { new HttpRequest(HttpMethod.POST, url) }
 
     /**
      * Creates a PUT {@link HttpRequest}.
      */
-    static HttpRequest PUT(String url)    { new HttpRequest(HttpMethod.PUT, url) }
+    static HttpRequest PUT(String url) { new HttpRequest(HttpMethod.PUT, url) }
 
     /**
      * Creates a DELETE {@link HttpRequest}.
@@ -142,7 +142,7 @@ class HttpRequest {
     /**
      * Creates a PATCH {@link HttpRequest}.
      */
-    static HttpRequest PATCH(String url)  { new HttpRequest(HttpMethod.PATCH, url) }
+    static HttpRequest PATCH(String url) { new HttpRequest(HttpMethod.PATCH, url) }
 
     /**
      * Adds a header to the request.
@@ -150,7 +150,7 @@ class HttpRequest {
      * <p>Example:
      * <pre>{@code
      * request.header("Content-Type", "application/json");
-     * }</pre>
+     *}</pre>
      *
      * @param name the header name
      * @param value the header value (ignored if null)
@@ -170,7 +170,7 @@ class HttpRequest {
      * <p>Example:
      * <pre>{@code
      * Header h = request.getHeader("Accept");
-     * }</pre>
+     *}</pre>
      *
      * @param name the header name
      * @return the matching Header or {@code null}
@@ -195,7 +195,7 @@ class HttpRequest {
      * <p>Example:
      * <pre>{@code
      * request.query("page", 2);
-     * }</pre>
+     *}</pre>
      *
      * @param name the parameter name
      * @param value the parameter value (ignored if null)
@@ -215,7 +215,7 @@ class HttpRequest {
      * <p>Example:
      * <pre>{@code
      * request.query([page: 1, size: 20]);
-     * }</pre>
+     *}</pre>
      *
      * @param params a map of parameter names and values
      * @return this request instance
@@ -235,7 +235,7 @@ class HttpRequest {
      * <p>Example:
      * <pre>{@code
      * request.body("some text payload");
-     * }</pre>
+     *}</pre>
      *
      * @param body the request body
      * @return this request instance
@@ -255,7 +255,7 @@ class HttpRequest {
      *     .addFile("file", someFile)
      *
      * request.multipartBody(multipart)
-     * }</pre>
+     *}</pre>
      *
      * @param multipart the multipart body builder
      * @return this request instance

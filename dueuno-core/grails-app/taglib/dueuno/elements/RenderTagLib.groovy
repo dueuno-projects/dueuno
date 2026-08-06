@@ -14,7 +14,6 @@
  */
 package dueuno.elements
 
-
 import dueuno.elements.components.Form
 import dueuno.elements.components.FormField
 import dueuno.elements.controls.HiddenField
@@ -51,7 +50,7 @@ class RenderTagLib implements WebRequestAware {
                 component[property.key] = property.value
             }
 
-            String attributes = attrs.collect {it.key + '="' + it.value + '"' }.join(', ')
+            String attributes = attrs.collect { it.key + '="' + it.value + '"' }.join(', ')
             out << render(template: component.getView(), model: component.getModel() + [attributes: attributes])
 
 //            sw.stop()
@@ -96,9 +95,9 @@ class RenderTagLib implements WebRequestAware {
      */
     def message = { attrs ->
         out << PrettyPrinter.message(
-                locale,
-                attrs.code as String,
-                attrs.args as List
+            locale,
+            attrs.code as String,
+            attrs.args as List
         )
     }
 

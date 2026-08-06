@@ -15,12 +15,12 @@
 package dueuno.application
 
 import dueuno.commons.utils.FileUtils
+import dueuno.elements.ElementsException
+import dueuno.elements.LinkGeneratorAware
 import dueuno.elements.core.Elements
 import dueuno.elements.core.Feature
-import dueuno.elements.LinkGeneratorAware
 import dueuno.elements.core.PrettyPrinter
 import dueuno.elements.core.Transformer
-import dueuno.elements.ElementsException
 import dueuno.tenant.TenantService
 import dueuno.utils.EnvUtils
 import grails.core.GrailsApplication
@@ -375,10 +375,10 @@ class ApplicationService implements LinkGeneratorAware {
             }
 
             new TApplicationInstall(
-                    plugin: pluginName,
-                    revision: revisionName,
-                    tenantId: tenantId,
-                    dev: isDev,
+                plugin: pluginName,
+                revision: revisionName,
+                tenantId: tenantId,
+                dev: isDev,
             ).save(flush: true, failOnError: true)
 
             log.info "...done."
@@ -483,11 +483,11 @@ class ApplicationService implements LinkGeneratorAware {
     private void registerUserMenuLanguages() {
         for (language in languages) {
             registerUserFeature(
-                    text: 'default.language.' + language,
-                    image: 'libs/flags/' + getFlagCode(language) + '.svg',
-                    controller: 'shell',
-                    action: 'switchLanguage',
-                    params: [id: language],
+                text: 'default.language.' + language,
+                image: 'libs/flags/' + getFlagCode(language) + '.svg',
+                controller: 'shell',
+                action: 'switchLanguage',
+                params: [id: language],
             )
         }
 
@@ -500,10 +500,10 @@ class ApplicationService implements LinkGeneratorAware {
         }
 
         registerUserFeature(
-                text: 'shell.user.menu.credits',
-                icon: 'fa-circle-info',
-                controller: 'shell',
-                action: 'credits',
+            text: 'shell.user.menu.credits',
+            icon: 'fa-circle-info',
+            controller: 'shell',
+            action: 'credits',
         )
 
         registerUserFeature()
@@ -689,16 +689,16 @@ class ApplicationService implements LinkGeneratorAware {
         // - Locale uses ISO 639 Alpha 2 codes:    https://www.loc.gov/standards/iso639-2/php/English_list.php
         // - Flags uses ISO 3166-1 Alpha 2 codes:  https://www.iso.org/obp/ui/
         Map localeToFlag = [
-                en   : 'gb',    // defaults to UK (cause we're european ;-)
-                en_gb: 'gb',
-                en_us: 'us',
-                pt_pt: 'pt',
-                pt_br: 'br',
-                zh_cn: 'cn',
-                cs   : 'cs_cz',
-                da   : 'dk',
-                ja   : 'jp',
-                nb   : 'no',
+            en   : 'gb',    // defaults to UK (cause we're european ;-)
+            en_gb: 'gb',
+            en_us: 'us',
+            pt_pt: 'pt',
+            pt_br: 'br',
+            zh_cn: 'cn',
+            cs   : 'cs_cz',
+            da   : 'dk',
+            ja   : 'jp',
+            nb   : 'no',
         ]
         String langLowerCase = lang.toLowerCase()
         String flagLang = localeToFlag[langLowerCase] ?: langLowerCase

@@ -108,10 +108,10 @@ class PageService implements WebRequestAware, LinkGeneratorAware {
         args.requiredTextColor = tenantPropertyService.getString('REQUIRED_TEXT_COLOR')
 
         args.keyPress = [
-                triggerKey: tenantPropertyService.getString('KEYPRESS_TRIGGER_KEY'),
-                readingSpeed: tenantPropertyService.getNumber('KEYPRESS_READING_SPEED'),
-                bufferCleanupTimeout: tenantPropertyService.getNumber('KEYPRESS_BUFFER_CLEANUP_TIMEOUT'),
-                keepClean: tenantPropertyService.getBoolean('KEYPRESS_KEEP_CLEAN'),
+            triggerKey          : tenantPropertyService.getString('KEYPRESS_TRIGGER_KEY'),
+            readingSpeed        : tenantPropertyService.getNumber('KEYPRESS_READING_SPEED'),
+            bufferCleanupTimeout: tenantPropertyService.getNumber('KEYPRESS_BUFFER_CLEANUP_TIMEOUT'),
+            keepClean           : tenantPropertyService.getBoolean('KEYPRESS_KEEP_CLEAN'),
         ]
 
         return args

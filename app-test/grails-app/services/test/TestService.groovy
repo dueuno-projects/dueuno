@@ -33,10 +33,10 @@ class TestService {
 
     void installDemo() {
         TDemo demo = new TDemo(
-                textfield: 'Ventuno',
-                numberfield: 21,
-                checkbox: true,
-                moneyfield: new Money(21),
+            textfield: 'Ventuno',
+            numberfield: 21,
+            checkbox: true,
+            moneyfield: new Money(21),
         ).save(flush: true)
         TCompany none = new TCompany(name: '000.no.company').save(flush: true)
         TCompany myCompany = new TCompany(name: 'MyCompany S.r.l.').save(flush: true)
