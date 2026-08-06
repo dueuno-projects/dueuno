@@ -151,6 +151,12 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         }
     }
 
+    void closeModal() {
+        Transition t = createTransition()
+        t.closeModal()
+        display transition: t
+    }
+
     /**
      * Returns the name of the key that was pressed by the user in the current request,
      * as reported by the main page's key-press component.
