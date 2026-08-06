@@ -376,49 +376,56 @@ class Types {
             return value
         }
 
-        Map valueMap = value as Map
+        Map map = value as Map
+        Type mapType = map.type as Type
+        Object mapValue = map.value
+
+        if (mapValue == null) {
+            return null
+        }
+
         try {
-            switch (valueMap.type) {
-                case Type.BOOL.toString():
-                    return deserializeBoolean(valueMap)
+            switch (mapType) {
+                case Type.BOOL:
+                    return deserializeBoolean(map)
 
-                case Type.NUMBER.toString():
-                    return deserializeNumber(valueMap)
+                case Type.NUMBER:
+                    return deserializeNumber(map)
 
-                case Type.STRING.toString():
-                    return deserializeString(valueMap)
+                case Type.STRING:
+                    return deserializeString(map)
 
-                case Type.MAP.toString():
-                    return deserializeMap(valueMap)
+                case Type.MAP:
+                    return deserializeMap(map)
 
-                case Type.LIST.toString():
-                    return deserializeList(valueMap)
+                case Type.LIST:
+                    return deserializeList(map)
 
-                case Type.DATETIME.toString():
-                    return deserializeLocalDateTime(valueMap)
+                case Type.DATETIME:
+                    return deserializeLocalDateTime(map)
 
-                case Type.DATE.toString():
-                    return deserializeLocalDate(valueMap)
+                case Type.DATE:
+                    return deserializeLocalDate(map)
 
-                case Type.TIME.toString():
-                    return deserializeLocalTime(valueMap)
+                case Type.TIME:
+                    return deserializeLocalTime(map)
 
-                case Type.NA.toString():
-                    return valueMap.value
+                case Type.NA:
+                    return mapValue
 
                 default:
                     try {
-                        CustomType customTypeValue = create(valueMap.type as String)
-                        customTypeValue.deserialize(valueMap)
+                        CustomType customTypeValue = create(mapType.name())
+                        customTypeValue.deserialize(map)
                         return customTypeValue
 
                     } catch (Exception ignore) {
-                        return valueMap.value
+                        return mapValue
                     }
             }
 
         } catch (Exception e) {
-            log.error "Error deserializing '${valueMap}': ${e.message}"
+            log.error "Error deserializing '${map}': ${e.message}"
             return null
         }
     }

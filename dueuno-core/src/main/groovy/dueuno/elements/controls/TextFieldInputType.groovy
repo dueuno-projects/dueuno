@@ -28,6 +28,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 enum TextFieldInputType {
+
     /** Plain text input; no special validation or widget. */
     TEXT,
 
@@ -51,4 +52,5 @@ enum TextFieldInputType {
 
     /** Telephone number input; no strict format validation, but optimises mobile keyboard. */
     TEL
+
 }
