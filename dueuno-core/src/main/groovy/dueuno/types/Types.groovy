@@ -377,7 +377,7 @@ class Types {
         }
 
         Map map = value as Map
-        Type mapType = map.type as Type
+        Object mapType = map.type
         Object mapValue = map.value
 
         if (mapValue == null) {
@@ -386,36 +386,36 @@ class Types {
 
         try {
             switch (mapType) {
-                case Type.BOOL:
+                case Type.BOOL.name():
                     return deserializeBoolean(map)
 
-                case Type.NUMBER:
+                case Type.NUMBER.name():
                     return deserializeNumber(map)
 
-                case Type.STRING:
+                case Type.STRING.name():
                     return deserializeString(map)
 
-                case Type.MAP:
+                case Type.MAP.name():
                     return deserializeMap(map)
 
-                case Type.LIST:
+                case Type.LIST.name():
                     return deserializeList(map)
 
-                case Type.DATETIME:
+                case Type.DATETIME.name():
                     return deserializeLocalDateTime(map)
 
-                case Type.DATE:
+                case Type.DATE.name():
                     return deserializeLocalDate(map)
 
-                case Type.TIME:
+                case Type.TIME.name():
                     return deserializeLocalTime(map)
 
-                case Type.NA:
+                case Type.NA.name():
                     return mapValue
 
                 default:
                     try {
-                        CustomType customTypeValue = create(mapType.name())
+                        CustomType customTypeValue = create(mapType as String)
                         customTypeValue.deserialize(map)
                         return customTypeValue
 
