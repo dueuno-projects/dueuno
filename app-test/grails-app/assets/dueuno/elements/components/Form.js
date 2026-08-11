@@ -13,19 +13,10 @@ class Form extends Component {
         $controls.each(function() {
             let $control = $(this);
             let control = Control.getByElement($control);
-            let className = Control.getClassName($control);
-            let readonly = Elements.callMethod($control, control, 'getReadonly');
+            let isVisible = Elements.callMethod($control, control, 'getDisplay');
+            let isReadonly = Elements.callMethod($control, control, 'getReadonly');
 
-            let excludedControls = [
-                'HiddenField',
-                'PasswordField',
-                'Button',
-                'Link',
-                'Label',
-                'Separator',
-            ];
-            if (!Elements.isMobileDevice && !excludedControls.includes(className) && !readonly) {
-                $control.css('visibility', 'visible');
+            if (!Elements.isMobileDevice && isVisible && !isReadonly) {
                 Component.setFocus($control, true);
                 return false;
             }

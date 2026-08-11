@@ -124,7 +124,7 @@ class Component {
     }
 
     static getDisplay($element) {
-        return $element.hasClass('d-none');
+        return $element.closest('.d-none').length == 0;
     }
 
     static setDisplay($element, value) {
