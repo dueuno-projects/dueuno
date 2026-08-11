@@ -171,7 +171,7 @@ class SandboxController implements ElementsController {
                 class: TimeField,
                 id: 't2',
                 value: LocalTime.now(),
-                readonly: true,
+//                readonly: true,
                 help: 'This is a help message',
                 cols: 2,
             )

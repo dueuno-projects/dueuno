@@ -162,7 +162,7 @@ class Component {
 
     static setFocus($element, value) {
         if (value) {
-            $element[0].select();
+            $element[0].focus();
         } else {
             document.activeElement.blur();
         }

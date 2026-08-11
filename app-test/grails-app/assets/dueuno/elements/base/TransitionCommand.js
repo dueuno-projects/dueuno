@@ -48,8 +48,9 @@ class TransitionCommand {
         let contentRenderProperties = Component.getProperty($content, 'renderProperties');
         componentEvent.renderProperties = TransitionCommand.mergeRenderProperties(componentEvent.renderProperties, contentRenderProperties);
 
+        let rendered;
         if (componentEvent.renderProperties['modal']) {
-            PageModal.open($content, componentEvent);
+            rendered = PageModal.open($content, componentEvent);
 
         } else {
             PageModal.close();
@@ -59,6 +60,8 @@ class TransitionCommand {
         if (PageMessageBox.isActive) {
             PageMessageBox.hide();
         }
+
+        return rendered;
     }
 
     static render($component, $newComponent, componentEvent) {

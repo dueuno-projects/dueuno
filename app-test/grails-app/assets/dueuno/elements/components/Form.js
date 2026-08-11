@@ -8,8 +8,7 @@ class Form extends Component {
     }
 
     static setFocusOnFirstInput($element) {
-        let $form = $('[data-21-id="' + $element.prop('id') + '"]');
-        let $controls = $form.find('[data-21-control]');
+        let $controls = $element.find('[data-21-control]');
 
         $controls.each(function() {
             let $control = $(this);
@@ -27,7 +26,7 @@ class Form extends Component {
             ];
             if (!Elements.isMobileDevice && !excludedControls.includes(className) && !readonly) {
                 $control.css('visibility', 'visible');
-                $control.triggerHandler('focus');
+                Component.setFocus($control, true);
                 return false;
             }
         });

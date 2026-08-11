@@ -5,6 +5,7 @@
 let PageModal_dialog = null;
 let PageModal_isActive = false;
 let PageModal_isShowRequested = false;
+let PageModal_isReady = false;
 let PageModal_hasCloseButton = true;
 
 class PageModal extends Component {
@@ -15,6 +16,8 @@ class PageModal extends Component {
     static set isActive(value) { PageModal_isActive = value }
     static get isShowRequested() { return PageModal_isShowRequested }
     static set isShowRequested(value) { PageModal_isShowRequested = value }
+    static get isReady() { return PageModal_isReady }
+    static set isReady(value) { PageModal_isReady = value }
     static get hasCloseButton() { return PageModal_hasCloseButton }
     static set hasCloseButton(value) { PageModal_hasCloseButton = value }
 
@@ -25,6 +28,7 @@ class PageModal extends Component {
 
     static initialize() {
         PageModal.isActive = false;
+        PageModal.isReady = false;
         PageModal.dialog = new bootstrap.Modal('#page-modal', { backdrop: 'static' });
 
         // Close Button
@@ -41,6 +45,7 @@ class PageModal extends Component {
     }
 
     static onShown(event) {
+        PageModal.isReady = true;
         Page.finalizeContent(PageModal.$self);
     }
 
@@ -50,6 +55,8 @@ class PageModal extends Component {
     }
 
     static onHidden(event) {
+        PageModal.isReady = false;
+
         if (!PageModal.isActive) {
             PageModal.$body.empty();
 
@@ -131,12 +138,15 @@ class PageModal extends Component {
         Page.initializeContent(PageModal.$self, true, true);
         PageModal.renderDialog(componentEvent);
 
-        if (PageModal.isShown()) {
+        if (PageModal.isReady) {
             Page.finalizeContent(PageModal.$self);
+            return Promise.resolve();
 
         } else {
+            let shown = new Promise(resolve => PageModal.$self.one('shown.bs.modal', resolve));
             PageModal.show();
             // Will be finalized onShown()
+            return shown;
         }
     }
 
@@ -156,6 +166,7 @@ class PageModal extends Component {
     }
 
     static hide() {
+        PageModal.isReady = false;
         PageModal.dialog.hide();
     }
 }

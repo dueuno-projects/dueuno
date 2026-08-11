@@ -32,7 +32,7 @@ class Transition {
         log.debug('Subscribed to ' + channel);
     }
 
-    static executeFromWebsocket(message) {
+    static async executeFromWebsocket(message) {
         // We cannot send $components in a Web Socket transition since
         // Components can only exists in the context of a web request
         let commands = JSON.parse(message.body);
@@ -45,11 +45,11 @@ class Transition {
         Transition.log(transition);
 
         for (let command of transition.commands) {
-            Transition.executeCommand(transition, command, null);
+            await Transition.executeCommand(transition, command, null);
         }
     }
 
-    static execute(transition, componentEvent) {
+    static async execute(transition, componentEvent) {
         log.debug('');
         log.debug('%c<<< RESPONSE /' + componentEvent.controller + '/' + componentEvent.action, 'font-weight: bold');
         Transition.log(transition);
@@ -64,7 +64,7 @@ class Transition {
         }
 
         for (let command of transition.commands) {
-            Transition.executeCommand(transition, command, componentEvent);
+            await Transition.executeCommand(transition, command, componentEvent);
         }
     }
 
@@ -82,12 +82,10 @@ class Transition {
 
         switch (method) {
             case TransitionCommand.REDIRECT:
-                TransitionCommand.redirect(valueMap.value);
-                break;
+                return TransitionCommand.redirect(valueMap.value);
 
             case TransitionCommand.RENDER_CONTENT:
-                TransitionCommand.renderContent($components, componentEvent);
-                break;
+                return TransitionCommand.renderContent($components, componentEvent);
 
             case TransitionCommand.LOADING:
                 TransitionCommand.loading(valueMap.value);

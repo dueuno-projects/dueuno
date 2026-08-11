@@ -370,13 +370,13 @@ class CrudController implements ElementsController {
 
     def create() {
         def c = buildForm()
-        display content: c, modal: true
+        display content: c, modal: true, focus: 'address'
     }
 
     def edit() {
         def obj = personService.get(params.id)
         def c = buildForm(obj)
-        display content: c, modal: true
+        display content: c, modal: true, focus: 'address'
     }
 
     def onCreate() {
