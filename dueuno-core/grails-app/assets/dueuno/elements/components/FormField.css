@@ -36,14 +36,14 @@ input[type] {
 }
 
 
-.input-group:has([readonly], [disabled]) > span:not(.select2),
-.input-group:has([readonly], [disabled]) > a,
-.input-group:has([readonly], [disabled]) > a:hover,
-.input-group:has([readonly], [disabled]) > a:focus,
-.input-group:has([readonly], [disabled]) > a:focus:hover,
-.input-group:has([readonly], [disabled]) > select,
-.input-group:has([readonly], [disabled]) textarea,
-.input-group:has([readonly], [disabled]) > input,
+.input-group:has([disabled]) > span:not(.select2),
+.input-group:has([disabled]) > a,
+.input-group:has([disabled]) > a:hover,
+.input-group:has([disabled]) > a:focus,
+.input-group:has([disabled]) > a:focus:hover,
+.input-group:has([disabled]) > select,
+.input-group:has([disabled]) textarea,
+.input-group:has([disabled]) > input,
 .input-group .component-select[disabled] + .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
     box-shadow: none !important;
     cursor: default;
@@ -141,15 +141,15 @@ input:focus-visible,
     color: rgb(var(--elements-main-text));
 }
 
-.input-group:has([readonly], [disabled]) > span:not(.select2),
-.input-group:has([readonly], [disabled]) > a,
-.input-group:has([readonly], [disabled]) > a:hover,
-.input-group:has([readonly], [disabled]) > a:focus,
-.input-group:has([readonly], [disabled]) > a:focus:hover,
-.input-group:has([readonly], [disabled]) > select,
-.input-group:has([readonly], [disabled]) textarea,
-.input-group:has([readonly], [disabled]) > input,
-.input-group:has([readonly], [disabled]) > button {
+.input-group:has([disabled]) > span:not(.select2),
+.input-group:has([disabled]) > a,
+.input-group:has([disabled]) > a:hover,
+.input-group:has([disabled]) > a:focus,
+.input-group:has([disabled]) > a:focus:hover,
+.input-group:has([disabled]) > select,
+.input-group:has([disabled]) textarea,
+.input-group:has([disabled]) > input,
+.input-group:has([disabled]) > button {
     background-color: rgba(var(--elements-main-bg), .4) !important;
     opacity: 1;
 }
@@ -161,9 +161,9 @@ input:focus-visible,
     color: rgba(var(--elements-main-text), .7);
 }
 
-.input-group:has([readonly], [disabled]) .input-group-text,
-.input-group:has([readonly], [disabled]) .component-help,
-.input-group:has([readonly], [disabled]) .component-help:hover {
+.input-group:has([disabled]) .input-group-text,
+.input-group:has([disabled]) .component-help,
+.input-group:has([disabled]) .component-help:hover {
     background-color: rgba(var(--elements-main-bg), .4) !important;
     color: rgba(var(--elements-main-text), .4) !important;
 }

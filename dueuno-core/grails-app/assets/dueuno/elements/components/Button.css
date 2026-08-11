@@ -22,12 +22,12 @@ button,
     text-overflow: ellipsis;
 }
 
-.component-button[readonly] {
+.component-button[disabled] {
     cursor: default;
     opacity: .5;
 }
 
-.component-button[readonly] .dropdown-toggle {
+.component-button[disabled] .dropdown-toggle {
     opacity: 1;
 }
 

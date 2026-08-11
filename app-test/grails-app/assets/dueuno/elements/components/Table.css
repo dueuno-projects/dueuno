@@ -146,14 +146,14 @@
 }
 
 
-.component-table-cell:has([readonly], [disabled]) > span:not(.select2),
-.component-table-cell:has([readonly], [disabled]) > a,
-.component-table-cell:has([readonly], [disabled]) > a:hover,
-.component-table-cell:has([readonly], [disabled]) > a:focus,
-.component-table-cell:has([readonly], [disabled]) > a:focus:hover,
-.component-table-cell:has([readonly], [disabled]) > select,
-.component-table-cell:has([readonly], [disabled]) textarea,
-.component-table-cell:has([readonly], [disabled]) > input,
+.component-table-cell:has([disabled]) > span:not(.select2),
+.component-table-cell:has([disabled]) > a,
+.component-table-cell:has([disabled]) > a:hover,
+.component-table-cell:has([disabled]) > a:focus,
+.component-table-cell:has([disabled]) > a:focus:hover,
+.component-table-cell:has([disabled]) > select,
+.component-table-cell:has([disabled]) textarea,
+.component-table-cell:has([disabled]) > input,
 .component-table-cell .component-select[disabled] + .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
     box-shadow: none !important;
     cursor: default;

@@ -80,10 +80,10 @@
     color: rgb(var(--elements-primary-bg));
 }
 
-.control-upload[readonly] {
+.control-upload[disabled] {
     background-color: rgb(var(--elements-main-bg));
 }
 
-.control-upload[readonly] .dz-message .dz-button {
+.control-upload[disabled] .dz-message .dz-button {
     color: rgb(var(--elements-secondary-bg)) !important;
 }

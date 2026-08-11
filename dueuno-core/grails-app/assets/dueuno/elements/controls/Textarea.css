@@ -10,7 +10,7 @@
     position: absolute;
 }
 
-.control-textarea.maxlength:not(.readonly) textarea {
+.control-textarea.maxlength:not(.disabled) textarea {
     padding-bottom: 3rem !important;
 }
 
@@ -21,6 +21,6 @@
     font-weight: normal;
 }
 
-.control-textarea.maxlength.readonly label {
+.control-textarea.maxlength.disabled label {
     display: none;
 }

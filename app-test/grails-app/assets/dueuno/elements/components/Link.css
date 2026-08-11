@@ -2,7 +2,7 @@
     padding-right: var(--elements-spacing-y);
 }
 
-.input-group:has(.component-link[readonly]) {
+.input-group:has(.component-link[disabled]) {
     cursor: default;
 }
 
@@ -10,7 +10,7 @@
     cursor: pointer;
 }
 
-.component-link[readonly] {
+.component-link[disabled] {
     pointer-events: none;
 }
 

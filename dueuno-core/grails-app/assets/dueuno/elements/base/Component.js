@@ -136,17 +136,17 @@ class Component {
     }
 
     static getReadonly($element) {
-        return $element.prop('readonly') ?? false;
+        return $element.prop('disabled') ?? false;
     }
 
     static setReadonly($element, value) {
         if (value == null || value == false) {
-            $element.removeAttr('readonly');
+            $element.removeAttr('disabled');
             $element.removeAttr('tabindex');
 
         } else {
             for (let element of $element) {
-                element.setAttribute('readonly', '');
+                element.setAttribute('disabled', '');
                 element.setAttribute('tabindex', '-1');
             }
         }
