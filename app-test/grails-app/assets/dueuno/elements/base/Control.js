@@ -105,12 +105,4 @@ class Control extends Component {
         let $formField = $element.closest('[data-21-component="FormField"]');
         if ($formField) FormField.setReadonly($formField, value);
     }
-
-    static setFocus($element, value) {
-        if (value) {
-            $element[0].select();
-        } else {
-            document.activeElement.blur();
-        }
-    }
 }

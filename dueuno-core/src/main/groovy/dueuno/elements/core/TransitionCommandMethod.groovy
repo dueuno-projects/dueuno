@@ -31,7 +31,7 @@ enum TransitionCommandMethod {
     REDIRECT,
 
     /** Replaces the main page content area with a new {@link PageContent} component. */
-    CONTENT,
+    RENDER_CONTENT,
 
     /** Appends a new component as a child of an existing parent component. */
     APPEND,

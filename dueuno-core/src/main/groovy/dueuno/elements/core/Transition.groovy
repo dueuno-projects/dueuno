@@ -168,8 +168,8 @@ class Transition implements WebRequestAware {
      */
     void renderContent(PageContent content) {
         addComponent(content)
-        addCommand(
-            TransitionCommandMethod.CONTENT,
+        prependCommand(
+            TransitionCommandMethod.RENDER_CONTENT,
             null,
             null,
             null,
@@ -270,6 +270,15 @@ class Transition implements WebRequestAware {
      */
     void closeModal() {
         call('modal', 'close')
+    }
+
+    /**
+     * Adds a command to give focus to the specified component.
+     *
+     * @param component the identifier of the component that should receive focus
+     */
+    void focus(String component) {
+        set(component, 'focus', true)
     }
 
     /**
@@ -445,13 +454,23 @@ class Transition implements WebRequestAware {
     }
 
     private void addCommand(TransitionCommandMethod method, String component, String property, Object value, Boolean trigger = true) {
+        TransitionCommand command = createCommand(method, component, property, value, trigger)
+        commands.add(command)
+    }
+
+    private void prependCommand(TransitionCommandMethod method, String component, String property, Object value, Boolean trigger = true) {
+        TransitionCommand command = createCommand(method, component, property, value, trigger)
+        commands.add(0, command)
+    }
+
+    private TransitionCommand createCommand(TransitionCommandMethod method, String component, String property, Object value, Boolean trigger) {
         TransitionCommand command = new TransitionCommand()
         command.method = method as String
         command.component = component
         command.property = property
         command.value = Types.serializeValue(value)
         command.trigger = trigger
-        commands.add(command)
+        return command
     }
 
     private void initializeWithRequestData(LinkDefinition componentEventData) {

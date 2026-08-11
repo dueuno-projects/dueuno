@@ -323,6 +323,10 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
             t.redirect(args)
         }
 
+        if (args.focus != null) {
+            t.focus(args.focus as String)
+        }
+
         return [
             template: t.view,
             model   : t.model,
