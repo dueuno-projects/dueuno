@@ -16,8 +16,8 @@ package dueuno
 
 import dueuno.application.SessionInitializer
 import dueuno.security.CustomUserDetailsService
-import dueuno.security.ExternalIdAuthenticationFilter
-import dueuno.security.ExternalIdAuthenticationProvider
+import dueuno.security.PhysicalIdAuthenticationFilter
+import dueuno.security.PhysicalIdAuthenticationProvider
 import dueuno.tenant.TenantForCurrentUserResolver
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugins.Plugin
@@ -81,12 +81,12 @@ class DueunoGrailsPlugin extends Plugin {
                 grailsApplication = ref('grailsApplication')
             }
 
-            externalIdAuthenticationProvider(ExternalIdAuthenticationProvider) {
+            physicalIdAuthenticationProvider(PhysicalIdAuthenticationProvider) {
                 customUserDetailsService = ref('customUserDetailsService')
             }
 
             ConfigObject conf = SpringSecurityUtils.securityConfig
-            externalIdAuthenticationFilter(ExternalIdAuthenticationFilter, conf.externalId.filterProcessesUrl) {
+            physicalIdAuthenticationFilter(PhysicalIdAuthenticationFilter, conf.physicalId.filterProcessesUrl) {
                 authenticationManager = ref('authenticationManager')
                 authenticationSuccessHandler = ref('authenticationSuccessHandler')
                 authenticationFailureHandler = ref('authenticationFailureHandler')

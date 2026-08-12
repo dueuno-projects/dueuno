@@ -6,17 +6,17 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.util.Assert
 
 @CompileStatic
-class ExternalIdAuthenticationToken extends AbstractAuthenticationToken {
+class PhysicalIdAuthenticationToken extends AbstractAuthenticationToken {
 
     private final Object principal
 
-    ExternalIdAuthenticationToken(Object principal) {
+    PhysicalIdAuthenticationToken(Object principal) {
         super(null)
         this.principal = principal
         setAuthenticated(false)
     }
 
-    ExternalIdAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
+    PhysicalIdAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities)
         this.principal = principal
         super.setAuthenticated(true) // must use super, as we override
@@ -25,17 +25,17 @@ class ExternalIdAuthenticationToken extends AbstractAuthenticationToken {
     @Override
     public String getName() {
         if (this.getPrincipal() instanceof CustomGrailsUser) {
-            return ((CustomGrailsUser) this.getPrincipal()).getExternalId()
+            return ((CustomGrailsUser) this.getPrincipal()).getPhysicalId()
         }
         return super.getName()
     }
 
-    public static ExternalIdAuthenticationToken unauthenticated(Object principal) {
-        return new ExternalIdAuthenticationToken(principal)
+    public static PhysicalIdAuthenticationToken unauthenticated(Object principal) {
+        return new PhysicalIdAuthenticationToken(principal)
     }
 
-    public static ExternalIdAuthenticationToken authenticated(Object principal, Collection<? extends GrantedAuthority> authorities) {
-        return new ExternalIdAuthenticationToken(principal, authorities)
+    public static PhysicalIdAuthenticationToken authenticated(Object principal, Collection<? extends GrantedAuthority> authorities) {
+        return new PhysicalIdAuthenticationToken(principal, authorities)
     }
 
     @Override

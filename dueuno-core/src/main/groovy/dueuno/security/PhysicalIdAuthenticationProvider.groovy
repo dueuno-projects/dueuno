@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.util.Assert
 
 @CompileStatic
-class ExternalIdAuthenticationProvider implements AuthenticationProvider {
+class PhysicalIdAuthenticationProvider implements AuthenticationProvider {
 
     protected final Log logger = LogFactory.getLog(getClass())
 
@@ -34,16 +34,16 @@ class ExternalIdAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Assert.isInstanceOf(ExternalIdAuthenticationToken.class, authentication,
+        Assert.isInstanceOf(PhysicalIdAuthenticationToken.class, authentication,
             () -> this.messages.getMessage("AbstractUserDetailsAuthenticationProvider.onlySupports",
-                "Only ExternalIdAuthenticationToken is supported"))
-        String externalId = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName()
+                "Only PhysicalIdAuthenticationToken is supported"))
+        String physicalId = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName()
         UserDetails user
         try {
-            user = retrieveUser(externalId)
+            user = retrieveUser(physicalId)
         }
         catch (UsernameNotFoundException ex) {
-            this.logger.debug("Failed to find user '" + externalId + "'")
+            this.logger.debug("Failed to find user '" + physicalId + "'")
             if (!this.hideUserNotFoundExceptions) {
                 throw ex
             }
@@ -59,21 +59,21 @@ class ExternalIdAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     boolean supports(Class<?> authentication) {
-        return ExternalIdAuthenticationToken.isAssignableFrom(authentication)
+        return PhysicalIdAuthenticationToken.isAssignableFrom(authentication)
     }
 
     protected Authentication createSuccessAuthentication(UserDetails user, Authentication authentication) {
-        ExternalIdAuthenticationToken result = ExternalIdAuthenticationToken.authenticated(user,
+        PhysicalIdAuthenticationToken result = PhysicalIdAuthenticationToken.authenticated(user,
             this.authoritiesMapper.mapAuthorities(user.getAuthorities()))
         result.setDetails(authentication.getDetails())
         this.logger.debug("Authenticated user")
         return result
     }
 
-    protected final UserDetails retrieveUser(String externalId)
+    protected final UserDetails retrieveUser(String physicalId)
         throws AuthenticationException {
         try {
-            UserDetails loadedUser = this.getCustomUserDetailsService().loadUserByExternalId(externalId)
+            UserDetails loadedUser = this.getCustomUserDetailsService().loadUserByPhysicalId(physicalId)
             if (loadedUser == null) {
                 throw new InternalAuthenticationServiceException(
                     "UserDetailsService returned null, which is an interface contract violation")
@@ -104,21 +104,21 @@ class ExternalIdAuthenticationProvider implements AuthenticationProvider {
         @Override
         public void check(UserDetails user) {
             if (!user.isAccountNonLocked()) {
-                ExternalIdAuthenticationProvider.this.logger
+                PhysicalIdAuthenticationProvider.this.logger
                     .debug("Failed to authenticate since user account is locked")
-                throw new LockedException(ExternalIdAuthenticationProvider.this.messages
+                throw new LockedException(PhysicalIdAuthenticationProvider.this.messages
                     .getMessage("AbstractUserDetailsAuthenticationProvider.locked", "User account is locked"))
             }
             if (!user.isEnabled()) {
-                ExternalIdAuthenticationProvider.this.logger
+                PhysicalIdAuthenticationProvider.this.logger
                     .debug("Failed to authenticate since user account is disabled")
-                throw new DisabledException(ExternalIdAuthenticationProvider.this.messages
+                throw new DisabledException(PhysicalIdAuthenticationProvider.this.messages
                     .getMessage("AbstractUserDetailsAuthenticationProvider.disabled", "User is disabled"))
             }
             if (!user.isAccountNonExpired()) {
-                ExternalIdAuthenticationProvider.this.logger
+                PhysicalIdAuthenticationProvider.this.logger
                     .debug("Failed to authenticate since user account has expired")
-                throw new AccountExpiredException(ExternalIdAuthenticationProvider.this.messages
+                throw new AccountExpiredException(PhysicalIdAuthenticationProvider.this.messages
                     .getMessage("AbstractUserDetailsAuthenticationProvider.expired", "User account has expired"))
             }
         }
@@ -130,9 +130,9 @@ class ExternalIdAuthenticationProvider implements AuthenticationProvider {
         @Override
         public void check(UserDetails user) {
             if (!user.isCredentialsNonExpired()) {
-                ExternalIdAuthenticationProvider.this.logger
+                PhysicalIdAuthenticationProvider.this.logger
                     .debug("Failed to authenticate since user account credentials have expired")
-                throw new CredentialsExpiredException(ExternalIdAuthenticationProvider.this.messages
+                throw new CredentialsExpiredException(PhysicalIdAuthenticationProvider.this.messages
                     .getMessage("AbstractUserDetailsAuthenticationProvider.credentialsExpired",
                         "User credentials have expired"))
             }

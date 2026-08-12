@@ -18,6 +18,7 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import java.security.MessageDigest
+import java.security.SecureRandom
 
 /**
  * Utility class for string manipulation and encoding operations.
@@ -34,6 +35,8 @@ import java.security.MessageDigest
 @Slf4j
 @CompileStatic
 class StringUtils {
+
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom()
 
     // --- Naming convention conversions ---
 
@@ -194,12 +197,13 @@ class StringUtils {
      * @param alphabet optional list of characters to use
      * @return random token string
      */
-    static String generateRandomToken(Integer size = 16, List alphabet = []) {
-        List theAlphabet = alphabet ?: ('A'..'Z') + ('0'..'9') + ('a'..'z')
+    static String generateRandomToken(Integer size = 32, List alphabet = []) {
+        List defaultAlphabet = ('A'..'Z') + ('0'..'9') + ('a'..'z') + ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', ';', ':', '?', '.', '>']
+        List tokenAlphabet = alphabet ?: defaultAlphabet
 
-        return new Random().with {
-            (1..size).collect { theAlphabet[nextInt(theAlphabet.size())] }.join('')
-        }
+        return (1..size)
+            .collect { tokenAlphabet[SECURE_RANDOM.nextInt(tokenAlphabet.size())] }
+            .join('')
     }
 
     /**

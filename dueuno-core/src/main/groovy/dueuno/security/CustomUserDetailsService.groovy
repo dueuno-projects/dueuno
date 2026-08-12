@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 class CustomUserDetailsService extends GormUserDetailsService {
 
     @Transactional(readOnly = true, noRollbackFor = [IllegalArgumentException, UsernameNotFoundException])
-    UserDetails loadUserByExternalId(String externalId, boolean loadRoles) throws UsernameNotFoundException {
+    UserDetails loadUserByPhysicalId(String physicalId, boolean loadRoles) throws UsernameNotFoundException {
 
         def conf = SpringSecurityUtils.securityConfig
         String userClassName = conf.userLookup.userDomainClassName
@@ -25,21 +25,21 @@ class CustomUserDetailsService extends GormUserDetailsService {
         Class<?> User = dc.clazz
 
         def user = User.createCriteria().get {
-            ne((conf.externalId.propertyName), '')
-            eq((conf.externalId.propertyName), externalId)
+            ne((conf.physicalId.propertyName), '')
+            eq((conf.physicalId.propertyName), physicalId)
         }
 
         if (!user) {
-            log.warn 'User not found: {}', externalId
+            log.warn 'User not found: {}', physicalId
             throw new NoStackUsernameNotFoundException()
         }
 
-        Collection<GrantedAuthority> authorities = loadAuthorities(user, externalId, loadRoles)
+        Collection<GrantedAuthority> authorities = loadAuthorities(user, physicalId, loadRoles)
         createUserDetails user, authorities
     }
 
-    UserDetails loadUserByExternalId(String externalId) throws UsernameNotFoundException {
-        loadUserByExternalId externalId, true
+    UserDetails loadUserByPhysicalId(String physicalId) throws UsernameNotFoundException {
+        loadUserByPhysicalId physicalId, true
     }
 
     @Override

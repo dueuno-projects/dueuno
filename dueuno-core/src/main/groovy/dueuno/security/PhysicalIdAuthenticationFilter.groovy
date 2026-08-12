@@ -9,9 +9,9 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
 
 @CompileStatic
-class ExternalIdAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+class PhysicalIdAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    ExternalIdAuthenticationFilter(String defaultFilterProcessesUrl) {
+    PhysicalIdAuthenticationFilter(String defaultFilterProcessesUrl) {
         super(defaultFilterProcessesUrl)
     }
 
@@ -21,12 +21,11 @@ class ExternalIdAuthenticationFilter extends AbstractAuthenticationProcessingFil
         if (!request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod())
         }
-        String externalId = request.getParameter('externalId')
-        externalId = (externalId != null) ? externalId.trim() : ""
+        String physicalId = request.getParameter('physicalId')
+        physicalId = (physicalId != null) ? physicalId.trim() : ""
 
-        ExternalIdAuthenticationToken authRequest = ExternalIdAuthenticationToken.unauthenticated(externalId)
+        PhysicalIdAuthenticationToken authRequest = PhysicalIdAuthenticationToken.unauthenticated(physicalId)
         authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request))
         return this.authenticationManager.authenticate(authRequest)
     }
 }
-

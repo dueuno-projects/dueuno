@@ -55,7 +55,7 @@ class UserController implements ElementsController {
             'fullname',
             'defaultGroup',
             'apiKey',
-            'externalId',
+            'physicalId',
             'enabled',
         ]
 
@@ -122,7 +122,7 @@ class UserController implements ElementsController {
                     row.cells.tenant.tag = true
                 }
 
-                values.externalId = !!values.externalId
+                values.physicalId = !!values.physicalId
                 row.cells.apiKey.tag = true
             }
         }
@@ -245,13 +245,13 @@ class UserController implements ElementsController {
                 TextField apiKey = addField(
                     class: TextField,
                     id: 'apiKey',
-                    icon: 'fa-lock',
+                    icon: 'fa-globe',
                     readonly: !securityService.isDeveloper() && !securityService.isAdmin(),
                 ).component
                 apiKey.addAction(action: 'onGenerateApiKey', submit: ['form'], text: 'user.generateApiKey', icon: 'fa-key')
                 addField(
                     class: TextField,
-                    id: 'externalId',
+                    id: 'physicalId',
                     icon: 'fa-barcode',
                 )
             }

@@ -7,16 +7,16 @@ import org.springframework.security.core.GrantedAuthority
 @CompileStatic
 class CustomGrailsUser extends GrailsUser {
 
-    final String externalId
+    final String physicalId
 
     CustomGrailsUser(String username, String password, boolean enabled, boolean accountNonExpired,
                      boolean credentialsNonExpired, boolean accountNonLocked,
-                     Collection<? extends GrantedAuthority> authorities, Long id, String externalId) {
+                     Collection<? extends GrantedAuthority> authorities, Long id, String physicalId) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities, id)
-        this.externalId = externalId
+        this.physicalId = physicalId
     }
 
-    String getExternalId() {
-        return this.externalId
+    String getPhysicalId() {
+        return this.physicalId
     }
 }

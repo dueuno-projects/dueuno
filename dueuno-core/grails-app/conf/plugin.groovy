@@ -25,8 +25,8 @@ grails.plugin.springsecurity.logout.invalidateHttpSession = false
 grails.plugin.springsecurity.logout.afterLogoutUrl = '/authentication/afterLogout'
 grails.plugin.springsecurity.logout.filterProcessesUrl = '/springSecurityLogout'
 grails.plugin.springsecurity.adh.errorPage = '/authentication/denied'
-grails.plugin.springsecurity.externalId.filterProcessesUrl = '/api/auth/external'
-grails.plugin.springsecurity.externalId.propertyName = 'externalId'
+grails.plugin.springsecurity.physicalId.filterProcessesUrl = '/api/auth/physical'
+grails.plugin.springsecurity.physicalId.propertyName = 'physicalId'
 
 // Prevent Session Fixation attacks
 grails.plugin.springsecurity.useSessionFixationPrevention = true
@@ -62,8 +62,8 @@ grails.plugin.springsecurity.filterChain.chainMap = [
         [pattern: '/**/images/**', filters: 'none'],
         [pattern: '/**/favicon.png', filters: 'none'],
         [pattern: '/**/appicon.png', filters: 'none'],
-        [pattern: grails.plugin.springsecurity.externalId.filterProcessesUrl, filters: 'externalIdAuthenticationFilter'],
-        [pattern: '/**', filters: 'JOINED_FILTERS,-externalIdAuthenticationFilter']
+        [pattern: grails.plugin.springsecurity.physicalId.filterProcessesUrl, filters: 'physicalIdAuthenticationFilter'],
+        [pattern: '/**', filters: 'JOINED_FILTERS,-physicalIdAuthenticationFilter']
 ]
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ grails.plugin.springsecurity.providerNames = [
         'daoAuthenticationProvider',
 
         // All other providers
-        'externalIdAuthenticationProvider',
+        'physicalIdAuthenticationProvider',
 
         // Must be the last one
         'rememberMeAuthenticationProvider',

@@ -196,7 +196,7 @@ class BootStrap {
                 email: 'user@company.it',
                 firstname: 'User',
                 lastname: 'ONE',
-                externalId: tenantId == tenantService.defaultTenantId ? 'FB78E50B' : null,
+                physicalId: tenantId == tenantService.defaultTenantId ? 'FB78E50B' : null,
             )
             securityService.createUser(
                 tenantId: tenantId,
