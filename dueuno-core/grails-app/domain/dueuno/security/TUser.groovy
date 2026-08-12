@@ -20,8 +20,6 @@ import groovy.transform.EqualsAndHashCode
 import org.grails.datastore.gorm.GormEntity
 
 /**
- * Renamed to 'user_account' to avoid conflicting with database keywords (DB2, H2 have problems with 'user' or 'role')
- *
  * @author Gianluca Sartori
  */
 

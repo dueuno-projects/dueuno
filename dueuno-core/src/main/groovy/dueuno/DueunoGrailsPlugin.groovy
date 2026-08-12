@@ -15,7 +15,7 @@
 package dueuno
 
 import dueuno.application.SessionInitializer
-import dueuno.security.CustomUserDetailsService
+import dueuno.security.PhysicalUserDetailsService
 import dueuno.security.PhysicalIdAuthenticationFilter
 import dueuno.security.PhysicalIdAuthenticationProvider
 import dueuno.tenant.TenantForCurrentUserResolver
@@ -77,12 +77,12 @@ class DueunoGrailsPlugin extends Plugin {
             tenantForCurrentUserResolver(TenantForCurrentUserResolver)
             sessionInitializer(SessionInitializer)
 
-            customUserDetailsService(CustomUserDetailsService) {
+            physicalUserDetailsService(PhysicalUserDetailsService) {
                 grailsApplication = ref('grailsApplication')
             }
 
             physicalIdAuthenticationProvider(PhysicalIdAuthenticationProvider) {
-                customUserDetailsService = ref('customUserDetailsService')
+                physicalUserDetailsService = ref('physicalUserDetailsService')
             }
 
             ConfigObject conf = SpringSecurityUtils.securityConfig

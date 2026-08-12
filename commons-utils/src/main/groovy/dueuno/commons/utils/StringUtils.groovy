@@ -191,11 +191,11 @@ class StringUtils {
     }
 
     /**
-     * Generates a random token string.
+     * Generates a cryptographically secure random token.
      *
-     * @param size length of the token
-     * @param alphabet optional list of characters to use
-     * @return random token string
+     * @param size the token length, defaults to 32
+     * @param alphabet optional custom character set
+     * @return a secure random token
      */
     static String generateRandomToken(Integer size = 32, List alphabet = []) {
         List defaultAlphabet = ('A'..'Z') + ('0'..'9') + ('a'..'z') + ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', ';', ':', '?', '.', '>']
