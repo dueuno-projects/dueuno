@@ -10,12 +10,29 @@ c.form.with {
     addField(
         class: Select,
         id: 'book',
-        onChange: 'onChangeBook', // <1>
+        onChange: 'books.onChangeBook', // <1>
         submit: ['form'],
     )
 }
 ----
-<1> The parameter name is composed by `on` followed by the capitalized name of the event (the event `change` in this case). The parameter value is the name of the action to be called.
+<1> The parameter name is composed by `on` followed by the capitalized name of the event (the event `change` in this case). The parameter value can be an action name, such as `onChangeBook`, or a `controller.action` pair, such as `books.onChangeBook`.
+
+When only the action is specified, the current controller is used while the
+event is configured during a web request. Use the dot notation when the action
+belongs to another controller:
+
+[source,groovy]
+----
+c.form.addField(
+    class: Select,
+    id: 'book',
+    onChange: 'books.onChangeBook',
+)
+----
+
+This invokes the `onChangeBook` action of the `books` controller. The same
+target can be configured with the explicit `on()` method by specifying
+`controller` and `action` separately.
 
 Multiple events can be configured as follows.
 
@@ -34,6 +51,7 @@ c.form.with {
         )
         on( // <3>
             event: 'change',
+            controller: 'books',
             action: 'onChangeBook',
             submit: ['form'],
         )
@@ -42,7 +60,7 @@ c.form.with {
 ----
 <1> We reference the component held by the `FormField`, not the form field itself
 <2> Configuring the `load` event
-<3> Configuring the `change` event
+<3> Configuring the `change` event for the `books` controller.
 
 The following properties can be specified when configuring an event on a component.
 
@@ -58,11 +76,11 @@ The following properties can be specified when configuring an event on a compone
 |`controller`
 |`String`
 |
-|The name of the controller to redirect to. If no `action` is specified the `index` action will be displayed
+|The name of the controller to redirect to. If no `action` is specified the `index` action will be displayed. When using the `onEvent` shorthand (for example `onChange`), the controller can instead be specified in the action string as `controller.action`.
 |`action`
 |`String`
 |
-|The name of the action to redirect to. If no `controller` is specified and we are in the context of a web request (Eg. it's a user triggered event) the current controller will be used. If we are configuring the event outside of a web request (Eg. sending an event from a job) a `controller` must be specified.
+|The name of the action to redirect to. If no `controller` is specified and we are in the context of a web request (e.g. it is a user-triggered event), the current controller will be used. If we are configuring the event outside of a web request (e.g. sending an event from a job), a `controller` must be specified explicitly.
 |`params`
 |`Map<String, Object>`
 |
