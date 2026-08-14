@@ -116,7 +116,7 @@ JavaScript files in subdirectories use the same relative path convention, for
 example `javascripts/orders/table.js` is loaded with
 `src="orders/table.js"`.
 
-=== Asset guidelines
+=== Guidelines
 
 * Put stylesheets in `grails-app/assets/stylesheets` and JavaScript in
   `grails-app/assets/javascripts`.

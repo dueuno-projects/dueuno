@@ -80,7 +80,7 @@ Integer retentionDays = applicationPropertyService.getNumber('ORDER_RETENTION_DA
 Boolean archivingEnabled = applicationPropertyService.getBoolean('ORDER_ARCHIVING_ENABLED')
 ----
 
-=== Tenant Properties
+=== Tenant
 
 Tenant Properties are configuration values specific to the current tenant.
 Each tenant has its own value, so they are suitable for branding, user-facing
@@ -140,7 +140,7 @@ Never cache a tenant property in a singleton or static field: the active tenant
 can change between requests. Always read it through `TenantPropertyService` in
 the current tenant context.
 
-=== Property types
+=== Types
 
 Both services expose typed getters and setters. The type used to write a
 property must match the type used to read it.
@@ -204,7 +204,7 @@ database:
 String value = tenantPropertyService.getString('ORDER_COLOR', true)
 ----
 
-=== Reacting to changes
+=== Changes
 
 Both property services support a change callback. The closure receives the old
 value, the new value and the configured default value:

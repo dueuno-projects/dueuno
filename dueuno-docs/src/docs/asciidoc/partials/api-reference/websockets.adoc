@@ -29,7 +29,7 @@ The framework provides two services for this purpose:
 * `TransitionService.publish()` sends a transition to all clients subscribed
   to a channel, while `TransitionService.send()` sends it to one user.
 
-=== Enabling WebSocket support on a page
+=== Page
 
 A page must extend `PageWebsocket` to open the STOMP connection in the browser.
 `PageWebsocket` extends `PageBlank` and provides the standard blank page layout
@@ -64,7 +64,7 @@ When the page is loaded, the client connects to the `/stomp` endpoint. It
 automatically subscribes to the queue for the current username and to every
 channel registered through `TransitionService.subscribe()`.
 
-=== Registering a channel
+=== Channels
 
 Channels are registered during application initialisation. A channel name is
 an application-defined string; use a name that describes the group of clients
@@ -92,7 +92,7 @@ Only pages that are connected and subscribed to `orders` receive messages
 published on that channel. The registration is application-wide for the
 running server; it is not a tenant property.
 
-=== Publishing a transition
+=== Publish
 
 Build a transition with commands addressed to components that already exist in
 the target page, then publish it to a channel:
@@ -117,7 +117,7 @@ The `orderStatus` component must be present in every page that subscribes to
 the `orders` channel. The transition is executed by each browser independently
 when the message arrives.
 
-=== Sending to one user
+=== Send
 
 Use `send()` when a transition must be delivered to one username rather than
 to every subscriber of a channel:
@@ -137,7 +137,7 @@ The username must match the authenticated user's username. The browser
 subscribes automatically to `/queue/username/<username>` when the WebSocket
 connection is established.
 
-=== WebSocket transition limitations
+=== Limitations
 
 WebSocket transitions are created outside a normal controller request. Keep
 them self-contained and target only components that are already rendered on
@@ -153,7 +153,7 @@ the page.
 * A disconnected browser does not receive past messages. Publish a fresh
   state when the page is loaded if the current state must be reconstructed.
 
-=== WebSocket endpoints
+=== Endpoints
 
 The framework exposes the STOMP endpoint at `/stomp`. Channel destinations use
 the following convention:
