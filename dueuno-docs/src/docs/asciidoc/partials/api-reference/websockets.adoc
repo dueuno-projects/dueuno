@@ -1,0 +1,176 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to you under the Apache License, Version 2.0.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+////
+
+[[websockets]]
+== Websockets
+
+Dueuno uses STOMP over WebSocket to deliver server-side `Transition` objects
+to pages that are already open in the browser. This is useful when the event
+does not originate from a user action, for example when a scheduled task,
+message consumer or other server-side process needs to update a page.
+
+The framework provides two services for this purpose:
+
+* `TransitionService.createTransition()` creates a transition containing the
+  commands to execute in the browser;
+* `TransitionService.publish()` sends a transition to all clients subscribed
+  to a channel, while `TransitionService.send()` sends it to one user.
+
+=== Enabling WebSocket support on a page
+
+A page must extend `PageWebsocket` to open the STOMP connection in the browser.
+`PageWebsocket` extends `PageBlank` and provides the standard blank page layout
+with the WebSocket client enabled.
+
+.Create `~/demo/src/main/groovy/com/example/LivePage.groovy`
+[source,groovy,subs="attributes+"]
+----
+package com.example
+
+import dueuno.elements.pages.PageWebsocket
+
+class LivePage extends PageWebsocket {
+}
+----
+
+Use the page from a controller as usual:
+
+[source,groovy]
+----
+class LiveController implements ElementsController {
+
+    def index() {
+        def p = createPage(LivePage)
+        // Add the components that will be updated by transitions here.
+        display page: p
+    }
+}
+----
+
+When the page is loaded, the client connects to the `/stomp` endpoint. It
+automatically subscribes to the queue for the current username and to every
+channel registered through `TransitionService.subscribe()`.
+
+=== Registering a channel
+
+Channels are registered during application initialisation. A channel name is
+an application-defined string; use a name that describes the group of clients
+that should receive the same transition.
+
+.Register a channel in `~/demo/grails-app/init/BootStrap.groovy`
+[source,groovy,subs="attributes+"]
+----
+import dueuno.elements.TransitionService
+
+class BootStrap {
+
+    ApplicationService applicationService
+    TransitionService transitionService
+
+    def init = {
+        applicationService.onInit {
+            transitionService.subscribe('orders')
+        }
+    }
+}
+----
+
+Only pages that are connected and subscribed to `orders` receive messages
+published on that channel. The registration is application-wide for the
+running server; it is not a tenant property.
+
+=== Publishing a transition
+
+Build a transition with commands addressed to components that already exist in
+the target page, then publish it to a channel:
+
+[source,groovy]
+----
+class OrderService {
+
+    TransitionService transitionService
+
+    void notifyOrderStatus(String status) {
+        def t = transitionService.createTransition()
+        t.setValue('orderStatus', status)
+        t.infoMessage('Order status updated')
+
+        transitionService.publish('orders', t)
+    }
+}
+----
+
+The `orderStatus` component must be present in every page that subscribes to
+the `orders` channel. The transition is executed by each browser independently
+when the message arrives.
+
+=== Sending to one user
+
+Use `send()` when a transition must be delivered to one username rather than
+to every subscriber of a channel:
+
+[source,groovy]
+----
+void notifyUser(String username) {
+    def t = transitionService.createTransition()
+    t.setValue('notificationCount', 1)
+    t.infoMessage('You have a new notification')
+
+    transitionService.send(username, t)
+}
+----
+
+The username must match the authenticated user's username. The browser
+subscribes automatically to `/queue/username/<username>` when the WebSocket
+connection is established.
+
+=== WebSocket transition limitations
+
+WebSocket transitions are created outside a normal controller request. Keep
+them self-contained and target only components that are already rendered on
+the page.
+
+* Use `set`, `setValue`, `call`, `trigger`, `redirect` and message commands as
+  needed by the client.
+* Do not add `$components` to a WebSocket transition. Components can only be
+  created and rendered in the context of an HTTP request.
+* If different pages subscribe to the same channel, make sure they contain the
+  component IDs used by the transition, or send separate transitions to
+  different channels.
+* A disconnected browser does not receive past messages. Publish a fresh
+  state when the page is loaded if the current state must be reconstructed.
+
+=== WebSocket endpoints
+
+The framework exposes the STOMP endpoint at `/stomp`. Channel destinations use
+the following convention:
+
+[cols="3,7"]
+|===
+|Destination |Meaning
+
+|`/queue/username/<username>`
+|Private queue for one authenticated user; used by `TransitionService.send()`.
+
+|`/queue/channel/<channel>`
+|Application channel; used by `TransitionService.publish()`.
+
+|===
+
+Applications normally do not need to create a STOMP client or subscribe to
+these destinations manually. Extending `PageWebsocket` enables the Dueuno
+client and keeps the subscription list aligned with the channels registered on
+the server.

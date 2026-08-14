@@ -1,0 +1,220 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to you under the Apache License, Version 2.0.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+////
+
+[[application-properties]]
+== Application Properties
+
+Application Properties are configuration values shared by the whole
+application. They are stored once in the application database and have the
+same value for every tenant. Use them for settings such as the available
+languages, the default language, application directories or global feature
+flags.
+
+The service is `ApplicationPropertyService`:
+
+[source,groovy]
+----
+import dueuno.application.ApplicationPropertyService
+
+class OrderService {
+
+    ApplicationPropertyService applicationPropertyService
+
+    Integer getOrderRetentionDays() {
+        return applicationPropertyService.getNumber('ORDER_RETENTION_DAYS') as Integer
+    }
+}
+----
+
+Application properties should normally be created or updated during the
+application installation callback. The third argument is an optional default
+value that is stored together with the property and can be displayed or used
+as the installation default.
+
+.Configure an application property in `~/demo/grails-app/init/BootStrap.groovy`
+[source,groovy,subs="attributes+"]
+----
+import dueuno.application.ApplicationPropertyService
+
+class BootStrap {
+
+    ApplicationService applicationService
+    ApplicationPropertyService applicationPropertyService
+
+    def init = {
+        applicationService.onInstall {
+            applicationPropertyService.setNumber(
+                'ORDER_RETENTION_DAYS',
+                30,
+                30,
+            )
+            applicationPropertyService.setBoolean(
+                'ORDER_ARCHIVING_ENABLED',
+                true,
+                true,
+            )
+        }
+    }
+}
+----
+
+`onInstall` is executed for the application installation. Reading the values
+is then done through the matching typed getter:
+
+[source,groovy]
+----
+Integer retentionDays = applicationPropertyService.getNumber('ORDER_RETENTION_DAYS') as Integer
+Boolean archivingEnabled = applicationPropertyService.getBoolean('ORDER_ARCHIVING_ENABLED')
+----
+
+=== Tenant Properties
+
+Tenant Properties are configuration values specific to the current tenant.
+Each tenant has its own value, so they are suitable for branding, user-facing
+preferences, tenant-specific URLs and business settings that differ between
+customers.
+
+The service is `TenantPropertyService`. It is tenant-aware and reads and writes
+the property belonging to the current tenant:
+
+[source,groovy]
+----
+import dueuno.tenant.TenantPropertyService
+
+class OrderService {
+
+    TenantPropertyService tenantPropertyService
+
+    String getOrderColor() {
+        return tenantPropertyService.getString('ORDER_COLOR')
+    }
+}
+----
+
+Tenant defaults should normally be configured from the
+`applicationService.onTenantInstall` callback. This callback runs once when
+the default tenant or a new tenant is installed.
+
+.Configure tenant properties in `~/demo/grails-app/init/BootStrap.groovy`
+[source,groovy,subs="attributes+"]
+----
+import dueuno.tenant.TenantPropertyService
+
+class BootStrap {
+
+    ApplicationService applicationService
+    TenantPropertyService tenantPropertyService
+
+    def init = {
+        applicationService.onTenantInstall { String tenantId ->
+            tenantPropertyService.setString('ORDER_COLOR', '#018B84', '#018B84')
+            tenantPropertyService.setBoolean('ORDER_NOTIFICATIONS_ENABLED', true, true)
+        }
+    }
+}
+----
+
+The same code can be used at runtime to read or update the current tenant's
+configuration:
+
+[source,groovy]
+----
+String color = tenantPropertyService.getString('ORDER_COLOR')
+tenantPropertyService.setString('ORDER_COLOR', '#AA0000')
+----
+
+Never cache a tenant property in a singleton or static field: the active tenant
+can change between requests. Always read it through `TenantPropertyService` in
+the current tenant context.
+
+=== Property types
+
+Both services expose typed getters and setters. The type used to write a
+property must match the type used to read it.
+
+[cols="2,3,5"]
+|===
+|Type | Getter and setter | Typical use
+
+|`BOOL`
+|`getBoolean()` / `setBoolean()`
+|Feature flags and switches
+
+|`NUMBER`
+|`getNumber()` / `setNumber()`
+|Limits, sizes and numeric settings
+
+|`STRING`
+|`getString()` / `setString()`
+|Labels, codes and general text
+
+|`PASSWORD`
+|`getPassword()` / `setPassword()` (`TenantPropertyService`)
+|Sensitive tenant-specific values; stored encrypted
+
+|`DATE`
+|`getDate()` / `setDate()`
+|Calendar dates
+
+|`TIME`
+|`getTime()` / `setTime()`
+|Times of day
+
+|`DATETIME`
+|`getDateTime()` / `setDateTime()`
+|Date and time values
+
+|`FILENAME`
+|`getFilename()` / `setFilename()`
+|A path to an existing file
+
+|`DIRECTORY`
+|`getDirectory()` / `setDirectory()`
+|A path to an existing directory
+
+|`URL`
+|`getUrl()` / `setUrl()`
+|HTTP and HTTPS addresses
+|===
+
+`FILENAME`, `DIRECTORY` and `URL` values are validated when they are stored.
+The file and directory setters also normalise the path before persisting it.
+`PASSWORD` is available for tenant properties and is encrypted by
+`TenantPropertyService`; it should not be logged or displayed.
+
+All getters accept an optional `reload` argument. Values are cached in memory
+for normal reads; pass `true` when the value must be reloaded from the
+database:
+
+[source,groovy]
+----
+String value = tenantPropertyService.getString('ORDER_COLOR', true)
+----
+
+=== Reacting to changes
+
+Both property services support a change callback. The closure receives the old
+value, the new value and the configured default value:
+
+[source,groovy]
+----
+tenantPropertyService.onChange('ORDER_COLOR') { oldValue, newValue, defaultValue ->
+    log.info "Order color changed from ${oldValue} to ${newValue}"
+}
+----
+
+Use callbacks for lightweight cache invalidation or recalculation. The
+property remains persisted independently of the callback.
