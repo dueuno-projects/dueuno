@@ -26,7 +26,6 @@ include::chapters/chapter-7.adoc[]
 include::chapters/chapter-8.adoc[]
 include::chapters/chapter-9.adoc[]
 include::chapters/chapter-10.adoc[]
-include::chapters/chapter-11.adoc[]
 
 == ---
 
