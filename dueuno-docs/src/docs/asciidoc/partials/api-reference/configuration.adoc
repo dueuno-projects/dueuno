@@ -12,11 +12,121 @@ TODO
 
 [[custom-css]]
 == Custom CSS
-TODO
+
+Application-specific stylesheets can be added to the application's asset
+pipeline under `grails-app/assets/stylesheets`. The recommended approach is to
+create a separate file for each functional area and include it from the
+`application.css` manifest.
+
+.Create `~/demo/grails-app/assets/stylesheets/orders.css`
+[source,css,subs="attributes+"]
+----
+.orders-summary {
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+}
+----
+
+.Edit `~/demo/grails-app/assets/stylesheets/application.css`
+[source,css,subs="attributes+"]
+----
+/*
+ *= require bootstrap
+ *= require orders
+ *= require_self
+ */
+----
+
+The asset pipeline resolves `orders` to `orders.css`, compiles it together
+with the other application stylesheets and serves the resulting asset with
+the appropriate cache-busting URL. The Dueuno page includes `application.css`
+automatically when the file exists, so no extra HTML is needed for a global
+stylesheet.
+
+Use the CSS class from a component or control by passing it as `cssClass`:
+
+[source,groovy]
+----
+panel(
+    cssClass: 'orders-summary',
+    content: 'Order summary',
+)
+----
+
+For a stylesheet that belongs only to a custom GSP view or component, it can
+also be loaded directly:
+
+[source,gsp]
+----
+<asset:stylesheet src="orders.css"/>
+----
+
+Files in subdirectories can be referenced using their relative asset path, for
+example `stylesheets/orders/summary.css` is loaded with
+`src="orders/summary.css"`.
 
 [[custom-js]]
 == Custom JavaScript
-TODO
+
+Custom JavaScript files are placed under
+`grails-app/assets/javascripts`. As with CSS, application-wide code should be
+kept in separate files and added to the `application.js` manifest.
+
+.Create `~/demo/grails-app/assets/javascripts/orders.js`
+[source,javascript,subs="attributes+"]
+----
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.orders-summary').forEach((element) => {
+        element.addEventListener('click', () => {
+            element.classList.toggle('is-expanded');
+        });
+    });
+});
+----
+
+.Edit `~/demo/grails-app/assets/javascripts/application.js`
+[source,javascript,subs="attributes+"]
+----
+// Any JavaScript file within this directory can be referenced here.
+//= require jquery-3.5.1.min
+//= require popper.min
+//= require bootstrap
+//= require orders
+//= require_self
+----
+
+The asset pipeline resolves `orders` to `orders.js`, compiles it into the
+application bundle and handles the cache-busting URL. Dueuno includes
+`application.js` automatically when the file exists, so application-wide
+JavaScript does not need to be added to a layout manually.
+
+For JavaScript used by only one custom GSP view or component, load the file
+directly instead:
+
+[source,gsp]
+----
+<asset:javascript src="orders.js"/>
+----
+
+JavaScript files in subdirectories use the same relative path convention, for
+example `javascripts/orders/table.js` is loaded with
+`src="orders/table.js"`.
+
+=== Asset guidelines
+
+* Put stylesheets in `grails-app/assets/stylesheets` and JavaScript in
+  `grails-app/assets/javascripts`.
+* Use the manifests for application-wide assets and direct asset tags for
+  view-specific assets.
+* Keep the `require` order intentional: a script that depends on another
+  script must be included after it, and CSS overrides must be included after
+  the styles they override.
+* Do not reference files through `file:` URLs or hard-code the generated asset
+  URL. The asset pipeline adds the correct path and cache-busting information.
+* Static branding and tenant files deployed under
+  `src/main/resources/deploy/public` are a separate mechanism; use the asset
+  pipeline for CSS, JavaScript and other web assets that belong to the
+  application bundle.
 ////
 Licensed to the Apache Software Foundation (ASF) under one or more
 contributor license agreements. See the NOTICE file distributed with
