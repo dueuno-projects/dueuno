@@ -59,8 +59,8 @@ class Types {
 
     /**
      * Registers a custom type so that it can be serialised and deserialised by the framework.
-     * The supplied class must implement {@link CustomType} and expose a static {@code TYPE_NAME}
-     * field that serves as the unique type identifier.
+     * The supplied class must implement {@link CustomType}; its {@link CustomType#getTypeName()}
+     * method supplies the unique type identifier.
      *
      * @param type the class to register; must implement {@link CustomType}
      * @throws ElementsException if the class does not implement {@link CustomType}
@@ -70,18 +70,22 @@ class Types {
             throw new ElementsException("Cannot register class '${type}'. Ony classes implementing '${CustomType.getName()}' can be registered as custom types.")
         }
 
-        String typeName = type['TYPE_NAME']
+        CustomType metadata = createMetadata(type)
+        String typeName = metadata.typeName
+        if (!typeName) {
+            throw new ElementsException("Cannot register custom type '${type}': its type name cannot be empty.")
+        }
         registry[typeName] = type
     }
 
     /**
      * Returns {@code true} if a custom type with the given type-name string has been registered.
      *
-     * @param typeName the type identifier (value of {@code TYPE_NAME} on the custom type class)
+     * @param typeName the type identifier (value returned by {@link CustomType#getTypeName()})
      * @return {@code true} if the type is registered, {@code false} otherwise
      */
     static Boolean isRegistered(String typeName) {
-        return registry[typeName]
+        return registry.containsKey(typeName)
     }
 
     /**
@@ -91,7 +95,7 @@ class Types {
      * @return {@code true} if the class is a registered custom type
      */
     static Boolean isRegistered(Object value) {
-        return isRegistered(value.class)
+        return value != null && isRegistered(value.class)
     }
 
     /**
@@ -105,7 +109,7 @@ class Types {
             return false
         }
 
-        return registry[type['TYPE_NAME']]
+        return registry.containsValue(type)
     }
 
     /**
@@ -122,6 +126,35 @@ class Types {
         } else {
             throw new ElementsException("Cannot instantiate custom type '${typeName}', please register the new type (eg. Types.register('CUSTOM_TYPE', CustomType)")
         }
+    }
+
+    private static CustomType createMetadata(Class type) {
+        return type.getDeclaredConstructor().newInstance() as CustomType
+    }
+
+    /** Returns metadata for a custom type class, without requiring registration. */
+    static CustomType metadata(Class type) {
+        if (type !in CustomType) {
+            return null
+        }
+
+        return createMetadata(type)
+    }
+
+    static String getTypeName(Class type) {
+        return metadata(type)?.typeName
+    }
+
+    static Class getTypeField(Class type) {
+        return metadata(type)?.typeField
+    }
+
+    static Class getValuePropertyType(Class type) {
+        return metadata(type)?.valuePropertyType
+    }
+
+    static String getValuePropertyName(Class type) {
+        return metadata(type)?.valuePropertyName
     }
 
     /**
@@ -178,7 +211,7 @@ class Types {
      * <ul>
      *     <li>{@code null} → {@link Type#NA}</li>
      *     <li>{@link Enum} → {@link Type#STRING}</li>
-     *     <li>Registered {@link CustomType} → the value of its {@code TYPE_NAME} field</li>
+     *     <li>Registered {@link CustomType} → the value returned by {@link CustomType#getTypeName()}</li>
      * </ul>
      *
      * @param value the object to inspect
@@ -195,7 +228,7 @@ class Types {
         }
 
         if (isRegistered(value)) {
-            return value.getClass()['TYPE_NAME']
+            return (value as CustomType).typeName
         }
 
         switch (value) {

@@ -19,12 +19,13 @@ import dueuno.elements.core.Elements
 import dueuno.elements.core.PrettyPrinterProperties
 import dueuno.types.Quantity
 import dueuno.types.QuantityUnit
+import dueuno.types.Types
 import groovy.transform.CompileStatic
 
 /**
  * A numeric input control for entering {@link Quantity} values (amount + unit of measure).
  * <p>
- * Extends {@link NumberField} with the value type fixed to {@link Quantity#TYPE_NAME}. The
+ * Extends {@link NumberField} with the value type fixed to {@code QUANTITY}. The
  * unit of measure is displayed as a selector populated from the list of available units, and
  * is automatically updated when a {@link Quantity} value is set. Defaults to 2 decimal places
  * and no negative values.
@@ -57,7 +58,7 @@ class QuantityField extends NumberField {
         super(args)
 
         viewTemplate = 'QuantityField'
-        valueType = Quantity.TYPE_NAME
+        valueType = Types.getTypeName(Quantity)
 
         decimals = args.decimals == null ? 2 : args.decimals as Integer
         negative = (args.negative == null) ? false : args.negative

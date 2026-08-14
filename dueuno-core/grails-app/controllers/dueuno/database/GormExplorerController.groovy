@@ -213,11 +213,11 @@ class GormExplorerController implements ElementsController {
                                 if (searchText && propertyClass in String) {
                                     ilike propertyName, "%${searchText}%"
 
-                                } else if (searchText && propertyClass in CustomType && propertyClass['TYPE_VALUE_PROPERTY_TYPE'] == String) {
-                                    ilike propertyName + '.' + propertyClass['TYPE_VALUE_PROPERTY_NAME'], "%${searchText}%"
+                                } else if (searchText && propertyClass in CustomType && Types.getValuePropertyType(propertyClass) == String) {
+                                    ilike propertyName + '.' + Types.getValuePropertyName(propertyClass), "%${searchText}%"
 
-                                } else if (searchNumber && propertyClass in CustomType && propertyClass['TYPE_VALUE_PROPERTY_TYPE'] == Number) {
-                                    eq propertyName + '.' + propertyClass['TYPE_VALUE_PROPERTY_NAME'], searchNumber
+                                } else if (searchNumber && propertyClass in CustomType && Types.getValuePropertyType(propertyClass) == Number) {
+                                    eq propertyName + '.' + Types.getValuePropertyName(propertyClass), searchNumber
 
                                 } else if (searchNumber && propertyClass in Number) {
                                     eq propertyName, searchNumber
@@ -258,7 +258,7 @@ class GormExplorerController implements ElementsController {
 
                 if (Types.isRegistered(propertyClass)) {
                     addField(
-                        class: propertyClass['TYPE_FIELD'],
+                        class: Types.getTypeField(propertyClass),
                         id: propertyName,
                         label: propertyName,
                     )

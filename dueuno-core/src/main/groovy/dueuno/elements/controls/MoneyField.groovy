@@ -17,12 +17,13 @@ package dueuno.elements.controls
 import dueuno.elements.ElementsException
 import dueuno.elements.core.Elements
 import dueuno.types.Money
+import dueuno.types.Types
 import groovy.transform.CompileStatic
 
 /**
  * A numeric input control for entering {@link Money} values (amount + ISO 4217 currency code).
  * <p>
- * Extends {@link NumberField} with the value type fixed to {@link Money#TYPE_NAME}. The
+ * Extends {@link NumberField} with the value type fixed to {@code MONEY}. The
  * currency code is displayed as a prefix and is automatically updated when a {@link Money}
  * value is set. Defaults to 2 decimal places, no negative values, and {@code EUR} currency.
  * </p>
@@ -47,7 +48,7 @@ class MoneyField extends NumberField {
         super(args)
 
         viewTemplate = 'MoneyField'
-        valueType = Money.TYPE_NAME
+        valueType = Types.getTypeName(Money)
 
         decimals = args.decimals == null ? 2 : args.decimals as Integer
         negative = (args.negative == null) ? false : args.negative

@@ -21,16 +21,16 @@ import groovy.transform.CompileStatic
  * Contract for application-defined types that can participate in the Elements
  * typed-value serialisation protocol.
  * <p>
- * Implementors must also declare a {@code public static final String TYPE_NAME}
- * field whose value is the unique identifier used to register the type with
- * {@link Types#register(Class)} and to look it up during deserialisation.
+ * Implementors must provide a type name through {@link #getTypeName()}. The
+ * remaining metadata methods have sensible defaults and only need to be
+ * overridden when the type integrates with a UI field or the database explorer.
  * </p>
  * <p>
  * Example skeleton:
  * </p>
  * <pre>{@code
  * class MyType implements CustomType {
- *     static final String TYPE_NAME = 'MY_TYPE'
+ *     String getTypeName() { 'MY_TYPE' }
  *     // ...
  * }
  * // Registration (e.g. in Bootstrap):
@@ -43,9 +43,21 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface CustomType {
 
+    /** The unique identifier used by the typed-value protocol. */
+    String getTypeName()
+
+    /** The UI field associated with this type, or {@code null} when none exists. */
+    default Class getTypeField() { null }
+
+    /** The Java type of the value property used by the database explorer. */
+    default Class getValuePropertyType() { null }
+
+    /** The name of the value property used by the database explorer. */
+    default String getValuePropertyName() { null }
+
     /**
      * Serialises this value to the typed-value map protocol expected by the Elements frontend.
-     * The returned map must contain at least a {@code type} key (set to {@code TYPE_NAME})
+     * The returned map must contain at least a {@code type} key (set to {@link #getTypeName()})
      * and a {@code value} key holding the serialised representation.
      *
      * @return a map with {@code type} and {@code value} keys

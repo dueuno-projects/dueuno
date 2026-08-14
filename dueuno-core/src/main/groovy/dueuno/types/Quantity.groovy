@@ -45,18 +45,6 @@ import org.grails.datastore.gorm.GormEntity
 @CompileDynamic
 class Quantity extends Number implements CustomType, GormEntity {
 
-    /** The Elements type name used to identify this custom type in the serialisation protocol. */
-    static final TYPE_NAME = 'QUANTITY'
-
-    /** The UI control class used to render and edit {@code Quantity} values. */
-    static final TYPE_FIELD = QuantityField
-
-    /** The Java type of the primary value property ({@link #amount}). */
-    static final TYPE_VALUE_PROPERTY_TYPE = Number
-
-    /** The name of the primary value property. */
-    static final TYPE_VALUE_PROPERTY_NAME = 'amount'
-
     /** The numeric amount, stored with up to 6 decimal places. */
     BigDecimal amount
 
@@ -95,6 +83,14 @@ class Quantity extends Number implements CustomType, GormEntity {
         this.unit = unit
     }
 
+    String getTypeName() { 'QUANTITY' }
+
+    Class getTypeField() { QuantityField }
+
+    Class getValuePropertyType() { Number }
+
+    String getValuePropertyName() { 'amount' }
+
     /**
      * Serialises this instance to the typed-value map protocol expected by the Elements frontend.
      * The {@code value} entry contains {@code amount} and {@code unit} sub-keys.
@@ -103,7 +99,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      */
     Map serialize() {
         return [
-            type : TYPE_NAME,
+            type : typeName,
             value: [
                 amount: amount,
                 unit  : unit as String,
