@@ -2,6 +2,10 @@
 
 class DateField extends DateTimeField {
 
+    static get valueType() {
+        return Type.DATE;
+    }
+
     static initialize($element, $root) {
         let dateFormat = _21_.user.invertedMonth ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
         let startOfTheWeek = _21_.user.firstDaySunday ? 0 : 1;
@@ -63,6 +67,7 @@ class DateField extends DateTimeField {
     }
 
     static setValue($element, valueMap, trigger = true) {
+        valueMap = TypedValue.require(valueMap);
         let td = $element.data('td');
         let value = valueMap.value;
 
@@ -88,26 +93,21 @@ class DateField extends DateTimeField {
     static getValue($element) {
         let value = $element.val();
         if (!value) {
-            return null;
+            return TypedValue.empty(Type.DATE);
         }
 
         let td = $element.data('td');
         let date = td.dates.parseInput(value);
 
         if (!date) {
-            return null;
+            return TypedValue.empty(Type.DATE);
         }
 
-        let result = {
-            type: Type.DATE,
-            value: {
+        return TypedValue.of(Type.DATE, {
                 year: date.year,
                 month: date.month + 1,
                 day: date.date,
-            }
-        }
-
-        return result;
+            });
     }
 
 }

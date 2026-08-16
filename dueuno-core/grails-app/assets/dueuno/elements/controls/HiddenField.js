@@ -1,6 +1,7 @@
 class HiddenField extends Control {
 
     static setValue($element, valueMap, trigger = false) {
+        valueMap = TypedValue.require(valueMap);
         let value;
 
         switch (valueMap.type) {
@@ -33,7 +34,7 @@ class HiddenField extends Control {
                 value.value = JSON.parse($element.val());
         }
 
-        return value;
+        return TypedValue.require(value);
     }
 
 }

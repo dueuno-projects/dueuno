@@ -2,6 +2,10 @@
 
 class TimeField extends DateTimeField {
 
+    static get valueType() {
+        return Type.TIME;
+    }
+
     static initialize($element, $root) {
         let properties = Component.getProperties($element);
         let timeFormat = _21_.user.twelveHours ? 'hh:mm' : 'HH:mm';
@@ -57,6 +61,7 @@ class TimeField extends DateTimeField {
     }
 
     static setValue($element, valueMap, trigger = true) {
+        valueMap = TypedValue.require(valueMap);
         let td = $element.data('td');
         let value = valueMap.value;
 
@@ -82,26 +87,21 @@ class TimeField extends DateTimeField {
     static getValue($element) {
         let value = $element.val();
         if (!value) {
-            return null;
+            return TypedValue.empty(Type.TIME);
         }
 
         let td = $element.data('td');
         let time = td.dates.parseInput(value);
 
         if (!time) {
-            return null;
+            return TypedValue.empty(Type.TIME);
         }
 
-        let result = {
-            type: Type.TIME,
-            value: {
+        return TypedValue.of(Type.TIME, {
                 hour: time.hours,
                 minute: time.minutes,
                 second: time.seconds,
-            }
-        }
-
-        return result;
+            });
     }
 }
 

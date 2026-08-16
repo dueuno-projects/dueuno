@@ -1,5 +1,9 @@
 class Upload extends Control {
 
+    static get valueType() {
+        return Type.LIST;
+    }
+
     static initialize($element, $root) {
         let properties = Control.getProperties($element);
 
@@ -88,10 +92,7 @@ class Upload extends Control {
     static getValue($element) {
         let dropzone = $element[0].dropzone;
         if (!dropzone) {
-            return {
-                type: Type.LIST,
-                value: [],
-            }
+            return TypedValue.list();
         }
 
         let results = [];
@@ -100,10 +101,7 @@ class Upload extends Control {
             results.push(file.upload.filename);
         }
 
-        return {
-            type: Type.LIST,
-            value: results,
-        }
+        return TypedValue.list(results);
     }
 
     static clear($element) {

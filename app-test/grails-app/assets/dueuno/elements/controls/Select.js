@@ -1,5 +1,10 @@
 class Select extends Control {
 
+    static getValueType($element) {
+        let properties = Component.getProperties($element);
+        return properties.multiple ? Type.LIST : Type.STRING;
+    }
+
     static initialize($element, $root) {
         let controlId = Component.getId($element);
         let properties = Component.getProperties($element);
@@ -100,36 +105,23 @@ class Select extends Control {
 
     static onChange(event) {
         let $element = $(event.currentTarget);
-        let select2Values = $element.select2('data');
-
-        // In case of user clear we align the control value
-        if (select2Values.length == 0) {
-            let valueMap = {
-                type: Type.STRING,
-                value: null,
-            };
-            $element.data('21-value', valueMap);
-            $element.val(valueMap.value);
-            $element.trigger('change');
-        }
-
         Transition.triggerEvent($element, 'change');
     }
 
     static setValue($element, valueMap, trigger = true) {
+        valueMap = TypedValue.require(valueMap);
         if (!trigger) $element.off('select2:select select2:unselect');
 
         let searchEvent = Component.getEvent($element, 'search');
         let loadEvent = Component.getEvent($element, 'load');
         let hasOptions = Select.hasOptions($element);
         if (searchEvent && loadEvent && !hasOptions) {
-            Select.setOptions($element, [{id: valueMap.value}, {text: '...'}]);
+            Select.setTemporaryOptions($element, valueMap);
             if (trigger) {
                 Transition.submit(loadEvent);
             }
         }
 
-        $element.data('21-value', valueMap);
         $element.val(valueMap.value);
         $element.trigger('change');
 
@@ -138,34 +130,17 @@ class Select extends Control {
 
     static getValue($element) {
         let properties = Component.getProperties($element);
-        let select2Values = $element.select2('data');
-        let loadEvent = Component.getEvent($element, 'load');
-        if (loadEvent && select2Values.length == 0) {
-            // If no value have been manually selected from the user
-            let controlValue = $element.data('21-value');
-            return controlValue;
-        }
+        let value = $element.val();
 
-        let ids = [];
-        for (let value of select2Values) {
-            ids.push(value['id']);
-        }
+        if (value == null || (Array.isArray(value) && value.length == 0)) {
+            return TypedValue.empty(Select.getValueType($element));
 
-        let result = {};
-        if (ids.length == 0) {
-            result.type = Type.STRING;
-            result.value = null;
-
-        } else if (ids.length == 1 && !properties['multiple']) {
-            result.type = Type.STRING;
-            result.value = ids[0];
+        } else if (!properties['multiple']) {
+            return TypedValue.string(value);
 
         } else {
-            result.type = Type.LIST;
-            result.value = ids;
+            return TypedValue.list(Array.isArray(value) ? value : [value]);
         }
-
-        return result;
     }
 
     static hasOptions($element) {
@@ -173,19 +148,21 @@ class Select extends Control {
     }
 
     static setOptions($element, options) {
-        let valueMap = Select.getValue($element);
+        let valueMap = TypedValue.require(Select.getValue($element));
 
         $element.empty();
         if (!options || !options.length) {
-            valueMap.value = null;
+            valueMap = TypedValue.empty(Select.getValueType($element));
             Select.setValue($element, valueMap, false);
             return;
         }
 
+        let selectedValues = Select.valueList(valueMap.value);
         let isValueInOptions = false;
         for (let option of options) {
-            $element.append(new Option(option.text, option.id, false, false));
-            if (option.id == valueMap.value) {
+            let isSelected = selectedValues.includes(String(option.id));
+            $element.append(new Option(option.text, option.id, isSelected, isSelected));
+            if (isSelected) {
                 isValueInOptions = true
             }
         }
@@ -199,9 +176,26 @@ class Select extends Control {
                 Select.setValue($element, valueMap, false);
             }
         } else {
-            valueMap.value = null;
+            valueMap = TypedValue.empty(Select.getValueType($element));
             Select.setValue($element, valueMap, false);
         }
+    }
+
+    static setTemporaryOptions($element, valueMap) {
+        $element.empty();
+
+        for (let value of Select.valueList(valueMap.value)) {
+            $element.append(new Option('...', value, true, true));
+        }
+    }
+
+    static valueList(value) {
+        if (value == null) {
+            return [];
+        }
+
+        let values = Array.isArray(value) ? value : [value];
+        return values.map(value => String(value));
     }
 
     static getReadonly($element) {

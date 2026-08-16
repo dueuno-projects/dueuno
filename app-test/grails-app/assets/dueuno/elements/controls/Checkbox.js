@@ -1,5 +1,9 @@
 class Checkbox extends Control {
 
+    static get valueType() {
+        return Type.BOOL;
+    }
+
     static finalize($element, $root) {
         $element
             .off('change.bootstrapSwitch')
@@ -16,10 +20,11 @@ class Checkbox extends Control {
     static getValue($element) {
         let value = Control.getServerValue($element);
         value['value'] = $element.prop('checked');
-        return value;
+        return TypedValue.require(value);
     }
 
     static setValue($element, valueMap, trigger = true) {
+        valueMap = TypedValue.require(valueMap);
         $element.val(valueMap.value);
         $element.prop('checked', valueMap.value);
     }

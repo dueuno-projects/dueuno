@@ -2,6 +2,10 @@
 
 class QuantityField extends NumberField {
 
+    static get valueType() {
+        return null;
+    }
+
     static finalize($element, $root) {
         NumberField.finalize($element, $root);
 
@@ -20,6 +24,7 @@ class QuantityField extends NumberField {
      }
 
     static setValue($element, valueMap, trigger = true) {
+        valueMap = TypedValue.require(valueMap);
         let value = valueMap['value'];
         if (!value) {
             NumberField.setValue($element, valueMap);
@@ -27,7 +32,7 @@ class QuantityField extends NumberField {
         }
 
         let amount = value['amount'];
-        NumberField.setValue($element, {value: amount});
+        NumberField.setValue($element, TypedValue.number(amount));
 
         if (value['unit']) {
             QuantityField.setUnit($element, value['unit']);
@@ -40,9 +45,9 @@ class QuantityField extends NumberField {
         valueMap.value['amount'] = NumberField.getValue($element)['value'];
 
         if (valueMap.value['amount']) {
-            return valueMap;
+            return TypedValue.require(valueMap);
         } else {
-            return null;
+            return TypedValue.empty(valueMap.type);
         }
     }
 

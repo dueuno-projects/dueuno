@@ -98,11 +98,11 @@ class Table extends Component {
                 values[columnName] = value;
             });
 
-            rows.push({type: Type.MAP, value: values});
+            rows.push(TypedValue.map(values));
             i++;
         });
 
-        return {rows: {type: Type.LIST, value: rows}};
+        return {rows: TypedValue.list(rows)};
     }
 
     static processColumnName(name) {
