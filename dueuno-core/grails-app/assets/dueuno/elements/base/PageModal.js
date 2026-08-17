@@ -129,7 +129,9 @@ class PageModal extends Component {
 
         // Scrollbar
         enableSimpleBar(PageModal.$body[0]);
-        PageModal.$body.find('.simplebar-content-wrapper').off('scroll').on('scroll', PageModal.onScroll);
+        let $scrollableContent = PageModal.$body.find('.simplebar-content-wrapper');
+        $scrollableContent.removeAttr('tabindex');
+        $scrollableContent.off('scroll').on('scroll', PageModal.onScroll);
     }
 
     static open($content, componentEvent) {

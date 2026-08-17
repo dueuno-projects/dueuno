@@ -69,6 +69,14 @@ class Select extends Control {
         }
 
         VirtualSelect.init(initOptions);
+        element.addEventListener('keydown', Select.onKeyDown, true);
+        $element.closest('.input-group')
+            .children('.component-help')
+            .off('keydown.select')
+            .on('keydown.select', Select.onHelpKeyDown);
+        $element.closest('form')
+            .off('keydown.selectNavigation')
+            .on('keydown.selectNavigation', Select.onFormKeyDown);
     }
 
     static getDropboxPortal(element) {
@@ -95,6 +103,83 @@ class Select extends Control {
 
     static onChange(event) {
         Transition.triggerEvent($(event.currentTarget), 'change');
+    }
+
+    /**
+     * Moves focus forward from a VirtualSelect control. VirtualSelect handles
+     * Tab internally when search is enabled, which can prevent the browser
+     * from reaching the field help or the next enabled form control.
+     */
+    static onKeyDown(event) {
+        if (event.key !== 'Tab' || event.shiftKey) return;
+
+        let $help = $(event.currentTarget)
+            .closest('.input-group')
+            .children('.component-help:not(:disabled)');
+        let $next = $help.length
+            ? $help
+            : Select.getAdjacentControl($(event.currentTarget), 1);
+        if (!$next.length) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        $next[0].focus();
+    }
+
+    /**
+     * Restores the reverse tab order from a field help button to its Select.
+     * The focusable element created by VirtualSelect is not a DOM sibling of
+     * the help button, so native Shift+Tab navigation is not reliable here.
+     */
+    static onHelpKeyDown(event) {
+        if (event.key !== 'Tab' || !event.shiftKey) return;
+
+        let $select = $(event.currentTarget)
+            .closest('.input-group')
+            .children('[data-21-control="Select"]:not([disabled])');
+        if (!$select.length) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        $select[0].focus();
+    }
+
+    /**
+     * Handles reverse navigation when the previous enabled form control is a
+     * Select. This keeps Shift+Tab symmetric with onKeyDown when one or more
+     * disabled controls occur between the Select and the current control.
+     */
+    static onFormKeyDown(event) {
+        if (event.key !== 'Tab' || !event.shiftKey) return;
+
+        let $control = $(event.target).closest('[data-21-control]');
+        if (!$control.length || $control.data('21-control') === 'Select') return;
+
+        let $previous = Select.getAdjacentControl($control, -1);
+        if ($previous.data('21-control') !== 'Select') return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        $previous[0].focus();
+    }
+
+    /**
+     * Returns the nearest visible, enabled form control in the requested
+     * direction, skipping readonly, disabled, and hidden controls.
+     */
+    static getAdjacentControl($element, direction) {
+        let $controls = $element.closest('form').find('[data-21-control]');
+        let index = $controls.index($element);
+
+        for (let i = index + direction; i >= 0 && i < $controls.length; i += direction) {
+            let $control = $controls.eq(i);
+            let control = Control.getByElement($control);
+            let isVisible = Elements.callMethod($control, control, 'getDisplay');
+            let isReadonly = Elements.callMethod($control, control, 'getReadonly');
+            if (isVisible && !isReadonly && $control.is(':visible')) return $control;
+        }
+
+        return $();
     }
 
     static setValue($element, valueMap, trigger = true) {
