@@ -24,13 +24,13 @@ import groovy.transform.CompileStatic
  * {@code Link} wraps a {@link LinkDefinition} and registers a client-side
  * event (default: {@code "click"}) that triggers the configured server-side action.
  * All navigation properties ({@code controller}, {@code action}, {@code url}, etc.)
- * are delegated to the underlying {@link #linkDefinition}; changing any of them
+ * are delegated to the underlying {@code linkDefinition}; changing any of them
  * automatically re-registers the click event via {@link #setOnEvent(String)}.
  * </p>
  * <p>
  * Additional render options (modal display, animations, scroll behaviour, etc.) are
  * stored in {@link dueuno.elements.core.PageRenderProperties} accessible through
- * {@link #linkDefinition}.
+ * {@code linkDefinition}.
  * </p>
  *
  * @author Gianluca Sartori
@@ -71,7 +71,7 @@ class Link extends Label {
 
     /**
      * Registers (or re-registers) the client-side event that triggers this link's action.
-     * Uses the current {@link #linkDefinition} properties, resolved i18n messages for
+     * Uses the current {@code linkDefinition} properties, resolved i18n messages for
      * {@code infoMessage} and {@code confirmMessage}, and the optional {@code onEvent}
      * action override.
      *
@@ -89,7 +89,7 @@ class Link extends Label {
 
     /**
      * Returns a JSON string of this link's client-side properties, adding the
-     * {@link #loading} flag on top of the inherited {@link Label} properties.
+     * {@code loading} flag on top of the inherited {@link Label} properties.
      *
      * @param properties additional properties to merge
      * @return a JSON representation of all component properties
@@ -117,7 +117,7 @@ class Link extends Label {
 
     /**
      * Returns a simplified URL string suitable for development/debugging purposes.
-     * Returns the explicit {@link #url} if set, a {@code /controller/action} path if both
+     * Returns the explicit {@code url} if set, a {@code /controller/action} path if both
      * are present, or {@code null} otherwise.
      *
      * @return a dev-friendly URL string, or {@code null}

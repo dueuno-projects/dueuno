@@ -156,8 +156,8 @@ class TextField extends Control {
     }
 
     /**
-     * Serialises this control's properties to JSON, adding {@link #autocomplete},
-     * {@link #autoSelect}, {@link #textTransform}, and {@link #onChangeAsync}.
+     * Serialises this control's properties to JSON, adding {@code autocomplete},
+     * {@code autoSelect}, {@code textTransform}, and {@code onChangeAsync}.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this control's properties

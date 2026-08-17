@@ -23,11 +23,11 @@ import groovy.transform.CompileStatic
  * The pagination bar rendered below a {@link Table}, providing navigation links and
  * page-size selectors.
  * <p>
- * Manages the current {@link #offset} and {@link #max} values, persisting them in the
+ * Manages the current {@code offset} and {@code max} values, persisting them in the
  * action session so they survive page reloads. Navigation {@link Link} controls
- * ({@link #goFirst}, {@link #goPrev}, {@link #goNext}) and page-size selectors
- * ({@link #goMax20}, {@link #goMax50}) are created automatically. The component is
- * hidden ({@link #display} is {@code false}) when the total record count is zero.
+ * ({@code goFirst}, {@code goPrev}, {@code goNext}) and page-size selectors
+ * ({@code goMax20}, {@code goMax50}) are created automatically. The component is
+ * hidden ({@code display} is {@code false}) when the total record count is zero.
  * </p>
  *
  * @author Gianluca Sartori

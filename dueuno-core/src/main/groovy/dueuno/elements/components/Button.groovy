@@ -27,10 +27,10 @@ import groovy.transform.Synchronized
  * A {@code Button} is composed of up to three visual slots:
  * </p>
  * <ul>
- *   <li>{@link #defaultAction} — the main clickable area of the button.</li>
- *   <li>{@link #tailAction} — an optional secondary action rendered at the trailing
+ *   <li>{@code defaultAction} — the main clickable area of the button.</li>
+ *   <li>{@code tailAction} — an optional secondary action rendered at the trailing
  *       edge of the button (e.g. a split-button arrow).</li>
- *   <li>{@link #actionMenu} — a drop-down {@link Menu} listing additional actions
+ *   <li>{@code actionMenu} — a drop-down {@link Menu} listing additional actions
  *       beyond the default and tail slots.</li>
  * </ul>
  * <p>
@@ -444,7 +444,7 @@ class Button extends Component {
     }
 
     /**
-     * Adds a new action and immediately promotes it to the {@link #defaultAction} slot.
+     * Adds a new action and immediately promotes it to the {@code defaultAction} slot.
      *
      * @param args action configuration forwarded to {@link #addMenu(Map)}
      * @return this {@code Button} instance for chaining
@@ -456,7 +456,7 @@ class Button extends Component {
     }
 
     /**
-     * Adds a new action and immediately promotes it to the {@link #tailAction} slot.
+     * Adds a new action and immediately promotes it to the {@code tailAction} slot.
      *
      * @param args action configuration forwarded to {@link #addMenu(Map)}
      * @return this {@code Button} instance for chaining
@@ -537,7 +537,7 @@ class Button extends Component {
     }
 
     /**
-     * Promotes an existing action to the {@link #defaultAction} slot.
+     * Promotes an existing action to the {@code defaultAction} slot.
      * The action's text-wrap style is reset to {@link TextWrap#DEFAULT}.
      *
      * @param args map with {@code action} and optional {@code controller} identifying the action to promote
@@ -549,14 +549,14 @@ class Button extends Component {
     }
 
     /**
-     * Clears the {@link #defaultAction} slot without removing the underlying action from the menu.
+     * Clears the {@code defaultAction} slot without removing the underlying action from the menu.
      */
     void unsetDefaultAction() {
         defaultAction = null
     }
 
     /**
-     * Promotes an existing action to the {@link #tailAction} slot.
+     * Promotes an existing action to the {@code tailAction} slot.
      * The action's text-wrap style is reset to {@link TextWrap#DEFAULT}.
      *
      * @param args map with {@code action} and optional {@code controller} identifying the action to promote
@@ -568,7 +568,7 @@ class Button extends Component {
     }
 
     /**
-     * Clears the {@link #tailAction} slot without removing the underlying action from the menu.
+     * Clears the {@code tailAction} slot without removing the underlying action from the menu.
      */
     void unsetTailAction() {
         tailAction = null
@@ -576,7 +576,7 @@ class Button extends Component {
 
     /**
      * Returns all actions registered in the action menu that are neither the
-     * {@link #defaultAction} nor the {@link #tailAction}, sorted by their {@code order} property.
+     * {@code defaultAction} nor the {@code tailAction}, sorted by their {@code order} property.
      *
      * @return an ordered list of {@link Menu} items for the drop-down portion of the button
      * @see Menu

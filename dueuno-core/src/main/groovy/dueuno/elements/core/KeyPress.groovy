@@ -24,17 +24,17 @@ import groovy.transform.CompileStatic
  * <p>
  * {@code KeyPress} is primarily designed to support barcode-scanner input. It distinguishes
  * between human typing and scanner input by measuring the speed at which characters arrive:
- * if the characters arrive faster than {@link #readingSpeed} milliseconds apart, the input
- * is treated as coming from a scanner and the action is triggered when the {@link #triggerKey}
+ * if the characters arrive faster than {@code readingSpeed} milliseconds apart, the input
+ * is treated as coming from a scanner and the action is triggered when the {@code triggerKey}
  * is pressed (typically {@code Enter}).
  * </p>
  * <p>
- * The accumulated characters are stored in an internal {@link HiddenField} ({@link #buffer})
+ * The accumulated characters are stored in an internal {@link HiddenField} ({@code buffer})
  * and sent to the server as the {@code _21KeyPressed} request parameter, accessible via
  * {@link #getKeyPressed()}.
  * </p>
  * <p>
- * The target controller action is defined by the {@link #linkDefinition} and defaults to
+ * The target controller action is defined by the {@code linkDefinition} and defaults to
  * the {@code keyPress} controller's {@code onKeyPress} action.
  * </p>
  *
@@ -137,7 +137,7 @@ class KeyPress extends Component {
 
     /**
      * (Re-)registers the {@code keypress} event on this component using the current
-     * {@link #linkDefinition}. Called automatically on construction and whenever the
+     * {@code linkDefinition}. Called automatically on construction and whenever the
      * link definition is modified.
      */
     private void setOnKeyPressEvent() {
@@ -148,8 +148,8 @@ class KeyPress extends Component {
 
     /**
      * Returns a JSON string of the client-side properties needed to configure the
-     * key-press listener on the frontend ({@link #enabled}, {@link #triggerKey},
-     * {@link #readingSpeed}, {@link #bufferTimeout}, {@link #hideInput}).
+     * key-press listener on the frontend ({@code enabled}, {@code triggerKey},
+     * {@code readingSpeed}, {@code bufferTimeout}, {@code hideInput}).
      *
      * @return a JSON representation of the key-press configuration
      */

@@ -33,7 +33,7 @@ import groovy.transform.CompileStatic
  * </ul>
  * <p>
  * The value type is {@link dueuno.types.Type#LIST}. Each individual checkbox is accessible
- * via the {@link #checkboxes} map, keyed by option ID.
+ * via the {@code checkboxes} map, keyed by option ID.
  * </p>
  *
  * @author Gianluca Sartori
@@ -186,8 +186,8 @@ class MultipleCheckbox extends Control {
     }
 
     /**
-     * Synchronises the checked state of each {@link Checkbox} in {@link #checkboxes} with
-     * the current {@link #value} list. Clears all checkboxes first, then marks those whose
+     * Synchronises the checked state of each {@link Checkbox} in {@code checkboxes} with
+     * the current {@code value} list. Clears all checkboxes first, then marks those whose
      * option key appears in the value list as checked.
      */
     void renderValue() {

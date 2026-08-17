@@ -23,11 +23,11 @@ import groovy.transform.CompileStatic
  * Filter fields are added with {@link #addField(Map)}, which automatically shows the filter
  * panel and prepends the {@code filters.} prefix to the label key. Filter values are resolved
  * from request parameters and the action session via {@link #getValues()}, which also sets
- * {@link #isFiltering} and {@link #prettyValues} as side effects.
+ * {@code isFiltering} and {@code prettyValues} as side effects.
  * </p>
  * <p>
  * The component creates a {@link TableActionbar} and two built-in link controls: a
- * {@link #searchButton} that submits the filter form, and a {@link #resetButton} that clears
+ * {@code searchButton} that submits the filter form, and a {@code resetButton} that clears
  * all filters.
  * </p>
  *
@@ -63,7 +63,7 @@ class TableFilters extends Form {
 
     /**
      * Creates a {@code TableFilters} instance configured from the supplied argument map.
-     * Initialises the {@link #actionbar}, {@link #searchButton}, and {@link #resetButton} controls.
+     * Initialises the {@code actionbar}, {@code searchButton}, and {@code resetButton} controls.
      *
      * @param args initialisation arguments; recognised keys include:
      * {@code table} ({@link Table}, required),
@@ -240,7 +240,7 @@ class TableFilters extends Form {
     /**
      * Returns whether the filter panel is currently in its folded (collapsed) state.
      * Checks the action session for a user-toggled fold preference before falling back
-     * to the {@link #fold} default.
+     * to the {@code fold} default.
      *
      * @return {@code true} if the filter panel is folded
      */
@@ -255,9 +255,9 @@ class TableFilters extends Form {
 
     /**
      * Resolves and returns the current filter values as a parameter map (keyed by control name
-     * without the {@code filters.} prefix). As a side effect, sets {@link #isFiltering} to
+     * without the {@code filters.} prefix). As a side effect, sets {@code isFiltering} to
      * {@code true} when at least one filter has a non-empty value, and populates
-     * {@link #prettyValues} with a human-readable summary of the active filters.
+     * {@code prettyValues} with a human-readable summary of the active filters.
      *
      * @return a map of filter control name → current value for all controls with a non-empty value
      */

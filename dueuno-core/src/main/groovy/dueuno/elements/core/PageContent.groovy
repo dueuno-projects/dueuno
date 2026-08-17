@@ -27,9 +27,9 @@ import groovy.transform.CompileStatic
  * </p>
  * <p>
  * The content's page title defaults to the i18n key
- * {@code <controllerName>.<actionName>.title} and can be overridden via the {@link #title}
+ * {@code <controllerName>.<actionName>.title} and can be overridden via the {@code title}
  * property. Rendering behaviour (modal display, animations, scroll reset, etc.) is controlled
- * by {@link #renderProperties}.
+ * by {@code renderProperties}.
  * </p>
  *
  * @author Gianluca Sartori
@@ -44,7 +44,7 @@ abstract class PageContent extends Component {
      */
     String title
 
-    /** Optional interpolation arguments for the {@link #title} i18n message. */
+    /** Optional interpolation arguments for the {@code title} i18n message. */
     List titleArgs
 
     /**
@@ -80,7 +80,7 @@ abstract class PageContent extends Component {
     }
 
     /**
-     * Applies matching entries from {@code args} to {@link #renderProperties}.
+     * Applies matching entries from {@code args} to {@code renderProperties}.
      * Only keys that correspond to existing properties of {@link PageRenderProperties}
      * are applied; the {@code class} meta-property is skipped.
      * This method is called by the framework when {@link dueuno.elements.ElementsController#display(Map)}
@@ -100,7 +100,7 @@ abstract class PageContent extends Component {
 
     /**
      * Returns a JSON string of this content's client-side properties, adding the current
-     * controller name, action name, and serialised {@link #renderProperties} on top of the
+     * controller name, action name, and serialised {@code renderProperties} on top of the
      * inherited {@link Component} properties.
      *
      * @param properties additional properties to merge

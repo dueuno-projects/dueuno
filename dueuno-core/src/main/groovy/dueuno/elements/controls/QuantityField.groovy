@@ -78,7 +78,7 @@ class QuantityField extends NumberField {
     /**
      * Sets the default unit for this field.
      * <ul>
-     *   <li>If {@link #unitOptions} is non-empty and {@code value} is {@code null}, the first
+     *   <li>If {@code unitOptions} is non-empty and {@code value} is {@code null}, the first
      *       available unit is used.</li>
      *   <li>If {@code value} is non-null, it is used directly.</li>
      *   <li>Otherwise, {@link QuantityUnit#ND} is used as a fallback.</li>
@@ -121,9 +121,9 @@ class QuantityField extends NumberField {
     }
 
     /**
-     * Returns the localised display label for the current {@link #defaultUnit}.
+     * Returns the localised display label for the current {@code defaultUnit}.
      *
-     * @return the pretty-printed string representation of {@link #defaultUnit} in the field's locale
+     * @return the pretty-printed string representation of {@code defaultUnit} in the field's locale
      */
     String getPrettyDefaultUnit() {
         // We only need to translate the Unit, not to transform it or do other stuff with it
@@ -134,7 +134,7 @@ class QuantityField extends NumberField {
 
     /**
      * Sets the value of this field, enforcing that it must be a {@link Quantity} instance.
-     * When a {@link Quantity} value is set, the {@link #defaultUnit} is updated to its unit.
+     * When a {@link Quantity} value is set, the {@code defaultUnit} is updated to its unit.
      *
      * @param value the {@link Quantity} value to set, or {@code null} to clear the field
      * @throws ElementsException if {@code value} is not a {@link Quantity} instance

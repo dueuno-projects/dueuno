@@ -27,10 +27,10 @@ import groovy.transform.CompileStatic
  * Each constant carries three metadata fields:
  * </p>
  * <ul>
- *     <li>{@link #parent} — the name of the dimension group (e.g. {@code "MASS"},
+ *     <li>{@code parent} — the name of the dimension group (e.g. {@code "MASS"},
  * {@code "LENGTH"}); {@code null} for dimensionless units.</li>
- *     <li>{@link #desc} — an i18n message key (or description) for the unit label.</li>
- *     <li>{@link #magnitude} — the SI magnitude exponent relative to the base unit of
+ *     <li>{@code desc} — an i18n message key (or description) for the unit label.</li>
+ *     <li>{@code magnitude} — the SI magnitude exponent relative to the base unit of
  *         the group (e.g. {@code KG} has magnitude {@code 3} because
  *         1 kg = 10³ g).</li>
  * </ul>

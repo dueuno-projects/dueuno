@@ -534,7 +534,7 @@ class TableRow extends Component {
 
     /**
      * Creates a plain body (or custom-component) {@link TableCell} for the given column and
-     * registers it in {@link #cells}.
+     * registers it in {@code cells}.
      *
      * @param columnName the column name to create a cell for
      * @param component an optional custom {@link Component} to embed; uses a {@link Label} when {@code null}
@@ -604,7 +604,7 @@ class TableRow extends Component {
     }
 
     /**
-     * Hides the row-selection checkbox for this row by setting {@link #hasSelection}
+     * Hides the row-selection checkbox for this row by setting {@code hasSelection}
      * to {@code false}.
      */
     void removeSelection() {

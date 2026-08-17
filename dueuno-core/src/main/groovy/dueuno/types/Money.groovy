@@ -140,7 +140,7 @@ class Money extends Number implements CustomType, GormEntity {
      * Returns a human-readable representation of this monetary value.
      * The currency token is placed before or after the formatted amount depending on
      * {@link PrettyPrinterProperties#prefixedUnit} (defaults to suffix).
-     * Returns an empty string when {@link #amount} is {@code null}.
+     * Returns an empty string when {@code amount} is {@code null}.
      *
      * @param properties formatting options (decimal format, locale, currency display mode, etc.)
      * @return the formatted monetary string (e.g. {@code "1.234,56 EUR"} or {@code "$ 1,234.56"})
@@ -164,7 +164,7 @@ class Money extends Number implements CustomType, GormEntity {
      * currency code is resolved through the i18n message source under the
      * {@code money.currency} prefix (e.g. {@code money.currency.EUR} → {@code "€"}).
      * Otherwise the raw ISO 4217 code is returned.
-     * Returns an empty string when {@link #currency} is {@code null}.
+     * Returns an empty string when {@code currency} is {@code null}.
      *
      * @param properties formatting options (locale, symbolic currency flag)
      * @return the formatted currency token (e.g. {@code "€"} or {@code "EUR"})
@@ -186,7 +186,7 @@ class Money extends Number implements CustomType, GormEntity {
     }
 
     /**
-     * Returns the string representation of the {@link #amount} (without currency).
+     * Returns the string representation of the {@code amount} (without currency).
      *
      * @return the amount as a string
      */
@@ -194,16 +194,16 @@ class Money extends Number implements CustomType, GormEntity {
         return amount
     }
 
-    /** @return the {@link #amount} as an {@code int} */
+    /** @return the {@code amount} as an {@code int} */
     int intValue() { return amount.intValue() }
 
-    /** @return the {@link #amount} as a {@code long} */
+    /** @return the {@code amount} as a {@code long} */
     long longValue() { return amount.longValue() }
 
-    /** @return the {@link #amount} as a {@code float} */
+    /** @return the {@code amount} as a {@code float} */
     float floatValue() { return amount.floatValue() }
 
-    /** @return the {@link #amount} as a {@code double} */
+    /** @return the {@code amount} as a {@code double} */
     double doubleValue() { return amount.doubleValue() }
 
 
@@ -285,7 +285,7 @@ class Money extends Number implements CustomType, GormEntity {
     //
 
     /**
-     * Returns {@code true} if this instance's {@link #amount} equals the given number.
+     * Returns {@code true} if this instance's {@code amount} equals the given number.
      *
      * @param amount the number to compare with
      * @return {@code true} if the amounts are equal

@@ -131,7 +131,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      * Returns a human-readable representation of this quantity.
      * The unit token is placed before or after the formatted amount depending on
      * {@link PrettyPrinterProperties#prefixedUnit} (defaults to suffix).
-     * Returns an empty string when {@link #amount} is {@code null}.
+     * Returns an empty string when {@code amount} is {@code null}.
      *
      * @param properties formatting options (decimal format, locale, unit display mode, etc.)
      * @return the formatted quantity string (e.g. {@code "1.234,56 KG"} or {@code "kg 1,234.56"})
@@ -150,7 +150,7 @@ class Quantity extends Number implements CustomType, GormEntity {
     }
 
     /**
-     * Returns the string representation of the {@link #amount} (without unit).
+     * Returns the string representation of the {@code amount} (without unit).
      *
      * @return the amount as a string
      */
@@ -164,7 +164,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      * unit name is resolved through the i18n message source under the
      * {@code quantity.unit} prefix (e.g. {@code quantity.unit.KG} → {@code "kg"}).
      * Otherwise the raw enum name is returned.
-     * Returns an empty string when {@link #unit} is {@code null}.
+     * Returns an empty string when {@code unit} is {@code null}.
      *
      * @param properties formatting options (locale, symbolic quantity flag)
      * @return the formatted unit token (e.g. {@code "kg"} or {@code "KG"})
@@ -185,22 +185,22 @@ class Quantity extends Number implements CustomType, GormEntity {
         }
     }
 
-    /** @return the {@link #amount} as an {@code int} */
+    /** @return the {@code amount} as an {@code int} */
     int intValue() {
         return amount.intValue()
     }
 
-    /** @return the {@link #amount} as a {@code long} */
+    /** @return the {@code amount} as a {@code long} */
     long longValue() {
         return amount.longValue()
     }
 
-    /** @return the {@link #amount} as a {@code float} */
+    /** @return the {@code amount} as a {@code float} */
     float floatValue() {
         return amount.floatValue()
     }
 
-    /** @return the {@link #amount} as a {@code double} */
+    /** @return the {@code amount} as a {@code double} */
     double doubleValue() {
         return amount.doubleValue()
     }

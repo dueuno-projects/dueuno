@@ -48,10 +48,10 @@ class PrettyPrinterProperties implements Serializable {
     /** Whether to prepend a translated text prefix to the rendered output. */
     Boolean renderTextPrefix
 
-    /** The i18n message key (or literal text) to use as a prefix when {@link #renderTextPrefix} is {@code true}. */
+    /** The i18n message key (or literal text) to use as a prefix when {@code renderTextPrefix} is {@code true}. */
     String textPrefix
 
-    /** Optional interpolation arguments for the {@link #textPrefix} message. */
+    /** Optional interpolation arguments for the {@code textPrefix} message. */
     List textArgs
 
     /** Whether to render a boolean value as a human-readable label (implemented in {@code Label}). */
@@ -146,8 +146,8 @@ class PrettyPrinterProperties implements Serializable {
     }
 
     /**
-     * Sets {@link #textPrefix} to the given value and automatically enables
-     * {@link #renderTextPrefix} so the prefix is included in the rendered output.
+     * Sets {@code textPrefix} to the given value and automatically enables
+     * {@code renderTextPrefix} so the prefix is included in the rendered output.
      *
      * @param value the i18n message key or literal text to use as the prefix
      */

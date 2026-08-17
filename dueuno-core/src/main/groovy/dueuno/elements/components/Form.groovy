@@ -196,11 +196,7 @@ class Form extends Component {
      * @return the newly created and configured {@link FormField}
      */
     @Requires({ clazz && id && configuration })
-    <T extends Component> FormField addField(
-        Class<T> clazz,
-        String id,
-        Closure configuration
-    ) {
+    <T extends Component> FormField addField(Class<T> clazz, String id, Closure configuration) {
         FormField field = addField(class: clazz, id: id)
         configuration.call(field.component as T, field)
         if (field.component in Control) {
@@ -313,7 +309,7 @@ class Form extends Component {
     }
 
     /**
-     * Serialises this form's properties to JSON, adding {@link #autofocus} to the
+     * Serialises this form's properties to JSON, adding {@code autofocus} to the
      * standard component properties.
      *
      * @param properties additional properties to merge before serialisation

@@ -22,7 +22,7 @@ import groovy.transform.CompileStatic
  * A multi-line text-input control backed by {@link dueuno.types.Type#STRING}.
  * <p>
  * Extends {@link TextField} with multi-line rendering, optional newline acceptance, and
- * optional Base64 encoding of the submitted value. When {@link #encode} is {@code true},
+ * optional Base64 encoding of the submitted value. When {@code encode} is {@code true},
  * the submitted content is Base64-encoded before transmission and can be decoded server-side
  * via {@link #decodeText(String)}.
  * </p>
@@ -63,7 +63,7 @@ class Textarea extends TextField {
 
     /**
      * Serialises this control's properties to JSON, adding {@code autoSelect},
-     * {@link #acceptNewLine}, and {@link #encode}.
+     * {@code acceptNewLine}, and {@code encode}.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this control's properties
@@ -84,7 +84,7 @@ class Textarea extends TextField {
 
     /**
      * Decodes a Base64-encoded string previously submitted by a {@code Textarea} with
-     * {@link #encode} set to {@code true}.
+     * {@code encode} set to {@code true}.
      *
      * @param encodedString the Base64-encoded string to decode
      * @return the decoded plain-text string

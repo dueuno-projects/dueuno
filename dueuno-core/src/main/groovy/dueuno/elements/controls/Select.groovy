@@ -37,7 +37,7 @@ import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
  * <p>
  * Supports single and multiple selection, optional search, auto-clear, and an optional
  * action {@link Button} rendered next to the selector. When a single option is available
- * and {@link #autoSelect} is {@code true}, that option is pre-selected automatically.
+ * and {@code autoSelect} is {@code true}, that option is pre-selected automatically.
  * </p>
  *
  * @author Gianluca Sartori
@@ -192,7 +192,7 @@ class Select extends Control {
 
     /**
      * Sets whether multiple values can be selected.
-     * When {@code true}, {@link #allowClear} is forced to {@code false} as it is
+     * When {@code true}, {@code allowClear} is forced to {@code false} as it is
      * incompatible with multiple selection mode.
      *
      * @param value {@code true} to enable multiple selection; {@code null} is treated as {@code false}
@@ -554,8 +554,8 @@ class Select extends Control {
 
     /**
      * Serialises this control's client-side configuration to JSON, including Select2 options
-     * ({@link #multiple}, {@link #searchMinInputLength}, {@link #allowClear}, {@link #autoSelect},
-     * {@link #placeholder}, {@link #search}) and the localised UI strings for the search widget.
+     * ({@code multiple}, {@code searchMinInputLength}, {@code allowClear}, {@code autoSelect},
+     * {@code placeholder}, {@code search}) and the localised UI strings for the search widget.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this control's properties

@@ -37,7 +37,7 @@ class ContentTable extends ContentHeader {
 
     /**
      * Creates a {@code ContentTable} instance configured from the supplied argument map.
-     * Adds a "New" button to the header and initialises the {@link #table} component.
+     * Adds a "New" button to the header and initialises the {@code table} component.
      *
      * @param args initialisation arguments forwarded to {@link ContentHeader#ContentHeader(Map)}
      */

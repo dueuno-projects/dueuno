@@ -23,12 +23,12 @@ import groovy.transform.CompileStatic
  * <p>
  * A {@code Menu} can act as either a navigable menu item (backed by a {@link Link} component)
  * or a visual separator. Items are arranged in a tree: each {@code Menu} may contain child
- * {@code Menu} instances ({@link #items}), forming an arbitrarily deep hierarchy.
+ * {@code Menu} instances ({@code items}), forming an arbitrarily deep hierarchy.
  * </p>
  * <p>
- * The display order of items is controlled by the {@link #order} property; items with the
+ * The display order of items is controlled by the {@code order} property; items with the
  * same parent are sorted by this value. Access to individual items can be restricted via
- * {@link #authorities}: only users holding at least one of the listed roles will see the item.
+ * {@code authorities}: only users holding at least one of the listed roles will see the item.
  * {@code ROLE_ADMIN} always has full visibility.
  * </p>
  * <p>
@@ -131,7 +131,7 @@ class Menu extends Component {
     /**
      * Returns {@code true} if this menu item has at least one direct child item.
      *
-     * @return {@code true} if {@link #items} is non-empty
+     * @return {@code true} if {@code items} is non-empty
      */
     Boolean hasSubitems() {
         return items.size() > 0
@@ -139,7 +139,7 @@ class Menu extends Component {
 
     /**
      * Creates a new child {@code Menu} item from the given argument map and adds it to
-     * this node's {@link #items} list. The {@link #order} defaults to the current child
+     * this node's {@code items} list. The {@code order} defaults to the current child
      * count plus one if not explicitly set.
      *
      * @param args the properties of the new child item (same keys accepted by the constructor)
@@ -155,8 +155,8 @@ class Menu extends Component {
     }
 
     /**
-     * Adds an already-constructed {@code Menu} item to this node's {@link #items} list.
-     * The list is re-sorted by {@link #order} if the new item would be out of sequence.
+     * Adds an already-constructed {@code Menu} item to this node's {@code items} list.
+     * The list is re-sorted by {@code order} if the new item would be out of sequence.
      *
      * @param menu the child item to add
      * @return the added {@code Menu} item
@@ -200,7 +200,7 @@ class Menu extends Component {
      * Returns a flat, sorted list of all <em>visible</em> descendant items (those whose
      * {@link Component#display} property is {@code true}), excluding the root node itself.
      *
-     * @return a list of visible descendant items sorted by {@link #order}
+     * @return a list of visible descendant items sorted by {@code order}
      */
     List<Menu> listItems() {
         List<Menu> results = listItemsRecursive(false)
@@ -211,7 +211,7 @@ class Menu extends Component {
      * Returns a flat, sorted list of <em>all</em> descendant items regardless of their
      * {@link Component#display} state, excluding the root node itself.
      *
-     * @return a list of all descendant items sorted by {@link #order}
+     * @return a list of all descendant items sorted by {@code order}
      */
     List<Menu> listAllItems() {
         List<Menu> results = listItemsRecursive(true)
@@ -236,7 +236,7 @@ class Menu extends Component {
 
     /**
      * Searches the subtree rooted at this node and returns the first {@code Menu} item
-     * whose {@link #controller} matches {@code controllerName}, or {@code null} if not found.
+     * whose {@code controller} matches {@code controllerName}, or {@code null} if not found.
      *
      * @param controllerName the Grails controller name to search for
      * @return the matching {@code Menu} item, or {@code null}
@@ -286,7 +286,7 @@ class Menu extends Component {
 
     /**
      * Recursively removes all descendant items and resets the global menu ID counter.
-     * After this call the node has no children and {@link #menuIdCounter} is reset to zero.
+     * After this call the node has no children and {@code menuIdCounter} is reset to zero.
      */
     void clear() {
         menuIdCounter = 0

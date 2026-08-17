@@ -65,8 +65,8 @@ class Timer extends Link {
     }
 
     /**
-     * Serialises this timer's properties to JSON, adding {@link #enabled},
-     * {@link #interval}, and {@link #executeImmediately}.
+     * Serialises this timer's properties to JSON, adding {@code enabled},
+     * {@code interval}, and {@code executeImmediately}.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this timer's properties

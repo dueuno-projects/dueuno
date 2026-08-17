@@ -96,7 +96,7 @@ class TableCell extends Component {
     }
 
     /**
-     * Serialises this cell's properties to JSON, including the bound {@link #column} name.
+     * Serialises this cell's properties to JSON, including the bound {@code column} name.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this cell's properties
@@ -172,7 +172,7 @@ class TableCell extends Component {
      * Replaces the default label with a component built from the given argument map.
      * Flags the parent table and row as containing components (switching the row template).
      *
-     * @param args component configuration arguments; {@code id} defaults to {@link #componentId}
+     * @param args component configuration arguments; {@code id} defaults to {@code componentId}
      */
     void setComponent(Map args) {
         if (!row.isHeader) {

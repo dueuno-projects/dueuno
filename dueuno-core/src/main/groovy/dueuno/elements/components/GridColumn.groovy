@@ -37,22 +37,22 @@ class GridColumn extends Component {
     /** The parent {@link Grid} that owns this column. */
     Grid grid
 
-    /** Column-level override for the {@code xs} breakpoint, or {@code null} to inherit from {@link #grid}. */
+    /** Column-level override for the {@code xs} breakpoint, or {@code null} to inherit from {@code grid}. */
     Integer xs
 
-    /** Column-level override for the {@code sm} breakpoint, or {@code null} to inherit from {@link #grid}. */
+    /** Column-level override for the {@code sm} breakpoint, or {@code null} to inherit from {@code grid}. */
     Integer sm
 
-    /** Column-level override for the {@code md} breakpoint, or {@code null} to inherit from {@link #grid}. */
+    /** Column-level override for the {@code md} breakpoint, or {@code null} to inherit from {@code grid}. */
     Integer md
 
-    /** Column-level override for the {@code lg} breakpoint, or {@code null} to inherit from {@link #grid}. */
+    /** Column-level override for the {@code lg} breakpoint, or {@code null} to inherit from {@code grid}. */
     Integer lg
 
-    /** Column-level override for the {@code xl} breakpoint, or {@code null} to inherit from {@link #grid}. */
+    /** Column-level override for the {@code xl} breakpoint, or {@code null} to inherit from {@code grid}. */
     Integer xl
 
-    /** Column-level override for the {@code xxl} breakpoint, or {@code null} to inherit from {@link #grid}. */
+    /** Column-level override for the {@code xxl} breakpoint, or {@code null} to inherit from {@code grid}. */
     Integer xxl
 
     Boolean scrollable

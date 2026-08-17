@@ -29,7 +29,7 @@ import groovy.util.logging.Slf4j
  *     <li>A {@link PageMessageBox} for displaying informational, error, and confirmation messages.</li>
  *     <li>A transient {@link PageContent} slot that holds the main body content injected by the
  *         current controller action.</li>
- *     <li>Browser tab and launcher icon configuration ({@link #favicon}, {@link #appicon}).</li>
+ *     <li>Browser tab and launcher icon configuration ({@code favicon}, {@code appicon}).</li>
  * </ul>
  * <p>
  * Concrete subclasses define the visual shell (navigation, sidebars, etc.) by extending this class

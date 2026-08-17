@@ -36,7 +36,7 @@ class ContentForm extends ContentHeader {
 
     /**
      * Creates a {@code ContentForm} instance configured from the supplied argument map.
-     * Initialises the {@link #form} component after the header.
+     * Initialises the {@code form} component after the header.
      *
      * @param args initialisation arguments forwarded to {@link ContentHeader#ContentHeader(Map)}
      */

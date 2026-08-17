@@ -38,7 +38,7 @@ class Header extends Component {
     /** The i18n message key or literal title text displayed in the header. */
     String text
 
-    /** Interpolation arguments for the {@link #text} message key. */
+    /** Interpolation arguments for the {@code text} message key. */
     List textArgs
 
     /** Optional icon class (e.g. {@code "fa-home"}) displayed alongside the title. */
@@ -58,7 +58,7 @@ class Header extends Component {
 
     /**
      * Creates a {@code Header} instance configured from the supplied argument map.
-     * Initialises the {@link #nextButton} (primary) and {@link #backButton} controls
+     * Initialises the {@code nextButton} (primary) and {@code backButton} controls
      * without registering default actions.
      *
      * @param args initialisation arguments; recognised keys include:
@@ -96,7 +96,7 @@ class Header extends Component {
      * Also makes the header sticky unless {@code sticky} was set explicitly.
      *
      * @param args button configuration; all keys are optional and override the defaults above
-     * @return the {@link #nextButton} instance
+     * @return the {@code nextButton} instance
      */
     Button addNextButton(Map args = [:]) {
         args.controller = args.controller ?: controllerName
@@ -119,7 +119,7 @@ class Header extends Component {
      * If no back button is present and {@code sticky} was not set explicitly,
      * the header becomes non-sticky.
      *
-     * @return the {@link #nextButton} instance (with its default action removed)
+     * @return the {@code nextButton} instance (with its default action removed)
      */
     Button removeNextButton() {
         if (sticky == null && !hasBackButton) isSticky = false
@@ -133,7 +133,7 @@ class Header extends Component {
      * icon {@code "fa-times"} with an empty label. Delegates to {@link #addBackButton(Map)}.
      *
      * @param args optional overrides forwarded to {@link #addBackButton(Map)}
-     * @return the {@link #backButton} instance
+     * @return the {@code backButton} instance
      */
     Button addCloseButton(Map args = [:]) {
         args.action = args.action ?: 'onClose'
@@ -147,7 +147,7 @@ class Header extends Component {
      * Delegates to {@link #addBackButton(Map)}.
      *
      * @param args optional overrides forwarded to {@link #addBackButton(Map)}
-     * @return the {@link #backButton} instance
+     * @return the {@code backButton} instance
      */
     Button addCancelButton(Map args = [:]) {
         args.text = args.text ?: TextDefault.CANCEL
@@ -161,7 +161,7 @@ class Header extends Component {
      * {@code "fa-angle-left"}. Also makes the header sticky unless {@code sticky} was set explicitly.
      *
      * @param args button configuration; all keys are optional and override the defaults above
-     * @return the {@link #backButton} instance
+     * @return the {@code backButton} instance
      */
     Button addBackButton(Map args = [:]) {
         if (!args.controller && !args.action && hasReturnPoint()) {
@@ -192,7 +192,7 @@ class Header extends Component {
      * If no next button is present and {@code sticky} was not set explicitly,
      * the header becomes non-sticky.
      *
-     * @return the {@link #backButton} instance (with its default action removed)
+     * @return the {@code backButton} instance (with its default action removed)
      */
     Button removeBackButton() {
         if (sticky == null && !hasNextButton) isSticky = false
@@ -214,7 +214,7 @@ class Header extends Component {
     /**
      * Serialises this header's properties to JSON, adding the resolved {@code sticky} state.
      * The sticky value is determined by the explicit {@code sticky} property if set, otherwise
-     * by the internal {@link #isSticky} flag.
+     * by the internal {@code isSticky} flag.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this header's properties

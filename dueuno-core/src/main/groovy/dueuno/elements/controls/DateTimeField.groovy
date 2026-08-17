@@ -28,7 +28,7 @@ import java.time.LocalTime
  * <p>
  * Serves as the base class for {@link DateField} and {@link TimeField}. The value type
  * defaults to {@link dueuno.types.Type#DATETIME} and can be overridden by subclasses.
- * Optional {@link #min} and {@link #max} boundaries accept {@link LocalDateTime},
+ * Optional {@code min} and {@code max} boundaries accept {@link LocalDateTime},
  * {@link LocalDate}, or {@link LocalTime} and are normalised to {@link LocalDateTime}
  * internally. An input validation regex pattern is applied client-side to restrict entry
  * to valid date/time characters.
@@ -126,8 +126,8 @@ class DateTimeField extends Control {
     }
 
     /**
-     * Serialises this field's properties to JSON, adding {@link #min}, {@link #max},
-     * the input validation pattern, {@link #timeStep}, and {@link #autoPopulate}.
+     * Serialises this field's properties to JSON, adding {@code min}, {@code max},
+     * the input validation pattern, {@code timeStep}, and {@code autoPopulate}.
      * The default pattern ({@code ^[0-9/: ]*$}) can be overridden by passing a
      * {@code pattern} key in {@code properties}.
      *

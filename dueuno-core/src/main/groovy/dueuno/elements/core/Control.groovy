@@ -26,13 +26,13 @@ import groovy.transform.CompileStatic
  * It encapsulates:
  * </p>
  * <ul>
- *     <li>A typed {@link #value} together with its {@link #valueType} and an optional {@link #defaultValue}.</li>
- *     <li>Input validation via character allow/deny lists ({@link #invalidChars}, {@link #validChars})
- *         and a regex {@link #pattern}.</li>
+ *     <li>A typed {@code value} together with its {@code valueType} and an optional {@code defaultValue}.</li>
+ *     <li>Input validation via character allow/deny lists ({@code invalidChars}, {@code validChars})
+ *         and a regex {@code pattern}.</li>
  *     <li>Rendering options through a {@link PrettyPrinterProperties} instance
- *         ({@link #prettyPrinterProperties}), including a configurable {@link #prettyPrinter}
- *         template and an optional value {@link #transformer}.</li>
- *     <li>Visual text styling via {@link #textStyle}.</li>
+ *         ({@code prettyPrinterProperties}), including a configurable {@code prettyPrinter}
+ *         template and an optional value {@code transformer}.</li>
+ *     <li>Visual text styling via {@code textStyle}.</li>
  * </ul>
  * <p>
  * Concrete subclasses include controls such as {@code TextField}, {@code DateField}, and
@@ -49,7 +49,7 @@ abstract class Control extends Component {
     /** The current value held by this control. */
     Object value
 
-    /** The Elements type name of {@link #value} (a {@link dueuno.types.Type} constant or a registered custom type name). */
+    /** The Elements type name of {@code value} (a {@link dueuno.types.Type} constant or a registered custom type name). */
     String valueType
 
     /** The value to use when no explicit value has been assigned. */
@@ -60,21 +60,21 @@ abstract class Control extends Component {
 
     /**
      * Regex pattern built from a set of forbidden characters. Input is rejected if it matches
-     * any character in this set. Takes precedence over {@link #validChars} and {@link #pattern}.
+     * any character in this set. Takes precedence over {@code validChars} and {@code pattern}.
      * Set via {@link #setInvalidChars(String)}.
      */
     String invalidChars
 
     /**
      * Regex pattern built from a set of allowed characters. Input is rejected if it contains
-     * any character outside this set. Takes precedence over {@link #pattern}.
+     * any character outside this set. Takes precedence over {@code pattern}.
      * Set via {@link #setValidChars(String)}.
      */
     String validChars
 
     /**
      * Arbitrary regex pattern for input validation. Applied only when neither
-     * {@link #invalidChars} nor {@link #validChars} is set.
+     * {@code invalidChars} nor {@code validChars} is set.
      */
     String pattern
 
@@ -238,7 +238,7 @@ abstract class Control extends Component {
 
     /**
      * Returns the control's current value rendered as a human-readable string by
-     * {@link PrettyPrinter}, using this control's {@link #prettyPrinterProperties}.
+     * {@link PrettyPrinter}, using this control's {@code prettyPrinterProperties}.
      *
      * @return the formatted value string
      */
@@ -248,7 +248,7 @@ abstract class Control extends Component {
 
     /**
      * Builds a regex pattern that rejects input containing any of the specified characters
-     * and stores it in {@link #invalidChars}. Special regex characters are automatically escaped.
+     * and stores it in {@code invalidChars}. Special regex characters are automatically escaped.
      * Passing {@code null} or an empty string clears the pattern.
      *
      * @param chars a string of characters to forbid in the input
@@ -259,7 +259,7 @@ abstract class Control extends Component {
 
     /**
      * Builds a regex pattern that accepts only input composed of the specified characters
-     * and stores it in {@link #validChars}. Special regex characters are automatically escaped.
+     * and stores it in {@code validChars}. Special regex characters are automatically escaped.
      * Passing {@code null} or an empty string clears the pattern.
      *
      * @param chars a string of characters to allow in the input
@@ -292,7 +292,7 @@ abstract class Control extends Component {
     /**
      * Serialises the control's current value to a JSON string using the Elements
      * typed-value protocol. Returns an empty JSON object ({@code {}}) when no
-     * {@link #valueType} has been set.
+     * {@code valueType} has been set.
      *
      * @return a JSON string representing the typed value
      */
@@ -308,8 +308,8 @@ abstract class Control extends Component {
     /**
      * Returns a JSON string of this control's client-side properties, merging the
      * base {@link Component} properties with {@code nullable} and the active input
-     * validation pattern ({@link #invalidChars} takes precedence over {@link #validChars},
-     * which takes precedence over {@link #pattern}).
+     * validation pattern ({@code invalidChars} takes precedence over {@code validChars},
+     * which takes precedence over {@code pattern}).
      *
      * @param properties additional properties to include; merged on top of this control's own properties
      * @return a JSON string of all component properties

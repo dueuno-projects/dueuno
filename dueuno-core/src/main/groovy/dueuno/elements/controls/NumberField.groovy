@@ -79,7 +79,7 @@ class NumberField extends TextField {
 
     /**
      * Builds the client-side input validation regex pattern based on the current
-     * {@link #negative} and {@link #decimals} settings.
+     * {@code negative} and {@code decimals} settings.
      * <p>Examples:</p>
      * <ul>
      *   <li>integers only, no negatives: {@code ^[0-9]*$}</li>
@@ -105,8 +105,8 @@ class NumberField extends TextField {
 
     /**
      * Serialises this field's properties to JSON, first regenerating the validation pattern
-     * via {@link #buildPattern()}, then adding {@link #decimals}, {@link #negative},
-     * {@link #min}, and {@link #max}.
+     * via {@link #buildPattern()}, then adding {@code decimals}, {@code negative},
+     * {@code min}, and {@code max}.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this field's properties
