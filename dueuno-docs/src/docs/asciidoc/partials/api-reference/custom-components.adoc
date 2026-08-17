@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ////
 
-[[building-a-component]]
-== Custom Component
+[[custom-components]]
+== Custom Components
 
 A Dueuno component joins a server-side model to a GSP template and a browser-side JavaScript class. CSS supplies its presentation. This chapter builds the `PieChart` component found in the `dueuno-extra` plugin; it uses Chart.js, but the same structure applies to components that do not depend on an external library.
 
