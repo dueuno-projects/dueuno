@@ -99,7 +99,10 @@
 .control-select .vscomp-dropbox {
     overflow: hidden;
     isolation: isolate;
-    padding: calc(var(--elements-spacing-y) / 2) var(--elements-spacing-y);
+    padding:
+        calc(var(--elements-spacing-y) / 2)
+        var(--elements-spacing-y)
+        var(--elements-spacing-y);
     border: none;
     border-radius: var(--bs-border-radius-lg);
     box-shadow: 0 .25rem .75rem rgba(var(--bs-body-color-rgb), .15);
@@ -137,7 +140,7 @@
 }
 
 .control-select .vscomp-options-bottom-freezer {
-    background-color: rgba(var(--elements-main-fg), .6);
+    background-color: transparent;
 }
 
 .control-select .vscomp-search-container {
