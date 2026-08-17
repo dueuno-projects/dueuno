@@ -36,15 +36,14 @@ input[type] {
 }
 
 
-.input-group:has([disabled]) > span:not(.select2),
+.input-group:has([disabled]) > span,
 .input-group:has([disabled]) > a,
 .input-group:has([disabled]) > a:hover,
 .input-group:has([disabled]) > a:focus,
 .input-group:has([disabled]) > a:focus:hover,
 .input-group:has([disabled]) > select,
 .input-group:has([disabled]) textarea,
-.input-group:has([disabled]) > input,
-.input-group .component-select[disabled] + .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+.input-group:has([disabled]) > input {
     box-shadow: none !important;
     cursor: default;
 }
@@ -84,10 +83,6 @@ input[type] {
 }
 
 .component-form-field:has(.help-message.collapsing,.help-message.collapse.show) .input-group > :first-child {
-    border-bottom-left-radius: 0 !important;
-}
-
-.component-form-field:has(.help-message.collapsing,.help-message.collapse.show) .select2-container.select2-container--bootstrap-5 .select2-selection {
     border-bottom-left-radius: 0 !important;
 }
 
@@ -141,7 +136,7 @@ input:focus-visible,
     color: rgb(var(--elements-main-text));
 }
 
-.input-group:has([disabled]) > span:not(.select2),
+.input-group:has([disabled]) > span,
 .input-group:has([disabled]) > a,
 .input-group:has([disabled]) > a:hover,
 .input-group:has([disabled]) > a:focus,

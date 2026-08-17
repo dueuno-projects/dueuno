@@ -39,7 +39,7 @@ class PublicPageController implements ElementsController {
         c.table.with {
             filters.with {
                 /*addField(
-                        class: SelectX,
+                        class: Select,
                         id: 'user1',
                         optionsFromRecordset: TPerson.list(),
                         keys: ['username'],
@@ -121,7 +121,7 @@ class PublicPageController implements ElementsController {
         c.form.with {
             validate = TPerson
             addField(
-                class: 'SelectX',
+                class: 'Select',
                 id: 'company',
                 optionsFromRecordset: TCompany.list(),
             )

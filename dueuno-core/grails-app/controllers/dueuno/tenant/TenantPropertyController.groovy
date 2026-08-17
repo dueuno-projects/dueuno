@@ -74,14 +74,14 @@ class TenantPropertyController implements ElementsController {
                     cols: 8,
                 )
                 addField(
-                    class: SelectX,
+                    class: Select,
                     id: 'type',
                     optionsFromEnum: PropertyType,
                     noSelection: true,
                     cols: 2,
                 )
                 addField(
-                    class: SelectX,
+                    class: Select,
                     id: 'validation',
                     optionsFromList: ['error'],
                     search: false,
@@ -176,7 +176,7 @@ class TenantPropertyController implements ElementsController {
                 cols: 9,
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'type',
                 optionsFromEnum: PropertyType,
                 textStyle: TextStyle.MONOSPACE,

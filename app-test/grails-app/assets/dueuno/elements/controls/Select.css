@@ -1,185 +1,323 @@
-.select2-container .select2-selection--single {
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0.
+ */
+
+/* CONTROL */
+#select-dropbox-portal,
+#select-dropbox-portal-modal {
+    position: static;
+}
+
+.control-select.vscomp-ele {
+    flex: 1 1 auto;
+    max-width: none;
+    min-width: 0;
+    width: 1%;
+}
+
+.control-select .vscomp-wrapper {
+    color: rgb(var(--elements-main-text));
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.control-select .vscomp-toggle-button {
+    min-height: calc(1rem + .75rem + 2px);
+    padding: var(--elements-spacing-y) 2.25rem var(--elements-spacing-y) var(--elements-spacing-x);
+    border: none;
+    border-radius: var(--bs-border-radius-sm);
+    background-color: rgb(var(--elements-main-bg));
+    color: rgb(var(--elements-main-text));
+    font-weight: bold;
+}
+
+.control-select .vscomp-value {
+    height: 1.5rem;
+    line-height: 1.5rem;
     user-select: text;
 }
 
-.select2-container {
-    margin-left: 0 !important;
-}
-
-/* ARROW BUTTON */
-.select2-container--bootstrap-5 .select2-selection--single {
-    background-image: none;
-}
-
-.select2-container--bootstrap-5 .select2-selection--single:before {
-    position: absolute;
-    right: .75rem;
-    top: .28rem;
-    color: rgba(var(--elements-main-text), .7);
-    font-family: FontAwesome;
-    content: "\f107";
-}
-
-/* CANCEL BUTTON */
-.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__clear,
-.select2-container--bootstrap-5 .select2-selection--single .select2-selection__clear,
-.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered .select2-selection__choice .select2-selection__choice__remove {
-    display: contents;
-    text-indent: inherit;
-    background: none;
-}
-
-.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__clear:after,
-.select2-container--bootstrap-5 .select2-selection--single .select2-selection__clear:after {
-    position: absolute;
-    right: 2.5rem;
-    top: .28rem;
-    color: rgba(var(--elements-main-text), .7);
-    font-family: FontAwesome;
-    content: "\f00d";
-}
-
-.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered .select2-selection__choice .select2-selection__choice__remove:after {
-    color: rgba(var(--elements-main-text), .7);
-    font-family: FontAwesome;
-    font-size: .9rem;
-    content: "\f00d";
-    padding-top: .01rem;
-    padding-right: .5rem;
-}
-
-.input-group:has(.component-help) .select2-container {
-    overflow-x: clip;
-}
-
-.select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option {
-    border-radius: var(--bs-border-radius-sm);
-}
-
-.select2-container--bootstrap-5 .select2-dropdown:has(.select2-search--hide) .select2-results__options .select2-results__option:not(:first-child) {
-    margin-top: var(--elements-spacing-y);
-}
-
-.select2-container--bootstrap-5 .select2-dropdown:not(:has(.select2-search--hide)) .select2-results__options .select2-results__option {
-    margin-top: var(--elements-spacing-y);
-}
-
-.select2-container--bootstrap-5 .select2-dropdown {
-    padding: var(--elements-spacing-y);
-    border-radius: var(--bs-border-radius-lg);
-    box-shadow: 0 .25rem .75rem rgba(var(--bs-body-color-rgb), .15);
-    background-color: rgba(var(--elements-main-fg), .6);
-    backdrop-filter: blur(21px);
-    -webkit-backdrop-filter: blur(21px);
-    border: none;
-    color: rgb(var(--elements-main-text));
-}
-
-/* SINGLE */
-.select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered .select2-selection__placeholder {
+.control-select .vscomp-wrapper:not(.has-value) .vscomp-value {
     opacity: .5;
 }
 
-.select2-container--bootstrap-5 .select2-selection {
-    border-radius: var(--bs-border-radius-sm);
-    font-weight: bold;
-    padding: 0;
-    padding-right: 1.2rem;
-    min-height: calc(1rem + .75rem + 2px);
-    border: none;
+/* ARROW AND CLEAR BUTTONS */
+.control-select .vscomp-arrow {
+    width: 2.25rem;
+    color: rgba(var(--elements-main-text), .7);
 }
 
-.select2-container--bootstrap-5.select2-container--disabled .select2-selection,
-.select2-container--bootstrap-5.select2-container--disabled.select2-container--focus .select2-selection {
-    cursor: default;
-}
-
-.select2-container--bootstrap-5 .select2-selection.select2-selection--clearable {
-    padding-right: 2.5rem;
-}
-
-.select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
-    padding: var(--elements-spacing-y) var(--elements-spacing-x);
-    font-weight: bold;
-    color: rgb(var(--elements-main-text));
-}
-
-.select2-container--bootstrap-5 .select2-selection--multiple {
-    min-height: 2rem;
-}
-
-/* MULTIPLE */
-.select2-container--bootstrap-5 .select2-selection--multiple .select2-search {
-    display: none;
-}
-
-.select2-container--bootstrap-5 .select2-selection--multiple .select2-search .select2-search__field {
-    padding: var(--elements-spacing-y) var(--elements-spacing-x);
-    border-radius: 0;
-    font-weight: bold;
-    height: 1.5rem;
-    margin-top: .1rem;
-    margin-left: 0;
-}
-
-.select2-container--bootstrap-5 .select2-dropdown .select2-search .select2-search__field {
-    border-radius: var(--bs-border-radius-sm);
+.control-select .vscomp-arrow::after {
+    width: auto;
+    height: auto;
+    margin: 0;
     border: 0;
-    background-color: rgb(var(--elements-main-bg));
-    color: rgb(var(--elements-main-text));
+    transform: none;
+    color: inherit;
+    content: "\f107";
+    font-family: FontAwesome;
+    font-size: 1rem;
+    font-weight: normal;
 }
 
-.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered .select2-selection__choice {
-    border-radius: var(--bs-border-radius-sm);
-    padding: 0 .5rem;
-    margin: var(--elements-spacing-y);
-    margin-right: 0;
-    border: 0;
-    color: rgb(var(--elements-main-text));
+.control-select .vscomp-clear-button {
+    right: 2.25rem;
+    color: rgba(var(--elements-main-text), .7);
 }
 
-/* SELECTED */
-.input-group:has(select[disabled]) .select2-selection__clear {
-    cursor: pointer;
-}
-
-.input-group:has(select[disabled]) .select2-selection {
+.control-select .vscomp-clear-button:hover {
     background: none;
 }
 
-.input-group:has(select[disabled]) .select2-selection--clearable button {
-    display: none;
+.control-select .vscomp-clear-icon::before,
+.control-select .vscomp-clear-icon::after,
+.control-select .vscomp-clear-button:hover .vscomp-clear-icon::before,
+.control-select .vscomp-clear-button:hover .vscomp-clear-icon::after {
+    background-color: currentColor;
 }
 
-/* COLORS
-*/
-.select2-container--bootstrap-5 .select2-selection {
-    background-color: rgb(var(--elements-main-bg));
-}
-
-.select2-container--bootstrap-5.select2-container--focus .select2-selection,
-.select2-container--bootstrap-5.select2-container--open .select2-selection {
-    border-color: rgb(var(--elements-primary-bg-shaded));
+/* FOCUS */
+.control-select .vscomp-wrapper.focused .vscomp-toggle-button,
+.control-select .vscomp-wrapper:focus .vscomp-toggle-button {
+    border: none;
     box-shadow: 0 0 0 .25rem rgb(var(--elements-primary-bg-shaded));
 }
 
-.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered .select2-selection__choice {
+/* DROPDOWN */
+.control-select .vscomp-dropbox-container,
+.control-select .vscomp-dropbox,
+.control-select .vscomp-options-container,
+.control-select .vscomp-options-list {
+    animation: none !important;
+    transition: none !important;
+    transition-duration: 0s !important;
+}
+
+.control-select .vscomp-dropbox {
+    overflow: hidden;
+    isolation: isolate;
+    padding: calc(var(--elements-spacing-y) / 2) var(--elements-spacing-y);
+    border: none;
+    border-radius: var(--bs-border-radius-lg);
+    box-shadow: 0 .25rem .75rem rgba(var(--bs-body-color-rgb), .15);
+    background-color: rgba(var(--elements-main-fg), .6);
+    color: rgb(var(--elements-main-text));
+    backdrop-filter: blur(21px);
+    -webkit-backdrop-filter: blur(21px);
+}
+
+.control-select .vscomp-dropbox-container.pop-comp-wrapper {
+    border: 0;
+    border-radius: var(--bs-border-radius-lg);
+    background: transparent;
+    box-shadow: none;
+}
+
+.control-select .vscomp-dropbox-container {
+    margin-top: var(--elements-spacing-y);
+    z-index: 10;
+}
+
+.control-select .vscomp-options-container {
+    border-radius: var(--bs-border-radius-sm);
+    overscroll-behavior: contain;
+    overscroll-behavior-y: none;
+}
+
+.control-select .vscomp-options-list {
+    contain: layout paint;
+}
+
+.control-select .vscomp-options {
+    backface-visibility: hidden;
+    will-change: transform;
+}
+
+.control-select .vscomp-options-bottom-freezer {
+    background-color: rgba(var(--elements-main-fg), .6);
+}
+
+.control-select .vscomp-search-container {
+    height: auto;
+    margin: 0;
+    padding:
+        calc(.75rem - (var(--elements-spacing-y) / 2))
+        calc(.75rem - var(--elements-spacing-y));
+    border: 0;
+    background: transparent;
+}
+
+.control-select .vscomp-search-container:focus-within::after,
+.control-select .vscomp-wrapper:not(.closed) .vscomp-search-container::after {
+    position: absolute;
+    z-index: 2;
+    top: calc(.75rem - (var(--elements-spacing-y) / 2));
+    right: calc(.75rem - var(--elements-spacing-y));
+    bottom: calc(.75rem - (var(--elements-spacing-y) / 2));
+    left: calc(.75rem - var(--elements-spacing-y));
+    border-radius: var(--bs-border-radius-sm);
+    box-shadow: 0 0 0 .25rem rgb(var(--elements-primary-bg-shaded));
+    content: "";
+    pointer-events: none;
+}
+
+.control-select .vscomp-search-input {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 2rem;
+    padding: var(--elements-spacing-y) var(--elements-spacing-x);
+    border: 0;
+    border-radius: var(--bs-border-radius-sm);
+    background-color: rgb(var(--elements-main-bg));
+    color: rgb(var(--elements-main-text));
+    font-size: inherit;
+    font-weight: normal;
+}
+
+.control-select .vscomp-search-input:focus,
+.control-select .vscomp-search-input:focus-visible {
+    outline: none;
+    box-shadow: none !important;
+}
+
+.control-select .vscomp-search-clear {
+    display: none;
+}
+
+.control-select .vscomp-option {
+    isolation: isolate;
+    height: 40px;
+    margin: 0;
+    padding: 0 var(--elements-spacing-x);
+    border: 0;
+    border-radius: var(--bs-border-radius-sm);
+    color: rgb(var(--elements-main-text));
+    font-weight: normal;
+}
+
+.control-select .vscomp-option::before {
+    position: absolute;
+    z-index: 0;
+    top: calc(var(--elements-spacing-y) / 2);
+    right: 0;
+    bottom: calc(var(--elements-spacing-y) / 2);
+    left: 0;
+    border-radius: var(--bs-border-radius-sm);
+    content: "";
+}
+
+.control-select .vscomp-option > * {
+    position: relative;
+    z-index: 1;
+}
+
+.control-select .vscomp-option-text,
+.control-select .vscomp-option-description {
+    font-weight: normal;
+}
+
+.control-select .vscomp-option.focused:not(.selected) {
+    background-color: transparent !important;
+    color: rgb(var(--elements-main-text)) !important;
+}
+
+.control-select .vscomp-option.focused:not(.selected)::before,
+.control-select .vscomp-option:hover:not(.selected):not(.disabled):not(.group-title)::before {
     background-color: rgb(var(--elements-primary-bg-shaded));
 }
 
-.select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--selected,
-.select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option[aria-selected=true]:not(.select2-results__option--highlighted) {
-    color: rgb(var(--elements-primary-text));
+.control-select .vscomp-option.selected,
+.control-select .vscomp-option.selected.focused {
+    background-color: transparent !important;
+    color: rgb(var(--elements-primary-text)) !important;
+}
+
+.control-select .vscomp-option.selected::before,
+.control-select .vscomp-option.selected.focused::before {
     background-color: rgb(var(--elements-primary-bg));
 }
 
-.select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--highlighted:not(.select2-results__option.select2-results__option--selected) {
-    color: rgb(var(--elements-main-text));
-    background-color: rgb(var(--elements-primary-bg-shaded));
+.control-select .vscomp-option.selected .vscomp-option-text,
+.control-select .vscomp-option.selected .vscomp-option-description {
+    color: rgb(var(--elements-primary-text)) !important;
 }
 
-.select2-container--bootstrap-5.select2-container--disabled .select2-selection,
-.select2-container--bootstrap-5.select2-container--disabled.select2-container--focus .select2-selection {
+.control-select .vscomp-option.disabled {
+    color: rgba(var(--elements-main-text), .5);
+    opacity: 1;
+}
+
+.control-select .vscomp-no-options,
+.control-select .vscomp-no-search-results,
+.control-select .vscomp-options-loader {
+    color: rgba(var(--elements-main-text), .7);
+}
+
+.control-select .vscomp-options-loader::before {
+    background-color: rgb(var(--elements-primary-bg));
+}
+
+/* MULTIPLE SELECTION */
+.control-select .vscomp-wrapper .checkbox-icon::after {
+    border-color: rgba(var(--elements-main-text), .7);
+    border-radius: var(--bs-border-radius-sm);
+}
+
+.control-select .vscomp-wrapper.multiple .vscomp-option.selected .checkbox-icon::after {
+    border-color: rgb(var(--elements-primary-text));
+    border-left-color: transparent;
+    border-top-color: transparent;
+}
+
+.control-select .vscomp-value-tag {
+    border: 0 !important;
+    border-radius: var(--bs-border-radius-sm) !important;
+    background-color: rgb(var(--elements-primary-bg-shaded));
+    color: rgb(var(--elements-main-text));
+}
+
+/* READONLY */
+.control-select[disabled] .vscomp-wrapper {
+    opacity: 1;
+}
+
+.control-select[disabled] .vscomp-toggle-button {
+    background-color: rgba(var(--elements-main-bg), .4);
+    color: rgba(var(--elements-main-text), .7);
+    cursor: default;
+}
+
+.control-select[disabled] .vscomp-clear-button {
+    display: none;
+}
+
+/* INPUT GROUP, ACTIONS AND HELP */
+.component-form-field:has(.control-select.pop-comp-active) {
+    position: relative;
+    z-index: 10;
+}
+
+.input-group:has(.control-select.pop-comp-active),
+.control-select.pop-comp-active {
+    z-index: 10;
+}
+
+.input-group > .control-select:not(:last-child) .vscomp-toggle-button {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.component-form-field:has(.help-message.collapsing, .help-message.collapse.show)
+    .control-select .vscomp-toggle-button {
+    border-bottom-left-radius: 0;
+}
+
+.input-group:has(.control-select[disabled]) > a,
+.input-group:has(.control-select[disabled]) > button {
     background-color: rgba(var(--elements-main-bg), .4) !important;
-    color: rgba(var(--elements-main-text), .7) !important;
+    color: rgba(var(--elements-main-text), .4) !important;
 }

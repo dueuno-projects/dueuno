@@ -82,7 +82,7 @@ class CrudController implements ElementsController {
             def form = c.addComponentBefore('table', Form)
             form.with {
                 addField(
-                    class: SelectX,
+                    class: Select,
                     id: 'testLoadingScreen',
                     optionsFromList: ['Select me...', 'Select me too!'],
                     onChange: 'onTestLoadingScreen',
@@ -102,7 +102,7 @@ class CrudController implements ElementsController {
                     fold = false
                     autoFold = true
                     addField(
-                        class: SelectX,
+                        class: Select,
                         id: 'company',
                         optionsFromRecordset: companyService.list(),
                         transformer: 'TRANSFORM_ME',
@@ -299,7 +299,7 @@ class CrudController implements ElementsController {
             addKeyField('embedded')
             addKeyField('selection', Type.LIST, [[id: 1]])
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'company',
                 optionsFromRecordset: companyService.list(),
                 prettyPrinter: 'customCompanyPrinter',

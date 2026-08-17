@@ -24,7 +24,7 @@ import groovy.transform.CompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 /**
- * A dropdown/select control that renders a list of options backed by Select2.
+ * A dropdown/select control that renders a list of options backed by Virtual Select.
  * <p>
  * Options can be supplied in four ways (checked in order):
  * </p>
@@ -578,7 +578,7 @@ class Select extends Control {
     }
 
     /**
-     * Serialises this control's client-side configuration to JSON, including Select2 options
+     * Serialises this control's client-side configuration to JSON, including Virtual Select options
      * ({@code multiple}, {@code searchMinInputLength}, {@code allowClear}, {@code autoSelect},
      * {@code placeholder}, {@code search}) and the localised UI strings for the search widget.
      *
@@ -587,7 +587,13 @@ class Select extends Control {
      */
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
+        List<Map<String, String>> virtualOptions = []
+        for (entry in getOptions()) {
+            virtualOptions.add([id: entry.key as String, text: entry.value as String])
+        }
+
         Map thisProperties = [
+            options             : virtualOptions,
             multiple            : multiple,
             searchMinInputLength: searchMinInputLength,
             allowClear          : allowClear,

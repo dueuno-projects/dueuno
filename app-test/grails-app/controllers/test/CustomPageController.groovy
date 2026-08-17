@@ -48,7 +48,7 @@ class CustomPageController implements ElementsController {
 //            filters.with {
 //                folded = false
 //                addField(
-//                        class: SelectX,
+//                        class: Select,
 //                        id: 'clientRef',
 //                )
 //                addField(

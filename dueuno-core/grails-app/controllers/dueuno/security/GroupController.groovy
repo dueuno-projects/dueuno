@@ -21,7 +21,7 @@ import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.MultipleCheckbox
-import dueuno.elements.controls.SelectX
+import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
 import dueuno.elements.core.Feature
 import dueuno.elements.style.TextTransform
@@ -58,7 +58,7 @@ class GroupController implements ElementsController {
                 fold = false
                 if (isSuperAdmin) {
                     addField(
-                        class: SelectX,
+                        class: Select,
                         id: 'tenant',
                         optionsFromRecordset: tenantService.list(),
                         cols: 2,
@@ -128,7 +128,7 @@ class GroupController implements ElementsController {
             validate = TRoleGroup
             if (isSuperAdmin) {
                 addField(
-                    class: SelectX,
+                    class: Select,
                     id: 'tenant',
                     optionsFromRecordset: tenantService.list(),
                     defaultValue: tenantService.defaultTenant.id,
@@ -143,7 +143,7 @@ class GroupController implements ElementsController {
                 textTransform: TextTransform.UPPERCASE,
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'landingPage',
                 optionsFromRecordset: getLandingPages(),
                 prettyPrinter: 'LANDING_PAGE',

@@ -68,7 +68,7 @@ class UserController implements ElementsController {
                 fold = false
                 if (isSuperAdmin) {
                     addField(
-                        class: SelectX,
+                        class: Select,
                         id: 'tenant',
                         optionsFromRecordset: tenantService.list(),
                         cols: 2,
@@ -81,7 +81,7 @@ class UserController implements ElementsController {
                     cols: isSuperAdmin ? 8 : 10,
                 )
                 addField(
-                    class: SelectX,
+                    class: Select,
                     id: 'enabled',
                     options: [true: 'enabled', false: 'disabled'],
                     noSelection: true,
@@ -158,7 +158,7 @@ class UserController implements ElementsController {
 
             if (isSuperAdmin && (isCreatingNewUser || isEditingUserButNotSuperAdmin)) {
                 addField(
-                    class: SelectX,
+                    class: Select,
                     id: 'tenant',
                     optionsFromRecordset: tenantService.list(),
                     defaultValue: tenantService.defaultTenant.id,
@@ -197,14 +197,14 @@ class UserController implements ElementsController {
                     icon: 'fa-shield-halved',
                 )
                 addField(
-                    class: SelectX,
+                    class: Select,
                     id: 'groups',
                     optionsFromRecordset: securityService.listAllGroup(hideUsers: true),
                     search: false,
                     multiple: true,
                 )
                 addField(
-                    class: SelectX,
+                    class: Select,
                     id: 'defaultGroup',
                     optionsFromRecordset: securityService.listAllGroup(),
                     search: false,
@@ -303,7 +303,7 @@ class UserController implements ElementsController {
                 icon: 'fa-earth-americas',
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'language',
                 optionsFromList: applicationService.languages,
                 textPrefix: 'default.language',
@@ -311,7 +311,7 @@ class UserController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'firstDaySunday',
                 options: [false: 'false', true: 'true'],
                 textPrefix: 'default.firstDaySunday',
@@ -319,7 +319,7 @@ class UserController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'invertedMonth',
                 options: [false: 'false', true: 'true'],
                 textPrefix: 'default.invertedMonth',
@@ -327,7 +327,7 @@ class UserController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'twelveHours',
                 options: [false: 'false', true: 'true'],
                 textPrefix: 'default.twelveHours',
@@ -335,7 +335,7 @@ class UserController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'decimalFormat',
                 optionsFromEnum: PrettyPrinterDecimalFormat,
                 textPrefix: 'default.decimalFormat',
@@ -343,7 +343,7 @@ class UserController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'prefixedUnit',
                 options: [false: 'false', true: 'true'],
                 textPrefix: 'default.prefixedUnit',
@@ -351,7 +351,7 @@ class UserController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'symbolicCurrency',
                 options: [false: 'false', true: 'true'],
                 textPrefix: 'default.symbolicCurrency',
@@ -359,7 +359,7 @@ class UserController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'symbolicQuantity',
                 options: [false: 'false', true: 'true'],
                 textPrefix: 'default.symbolicQuantity',
@@ -382,7 +382,7 @@ class UserController implements ElementsController {
                 )
             } else {
                 addField(
-                    class: SelectX,
+                    class: Select,
                     id: 'fontSize',
                     optionsFromList: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
                     defaultValue: 14,
@@ -392,7 +392,7 @@ class UserController implements ElementsController {
                 )
             }
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'guiStyle',
                 optionsFromEnum: GuiStyle,
                 textPrefix: 'default',
@@ -425,7 +425,7 @@ class UserController implements ElementsController {
 
     def onTenantChange() {
         def rs = securityService.listAllGroup(tenant: params.tenant, hideUsers: true)
-        def tenantGroups = SelectX.optionsFromRecordset(recordset: rs)
+        def tenantGroups = Select.optionsFromRecordset(recordset: rs)
 
         def t = createTransition()
         t.set('defaultGroup', 'options', tenantGroups)

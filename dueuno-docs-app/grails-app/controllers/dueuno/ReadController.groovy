@@ -16,7 +16,7 @@ package dueuno
 
 import dueuno.elements.ElementsController
 import dueuno.elements.contents.ContentForm
-import dueuno.elements.controls.SelectX
+import dueuno.elements.controls.Select
 import dueuno.elements.controls.Textarea
 
 class ReadController implements ElementsController {
@@ -30,7 +30,7 @@ class ReadController implements ElementsController {
 
         c.form.with {
             addField(
-                    class: SelectX,
+                    class: Select,
                     optionsFromRecordset: bookService.list(),
                     prettyPrinter: 'BOOK',
                     onChange: 'onBookChange',

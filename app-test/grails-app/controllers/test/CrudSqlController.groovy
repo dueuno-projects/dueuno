@@ -63,7 +63,7 @@ class CrudSqlController implements ElementsController {
         c.table.with {
             filters.with {
                 addField(
-                    class: SelectX,
+                    class: Select,
                     id: 'company_id',
                     optionsFromRecordset: SqlUtils.list(dataSource, tblCompany),
                     keys: ['id'],
@@ -138,7 +138,7 @@ class CrudSqlController implements ElementsController {
             addKeyField('salary_currency', Type.STRING, 'EUR')
             addKeyField('distance_km_unit', Type.STRING, 'KM')
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'company_id',
                 optionsFromRecordset: SqlUtils.list(dataSource, tblCompany),
                 prettyPrinter: 'COMPANY',

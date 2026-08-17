@@ -1,3 +1,9 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0.
+ */
 class Select extends Control {
 
     static getValueType($element) {
@@ -6,210 +12,174 @@ class Select extends Control {
     }
 
     static initialize($element, $root) {
+        let element = $element[0];
         let controlId = Component.getId($element);
         let properties = Component.getProperties($element);
-        let hasButtons = $element.parent().has('a, .component-help').exists();
+        let dropboxPortal = Select.getDropboxPortal(element);
 
         let initOptions = {
-            theme: 'bootstrap-5',
-            dropdownParent: $root,
-            language: _21_.user.language,
-            multiple: properties['multiple'],
-            placeholder: properties['multiple'] ? null : properties['placeholder'],
-            minimumResultsForSearch: properties['search'] ? 0 : -1,
-            allowClear: properties['multiple'] ? false : properties['allowClear'],
-            dropdownAutoWidth : true,
-            width: hasButtons ? 'auto' : '100%',
-            escapeMarkup: function(markup) { return markup; },
-            language: {
-                inputTooShort: function (args) {
-                    var remainingChars = args.minimum - args.input.length;
-                    var message = properties.text['inputTooShort'].replace('{0}', remainingChars);
-                    return message;
-                },
-                errorLoading: function() {
-                    return properties.text['errorLoading'];
-                },
-                noResults: function() {
-                    return properties.text['noResults'];;
-                },
-                searching: function() {
-                    return properties.text['searching'];;
-                },
-            },
+            ele: element,
+            dropboxWrapper: '#' + dropboxPortal.id,
+            zIndex: 1060,
+            options: Select.toVirtualOptions(properties.options),
+            multiple: properties.multiple,
+            search: properties.search,
+            placeholder: properties.multiple ? '' : properties.placeholder,
+            hideClearButton: properties.multiple || !properties.allowClear,
+            autoSelectFirstOption: false,
+            disableSelectAll: true,
+            noOptionsText: properties.text.noResults,
+            noSearchResultsText: properties.text.noResults,
+            additionalClasses: 'w-100',
+            silentInitialValueSet: true,
+            showDropboxAsPopup: false,
+            showDuration: 0,
+            hideDuration: 0,
         };
 
         let searchEvent = Component.getEvent($element, 'search');
         if (searchEvent) {
-            initOptions.minimumInputLength = properties['searchMinInputLength'];
-            initOptions.ajax = {
-                url: Transition.buildUrl(searchEvent),
-                data: function (params) {
-                    searchEvent.params = {
-                        [controlId]: params.term ? params.term.replaceAll('%', '*') : '',
-                    };
-                    let submitEvent = Transition.build21Params(searchEvent);
-                    return submitEvent;
-                },
-                processResults: function (data) {
-                    let transition = Transition.fromHtml(data);
-                    let optionsCommand = transition.commands.findLast(it => it.component == controlId && it.property == 'options');
-                    if (optionsCommand) {
-                        let options = optionsCommand.value.value ?? {};
-                        return {results: options};
-                    }
+            initOptions.search = true;
+            initOptions.onServerSearch = function (searchValue, virtualSelect) {
+                if (searchValue.length < properties.searchMinInputLength) {
+                    virtualSelect.setServerOptions([]);
+                    return;
                 }
-            }
+
+                searchEvent.params = {
+                    [controlId]: searchValue ? searchValue.replaceAll('%', '*') : '',
+                };
+
+                $.ajax({
+                    url: Transition.buildUrl(searchEvent),
+                    data: Transition.build21Params(searchEvent),
+                    success: function (data) {
+                        let transition = Transition.fromHtml(data);
+                        let command = transition.commands.findLast(it =>
+                            it.component == controlId && it.property == 'options'
+                        );
+                        let options = command?.value?.value ?? [];
+                        virtualSelect.setServerOptions(Select.toVirtualOptions(options));
+                    },
+                    error: function () {
+                        virtualSelect.setServerOptions([]);
+                    },
+                });
+            };
         }
 
-        $element.select2(initOptions);
+        VirtualSelect.init(initOptions);
+    }
+
+    static getDropboxPortal(element) {
+        let modal = element.closest('.modal');
+        let portalId = modal ? 'select-dropbox-portal-modal' : 'select-dropbox-portal';
+        let portal = document.getElementById(portalId);
+        if (!portal) {
+            portal = document.createElement('div');
+            portal.id = portalId;
+            portal.className = 'control-select';
+            (modal ?? document.body).appendChild(portal);
+        }
+        return portal;
     }
 
     static finalize($element, $root) {
-        $element.off('select2:select select2:unselect').on('select2:select select2:unselect', Select.onChange);
-
-        // We need this to auto-focus the text input
-        $element.off('select2:open').on('select2:open', Select.onOpen);
-
-        // We need this to avoid displaying the title attribute as tooltip
-        // This is a hack since there is no way to configure a different behaviour on Select2
-        let $selection = $element.next().find('.select2-selection__rendered');
-        $selection.off('mouseenter').on('mouseenter', Select.onMouseEnter);
-
+        $element.off('change', Select.onChange).on('change', Select.onChange);
         Transition.triggerEvent($element, 'load');
-    }
-
-    static deactivate($element) {
-        Component.setDisplay($element, false);
     }
 
     static isInitialized($element) {
         return false;
     }
 
-    static onMouseEnter(event) {
-        let $element = $(event.currentTarget);
-        $element.removeAttr('title');
-        $element.closest('.input-group').find('[title]').each(function (key, item) {
-            $(item).removeAttr('title');
-        });
-    }
-
-    static onOpen(event) {
-        let selectId = event.currentTarget.id;
-        let $select = $(".select2-search__field[aria-controls='select2-" + selectId + "-results']");
-        $select.each(function (key, element){
-            element.focus();
-        })
-    }
-
     static onChange(event) {
-        let $element = $(event.currentTarget);
-        Transition.triggerEvent($element, 'change');
+        Transition.triggerEvent($(event.currentTarget), 'change');
     }
 
     static setValue($element, valueMap, trigger = true) {
         valueMap = TypedValue.require(valueMap);
-        if (!trigger) $element.off('select2:select select2:unselect');
+        let element = $element[0];
+        if (!element.setValue) return;
+
+        if (!trigger) $element.off('change', Select.onChange);
 
         let searchEvent = Component.getEvent($element, 'search');
         let loadEvent = Component.getEvent($element, 'load');
-        let hasOptions = Select.hasOptions($element);
-        if (searchEvent && loadEvent && !hasOptions) {
+        if (searchEvent && loadEvent && !Select.hasOptions($element)) {
             Select.setTemporaryOptions($element, valueMap);
-            if (trigger) {
-                Transition.submit(loadEvent);
-            }
+            if (trigger) Transition.submit(loadEvent);
         }
 
-        $element.val(valueMap.value);
-        $element.trigger('change');
+        element.setValue(valueMap.value, !trigger);
 
-        if (!trigger) $element.on('select2:select select2:unselect', Select.onChange);
+        if (!trigger) $element.on('change', Select.onChange);
     }
 
     static getValue($element) {
         let properties = Component.getProperties($element);
-        let value = $element.val();
+        let value = $element[0].value;
 
-        if (value == null || (Array.isArray(value) && value.length == 0)) {
+        if (value == null || value === '' || (Array.isArray(value) && value.length == 0)) {
             return TypedValue.empty(Select.getValueType($element));
-
-        } else if (!properties['multiple']) {
+        } else if (!properties.multiple) {
             return TypedValue.string(value);
-
-        } else {
-            return TypedValue.list(Array.isArray(value) ? value : [value]);
         }
+        return TypedValue.list(Array.isArray(value) ? value : [value]);
     }
 
     static hasOptions($element) {
-        return $element.children('option').length;
+        return ($element[0].options?.length ?? 0) > 0;
     }
 
     static setOptions($element, options) {
+        let element = $element[0];
         let valueMap = TypedValue.require(Select.getValue($element));
-
-        $element.empty();
-        if (!options || !options.length) {
-            valueMap = TypedValue.empty(Select.getValueType($element));
-            Select.setValue($element, valueMap, false);
-            return;
-        }
-
         let selectedValues = Select.valueList(valueMap.value);
-        let isValueInOptions = false;
-        for (let option of options) {
-            let isSelected = selectedValues.includes(String(option.id));
-            $element.append(new Option(option.text, option.id, isSelected, isSelected));
-            if (isSelected) {
-                isValueInOptions = true
-            }
+        let newOptions = options ?? [];
+        let optionValues = newOptions.map(option => String(option.id));
+        let validValues = selectedValues.filter(value => optionValues.includes(value));
+        let properties = Component.getProperties($element);
+
+        if (!validValues.length && properties.autoSelect && !properties.nullable && newOptions.length == 1) {
+            validValues = [String(newOptions[0].id)];
         }
 
-        if (isValueInOptions) {
-            let properties = Component.getProperties($element);
-            let optionsCount = $element.children('option').length;
-            if (!properties['autoSelect'] || optionsCount > 1 || properties['nullable']) {
-                // Select2 automatically selects the first item on ajax loading
-                // so we need to implement an inverse logic
-                Select.setValue($element, valueMap, false);
-            }
-        } else {
-            valueMap = TypedValue.empty(Select.getValueType($element));
-            Select.setValue($element, valueMap, false);
-        }
+        element.setOptions(Select.toVirtualOptions(newOptions), false);
+        let value = properties.multiple ? validValues : (validValues[0] ?? null);
+        element.setValue(value, true);
     }
 
     static setTemporaryOptions($element, valueMap) {
-        $element.empty();
-
-        for (let value of Select.valueList(valueMap.value)) {
-            $element.append(new Option('...', value, true, true));
-        }
-    }
-
-    static valueList(value) {
-        if (value == null) {
-            return [];
-        }
-
-        let values = Array.isArray(value) ? value : [value];
-        return values.map(value => String(value));
-    }
-
-    static getReadonly($element) {
-        return $element.prop('disabled');
+        let options = Select.valueList(valueMap.value).map(value => ({value: value, label: '...'}));
+        $element[0].setOptions(options, false);
+        $element[0].setValue(valueMap.value, true);
     }
 
     static setReadonly($element, value) {
         Component.setReadonly($element, value);
-        $element.prop('disabled', value);
+        if (value) {
+            $element[0].disable();
+        } else {
+            $element[0].enable();
+        }
 
         let $actions = $element.closest('.input-group').find('a');
         Component.setReadonly($actions, value);
     }
 
+    static valueList(value) {
+        if (value == null) return [];
+        let values = Array.isArray(value) ? value : [value];
+        return values.map(value => String(value));
+    }
+
+    static toVirtualOptions(options) {
+        return (options ?? []).map(option => ({
+            value: String(option.id),
+            label: option.text,
+        }));
+    }
 }
 
 Control.register(Select);

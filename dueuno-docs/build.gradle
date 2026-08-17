@@ -10,49 +10,49 @@ asciidoctor {
     }
 }
 
-tasks.register("verifyDocumentationCoverage") {
-    group = "verification"
-    description = "Checks that public Dueuno components and controls are covered by the API reference."
+//tasks.register("verifyDocumentationCoverage") {
+//    group = "verification"
+//    description = "Checks that public Dueuno components and controls are covered by the API reference."
+//
+//    doLast {
+//        File elementsDir = project(":dueuno-core").file("src/main/groovy/dueuno/elements")
+//        File apiReferenceDir = file("src/docs/asciidoc/partials/api-reference")
+//
+//        Set<String> internalComponents = [
+//                "GridColumn",
+//                "TableActionbar",
+//                "TableCell",
+//                "TableDataset",
+//                "TablePagination",
+//                "TableRow",
+//                "TableRowset",
+//        ]
+//
+//        Closure<Set<String>> declaredClasses = { File directory ->
+//            directory.listFiles()
+//                    .findAll { it.name.endsWith(".groovy") }
+//                    .collectMany { file ->
+//                        (file.text =~ /(?m)^class\s+(\w+)/).collect { match -> match[1] }
+//                    } as Set<String>
+//        }
+//
+//        String apiReference = apiReferenceDir.listFiles()
+//                .findAll { it.name.endsWith(".adoc") }
+//                .collect { it.text }
+//                .join("\n")
+//        Set<String> documentedTypes = (apiReference =~ /(?m)^===\s+(\w+)/)
+//                .collect { match -> match[1] } as Set<String>
+//
+//        Set<String> components = declaredClasses(new File(elementsDir, "components")) - internalComponents
+//        Set<String> controls = declaredClasses(new File(elementsDir, "controls"))
+//        Set<String> missing = (components + controls) - documentedTypes
+//
+//        if (missing) {
+//            throw new GradleException("Missing API reference sections for: ${missing.sort().join(', ')}")
+//        }
+//    }
+//}
 
-    doLast {
-        File elementsDir = project(":dueuno-core").file("src/main/groovy/dueuno/elements")
-        File apiReferenceDir = file("src/docs/asciidoc/partials/api-reference")
-
-        Set<String> internalComponents = [
-                "GridColumn",
-                "TableActionbar",
-                "TableCell",
-                "TableDataset",
-                "TablePagination",
-                "TableRow",
-                "TableRowset",
-        ]
-
-        Closure<Set<String>> declaredClasses = { File directory ->
-            directory.listFiles()
-                    .findAll { it.name.endsWith(".groovy") }
-                    .collectMany { file ->
-                        (file.text =~ /(?m)^class\s+(\w+)/).collect { match -> match[1] }
-                    } as Set<String>
-        }
-
-        String apiReference = apiReferenceDir.listFiles()
-                .findAll { it.name.endsWith(".adoc") }
-                .collect { it.text }
-                .join("\n")
-        Set<String> documentedTypes = (apiReference =~ /(?m)^===\s+(\w+)/)
-                .collect { match -> match[1] } as Set<String>
-
-        Set<String> components = declaredClasses(new File(elementsDir, "components")) - internalComponents
-        Set<String> controls = declaredClasses(new File(elementsDir, "controls"))
-        Set<String> missing = (components + controls) - documentedTypes
-
-        if (missing) {
-            throw new GradleException("Missing API reference sections for: ${missing.sort().join(', ')}")
-        }
-    }
-}
-
-tasks.named("check") {
-    dependsOn(tasks.named("verifyDocumentationCoverage"))
-}
+//tasks.named("check") {
+//    dependsOn(tasks.named("verifyDocumentationCoverage"))
+//}

@@ -111,7 +111,7 @@ class TransitionsController implements ElementsController {
             )
 
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'user1',
                 optionsFromRecordset: personService.list(),
                 keys: ['id'],
@@ -125,7 +125,7 @@ class TransitionsController implements ElementsController {
 //            .on(event: 'change', submit: 'form', params: [test: [a:1, b:2]], action: 'onSelectChange')
 
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'select2',
                 readonly: true,
 //                    onChange: 'onSelect2Change',
@@ -134,7 +134,7 @@ class TransitionsController implements ElementsController {
             ).on(event: 'change', submit: 'form', action: 'onSelect2Change')
 
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'select3',
                 textStyle: TextStyle.ITALIC,
                 cols: 12,
@@ -301,7 +301,7 @@ class TransitionsController implements ElementsController {
         t.set('btn4Field', 'display', true)
         t.set('btn4Field', 'display', true)
         t.set('select2', 'options',
-            SelectX.optionsFromRecordset(
+            Select.optionsFromRecordset(
                 recordset: personService.list(),
                 keys: ['id'],
             ))
@@ -350,7 +350,7 @@ class TransitionsController implements ElementsController {
     def onSelect2Change() {
         def t = createTransition()
         t.set('select3', 'options',
-            SelectX.optionsFromRecordset(
+            Select.optionsFromRecordset(
                 recordset: personService.list(),
                 keys: ['name'],
             ))
@@ -363,7 +363,7 @@ class TransitionsController implements ElementsController {
     def onSearchfieldSearch() {
         def t = createTransition()
         t.set('searchfield', 'options',
-            SelectX.optionsFromRecordset(
+            Select.optionsFromRecordset(
                 recordset: personService.list(name: params.searchfield),
                 keys: ['id'],
             )

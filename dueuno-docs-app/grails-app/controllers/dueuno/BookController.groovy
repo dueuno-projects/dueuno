@@ -18,7 +18,7 @@ import dueuno.elements.ElementsController
 import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
-import dueuno.elements.controls.SelectX
+import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
 
 class BookController implements ElementsController {
@@ -31,7 +31,7 @@ class BookController implements ElementsController {
         c.table.with {
             filters.with {
                 addField(
-                        class: SelectX,
+                        class: Select,
                         optionsFromRecordset: bookService.list(),
                         prettyPrinter: 'BOOK',
                         id: 'book',
@@ -118,4 +118,3 @@ class BookController implements ElementsController {
         }
     }
 }
-

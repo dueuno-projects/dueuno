@@ -24,7 +24,7 @@ import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.Checkbox
-import dueuno.elements.controls.SelectX
+import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
 import dueuno.elements.style.Color
 import grails.plugin.springsecurity.annotation.Secured
@@ -100,7 +100,7 @@ class ConnectionSourceController implements ElementsController {
                 cols: 12,
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'driverClassName',
                 optionsFromList: connectionSourceService.listAvailableDrivers(),
                 textPrefix: 'jdbc',
@@ -113,7 +113,7 @@ class ConnectionSourceController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 'dbCreate',
                 optionsFromList: connectionSourceService.listAvailableSchemaGenerators(),
                 renderTextPrefix: false,

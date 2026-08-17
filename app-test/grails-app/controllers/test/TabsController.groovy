@@ -18,7 +18,7 @@ import dueuno.elements.ElementsController
 import dueuno.elements.components.*
 import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
-import dueuno.elements.controls.SelectX
+import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
 import dueuno.elements.core.ComponentEvent
 import dueuno.elements.style.TextDefault
@@ -75,7 +75,7 @@ class TabsController implements ElementsController {
                 id: 't3',
             )
             addField(
-                class: SelectX,
+                class: Select,
                 id: 's1',
                 options: [
                     1: 'Pippo',
