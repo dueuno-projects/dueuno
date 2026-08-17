@@ -108,7 +108,7 @@ class GormExplorerController implements ElementsController {
             sticky = true
             if (securityService.isSuperAdmin()) {
                 addField(
-                    class: Select,
+                    class: SelectX,
                     id: 'tenantId',
                     optionsFromRecordset: tenantService.list(),
                     keys: ['tenantId'],
@@ -129,7 +129,7 @@ class GormExplorerController implements ElementsController {
             }
 
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'domainClassName',
                 optionsFromList: grailsApplication.domainClasses*.fullName,
                 defaultValue: domainClassName,
@@ -267,7 +267,7 @@ class GormExplorerController implements ElementsController {
 
                 if (Elements.isDomainClass(propertyClass)) {
                     addField(
-                        class: Select,
+                        class: SelectX,
                         id: propertyName,
                         label: propertyName,
                         optionsFromRecordset: propertyClass.list(),
@@ -409,7 +409,7 @@ class GormExplorerController implements ElementsController {
 
         c.form.with {
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'connectionSource',
                 optionsFromRecordset: connectionSourceService.list(),
                 keys: ['name'],

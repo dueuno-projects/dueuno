@@ -19,7 +19,7 @@ import dueuno.elements.ElementsController
 import dueuno.elements.components.ProgressBar
 import dueuno.elements.components.Table
 import dueuno.elements.components.TableRow
-import dueuno.elements.controls.Select
+import dueuno.elements.controls.SelectX
 import dueuno.elements.controls.TextField
 import dueuno.elements.style.TextAlign
 import dueuno.elements.style.TextStyle
@@ -64,7 +64,7 @@ class TableController implements ElementsController {
 
             filters.with {
                 addField(
-                    class: Select,
+                    class: SelectX,
                     id: 'user1',
                     optionsFromRecordset: personService.list(),
                     keys: ['id'],

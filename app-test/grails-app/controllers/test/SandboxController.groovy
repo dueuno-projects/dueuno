@@ -191,13 +191,13 @@ class SandboxController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'selectEnum',
                 optionsFromEnum: TextFieldInputMode,
                 highlight: true,
             )
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'select2',
                 label: 'onLoad',
                 onLoad: 'onSelect2Load',
@@ -207,7 +207,7 @@ class SandboxController implements ElementsController {
                 cols: 12,
             )
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'select3',
                 label: 'onSearch',
                 onLoad: 'onSelect3Load',
@@ -565,7 +565,7 @@ Grails application running at http://localhost:9992/test in environment: develop
 //                    cols: 12,
 //            )
 //            addField(
-//                    class: Select,
+//                    class: SelectX,
 //                    id: 'select1',
 //                    label: 'onSearch',
 //                    minLength: 3,
@@ -577,7 +577,7 @@ Grails application running at http://localhost:9992/test in environment: develop
 //                    cols: 12,
 //            )
 //            addField(
-//                    class: Select,
+//                    class: SelectX,
 //                    id: 'select2',
 //                    label: 'onLoad',
 //                    onLoad: 'onLoadOptions',
@@ -585,7 +585,7 @@ Grails application running at http://localhost:9992/test in environment: develop
 //            )
 //
 ////            addField(
-////                    class: Select,
+////                    class: SelectX,
 ////                    id: 'transformerSelect',
 ////                    optionsFromList: quantityService.listUnit(),
 ////                    defaultValue: 'KM',
@@ -764,7 +764,7 @@ Grails application running at http://localhost:9992/test in environment: develop
     def onSelect2Load() {
         def t = createTransition()
         def results = securityService.listAllUser()
-        def options = Select.optionsFromRecordset(recordset: results)
+        def options = SelectX.optionsFromRecordset(recordset: results)
         t.set('select2', 'options', options)
         t.setValue('select2', 99)
         display transition: t
@@ -781,7 +781,7 @@ Grails application running at http://localhost:9992/test in environment: develop
         println "LOAD: $params"
         def t = createTransition()
         def results = securityService.listAllUser(id: params.select3)
-        def options = Select.optionsFromRecordset(recordset: results)
+        def options = SelectX.optionsFromRecordset(recordset: results)
         t.set('select3', 'options', options)
         display transition: t
     }
@@ -791,7 +791,7 @@ Grails application running at http://localhost:9992/test in environment: develop
         def t = createTransition()
         def search = params.select3?.replaceAll('\\*', '%')
         def results = securityService.listAllUser([find: search], [sort: [firstname: 'asc']])
-        def options = Select.optionsFromRecordset(recordset: results)
+        def options = SelectX.optionsFromRecordset(recordset: results)
         t.set('select3', 'options', options)
         display transition: t
     }
@@ -837,7 +837,7 @@ Grails application running at http://localhost:9992/test in environment: develop
 
     def onSearch() {
         def t = createTransition()
-        t.set('select1', 'options', Select.optionsFromRecordset(
+        t.set('select1', 'options', SelectX.optionsFromRecordset(
             recordset: personService.list(name: params.select1),
         ))
         display transition: t

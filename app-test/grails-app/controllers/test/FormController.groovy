@@ -91,7 +91,7 @@ class FormController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'animate',
                 optionsFromList: ['fade', 'next', 'back'],
                 textStyle: [TextStyle.BOLD, TextStyle.MONOSPACE],
@@ -141,7 +141,7 @@ class FormController implements ElementsController {
         c.form.with {
             readonly = isReadonly
             def user1 = addField(
-                class: Select,
+                class: SelectX,
                 id: 'user1',
                 optionsFromRecordset: personService.list(),
                 keys: ['id'],
@@ -181,14 +181,14 @@ class FormController implements ElementsController {
                 ],
             )
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'userTrans',
                 optionsFromRecordset: personService.list(),
                 transformer: 'PERSON',
                 textStyle: [TextStyle.LINE_THROUGH, TextStyle.MONOSPACE],
             )
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'curtomTrans',
                 optionsFromRecordset: [
                     [key: 1, name: 'Gianluca', lastname: 'Sartori'],
@@ -332,7 +332,7 @@ class FormController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'user2',
                 optionsFromRecordset: personService.list(),
                 multiple: true,

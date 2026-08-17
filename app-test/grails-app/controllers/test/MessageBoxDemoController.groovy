@@ -16,7 +16,7 @@ package test
 
 import dueuno.elements.ElementsController
 import dueuno.elements.contents.ContentForm
-import dueuno.elements.controls.Select
+import dueuno.elements.controls.SelectX
 import dueuno.elements.core.Elements
 import dueuno.elements.style.TextDefault
 
@@ -32,7 +32,7 @@ class MessageBoxDemoController implements ElementsController {
                     id: 'paraghraph',
                 ).value = 'Works with "TPerson" entities. Search or create.'
                 addField(
-                    class: 'Select',
+                    class: 'SelectX',
                     id: 'select',
                     onSearch: 'onSelectSearch',
                     onCreate: 'onSelectCreate',
@@ -90,7 +90,7 @@ class MessageBoxDemoController implements ElementsController {
         obj.save(flush: true, failOnError: true)
 
         t.set('select', 'options',
-            Select.optionsFromRecordset(
+            SelectX.optionsFromRecordset(
                 recordset: TPerson.where { id == obj.id }.list(),
             )
         )
@@ -100,10 +100,10 @@ class MessageBoxDemoController implements ElementsController {
     }
 
     def onSelectSearch() {
-        render Elements.encodeAsJSON(Select.optionsFromRecordset(
+        render Elements.encodeAsJSON(SelectX.optionsFromRecordset(
             recordset: TPerson.where { name =~ "%${params.select}%" }.list(),
         ))
 
-        //Select.searchResults { options: optionsFromRecordset ...
+        //SelectX.searchResults { options: optionsFromRecordset ...
     }
 }

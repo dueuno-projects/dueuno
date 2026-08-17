@@ -22,7 +22,7 @@ import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
-import dueuno.elements.controls.Select
+import dueuno.elements.controls.SelectX
 import dueuno.elements.controls.TextField
 import dueuno.elements.style.Color
 import dueuno.elements.style.TextTransform
@@ -117,7 +117,7 @@ class TenantController implements ElementsController {
                 icon: 'fa-database',
             )
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'connectionSource.driverClassName',
                 optionsFromList: connectionSourceService.listAvailableDrivers(),
                 textPrefix: 'jdbc',

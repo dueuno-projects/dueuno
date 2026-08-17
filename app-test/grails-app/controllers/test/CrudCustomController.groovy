@@ -48,7 +48,7 @@ class CrudCustomController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'test2',
                 optionsFromList: ['PIPPO', 'PLUTO', 'PAPERINO'],
                 cols: 6,
@@ -64,7 +64,7 @@ class CrudCustomController implements ElementsController {
 //                    cols: 6,
 //            )
 //            addField(
-//                    class: Select,
+//                    class: SelectX,
 //                    id: 'test2',
 //                    optionsFromList: ['PIPPO', 'PLUTO', 'PAPERINO'],
 //                    cols: 6,
@@ -80,7 +80,7 @@ class CrudCustomController implements ElementsController {
 //                    cols: 6,
 //            )
 //            addField(
-//                    class: Select,
+//                    class: SelectX,
 //                    id: 'test2',
 //                    optionsFromList: ['PIPPO', 'PLUTO', 'PAPERINO'],
 //                    cols: 6,
@@ -145,7 +145,7 @@ class CrudCustomController implements ElementsController {
             rowStriped = true
             filters.with {
                 /*addField(
-                        class: Select,
+                        class: SelectX,
                         id: 'user1',
                         optionsFromRecordset: TPerson.list(),
                         keys: ['username'],
@@ -201,7 +201,7 @@ class CrudCustomController implements ElementsController {
         table3.with {
             filters.with {
                 /*addField(
-                        class: Select,
+                        class: SelectX,
                         id: 'user1',
                         optionsFromRecordset: TPerson.list(),
                         keys: ['username'],
@@ -280,7 +280,7 @@ class CrudCustomController implements ElementsController {
         c.form.with {
             validate = TPerson
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'company',
                 optionsFromRecordset: companyService.list(),
             )

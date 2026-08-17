@@ -17,7 +17,7 @@ package test
 import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentTable
-import dueuno.elements.controls.Select
+import dueuno.elements.controls.SelectX
 
 class SelectController implements ElementsController {
 
@@ -34,14 +34,14 @@ class SelectController implements ElementsController {
             filters.with {
                 fold = false
 //                addField(
-//                        class: Select,
+//                        class: SelectX,
 //                        id: 'company1',
 //                        optionsFromRecordset: companyService.list(),
 //                        placeholder: 'Sync load',
 //                        cols: 3,
 //                )
                 addField(
-                    class: Select,
+                    class: SelectX,
                     id: 'company1Default',
                     optionsFromRecordset: companyService.list(),
                     placeholder: 'Sync load (defaultValue)',
@@ -49,7 +49,7 @@ class SelectController implements ElementsController {
                     cols: 3,
                 )
 //                addField(
-//                        class: Select,
+//                        class: SelectX,
 //                        id: 'company2',
 //                        onLoad: 'onLoadCompany2',
 //                        search: false,
@@ -57,7 +57,7 @@ class SelectController implements ElementsController {
 //                        cols: 3,
 //                )
 //                addField(
-//                        class: Select,
+//                        class: SelectX,
 //                        id: 'company3',
 //                        onLoad: 'onLoadCompany3',
 //                        onSearch: 'onSearchCompany3',
@@ -65,7 +65,7 @@ class SelectController implements ElementsController {
 //                        cols: 3,
 //                )
 //                addField(
-//                        class: Select,
+//                        class: SelectX,
 //                        id: 'company4',
 //                        onLoad: 'onLoadCompany4',
 //                        multiple: true,
@@ -126,7 +126,7 @@ class SelectController implements ElementsController {
     def onLoadCompany2() {
         def t = createTransition()
         def results = companyService.list()
-        def options = Select.optionsFromRecordset(recordset: results)
+        def options = SelectX.optionsFromRecordset(recordset: results)
         t.set('company2', 'options', options)
         t.setValue('company2', params.company2, false)
         display transition: t
@@ -135,7 +135,7 @@ class SelectController implements ElementsController {
     def onLoadCompany3() {
         def t = createTransition()
         def results = companyService.get(params.company3)
-        def options = Select.optionsFromRecordset(recordset: [results])
+        def options = SelectX.optionsFromRecordset(recordset: [results])
         t.set('company3', 'options', options)
         display transition: t
     }
@@ -143,7 +143,7 @@ class SelectController implements ElementsController {
     def onSearchCompany3() {
         def t = createTransition()
         def results = companyService.list(name: params.company3)
-        def options = Select.optionsFromRecordset(recordset: results)
+        def options = SelectX.optionsFromRecordset(recordset: results)
         t.set('company3', 'options', options)
         display transition: t
     }
@@ -151,7 +151,7 @@ class SelectController implements ElementsController {
     def onLoadCompany4() {
         def t = createTransition()
         def results = companyService.list()
-        def options = Select.optionsFromRecordset(recordset: results)
+        def options = SelectX.optionsFromRecordset(recordset: results)
         t.set('company4', 'options', options)
         t.setValue('company4', params.company4, false)
         display transition: t

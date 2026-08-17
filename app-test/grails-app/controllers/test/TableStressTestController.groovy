@@ -17,7 +17,7 @@ package test
 import dueuno.elements.ElementsController
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.Checkbox
-import dueuno.elements.controls.Select
+import dueuno.elements.controls.SelectX
 import dueuno.elements.controls.TextField
 import dueuno.types.Money
 
@@ -92,7 +92,7 @@ class TableStressTestController implements ElementsController {
                         id: 'checkbox',
                     )
                     addField(
-                        class: Select,
+                        class: SelectX,
                         id: 'user1',
                         optionsFromRecordset: personService.list(),
                         keys: ['id'],

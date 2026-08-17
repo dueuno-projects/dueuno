@@ -20,7 +20,7 @@ import dueuno.elements.components.Button
 import dueuno.elements.components.Form
 import dueuno.elements.components.Separator
 import dueuno.elements.controls.Checkbox
-import dueuno.elements.controls.Select
+import dueuno.elements.controls.SelectX
 import dueuno.elements.controls.TextField
 import dueuno.security.SecurityService
 
@@ -40,7 +40,7 @@ class WebsocketController implements ElementsController {
                 text: 'websocket.info',
             )
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'queue',
                 optionsFromList: ['channel', 'user'],
                 renderTextPrefix: false,
@@ -51,7 +51,7 @@ class WebsocketController implements ElementsController {
                 defaultValue: 'macchina-1',
             )
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'usr',
                 optionsFromRecordset: securityService.listAllUser(),
                 keys: ['username'],

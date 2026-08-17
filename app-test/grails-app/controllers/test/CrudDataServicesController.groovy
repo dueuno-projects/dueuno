@@ -106,7 +106,7 @@ class CrudDataServicesController implements ElementsController {
             addKeyField('selection', Type.LIST, [[id: 1]])
 
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'company',
                 optionsFromRecordset: TCompany.list(),
                 prettyPrinter: 'customCompanyPrinter',

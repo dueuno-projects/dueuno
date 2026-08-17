@@ -74,14 +74,14 @@ class ApplicationPropertyController implements ElementsController {
                     cols: 8,
                 )
                 addField(
-                    class: Select,
+                    class: SelectX,
                     id: 'type',
                     optionsFromEnum: PropertyType,
                     noSelection: true,
                     cols: 2,
                 )
                 addField(
-                    class: Select,
+                    class: SelectX,
                     id: 'validation',
                     optionsFromList: ['error'],
                     search: false,
@@ -168,7 +168,7 @@ class ApplicationPropertyController implements ElementsController {
             )
 
             addField(
-                class: Select,
+                class: SelectX,
                 id: 'type',
                 optionsFromEnum: PropertyType,
                 textStyle: TextStyle.MONOSPACE,

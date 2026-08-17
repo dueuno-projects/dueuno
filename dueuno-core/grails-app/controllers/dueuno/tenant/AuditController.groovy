@@ -18,7 +18,7 @@ import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.DateField
-import dueuno.elements.controls.Select
+import dueuno.elements.controls.SelectX
 import dueuno.elements.controls.TextField
 import dueuno.elements.style.TextDefault
 import dueuno.elements.style.TextWrap
@@ -55,7 +55,7 @@ class AuditController implements ElementsController {
                     cols: 2,
                 )
                 addField(
-                    class: Select,
+                    class: SelectX,
                     id: 'username',
                     optionsFromList: securityService.listAllUsername(),
                     renderTextPrefix: false,
@@ -63,7 +63,7 @@ class AuditController implements ElementsController {
                     cols: 2,
                 )
                 addField(
-                    class: Select,
+                    class: SelectX,
                     id: 'operation',
                     optionsFromEnum: AuditOperation,
                     cols: 2,

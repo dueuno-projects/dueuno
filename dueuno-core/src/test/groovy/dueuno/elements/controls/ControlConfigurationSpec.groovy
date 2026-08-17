@@ -83,6 +83,7 @@ class ControlConfigurationSpec extends Specification {
         given:
         NumberField numberField = new NumberField(id: 'number')
         Select select = new Select(id: 'select')
+        SelectX selectX = new SelectX(id: 'selectX')
         MultipleCheckbox multipleCheckbox = new MultipleCheckbox(id: 'multipleCheckbox')
 
         when:
@@ -90,6 +91,8 @@ class ControlConfigurationSpec extends Specification {
         numberField.textPrefix = 'invoice.amount'
         numberField.textArgs = ['2026']
         select.options = [draft: 'Draft', final: 'Final']
+        selectX.options = [draft: 'Draft', final: 'Final']
+        selectX.multiple = true
         multipleCheckbox.optionsFromList = ['read', 'write']
         multipleCheckbox.readonly = true
 
@@ -98,6 +101,8 @@ class ControlConfigurationSpec extends Specification {
         numberField.textPrefix == 'invoice.amount'
         numberField.textArgs == ['2026']
         select.options == [draft: 'Draft', final: 'Final']
+        selectX.options == [draft: 'Draft', final: 'Final']
+        selectX.multiple
         multipleCheckbox.checkboxes.keySet() == ['read', 'write'] as Set
         multipleCheckbox.readonly
         multipleCheckbox.checkboxes.values().every { it.readonly }
