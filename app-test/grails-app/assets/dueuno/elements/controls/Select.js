@@ -59,7 +59,7 @@ class Select extends Control {
                             it.component == controlId && it.property == 'options'
                         );
                         let options = command?.value?.value ?? [];
-                        virtualSelect.setServerOptions(Select.toVirtualOptions(options));
+                        Select.setServerOptions(virtualSelect, options, searchValue);
                     },
                     error: function () {
                         virtualSelect.setServerOptions([]);
@@ -220,6 +220,18 @@ class Select extends Control {
 
     static hasOptions($element) {
         return ($element[0].options?.length ?? 0) > 0;
+    }
+
+    /**
+     * Prevents VirtualSelect from applying its literal client-side filter to
+     * results already filtered by the server with wildcard search semantics.
+     */
+    static setServerOptions(virtualSelect, options, searchValue) {
+        let currentSearchValue = virtualSelect.searchValue;
+        if (searchValue.includes('*')) virtualSelect.searchValue = '';
+
+        virtualSelect.setServerOptions(Select.toVirtualOptions(options));
+        virtualSelect.searchValue = currentSearchValue;
     }
 
     static setOptions($element, options) {
