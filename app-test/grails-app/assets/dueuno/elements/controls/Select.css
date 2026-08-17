@@ -189,29 +189,15 @@
 }
 
 .control-select .vscomp-option {
-    isolation: isolate;
-    margin: 0;
-    padding: 0 var(--elements-spacing-x);
-    border: 0;
-    border-radius: var(--bs-border-radius-sm);
+    padding: 0;
     color: rgb(var(--elements-main-text));
     font-weight: normal;
 }
 
-.control-select .vscomp-option::before {
-    position: absolute;
-    z-index: 0;
-    top: calc(var(--elements-spacing-y) / 2);
-    right: 0;
-    bottom: calc(var(--elements-spacing-y) / 2);
-    left: 0;
+.control-select .vscomp-option-text {
+    margin: calc(var(--elements-spacing-y) / 2) 0;
     border-radius: var(--bs-border-radius-sm);
-    content: "";
-}
-
-.control-select .vscomp-option > * {
-    position: relative;
-    z-index: 1;
+    padding: .6rem
 }
 
 .control-select .vscomp-option-text,
@@ -219,13 +205,14 @@
     font-weight: normal;
 }
 
-.control-select .vscomp-option.focused:not(.selected) {
+.control-select .vscomp-option.focused:not(.selected),
+.control-select .vscomp-option:hover:not(.selected):not(.disabled):not(.group-title) {
     background-color: transparent !important;
     color: rgb(var(--elements-main-text)) !important;
 }
 
-.control-select .vscomp-option.focused:not(.selected)::before,
-.control-select .vscomp-option:hover:not(.selected):not(.disabled):not(.group-title)::before {
+.control-select .vscomp-option.focused:not(.selected) .vscomp-option-text,
+.control-select .vscomp-option:hover:not(.selected):not(.disabled):not(.group-title) .vscomp-option-text {
     background-color: rgb(var(--elements-primary-bg-shaded));
 }
 
@@ -235,8 +222,8 @@
     color: rgb(var(--elements-primary-text)) !important;
 }
 
-.control-select .vscomp-option.selected::before,
-.control-select .vscomp-option.selected.focused::before {
+.control-select .vscomp-option.selected .vscomp-option-text,
+.control-select .vscomp-option.selected.focused .vscomp-option-text {
     background-color: rgb(var(--elements-primary-bg));
 }
 
