@@ -99,10 +99,7 @@
 .control-select .vscomp-dropbox {
     overflow: hidden;
     isolation: isolate;
-    padding:
-        calc(var(--elements-spacing-y) / 2)
-        var(--elements-spacing-y)
-        var(--elements-spacing-y);
+    padding: calc(var(--elements-spacing-y) / 2) var(--elements-spacing-y);
     border: none;
     border-radius: var(--bs-border-radius-lg);
     box-shadow: 0 .25rem .75rem rgba(var(--bs-body-color-rgb), .15);
@@ -200,7 +197,14 @@
 .control-select .vscomp-option-text {
     margin: calc(var(--elements-spacing-y) / 2) 0;
     border-radius: var(--bs-border-radius-sm);
-    padding: .6rem
+    padding: .55rem;
+    padding-left: 1rem;
+}
+
+@media (max-width: 420px) {
+    .control-select .vscomp-option-text {
+        padding: .4rem;
+    }
 }
 
 .control-select .vscomp-option-text,
