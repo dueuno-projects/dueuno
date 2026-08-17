@@ -25,7 +25,7 @@
 }
 
 .control-select .vscomp-toggle-button {
-    min-height: calc(1rem + .75rem + 2px);
+    min-height: calc(1rem + .75rem + .142857rem);
     padding: var(--elements-spacing-y) 2.25rem var(--elements-spacing-y) var(--elements-spacing-x);
     border: none;
     border-radius: var(--bs-border-radius-sm);
@@ -105,8 +105,8 @@
     box-shadow: 0 .25rem .75rem rgba(var(--bs-body-color-rgb), .15);
     background-color: rgba(var(--elements-main-fg), .6);
     color: rgb(var(--elements-main-text));
-    backdrop-filter: blur(21px);
-    -webkit-backdrop-filter: blur(21px);
+    backdrop-filter: blur(1.5rem);
+    -webkit-backdrop-filter: blur(1.5rem);
 }
 
 .control-select .vscomp-dropbox-container.pop-comp-wrapper {
@@ -190,7 +190,7 @@
 
 .control-select .vscomp-option {
     isolation: isolate;
-    height: 40px;
+    height: 2.857143rem;
     margin: 0;
     padding: 0 var(--elements-spacing-x);
     border: 0;

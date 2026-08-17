@@ -33,7 +33,7 @@ button,
 
 .component-button .component-link:not(:last-child),
 .input-group .component-link:not(:last-child) {
-    margin-right: 2px;
+    margin-right: .142857rem;
 }
 
 a.btn,
@@ -56,8 +56,8 @@ button {
     border-radius: var(--bs-border-radius-lg);
     box-shadow: 0 .25rem .75rem rgba(var(--bs-body-color-rgb), .15);
     background-color: rgba(var(--elements-main-fg), .6);
-    backdrop-filter: blur(21px);
-    -webkit-backdrop-filter: blur(21px);
+    backdrop-filter: blur(1.5rem);
+    -webkit-backdrop-filter: blur(1.5rem);
     border: none;
 }
 
@@ -73,7 +73,7 @@ button {
 
 .dropdown-divider {
     margin: .5rem;
-    border-top: 1px solid rgba(var(--elements-main-text), .2);
+    border-top: .071429rem solid rgba(var(--elements-main-text), .2);
 }
 
 a.btn:active,

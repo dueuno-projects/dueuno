@@ -11,8 +11,8 @@ body {
 .offcanvas-backdrop.show {
     opacity: 1;
     background-color: rgba(30,30,30,.3);
-    backdrop-filter: blur(21px) grayscale(100%);
-    -webkit-backdrop-filter: blur(21px) grayscale(100%);
+    backdrop-filter: blur(1.5rem) grayscale(100%);
+    -webkit-backdrop-filter: blur(1.5rem) grayscale(100%);
 }
 
 .offcanvas-backdrop.show:has(.no-slide) {
@@ -22,8 +22,8 @@ body {
 .offcanvas-backdrop {
     opacity: 0;
     background-color: rgba(30,30,30,.3);
-    backdrop-filter: blur(21px) grayscale(100%);
-    -webkit-backdrop-filter: blur(21px) grayscale(100%);
+    backdrop-filter: blur(1.5rem) grayscale(100%);
+    -webkit-backdrop-filter: blur(1.5rem) grayscale(100%);
 }
 
 #shell-navbar-menu-toggle,

@@ -1,5 +1,5 @@
 .pagination {
-    margin: 0 0 0 5px !important;
+    margin: 0 0 0 .357143rem !important;
 }
 
 .pagination-container .btn-group {
@@ -19,7 +19,7 @@
 .pagination > a, .pagination > span {
     position: relative;
     float: left;
-    padding: 6px 12px;
+    padding: .428571rem .857143rem;
     margin-left: calc(var(--bs-border-width) * -1);
     line-height: 1.42857143;
     text-decoration: none;
@@ -33,13 +33,13 @@
 
 .pagination > :first-child {
     margin-left: 0;
-    border-top-left-radius: 7px;
-    border-bottom-left-radius: 7px;
+    border-top-left-radius: .5rem;
+    border-bottom-left-radius: .5rem;
 }
 
 .pagination > :last-child {
-    border-top-right-radius: 7px;
-    border-bottom-right-radius: 7px;
+    border-top-right-radius: .5rem;
+    border-bottom-right-radius: .5rem;
 }
 
 .pagination > .currentStep, .pagination > .active {
@@ -66,7 +66,7 @@
 
 #paginationLoader {
     float: left;
-    margin: 6px 10px;
+    margin: .428571rem .714286rem;
 }
 
 @media print {

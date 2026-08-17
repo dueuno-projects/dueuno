@@ -51,8 +51,8 @@
 
 .tempus-dominus-widget.light {
     background-color: rgba(var(--elements-main-bg), .6);
-    backdrop-filter: blur(21px);
-    -webkit-backdrop-filter: blur(21px);
+    backdrop-filter: blur(1.5rem);
+    -webkit-backdrop-filter: blur(1.5rem);
 }
 
 .tempus-dominus-widget .calendar-header {
