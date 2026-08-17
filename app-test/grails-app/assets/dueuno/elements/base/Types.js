@@ -68,7 +68,7 @@ class TypedValue {
 
     static require(value) {
         if (!TypedValue.is(value)) {
-            throw new Error('Invalid Dueuno typed value: expected {type, value}');
+            throw new Error('Invalid typed value: expected {type, value}');
         }
 
         return value;
