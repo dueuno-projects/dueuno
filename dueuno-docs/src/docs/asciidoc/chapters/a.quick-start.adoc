@@ -662,4 +662,9 @@ class MovieService {
 Run the application with gradle `bootRun`, you should be able to create, list, edit and delete movies.
 
 === What's next?
+ifeval::["{docname}" == "index"]
+Read xref:dueuno-elements-book[The Dueuno Book] or xref:api-reference[Dueuno API Reference].
+endif::[]
+ifeval::["{docname}" != "index"]
 Read xref:chapter-1.adoc[The Dueuno Book] or xref:z.api-reference.adoc[Dueuno API Reference].
+endif::[]

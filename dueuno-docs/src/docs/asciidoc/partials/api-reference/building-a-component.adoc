@@ -1,0 +1,302 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to you under the Apache License, Version 2.0.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+////
+
+[[building-a-component]]
+== Custom Component
+
+A Dueuno component joins a server-side model to a GSP template and a browser-side JavaScript class. CSS supplies its presentation. This chapter builds the `PieChart` component found in the `dueuno-extra` plugin; it uses Chart.js, but the same structure applies to components that do not depend on an external library.
+
+The four parts have distinct responsibilities:
+
+* The Groovy class receives the component configuration and selects the GSP template.
+* The GSP renders HTML and exposes the component name, properties, and events through `data-21-*` attributes.
+* The JavaScript class reads those attributes and initializes browser behaviour.
+* The CSS file styles the component, while asset manifests load the CSS, JavaScript, and any third-party library in the correct order.
+
+=== Structure
+
+In a reusable Grails plugin, keep the files under matching package and asset paths. `dueuno-extra` uses this layout:
+
+[source,text]
+----
+src/main/groovy/dueuno/elements/components/
+    Chart.groovy
+    PieChart.groovy
+grails-app/views/dueuno/elements/components/
+    _PieChart.gsp
+grails-app/assets/dueuno/elements/components/
+    PieChart.js
+    PieChart.css
+grails-app/assets/dueuno/elements/
+    elements-extra.js
+    elements-extra.css
+grails-app/assets/dueuno/libs/
+    chart-4.4.2.min.js
+grails-app/init/dueuno/elements/extra/
+    BootStrap.groovy
+----
+
+The component does not have to use the `dueuno.elements.components` package. If it uses a different GSP directory, set `viewPath` accordingly in the Groovy class. The GSP partial name must match `viewTemplate`, which defaults to the Groovy class's simple name.
+
+For a component local to an application, the same pieces can live in that application's source, views, and asset directories. It still needs an asset bundle and that bundle must be registered as shown below.
+
+The source excerpts below omit the license comment for readability. Every new source file committed to Dueuno must include the canonical ASF license header used by the surrounding files.
+
+=== Groovy Model
+
+Every component extends `dueuno.elements.core.Component` and accepts a `Map` constructor argument. The base constructor requires a unique `id`, registers any event arguments, and initializes common properties such as `visible`, `display`, `readonly`, `cssClass`, and `containerSpecs`.
+
+The example extracts shared chart data into an abstract class:
+
+.Create `src/main/groovy/dueuno/elements/components/Chart.groovy`
+[source,groovy]
+----
+package dueuno.elements.components
+
+import dueuno.elements.core.Component
+import groovy.transform.CompileStatic
+
+@CompileStatic
+abstract class Chart extends Component {
+
+    List values
+    List labels
+    List colors
+
+    Chart(Map args) {
+        super(args)
+
+        viewPath = '/dueuno/elements/components/'
+
+        values = args.values as List ?: []
+        labels = args.labels as List ?: []
+        colors = args.colors as List ?: []
+
+        containerSpecs.multiline = true
+    }
+
+    @Override
+    String getPropertiesAsJSON(Map properties = [:]) {
+        Map thisProperties = [
+                values: values,
+                labels: labels,
+                colors: colors,
+        ]
+
+        return super.getPropertiesAsJSON(thisProperties + properties)
+    }
+}
+----
+
+`getPropertiesAsJSON()` is the contract between Groovy and JavaScript. Always delegate to `super`: the base implementation adds standard component properties, removes empty values, and safely encodes the result as JSON. Do not build JSON or HTML attributes by string concatenation.
+
+The concrete component supplies layout defaults:
+
+.Create `src/main/groovy/dueuno/elements/components/PieChart.groovy`
+[source,groovy]
+----
+package dueuno.elements.components
+
+import groovy.transform.CompileStatic
+
+@CompileStatic
+class PieChart extends Chart {
+
+    PieChart(Map args) {
+        super(args)
+
+        containerSpecs.acceptedCols = [3, 6, 12]
+        containerSpecs.rows = 8
+    }
+}
+----
+
+`containerSpecs` contains hints for a parent container. Here the chart accepts widths of 3, 6, or 12 columns and requests eight rows. A parent that does not use these hints may ignore them.
+
+=== GSP Template
+
+Dueuno renders a component using its `view` and passes the component itself to the template as `c`. Because `PieChart` keeps the default `viewTemplate`, its view is `/dueuno/elements/components/PieChart`, resolved to the `_PieChart.gsp` partial.
+
+.Create `grails-app/views/dueuno/elements/components/_PieChart.gsp`
+[source,gsp]
+----
+<div class="component-chart-pie ${c.cssClass}"
+     data-21-component="${c.className}"
+     data-21-id="${c.id}"
+     data-21-properties="${c.propertiesAsJSON}"
+     data-21-events="${c.eventsAsJSON}"
+><canvas id="${c.id}"></canvas></div>
+----
+
+The root element is the component boundary. Preserve these attributes:
+
+* `data-21-component` identifies the registered JavaScript class. The value is case-sensitive.
+* `data-21-id` identifies this instance and must be unique on the page.
+* `data-21-properties` carries the JSON produced by the Groovy class.
+* `data-21-events` carries events registered by the base `Component` class.
+
+Use `${c.cssClass}` so callers can add application-specific styling. When a component contains child Dueuno components, render them with `<render:component>` or `<render:componentList>` instead of duplicating their markup.
+
+=== JavaScript
+
+The JavaScript class name must match the value of `c.className`. Extend the Dueuno `Component` class, implement the lifecycle methods the component needs, and register the class after its declaration.
+
+.Create `grails-app/assets/dueuno/elements/components/PieChart.js`
+[source,javascript]
+----
+class PieChart extends Component {
+    static finalize($element, $root) {
+        let properties = Component.getProperties($element);
+        let canvas = $element.find('canvas')[0];
+
+        new Chart(canvas, {
+            type: 'pie',
+            options: {
+                maintainAspectRatio: false,
+                events: ['mousemove', 'touchstart'],
+            },
+            data: {
+                labels: properties.labels,
+                datasets: [{
+                    label: '',
+                    data: properties.values,
+                    backgroundColor: properties.colors,
+                }],
+            }
+        });
+    }
+}
+
+Component.register(PieChart);
+----
+
+Dueuno calls `finalize($element, $root)` after the HTML has been inserted into the page. `$element` is the component's jQuery element and `$root` is the area being initialized. `Component.getProperties($element)` reads the server-side JSON contract. Scoping selectors to `$element` prevents one instance from changing another.
+
+The base JavaScript class also provides helpers such as `Component.getId()`, `getProperty()`, `getEvent()`, and `getValues()`. Components that expose mutable standard properties can implement static setters following existing components, for example `static setText($element, value)`.
+
+Finally, add the component styling:
+
+.Create `grails-app/assets/dueuno/elements/components/PieChart.css`
+[source,css]
+----
+.component-chart-pie {
+    width: 100%;
+    padding: 0.75rem;
+}
+----
+
+Prefix selectors with a component-specific class so styles do not leak into the rest of the application.
+
+=== Assets
+
+Create one JavaScript and one CSS manifest for the component library. Dependencies must appear before the component that uses them.
+
+.Create `grails-app/assets/dueuno/elements/elements-extra.js`
+[source,javascript]
+----
+//= require libs/chart-4.4.2.min
+//
+//= require components/PieChart
+----
+
+.Create `grails-app/assets/dueuno/elements/elements-extra.css`
+[source,css]
+----
+/*
+ *= require components/PieChart
+ */
+----
+
+If you add more components, include each asset in these manifests. Do not add a runtime dependency merely for convenience; reusable third-party assets require an appropriate license review and attribution.
+
+Register the bundle during application or plugin startup:
+
+.Edit `grails-app/init/dueuno/elements/extra/BootStrap.groovy`
+[source,groovy]
+----
+package dueuno.elements.extra
+
+import dueuno.application.ApplicationService
+import groovy.transform.CompileStatic
+
+@CompileStatic
+class BootStrap {
+
+    ApplicationService applicationService
+
+    def init = {
+        applicationService.registerComponents('elements/elements-extra')
+    }
+
+    def destroy = {
+    }
+}
+----
+
+Pass the common asset path without the `.js` or `.css` extension. Dueuno adds both compiled assets to every page. Registration is idempotent, but should normally happen only once for each bundle.
+
+=== Usage
+
+Once the plugin and its assets are available, add the component like any other Dueuno component. This example places it in a form so the container can apply its column and row specifications:
+
+[source,groovy]
+----
+package com.example
+
+import dueuno.elements.ElementsController
+import dueuno.elements.components.PieChart
+import dueuno.elements.contents.ContentForm
+
+class ChartsController implements ElementsController {
+
+    def index() {
+        def c = createContent(ContentForm)
+        c.header.removeNextButton()
+
+        c.form.addField(
+                class: PieChart,
+                id: 'salesByBrand',
+                labels: ['FIAT', 'BMW', 'AUDI'],
+                values: [100, 133, 167],
+                colors: [
+                        'rgba(200, 0, 0, 0.6)',
+                        'rgba(0, 200, 0, 0.6)',
+                        'rgba(0, 0, 200, 0.6)',
+                ],
+                cols: 6,
+        )
+
+        display content: c
+    }
+}
+----
+
+The `id` must be unique within the page. Constructor arguments become Groovy properties, `getPropertiesAsJSON()` transfers the selected values, the GSP renders the component boundary, and `PieChart.finalize()` creates the Chart.js instance.
+
+=== Checklist
+
+Before considering a new component complete, verify that:
+
+* the Groovy class calls `super(args)` and has a unique `id` when instantiated;
+* `viewPath` and `viewTemplate` resolve to the intended GSP partial;
+* the GSP root contains the four `data-21-*` attributes and includes `c.cssClass`;
+* the Groovy and JavaScript class names match exactly;
+* the JavaScript class calls `Component.register(...)`;
+* the manifests load third-party libraries before dependent code and include the CSS file;
+* the asset bundle is registered with `applicationService.registerComponents(...)`;
+* two instances can appear on the same page without sharing DOM state;
+* empty, missing, and representative property values are handled; and
+* server-side tests cover property/default behaviour, while a browser or integration test covers JavaScript initialization and interaction where practical.
