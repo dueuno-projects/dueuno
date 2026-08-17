@@ -66,6 +66,10 @@ class HiddenField extends Control {
      */
     @Override
     void setValue(Object value) {
+        if (!valueType || valueType in [Type.NA.toString(), Type.STRING.toString()]) {
+            valueType = Types.serializeValue(value)?.type ?: Type.STRING
+        }
+
         if (ObjectUtils.hasId(value)) {
             super.setValue(value['id'])
         } else {

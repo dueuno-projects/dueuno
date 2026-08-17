@@ -76,24 +76,29 @@ class DateTimeField extends Control {
         addContainerAttribute('data-td-target-input', 'nearest')
         addContainerAttribute('data-td-target-toggle', 'nearest')
 
-        if (args.min in LocalTime) {
-            min = LocalDateTime.of(LocalDate.of(1900, 1, 1), args.min as LocalTime)
-        } else if (args.min in LocalDate) {
-            min = LocalDateTime.of(args.min as LocalDate, LocalTime.of(0, 0))
-        } else if (args.min in LocalDateTime) {
-            min = args.min as LocalDateTime
-        }
-
-        if (args.max in LocalTime) {
-            max = LocalDateTime.of(LocalDate.of(1900, 1, 1), args.max as LocalTime)
-        } else if (args.max in LocalDate) {
-            max = LocalDateTime.of(args.max as LocalDate, LocalTime.of(0, 0))
-        } else if (args.max in LocalDateTime) {
-            max = args.max as LocalDateTime
-        }
+        setMin(args.min)
+        setMax(args.max)
 
         timeStep = args.timeStep as Integer
         autoPopulate = args.autoPopulate as Boolean ?: false
+    }
+
+    void setMin(Object value) {
+        this.@min = normalizeBoundary(value)
+    }
+
+    void setMax(Object value) {
+        this.@max = normalizeBoundary(value)
+    }
+
+    private static LocalDateTime normalizeBoundary(Object value) {
+        if (value in LocalTime) {
+            return LocalDateTime.of(LocalDate.of(1900, 1, 1), value as LocalTime)
+        }
+        if (value in LocalDate) {
+            return LocalDateTime.of(value as LocalDate, LocalTime.of(0, 0))
+        }
+        return value in LocalDateTime ? value as LocalDateTime : null
     }
 
     /**

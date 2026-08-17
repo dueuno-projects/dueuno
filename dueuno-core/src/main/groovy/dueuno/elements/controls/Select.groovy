@@ -52,6 +52,15 @@ class Select extends Control {
     /** Optional closure invoked for each option during option-list construction. */
     Closure forEachOption
 
+    /** Property names used to build recordset option keys. */
+    List<String> keys
+
+    /** Separator used when a recordset option key contains multiple properties. */
+    String keysSeparator
+
+    /** Values excluded when options are built from a list or enum. */
+    List exclude
+
     /** Action button rendered adjacent to the selector (hidden by default). */
     Button actions
 
@@ -97,7 +106,10 @@ class Select extends Control {
         autoSelect = (args.autoSelect == null) ? true : args.autoSelect
         multiple = (args.multiple == null) ? false : args.multiple
         forEachOption = args.forEachOption as Closure ?: null
-        placeholder = args.placeholder ? message(args.placeholder as String) : message('control.select.placeholder')
+        keys = args.keys as List<String> ?: []
+        keysSeparator = args.keysSeparator ?: ','
+        exclude = args.exclude as List ?: []
+        setPlaceholder(args.placeholder as String)
 
         searchMinInputLength = (args.searchMinInputLength == null) ? 0 : args.searchMinInputLength as Integer
 
@@ -197,6 +209,57 @@ class Select extends Control {
      */
     Map getOptions() {
         return options.collectEntries { [(it.id): it.text] }
+    }
+
+    void setPlaceholder(String value) {
+        placeholder = message(value ?: 'control.select.placeholder')
+    }
+
+    void setOptions(Map value) {
+        search = true
+        allowClear = false
+        applyOptions(Select.options(optionConfiguration(options: value)))
+    }
+
+    void setOptionsFromList(List value) {
+        search = false
+        allowClear = false
+        applyOptions(Select.optionsFromList(optionConfiguration(list: value, exclude: exclude)))
+    }
+
+    void setOptionsFromEnum(Class value) {
+        search = false
+        allowClear = false
+        applyOptions(Select.optionsFromEnum(optionConfiguration(enum: value, exclude: exclude)))
+    }
+
+    void setOptionsFromRecordset(Collection value) {
+        search = true
+        allowClear = true
+        applyOptions(Select.optionsFromRecordset(optionConfiguration(
+            recordset: value,
+            keys: keys,
+            keysSeparator: keysSeparator,
+            renderTextPrefix: false,
+        )))
+    }
+
+    private Map optionConfiguration(Map source) {
+        return [
+            prettyPrinter   : prettyPrinter,
+            transformer     : transformer,
+            forEachOption   : forEachOption,
+            textPrefix      : textPrefix,
+            renderTextPrefix: renderTextPrefix == null ? true : renderTextPrefix,
+            locale          : locale,
+        ] + source
+    }
+
+    private void applyOptions(List<Map<String, String>> value) {
+        this.@options = value ?: []
+        if (autoSelect && !nullable && options.size() == 1) {
+            defaultValue = options[0]
+        }
     }
 
     /**

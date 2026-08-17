@@ -169,6 +169,47 @@ class Form extends Component {
     }
 
     /**
+     * Adds a field and configures the created component and its {@link FormField}
+     * wrapper through typed closure parameters.
+     * <p>
+     * This overload is intended for IDE-assisted configuration. Declare the closure
+     * parameters using the concrete component type and {@code FormField}; the IDE can
+     * then complete their properties and methods without relying on map keys.
+     * </p>
+     * <pre>{@code
+     * form.addField(TextField, 'name') { TextField control, FormField field ->
+     *     control.placeholder = 'Full name'
+     *     field.label = 'Name'
+     *     field.cols = 6
+     * }
+     * }</pre>
+     * <p>
+     * The component and wrapper are first created with the same defaults and inferred
+     * constraints used by {@link #addField(Map)}. The closure then configures the
+     * component first and the field second.
+     * </p>
+     *
+     * @param clazz concrete {@link Component} or {@link Control} class to create
+     * @param id unique component identifier within the form
+     * @param configuration closure receiving the created component and field wrapper
+     * @param <T> concrete component type
+     * @return the newly created and configured {@link FormField}
+     */
+    @Requires({ clazz && id && configuration })
+    <T extends Component> FormField addField(
+        Class<T> clazz,
+        String id,
+        Closure configuration
+    ) {
+        FormField field = addField(class: clazz, id: id)
+        configuration.call(field.component as T, field)
+        if (field.component in Control) {
+            setDefaultValue(field.component as Control)
+        }
+        return field
+    }
+
+    /**
      * Resolves the GORM or {@link grails.validation.Validateable} constraints for the
      * named field in the given class, following dot-notation paths recursively.
      * Returns an empty map when the class or field cannot be found, or when the class
@@ -380,4 +421,3 @@ class Form extends Component {
     }
 
 }
-

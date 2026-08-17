@@ -60,12 +60,19 @@ class QuantityField extends NumberField {
         viewTemplate = 'QuantityField'
         valueType = Types.getTypeName(Quantity)
 
-        decimals = args.decimals == null ? 2 : args.decimals as Integer
+        setDecimals(args.decimals == null ? 2 : args.decimals as Integer)
         negative = (args.negative == null) ? false : args.negative
-        unitOptions = unitListToOptions(args.availableUnits as List)
+        setAvailableUnits(args.availableUnits as List<QuantityUnit>)
         setDefaultUnit(args.defaultUnit as QuantityUnit)
+    }
 
-        inputMode = decimals ? TextFieldInputMode.DECIMAL : TextFieldInputMode.NUMERIC
+    void setAvailableUnits(List<QuantityUnit> value) {
+        unitOptions = unitListToOptions(value)
+        setDefaultUnit(null)
+    }
+
+    List<QuantityUnit> getAvailableUnits() {
+        return unitOptions.keySet().collect { QuantityUnit.valueOf(it) }
     }
 
     /**

@@ -50,11 +50,17 @@ class MoneyField extends NumberField {
         viewTemplate = 'MoneyField'
         valueType = Types.getTypeName(Money)
 
-        decimals = args.decimals == null ? 2 : args.decimals as Integer
+        setDecimals(args.decimals == null ? 2 : args.decimals as Integer)
         negative = (args.negative == null) ? false : args.negative
-        prefix = args.currency as String ?: 'EUR'
+        setCurrency(args.currency as String)
+    }
 
-        inputMode = decimals ? TextFieldInputMode.DECIMAL : TextFieldInputMode.NUMERIC
+    void setCurrency(String value) {
+        prefix = value ?: 'EUR'
+    }
+
+    String getCurrency() {
+        return prefix
     }
 
     /**

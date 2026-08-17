@@ -51,6 +51,18 @@ class MultipleCheckbox extends Control {
     /** Map of option ID → {@link Checkbox} instance for each rendered checkbox. */
     Map<String, Checkbox> checkboxes
 
+    /** Property names used to build recordset option keys. */
+    List<String> keys
+
+    /** Separator used when a recordset option key contains multiple properties. */
+    String keysSeparator
+
+    /** Values excluded when options are built from a list or enum. */
+    List exclude
+
+    /** Closure invoked once for every option while the option list is built. */
+    Closure forEachOption
+
     /**
      * Creates a {@code MultipleCheckbox} instance configured from the supplied argument map.
      * Resolves options from one of {@code optionsFromRecordset}, {@code optionsFromList},
@@ -71,6 +83,10 @@ class MultipleCheckbox extends Control {
 
         simple = args.simple == null ? false : args.simple
         prettyPrinterProperties.textPrefix = args.textPrefix ?: controllerName
+        keys = args.keys as List<String> ?: []
+        keysSeparator = args.keysSeparator ?: ','
+        exclude = args.exclude as List ?: []
+        forEachOption = args.forEachOption as Closure
 
         if (args.optionsFromRecordset) {
             options = Select.optionsFromRecordset(
@@ -195,6 +211,7 @@ class MultipleCheckbox extends Control {
      */
     @Override
     void setReadonly(Boolean isReadonly) {
+        super.setReadonly(isReadonly)
         for (checkboxEntry in checkboxes) {
             Checkbox checkbox = checkboxEntry.value
             checkbox.readonly = isReadonly
@@ -213,6 +230,60 @@ class MultipleCheckbox extends Control {
             Checkbox checkbox = checkboxEntry.value
             checkbox.simple = isSimple
         }
+    }
+
+    void setOptions(Map value) {
+        applyOptions(Select.options(optionConfiguration(options: value)))
+    }
+
+    Map getOptions() {
+        return options.collectEntries { [(it.id): it.text] }
+    }
+
+    void setOptionsFromList(List value) {
+        applyOptions(Select.optionsFromList(optionConfiguration(list: value, exclude: exclude)))
+    }
+
+    void setOptionsFromEnum(Class value) {
+        applyOptions(Select.optionsFromEnum(optionConfiguration(enum: value, exclude: exclude)))
+    }
+
+    void setOptionsFromRecordset(Collection value) {
+        applyOptions(Select.optionsFromRecordset(optionConfiguration(
+            recordset: value,
+            keys: keys,
+            keysSeparator: keysSeparator,
+            renderTextPrefix: false,
+        )))
+    }
+
+    private Map optionConfiguration(Map source) {
+        return [
+            forEachOption   : forEachOption,
+            textPrefix      : textPrefix,
+            renderTextPrefix: renderTextPrefix == null ? true : renderTextPrefix,
+            locale          : locale,
+        ] + source
+    }
+
+    private void applyOptions(List<Map<String, String>> value) {
+        this.@options = value ?: []
+        checkboxes = [:]
+        for (option in options) {
+            String optionId = option.id
+            Checkbox checkbox = new Checkbox(
+                id: getId() + '_' + optionId,
+                optionKey: optionId,
+                optionValue: option.text,
+                simple: simple,
+                readonly: readonly,
+                primaryTextColor: primaryTextColor,
+                primaryBackgroundColor: primaryBackgroundColor,
+                primaryBackgroundColorAlpha: primaryBackgroundColorAlpha,
+            )
+            checkboxes.put(optionId, checkbox)
+        }
+        renderValue()
     }
 
 }

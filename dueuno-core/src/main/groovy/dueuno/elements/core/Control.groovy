@@ -180,6 +180,30 @@ abstract class Control extends Component {
         return prettyPrinterProperties.prettyPrinter
     }
 
+    void setRenderTextPrefix(Boolean value) {
+        prettyPrinterProperties.renderTextPrefix = value
+    }
+
+    Boolean getRenderTextPrefix() {
+        return prettyPrinterProperties.renderTextPrefix
+    }
+
+    void setTextPrefix(String value) {
+        prettyPrinterProperties.textPrefix = value
+    }
+
+    String getTextPrefix() {
+        return prettyPrinterProperties.textPrefix
+    }
+
+    void setTextArgs(List value) {
+        prettyPrinterProperties.textArgs = value
+    }
+
+    List getTextArgs() {
+        return prettyPrinterProperties.textArgs
+    }
+
     /**
      * Sets the text style(s) for this control. Accepts a single {@link TextStyle},
      * a {@link List} of {@link TextStyle} values, or any other value (defaults to

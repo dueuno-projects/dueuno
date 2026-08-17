@@ -652,6 +652,48 @@ c.form.with {
 }
 ----
 
+As an alternative to map-based configuration, pass the component class and id as
+declared arguments and configure the created component and `FormField` through typed
+closure parameters. Declaring both parameter types enables IDE completion for their
+properties and methods:
+
+[source,groovy]
+----
+c.form.addField(TextField, 'title') { TextField control, FormField field ->
+    control.placeholder = 'Book title'
+    control.autocomplete = true
+
+    field.label = 'Title'
+    field.help = 'Enter the complete title'
+    field.cols = 6
+}
+----
+
+The closure runs after Dueuno has created both objects and applied the usual defaults
+and validation constraints. Use the first parameter for the control or component and
+the second for layout and field metadata. Dueuno applies a control's `defaultValue`
+after the closure has run.
+
+Properties with derived state can also be configured this way. For example, setting
+`decimals` updates a number field's input mode, date boundaries accept `LocalDate`,
+`LocalTime`, or `LocalDateTime`, and option-based controls expose typed option-source
+setters:
+
+[source,groovy]
+----
+c.form.addField(Select, 'status') { Select control, FormField field ->
+    control.exclude = [Status.ARCHIVED]
+    control.optionsFromEnum = Status
+    control.multiple = true
+
+    field.cols = 6
+}
+----
+
+Configure `keys`, `keysSeparator`, `exclude`, `forEachOption`, and pretty-printing
+properties before assigning `optionsFromRecordset`, `optionsFromList`, or
+`optionsFromEnum`, because assigning the option source builds the resolved options.
+
 ==== Properties
 [cols="1,1,1,7a"]
 |===
@@ -685,7 +727,9 @@ c.form.with {
 |Method|Description
 
 |`addField()`
-|Adds a form field. See <<form-field>> and <<controls>>
+|Adds a form field. Use `addField(Map)` for map-based construction, or
+`addField(Class, String, Closure)` for typed component and field configuration.
+See <<form-field>> and <<controls>>.
 |===
 
 [[form-field]]

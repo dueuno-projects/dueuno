@@ -64,12 +64,16 @@ class NumberField extends TextField {
         viewTemplate = 'TextField'
         valueType = Type.NUMBER
         pattern = args.pattern ?: '^[0-9\\-\\.\\,]*$'
-        decimals = args.decimals as Integer ?: 0
+        setDecimals(args.decimals as Integer ?: 0)
         negative = (args.negative == null) ? true : args.negative
         min = args.min as Integer
         max = args.max as Integer
 
         inputType = TextFieldInputType.TEXT
+    }
+
+    void setDecimals(Integer value) {
+        decimals = value ?: 0
         inputMode = decimals ? TextFieldInputMode.DECIMAL : TextFieldInputMode.NUMERIC
     }
 
