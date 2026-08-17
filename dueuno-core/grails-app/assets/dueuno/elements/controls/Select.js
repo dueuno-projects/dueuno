@@ -106,19 +106,24 @@ class Select extends Control {
     }
 
     /**
-     * Moves focus forward from a VirtualSelect control. VirtualSelect handles
-     * Tab internally when search is enabled, which can prevent the browser
-     * from reaching the field help or the next enabled form control.
+     * Moves focus from a VirtualSelect control. VirtualSelect handles Tab
+     * internally, which can make navigation depend on its focusable children
+     * (for example, the clear button is only available for selected values).
      */
     static onKeyDown(event) {
-        if (event.key !== 'Tab' || event.shiftKey) return;
+        if (event.key !== 'Tab') return;
 
-        let $help = $(event.currentTarget)
-            .closest('.input-group')
-            .children('.component-help:not(:disabled)');
-        let $next = $help.length
-            ? $help
-            : Select.getAdjacentControl($(event.currentTarget), 1);
+        let $next;
+        if (event.shiftKey) {
+            $next = Select.getAdjacentControl($(event.currentTarget), -1);
+        } else {
+            let $help = $(event.currentTarget)
+                .closest('.input-group')
+                .children('.component-help:not(:disabled)');
+            $next = $help.length
+                ? $help
+                : Select.getAdjacentControl($(event.currentTarget), 1);
+        }
         if (!$next.length) return;
 
         event.preventDefault();
