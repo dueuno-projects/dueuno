@@ -232,22 +232,47 @@ class MultipleCheckbox extends Control {
         }
     }
 
+    /**
+     * Replaces the available choices with entries from the supplied map.
+     *
+     * @param value map of option IDs to display values
+     */
     void setOptions(Map value) {
         applyOptions(Select.options(optionConfiguration(options: value)))
     }
 
+    /**
+     * Returns the available choices as a map of option IDs to display text.
+     *
+     * @return the configured options
+     */
     Map getOptions() {
         return options.collectEntries { [(it.id): it.text] }
     }
 
+    /**
+     * Replaces the available choices with entries derived from a list.
+     *
+     * @param value the values from which to create the options
+     */
     void setOptionsFromList(List value) {
         applyOptions(Select.optionsFromList(optionConfiguration(list: value, exclude: exclude)))
     }
 
+    /**
+     * Replaces the available choices with the constants of an enum.
+     *
+     * @param value the enum class from which to create the options
+     */
     void setOptionsFromEnum(Class value) {
         applyOptions(Select.optionsFromEnum(optionConfiguration(enum: value, exclude: exclude)))
     }
 
+    /**
+     * Replaces the available choices with entries derived from a record collection.
+     *
+     * @param value the records from which to create the options
+     */
     void setOptionsFromRecordset(Collection value) {
         applyOptions(Select.optionsFromRecordset(optionConfiguration(
             recordset: value,

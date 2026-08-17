@@ -59,8 +59,8 @@ abstract class Control extends Component {
     Boolean nullable
 
     /**
-     * Regex pattern built from a set of forbidden characters. Input is rejected if it matches
-     * any character in this set. Takes precedence over {@code validChars} and {@code pattern}.
+     * Regex pattern that accepts input containing none of a set of forbidden characters.
+     * Takes precedence over {@code validChars} and {@code pattern}.
      * Set via {@link #setInvalidChars(String)}.
      */
     String invalidChars
@@ -129,7 +129,7 @@ abstract class Control extends Component {
      * (e.g. by pressing Enter). If an {@code enter} event is already registered, this
      * method has no effect.
      *
-     * @param args the event definition arguments passed to {@link Component#on(Map)}
+     * @param args the event definition arguments passed to {@link Component#on(java.util.Map)}
      * @return this control, for chaining
      */
     Component onSubmit(Map args) {
@@ -164,7 +164,8 @@ abstract class Control extends Component {
      * Sets the name of the {@link PrettyPrinter} template used to render
      * this control's value.
      *
-     * @param value the template name registered with {@link PrettyPrinter#register}
+     * @param value the template name registered with
+     *              {@link PrettyPrinter#register(java.lang.String, java.lang.String)}
      */
     void setPrettyPrinter(String value) {
         prettyPrinterProperties.prettyPrinter = value
@@ -180,26 +181,56 @@ abstract class Control extends Component {
         return prettyPrinterProperties.prettyPrinter
     }
 
+    /**
+     * Sets whether the text prefix is included when rendering this control's value.
+     *
+     * @param value {@code true} to include the text prefix
+     */
     void setRenderTextPrefix(Boolean value) {
         prettyPrinterProperties.renderTextPrefix = value
     }
 
+    /**
+     * Returns whether the text prefix is included when rendering this control's value.
+     *
+     * @return {@code true} when the text prefix is included
+     */
     Boolean getRenderTextPrefix() {
         return prettyPrinterProperties.renderTextPrefix
     }
 
+    /**
+     * Sets the prefix used to resolve localized text when rendering this control's value.
+     *
+     * @param value the text prefix
+     */
     void setTextPrefix(String value) {
         prettyPrinterProperties.textPrefix = value
     }
 
+    /**
+     * Returns the prefix used to resolve localized text when rendering this control's value.
+     *
+     * @return the text prefix
+     */
     String getTextPrefix() {
         return prettyPrinterProperties.textPrefix
     }
 
+    /**
+     * Sets the arguments used to resolve localized text when rendering this control's value.
+     *
+     * @param value the text arguments
+     */
     void setTextArgs(List value) {
         prettyPrinterProperties.textArgs = value
     }
 
+    /**
+     * Returns the arguments used to resolve localized text when rendering this control's value.
+     *
+     * @return the text arguments
+     */
     List getTextArgs() {
         return prettyPrinterProperties.textArgs
     }

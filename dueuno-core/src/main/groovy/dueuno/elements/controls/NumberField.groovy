@@ -72,6 +72,11 @@ class NumberField extends TextField {
         inputType = TextFieldInputType.TEXT
     }
 
+    /**
+     * Sets the number of decimal places accepted by this field and updates its input mode.
+     *
+     * @param value the number of decimal places; {@code null} defaults to {@code 0}
+     */
     void setDecimals(Integer value) {
         decimals = value ?: 0
         inputMode = decimals ? TextFieldInputMode.DECIMAL : TextFieldInputMode.NUMERIC

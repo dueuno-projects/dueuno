@@ -83,10 +83,24 @@ class DateTimeField extends Control {
         autoPopulate = args.autoPopulate as Boolean ?: false
     }
 
+    /**
+     * Sets the earliest date and time accepted by this field.
+     * A {@link LocalDate} is converted to midnight and a {@link LocalTime} is associated
+     * with 1 January 1900.
+     *
+     * @param value the minimum boundary, or {@code null} for no minimum
+     */
     void setMin(Object value) {
         this.@min = normalizeBoundary(value)
     }
 
+    /**
+     * Sets the latest date and time accepted by this field.
+     * A {@link LocalDate} is converted to midnight and a {@link LocalTime} is associated
+     * with 1 January 1900.
+     *
+     * @param value the maximum boundary, or {@code null} for no maximum
+     */
     void setMax(Object value) {
         this.@max = normalizeBoundary(value)
     }

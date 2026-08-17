@@ -55,10 +55,20 @@ class MoneyField extends NumberField {
         setCurrency(args.currency as String)
     }
 
+    /**
+     * Sets the ISO currency code displayed by this field.
+     *
+     * @param value the currency code; defaults to {@code EUR} when empty or {@code null}
+     */
     void setCurrency(String value) {
         prefix = value ?: 'EUR'
     }
 
+    /**
+     * Returns the ISO currency code displayed by this field.
+     *
+     * @return the configured currency code
+     */
     String getCurrency() {
         return prefix
     }

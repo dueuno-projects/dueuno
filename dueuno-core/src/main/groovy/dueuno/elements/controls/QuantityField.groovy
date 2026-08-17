@@ -66,11 +66,21 @@ class QuantityField extends NumberField {
         setDefaultUnit(args.defaultUnit as QuantityUnit)
     }
 
+    /**
+     * Sets the units available for selection and resets the default unit.
+     *
+     * @param value the available quantity units
+     */
     void setAvailableUnits(List<QuantityUnit> value) {
         unitOptions = unitListToOptions(value)
         setDefaultUnit(null)
     }
 
+    /**
+     * Returns the units currently available for selection.
+     *
+     * @return the available quantity units
+     */
     List<QuantityUnit> getAvailableUnits() {
         return unitOptions.keySet().collect { QuantityUnit.valueOf(it) }
     }

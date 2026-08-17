@@ -211,28 +211,53 @@ class Select extends Control {
         return options.collectEntries { [(it.id): it.text] }
     }
 
+    /**
+     * Sets the localized placeholder displayed when no option is selected.
+     *
+     * @param value the placeholder message code; defaults to {@code control.select.placeholder}
+     */
     void setPlaceholder(String value) {
         placeholder = message(value ?: 'control.select.placeholder')
     }
 
+    /**
+     * Replaces the available choices with entries from the supplied map.
+     *
+     * @param value map of option IDs to display values
+     */
     void setOptions(Map value) {
         search = true
         allowClear = false
         applyOptions(Select.options(optionConfiguration(options: value)))
     }
 
+    /**
+     * Replaces the available choices with entries derived from a list.
+     *
+     * @param value the values from which to create the options
+     */
     void setOptionsFromList(List value) {
         search = false
         allowClear = false
         applyOptions(Select.optionsFromList(optionConfiguration(list: value, exclude: exclude)))
     }
 
+    /**
+     * Replaces the available choices with the constants of an enum.
+     *
+     * @param value the enum class from which to create the options
+     */
     void setOptionsFromEnum(Class value) {
         search = false
         allowClear = false
         applyOptions(Select.optionsFromEnum(optionConfiguration(enum: value, exclude: exclude)))
     }
 
+    /**
+     * Replaces the available choices with entries derived from a record collection.
+     *
+     * @param value the records from which to create the options
+     */
     void setOptionsFromRecordset(Collection value) {
         search = true
         allowClear = true
