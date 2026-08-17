@@ -197,7 +197,7 @@
 .control-select .vscomp-option-text {
     margin: calc(var(--elements-spacing-y) / 2) 0;
     border-radius: var(--bs-border-radius-sm);
-    padding: .55rem;
+    padding: .575rem;
     padding-left: 1rem;
 }
 
