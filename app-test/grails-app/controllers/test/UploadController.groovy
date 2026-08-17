@@ -67,7 +67,7 @@ class UploadController implements ElementsController {
                     onUpload: 'onUploadFile',
                     onSuccess: 'onUploadSuccess',
                     maxFiles: 1,
-                    acceptedFiles: ['.jpg', '.jpeg'],
+                    acceptedFileTypes: ['image/jpeg', 'image/png', 'application/pdf'],
                     submit: 'form',
                     loading: true,
                     rows: 5,

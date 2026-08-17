@@ -16,6 +16,7 @@ package dueuno.elements.controls
 
 import dueuno.elements.core.Control
 import dueuno.types.Type
+import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.transform.CompileStatic
 import org.grails.web.util.WebUtils
 import org.springframework.web.multipart.MultipartFile
@@ -23,10 +24,10 @@ import org.springframework.web.multipart.MultipartFile
 import java.nio.file.Paths
 
 /**
- * A file-upload control backed by Dropzone.js.
+ * A file-upload control backed by FilePond.
  * <p>
- * Supports drag-and-drop and click-to-browse file selection, configurable accepted MIME types,
- * file count and size limits, optional thumbnail generation, and localised status messages.
+ * Supports drag-and-drop and click-to-browse file selection, single or multiple uploads,
+ * configurable accepted MIME types, file count and size limits, and localised status messages.
  * The value type is {@link dueuno.types.Type#LIST} (a list of uploaded file references).
  * Uploaded files can be retrieved server-side via {@link #getFilename()} and persisted via
  * {@link #save(String, String)}.
@@ -38,46 +39,30 @@ import java.nio.file.Paths
 @CompileStatic
 class Upload extends Control {
 
-    /** i18n key (or literal text) for the drop-zone invitation message. */
-    String text
+    /** i18n key (or literal text) for FilePond's idle label. */
+    String labelIdle
 
-    /** i18n key (or literal text) shown when the control is disabled. */
-    String textDisabled
+    /** Whether multiple files can be added. Defaults to {@code false}. */
+    Boolean allowMultiple
 
-    /** List of accepted MIME types or file extensions (e.g. {@code ["image/*", ".pdf"]}). Empty means all types are accepted. */
-    List acceptedFiles
+    /** List of accepted MIME types (e.g. {@code ["image/*", "application/pdf"]}). Empty means all types are accepted. */
+    List acceptedFileTypes
 
     /** Maximum number of files that can be uploaded; {@code null} means no limit. */
     Integer maxFiles
 
-    /** Maximum size of a single file in megabytes. Defaults to {@code 20} MB. */
-    Integer maxFileSize
-
-    /** Maximum file size in megabytes for which a thumbnail is generated. Defaults to {@code 17} MB. */
-    Integer maxThumbnailFilesize
-
-    /** Width in pixels of generated thumbnails; {@code null} uses the Dropzone default. */
-    Integer thumbnailWidth
-
-    /** Height in pixels of generated thumbnails; {@code null} uses the Dropzone default. */
-    Integer thumbnailHeight
-
-    /** When {@code true}, file preview thumbnails are disabled. Defaults to {@code false}. */
-    Boolean disablePreviews
+    /** Maximum size of a single file, expressed as a FilePond size string (e.g. {@code "20MB"}). */
+    String maxFileSize
 
     /**
      * Creates an {@code Upload} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     * {@code text} ({@link String}, default {@code "control.upload.message"}),
-     * {@code textDisabled} ({@link String}, default {@code "control.upload.disabled"}),
-     * {@code acceptedFiles} ({@link List}),
+     * {@code labelIdle} ({@link String}, default {@code "control.upload.message"}),
+     * {@code allowMultiple} ({@link Boolean}, default {@code false}),
+     * {@code acceptedFileTypes} ({@link List}),
      * {@code maxFiles} ({@link Integer}),
-     * {@code maxFileSize} ({@link Integer}, default {@code 20}),
-     * {@code maxThumbnailFilesize} ({@link Integer}, default {@code 17}),
-     * {@code thumbnailWidth} ({@link Integer}),
-     * {@code thumbnailHeight} ({@link Integer}),
-     * {@code disablePreviews} ({@link Boolean}, default {@code false}),
+     * {@code maxFileSize} ({@link String}, default {@code "20MB"}),
      *             plus all keys accepted by {@link Control#Control(Map)}
      */
     Upload(Map args) {
@@ -85,16 +70,11 @@ class Upload extends Control {
 
         valueType = Type.LIST
 
-        text = args.text == null ? 'control.upload.message' : args.text
-        textDisabled = args.textDisabled == null ? 'control.upload.disabled' : args.textDisabled
-
-        acceptedFiles = args.acceptedFiles as List ?: []
+        labelIdle = args.labelIdle == null ? 'control.upload.message' : args.labelIdle
+        allowMultiple = args.allowMultiple as Boolean ?: false
+        acceptedFileTypes = args.acceptedFileTypes as List ?: []
         maxFiles = args.maxFiles as Integer ?: null
-        maxFileSize = args.maxFileSize as Integer ?: 20
-        maxThumbnailFilesize = args.maxThumbnailFilesize as Integer ?: 17 // 26 MPixel images
-        thumbnailWidth = args.thumbnailWidth as Integer
-        thumbnailHeight = args.thumbnailHeight as Integer
-        disablePreviews = args.disablePreviews as Boolean ?: false
+        maxFileSize = args.maxFileSize as String ?: '20MB'
 
         containerSpecs.multiline = true
     }
@@ -105,7 +85,8 @@ class Upload extends Control {
      * @return the uploaded file's original name
      */
     static String getFilename() {
-        return WebUtils.retrieveGrailsWebRequest().params._21Upload['filename']
+        GrailsParameterMap params = WebUtils.retrieveGrailsWebRequest().params
+        return params._21Upload['filename']
     }
 
     /**
@@ -117,17 +98,18 @@ class Upload extends Control {
      * @param newFilename optional replacement filename; uses the original filename when {@code null}
      */
     static void save(String path, String newFilename = null) {
-        if (!WebUtils.retrieveGrailsWebRequest().params._21Upload) {
+        GrailsParameterMap params = WebUtils.retrieveGrailsWebRequest().params
+        if (!params._21Upload) {
             return
         }
 
-        MultipartFile request = WebUtils.retrieveGrailsWebRequest().params._21Upload as MultipartFile
+        MultipartFile request = params._21Upload as MultipartFile
         String pathname = path + (newFilename ?: filename)
         request.transferTo(Paths.get(pathname))
     }
 
     /**
-     * Serialises this control's Dropzone configuration and localised messages to JSON.
+     * Serialises this control's FilePond configuration and localised messages to JSON.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this control's properties
@@ -135,26 +117,19 @@ class Upload extends Control {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-            acceptedFiles       : acceptedFiles.join(','),
-            maxFiles            : maxFiles,
-            maxFileSize         : maxFileSize,
-            maxThumbnailFilesize: maxThumbnailFilesize,
-            thumbnailWidth      : thumbnailWidth,
-            thumbnailHeight     : thumbnailHeight,
-            disablePreviews     : disablePreviews,
+            labelIdle        : message(labelIdle),
+            allowMultiple    : allowMultiple,
+            acceptedFileTypes: acceptedFileTypes,
+            maxFiles         : maxFiles,
+            maxFileSize      : maxFileSize,
 
-            messages            : [
-                upload            : message(text),
-                disabled          : message(textDisabled),
-                tooBig            : message('control.upload.file.too.big'),
-                invalidType       : message('control.upload.invalid.file.type'),
-                responseError     : message('control.upload.response.error'),
-                cancel            : message('control.upload.cancel'),
-                cancelConfirmation: message('control.upload.cancel.confirm'),
-                canceled          : message('control.upload.canceled'),
-                remove            : message('control.upload.remove'),
-                removeConfirmation: message('control.upload.remove.confirm'),
-                maxExceeded       : message('control.upload.files.exceeded'),
+            messages         : [
+                tooBig       : message('control.upload.file.too.big'),
+                invalidType  : message('control.upload.invalid.file.type'),
+                responseError: message('control.upload.response.error'),
+                cancel       : message('control.upload.cancel'),
+                canceled     : message('control.upload.canceled'),
+                remove       : message('control.upload.remove'),
             ]
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)

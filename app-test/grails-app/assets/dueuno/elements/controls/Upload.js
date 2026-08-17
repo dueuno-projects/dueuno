@@ -7,36 +7,32 @@ class Upload extends Control {
     static initialize($element, $root) {
         let properties = Control.getProperties($element);
 
-        let initOptions = {
-            paramName: '_21Upload',
-            url: 'not/set',
-            addRemoveLinks: true,
-            thumbnailWidth: properties.thumbnailWidth ?? _21_.user.fontSize * 7,
-            thumbnailHeight: properties.thumbnailHeight ?? _21_.user.fontSize * 7,
+        FilePond.registerPlugin(
+            FilePondPluginFileValidateType,
+            FilePondPluginFileValidateSize,
+            FilePondPluginImagePreview,
+        );
 
-            maxThumbnailFilesize: properties.maxThumbnailFilesize,
-            maxFileSize: properties.maxFileSize, // MB
+        let pond = FilePond.create($element.find('input[type="file"]')[0], {
+            name: '_21Upload',
+            allowMultiple: properties.allowMultiple,
+            acceptedFileTypes: properties.acceptedFileTypes,
             maxFiles: properties.maxFiles,
-            acceptedFiles: properties.acceptedFiles,
+            maxFileSize: properties.maxFileSize,
+            allowRevert: false,
+            credits: false,
 
-            dictDisabled: properties.messages.disabled,
-            dictDefaultMessage: properties.messages.upload,
-            dictFileTooBig: properties.messages.tooBig,
-            dictInvalidFileType: properties.messages.invalidType,
-            dictResponseError: properties.messages.responseError,
-            dictCancelUpload: properties.messages.cancel,
-            dictCancelUploadConfirmation: properties.messages.cancelConfirmation,
-            dictUploadCanceled: properties.messages.canceled,
-            dictRemoveFile: properties.messages.remove,
-            dictRemoveFileConfirmation: properties.messages.removeConfirmation,
-            dictMaxFilesExceeded: properties.messages.maxExceeded,
+            labelIdle: properties.labelIdle,
+            labelMaxFileSizeExceeded: properties.messages.tooBig,
+            labelFileTypeNotAllowed: properties.messages.invalidType,
+            labelFileProcessingError: properties.messages.responseError,
+            labelTapToCancel: properties.messages.cancel,
+            labelFileProcessingAborted: properties.messages.canceled,
+            labelButtonRemoveItem: properties.messages.remove,
+        });
 
-            // Don't ask me why but this is the only way to
-            // register/trigger the events with Dropzone
-            init: Upload.registerEvents,
-        };
-
-        $element.dropzone(initOptions);
+        $element[0]._filePond = pond;
+        Upload.registerEvents($element, pond);
     }
 
     static finalize($element, $root) {
@@ -46,21 +42,34 @@ class Upload extends Control {
         }
 
         let url = Transition.buildUrl(componentEvent);
-        let queryString = Transition.buildQueryString(componentEvent);
-        $element[0].dropzone.options.url = url + queryString;
+        let values = Transition.build21Params(componentEvent);
+        $element[0]._filePond.setOptions({
+            server: {
+                process: {
+                    url: url,
+                    method: 'POST',
+                    ondata: (formData) => {
+                        for (let [key, value] of Object.entries(values)) {
+                            formData.append(key, value);
+                        }
+                        for (let [key, value] of Object.entries(componentEvent['params'] ?? {})) {
+                            formData.append(key, value);
+                        }
+                        return formData;
+                    },
+                },
+            },
+        });
     }
 
-    static registerEvents() {
-        let $element = this;
-        $element.on('addedfile', Upload.onAddFile);
-        $element.on('removedfile', Upload.onRemoveFile);
-        $element.on('success', Upload.onSuccess);
-        $element.on('error', Upload.onError);
+    static registerEvents($element, pond) {
+        pond.on('addfilestart', () => Upload.onAddFile($element));
+        pond.on('removefile', () => Upload.onRemoveFile($element));
+        pond.on('processfile', (error) => Upload.onProcessFile($element, error));
+        pond.on('error', () => Upload.onError($element));
     }
 
-    static onAddFile(file) {
-        let $element = $(this.element);
-
+    static onAddFile($element) {
         let componentEvent = Component.getEvent($element, 'upload');
         if (componentEvent && componentEvent.loading) {
             LoadingScreen.show(true);
@@ -69,18 +78,17 @@ class Upload extends Control {
         Transition.triggerEvent($element, 'addfile');
     }
 
-    static onRemoveFile(file) {
-        let $element = $(this.element);
+    static onRemoveFile($element) {
         Transition.triggerEvent($element, 'removefile');
     }
 
-    static onSuccess(file) {
-        let $element = $(this.element);
-        Transition.triggerEvent($element, 'success');
+    static onProcessFile($element, error) {
+        if (!error) {
+            Transition.triggerEvent($element, 'success');
+        }
     }
 
-    static onError(file) {
-        let $element = $(this.element);
+    static onError($element) {
         LoadingScreen.show(false);
         Transition.triggerEvent($element, 'error');
     }
@@ -90,36 +98,31 @@ class Upload extends Control {
     }
 
     static getValue($element) {
-        let dropzone = $element[0].dropzone;
-        if (!dropzone) {
+        let pond = $element[0]._filePond;
+        if (!pond) {
             return TypedValue.list();
         }
 
-        let results = [];
-        let files = dropzone.getAcceptedFiles();
-        for (let file of files) {
-            results.push(file.upload.filename);
-        }
+        let filenames = pond.getFiles()
+            .filter(file => file.status === FilePond.FileStatus.PROCESSING_COMPLETE)
+            .map(file => file.filename);
 
-        return TypedValue.list(results);
+        return TypedValue.list(filenames);
     }
 
     static clear($element) {
-        $element[0].dropzone.removeAllFiles();
+        let pond = $element[0]._filePond;
+        if (pond) {
+            pond.removeFiles();
+        }
     }
 
     static setReadonly($element, value) {
         Component.setReadonly($element, value);
-        let $button = $element.find('button');
-        let dropzone = $element[0].dropzone;
 
-        if (value) {
-            $button.html(dropzone.options.dictDisabled);
-            dropzone.disable();
-
-        } else {
-            $button.html(dropzone.options.dictDefaultMessage);
-            dropzone.enable();
+        let pond = $element[0]._filePond;
+        if (pond) {
+            pond.disabled = value;
         }
     }
 

@@ -1,89 +1,82 @@
 .control-upload {
-    padding: 0 .75rem;
-    min-height: auto;
-    align-content: center;
-    text-align: center;
+    width: 100%;
+    height: 100%;
+    min-height: 9.375rem;
     border-radius: var(--bs-border-radius-sm);
 }
 
-.control-upload .dz-message {
+.control-upload .filepond--root {
+    width: 100%;
+    height: 100%;
+    min-height: 9.375rem;
     margin: 0;
-    display: inline;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
 }
 
-.control-upload .dz-message .dz-button {
-    font-size: 1.1rem;
-    font-weight: bold;
-}
-
-.control-upload .dz-preview .dz-details .dz-size {
-    margin-bottom: .25rem;
-}
-
-.control-upload .dz-preview .dz-image {
-    width: 6rem;
-    height: 6rem;
-}
-
-.control-upload .dz-preview.dz-file-preview,
-.control-upload .dz-preview.dz-image-preview {
-    background-color: transparent;
-}
-
-.dropzone .dz-preview.dz-file-preview .dz-details {
-    margin-top: -.2rem;
-}
-
-.control-upload .dz-preview.dz-file-preview .dz-image,
-.control-upload .dz-preview.dz-image-preview .dz-image {
-    border-radius: var(--bs-border-radius);
-}
-
-.control-upload .dz-preview.dz-file-preview .dz-details::before {
-    font-family: var(--fa-style-family-classic);
-    font-size: 1.5rem;
-    font-weight: 900;
-    margin-bottom: .75rem;
-    display: block;
-    content: "\f15b";
-}
-
-.control-upload .dz-preview .dz-details {
-    font-size: .75rem;
-}
-
-.control-upload .dz-preview.dz-file-preview .dz-remove {
-    font-size: .75rem;
-    position: relative;
-    z-index: 9999;
-}
-
-.control-upload .dz-preview.dz-error .dz-error-message {
-    display: none !important;
-}
-
-/* COLORS
-*/
-.control-upload {
+.control-upload .filepond--panel-root {
+    border-radius: var(--bs-border-radius-sm);
     background-color: rgb(var(--elements-primary-bg-shaded));
 }
 
-.control-upload .dz-message .dz-button {
-    color: rgb(var(--elements-primary-bg)) !important;
-}
-
-.control-upload .dz-preview.dz-file-preview .dz-image {
-    background: rgba(var(--elements-secondary-bg), .5);
-}
-
-.control-upload .dz-preview .dz-remove {
+.control-upload .filepond--drop-label {
+    height: 100%;
+    min-height: 9.375rem;
     color: rgb(var(--elements-primary-bg));
 }
 
-.control-upload[disabled] {
+.control-upload .filepond--drop-label label {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    padding: .5rem .75rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: rgb(var(--elements-primary-bg));
+}
+
+.control-upload .filepond--label-action {
+    color: rgb(var(--elements-primary-bg)) !important;
+    text-decoration: none;
+}
+
+.control-upload .filepond--item-panel,
+.control-upload [data-filepond-item-state='processing-complete'] .filepond--item-panel {
+    border-radius: var(--bs-border-radius);
+    background-color: rgba(var(--elements-secondary-bg), .5);
+}
+
+.control-upload .filepond--file {
+    color: rgb(var(--elements-main-text));
+}
+
+.control-upload .filepond--file-info-main,
+.control-upload .filepond--file-status-main {
+    font-size: .75rem;
+}
+
+.control-upload .filepond--file-action-button {
+    color: rgb(var(--elements-main-bg));
+    background-color: rgb(var(--elements-primary-bg));
+}
+
+.control-upload .filepond--file-action-button:focus,
+.control-upload .filepond--file-action-button:hover {
+    box-shadow: 0 0 0 .125rem rgb(var(--elements-primary-bg-shaded));
+}
+
+.control-upload:focus-within {
+    box-shadow: 0 0 0 .25rem rgb(var(--elements-primary-bg-shaded));
+}
+
+.control-upload .filepond--root[data-disabled] .filepond--panel-root {
     background-color: rgb(var(--elements-main-bg));
 }
 
-.control-upload[disabled] .dz-message .dz-button {
-    color: rgb(var(--elements-secondary-bg)) !important;
+.control-upload .filepond--root[data-disabled] .filepond--drop-label {
+    color: rgb(var(--elements-secondary-bg));
 }

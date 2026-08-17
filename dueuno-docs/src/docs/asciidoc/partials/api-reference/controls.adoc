@@ -518,7 +518,8 @@ c.form.with {
     addField(
         class: Upload,
         id: 'documents',
-        acceptedFiles: ['.pdf', '.jpg'],
+        allowMultiple: true,
+        acceptedFileTypes: ['application/pdf', 'image/jpeg'],
         maxFiles: 3,
     )
 }
@@ -529,42 +530,26 @@ c.form.with {
 |===
 |Name|Type|Default|Description
 
-|`text`
+|`labelIdle`
 |`String`
 |`control.upload.message`
-|Message displayed in the upload area.
-|`textDisabled`
-|`String`
-|`control.upload.disabled`
-|Message displayed when the upload control is disabled.
-|`acceptedFiles`
+|FilePond label displayed in the idle upload area.
+|`allowMultiple`
+|`Boolean`
+|`false`
+|Whether multiple files can be added.
+|`acceptedFileTypes`
 |`List`
 |`[]`
-|List of accepted file extensions or MIME types.
+|List of accepted MIME types.
 |`maxFiles`
 |`Integer`
 |
 |Maximum number of files that can be uploaded.
 |`maxFileSize`
-|`Integer`
-|`20`
-|Maximum file size in MB.
-|`maxThumbnailFilesize`
-|`Integer`
-|`17`
-|Maximum file size in MB for thumbnail generation.
-|`thumbnailWidth`
-|`Integer`
-|
-|Thumbnail width in pixels.
-|`thumbnailHeight`
-|`Integer`
-|
-|Thumbnail height in pixels.
-|`disablePreviews`
-|`Boolean`
-|`false`
-|If set to `true`, file previews are disabled.
+|`String`
+|`20MB`
+|Maximum file size, expressed as a FilePond size string.
 |===
 
 ==== Methods
@@ -982,4 +967,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ////
-
