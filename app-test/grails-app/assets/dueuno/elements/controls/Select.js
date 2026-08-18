@@ -71,6 +71,10 @@ class Select extends Control {
         VirtualSelect.init(initOptions);
         element.addEventListener('keydown', Select.onKeyDown, true);
         $element.closest('.input-group')
+            .children('.component-link')
+            .off('keydown.select')
+            .on('keydown.select', Select.onActionKeyDown);
+        $element.closest('.input-group')
             .children('.component-help')
             .off('keydown.select')
             .on('keydown.select', Select.onHelpKeyDown);
@@ -117,11 +121,9 @@ class Select extends Control {
         if (event.shiftKey) {
             $next = Select.getAdjacentControl($(event.currentTarget), -1);
         } else {
-            let $help = $(event.currentTarget)
-                .closest('.input-group')
-                .children('.component-help:not(:disabled)');
-            $next = $help.length
-                ? $help
+            let $trailing = Select.getTrailingFocusable($(event.currentTarget));
+            $next = $trailing.length
+                ? $trailing.first()
                 : Select.getAdjacentControl($(event.currentTarget), 1);
         }
         if (!$next.length) return;
@@ -129,6 +131,24 @@ class Select extends Control {
         event.preventDefault();
         event.stopPropagation();
         $next[0].focus();
+    }
+
+    static onActionKeyDown(event) {
+        if (event.key !== 'Tab' || !event.shiftKey) return;
+
+        let $action = $(event.currentTarget);
+        let $actions = $action.closest('.input-group')
+            .children('.component-link:not([disabled])')
+            .filter(':visible');
+        if (!$action.is($actions.first())) return;
+
+        let $select = $action.closest('.input-group')
+            .children('[data-21-control="Select"]:not([disabled])');
+        if (!$select.length) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        $select[0].focus();
     }
 
     /**
@@ -139,14 +159,18 @@ class Select extends Control {
     static onHelpKeyDown(event) {
         if (event.key !== 'Tab' || !event.shiftKey) return;
 
-        let $select = $(event.currentTarget)
+        let $group = $(event.currentTarget).closest('.input-group');
+        let $actions = $group
+            .children('.component-link:not([disabled])')
+            .filter(':visible');
+        let $select = $group
             .closest('.input-group')
             .children('[data-21-control="Select"]:not([disabled])');
         if (!$select.length) return;
 
         event.preventDefault();
         event.stopPropagation();
-        $select[0].focus();
+        ($actions.length ? $actions.last() : $select)[0].focus();
     }
 
     /**
@@ -165,7 +189,14 @@ class Select extends Control {
 
         event.preventDefault();
         event.stopPropagation();
-        $previous[0].focus();
+        let $trailing = Select.getTrailingFocusable($previous);
+        ($trailing.length ? $trailing.last() : $previous)[0].focus();
+    }
+
+    static getTrailingFocusable($element) {
+        return $element.closest('.input-group')
+            .children('.component-link:not([disabled]), .component-help:not(:disabled)')
+            .filter(':visible');
     }
 
     /**
