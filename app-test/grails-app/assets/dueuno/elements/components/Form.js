@@ -3,12 +3,12 @@ class Form extends Component {
     static finalize($element, $root) {
         let properties = Component.getProperties($element);
         if (!Elements.isMobileDevice && properties.autofocus) {
-            requestAnimationFrame(function() { Form.setFocusOnFirstField($element) });
+            requestAnimationFrame(function() { Form.setFocusOnFirstField($element, $root) });
         }
     }
 
-    static setFocusOnFirstField($element) {
-        if ($element.has(document.activeElement).length) {
+    static setFocusOnFirstField($element, $root) {
+        if ($root.find('[data-21-component="Form"]').has(document.activeElement).length) {
             return;
         }
 
