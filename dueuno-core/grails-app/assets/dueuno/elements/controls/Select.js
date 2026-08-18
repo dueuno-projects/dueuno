@@ -69,7 +69,10 @@ class Select extends Control {
         }
 
         VirtualSelect.init(initOptions);
-        $element.off('keydown.select').on('keydown.select', Select.onKeyDown);
+        let $navigationElements = $element.add(element.virtualSelect.$dropboxWrapper);
+        $navigationElements
+            .off('keydown.select')
+            .on('keydown.select', {element: element}, Select.onKeyDown);
         $element.find('.vscomp-value')
             .off('click.select')
             .on('click.select', Select.onValueClick);
@@ -124,14 +127,18 @@ class Select extends Control {
     static onKeyDown(event) {
         if (event.key !== 'Tab') return;
 
+        let $element = $(event.data.element);
         let $next;
         if (event.shiftKey) {
-            $next = Select.getAdjacentControl($(event.currentTarget), -1);
+            $next = Select.getAdjacentControl($element, -1);
         } else {
-            let $trailing = Select.getTrailingFocusable($(event.currentTarget));
+            let $trailing = Select.getTrailingFocusable($element);
             $next = $trailing.length
                 ? $trailing.first()
-                : Select.getAdjacentControl($(event.currentTarget), 1);
+                : Select.getAdjacentControl($element, 1);
+        }
+        if (!$next.length) {
+            $next = Select.getAdjacentFocusable($element, event.shiftKey ? -1 : 1);
         }
         if (!$next.length) return;
 
@@ -204,6 +211,33 @@ class Select extends Control {
         return $element.closest('.input-group')
             .children('.component-link:not([disabled]), .component-help:not(:disabled)')
             .filter(':visible');
+    }
+
+    /**
+     * Returns the nearest native focus target outside the Select. This is the
+     * fallback for a Select at the boundary of a form, where there is no next
+     * Dueuno control but the page still contains links or buttons.
+     */
+    static getAdjacentFocusable($element, direction) {
+        let $scope = $element.closest('[data-21-component="PageContent"]');
+        if (!$scope.length) $scope = $(document.body);
+
+        let element = $element[0];
+        let $focusable = $scope.find(
+            'a[href], button:not(:disabled), input:not([type="hidden"]):not(:disabled), ' +
+            'select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+        ).filter(':visible').filter(function () {
+            return this !== element && !element.contains(this);
+        });
+
+        let candidates = $focusable.get().filter(function (candidate) {
+            let position = element.compareDocumentPosition(candidate);
+            return direction > 0
+                ? position & Node.DOCUMENT_POSITION_FOLLOWING
+                : position & Node.DOCUMENT_POSITION_PRECEDING;
+        });
+
+        return $(direction > 0 ? candidates[0] : candidates.at(-1));
     }
 
     /**
