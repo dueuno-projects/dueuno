@@ -162,7 +162,14 @@ class Component {
 
     static setFocus($element, value) {
         if (value) {
-            $element[0].focus();
+            $element.trigger('focus');
+            if (document.activeElement !== $element[0]) {
+                $element
+                    .find('input:not([type="hidden"]):not(:disabled), button:not(:disabled), [tabindex]:not([tabindex="-1"])')
+                    .filter(':visible')
+                    .first()[0]
+                    ?.focus();
+            }
         } else {
             document.activeElement.blur();
         }

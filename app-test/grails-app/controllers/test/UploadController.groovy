@@ -17,6 +17,7 @@ package test
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Button
 import dueuno.elements.contents.ContentForm
+import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
 import dueuno.elements.controls.Upload
 import dueuno.tenant.TenantService
@@ -73,9 +74,16 @@ class UploadController implements ElementsController {
                     rows: 5,
                 )
                 addField(
+                    class: Select,
+                    id: 'select3',
+                    optionsFromList: ['One', 'Two', 'Three'],
+                    cols: 6,
+                )
+                addField(
                     class: TextField,
                     id: 'test2',
                     value: 'This is another test',
+                    cols: 6,
                 )
             }
         }

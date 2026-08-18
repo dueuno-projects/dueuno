@@ -137,7 +137,7 @@ class Select extends Control {
 
         event.preventDefault();
         event.stopPropagation();
-        $next.trigger('focus');
+        Component.setFocus($next, true);
     }
 
     static onActionKeyDown(event) {
@@ -211,7 +211,10 @@ class Select extends Control {
      * direction, skipping readonly, disabled, and hidden controls.
      */
     static getAdjacentControl($element, direction) {
-        let $controls = $element.closest('form').find('[data-21-control]');
+        let $scope = $element.closest('[data-21-component="PageContent"]');
+        if (!$scope.length) $scope = $element.closest('form');
+
+        let $controls = $scope.find('[data-21-control]');
         let index = $controls.index($element);
 
         for (let i = index + direction; i >= 0 && i < $controls.length; i += direction) {
