@@ -261,7 +261,7 @@
 }
 
 .control-select .vscomp-wrapper.multiple .vscomp-option.selected .checkbox-icon::after {
-    border-color: rgb(var(--elements-primary-text));
+    border-color: rgb(var(--elements-main-text));
     border-left-color: transparent;
     border-top-color: transparent;
 }

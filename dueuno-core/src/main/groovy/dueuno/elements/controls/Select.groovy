@@ -604,7 +604,11 @@ class Select extends Control {
                 inputTooShort: message('control.select.inputTooShort'),
                 errorLoading : message('control.select.errorLoading'),
                 noResults    : message('control.select.noResults'),
+                search       : message('control.select.search'),
                 searching    : message('control.select.searching'),
+                oneSelected  : message('control.select.oneSelected'),
+                manySelected : message('control.select.manySelected'),
+                allSelected  : message('control.select.allSelected'),
             ]
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)

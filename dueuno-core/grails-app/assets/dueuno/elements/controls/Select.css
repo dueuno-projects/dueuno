@@ -261,7 +261,7 @@
 }
 
 .control-select .vscomp-wrapper.multiple .vscomp-option.selected .checkbox-icon::after {
-    border-color: rgb(var(--elements-primary-text));
+    border-color: rgb(var(--elements-main-text));
     border-left-color: transparent;
     border-top-color: transparent;
 }
@@ -319,7 +319,7 @@
 }
 
 .component-form-field:has(.help-message.collapsing, .help-message.collapse.show)
-.control-select .vscomp-toggle-button {
+    .control-select .vscomp-toggle-button {
     border-bottom-left-radius: 0;
 }
 
