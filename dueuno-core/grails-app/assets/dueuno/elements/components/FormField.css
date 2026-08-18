@@ -4,13 +4,13 @@ input[type] {
     border-radius: var(--bs-border-radius-sm);
 }
 
-.component-form label {
+.component-form-field > label {
     margin: .5rem 0 0 .25rem;
     font-size: .85rem;
     color: rgba(var(--elements-main-text), .7);
 }
 
-.component-form label i {
+.component-form-field > label i {
     font-style: normal;
     font-weight: bold;
     color: rgb(var(--elements-required-text));
