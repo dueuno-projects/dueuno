@@ -3,6 +3,11 @@
     height: 100%;
     min-height: 9.375rem;
     border-radius: var(--bs-border-radius-sm);
+    background-color: rgb(var(--elements-primary-bg-shaded));
+}
+
+.control-upload:has(.filepond--root[data-disabled]) {
+    background-color: rgb(var(--elements-main-bg));
 }
 
 .control-upload .filepond--root {
