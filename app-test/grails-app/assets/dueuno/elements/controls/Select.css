@@ -278,14 +278,28 @@
     opacity: 1;
 }
 
+.vscomp-ele[disabled] {
+    cursor: default;
+}
+
 .control-select[disabled] .vscomp-toggle-button {
     background-color: rgba(var(--elements-main-bg), .4);
-    color: rgba(var(--elements-main-text), .7);
+    color: rgb(var(--elements-main-text));
+}
+
+.control-select[disabled] .vscomp-wrapper.focused .vscomp-toggle-button,
+.control-select[disabled] .vscomp-wrapper:focus .vscomp-toggle-button {
+    box-shadow: none;
+}
+
+.control-select[disabled] .vscomp-value {
+    pointer-events: auto;
+    user-select: text;
     cursor: default;
 }
 
 .control-select[disabled] .vscomp-clear-button {
-    display: none;
+    display: none !important;
 }
 
 /* INPUT GROUP, ACTIONS AND HELP */

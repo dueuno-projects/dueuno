@@ -69,7 +69,10 @@ class Select extends Control {
         }
 
         VirtualSelect.init(initOptions);
-        element.addEventListener('keydown', Select.onKeyDown, true);
+        $element.off('keydown.select').on('keydown.select', Select.onKeyDown);
+        $element.find('.vscomp-value')
+            .off('click.select')
+            .on('click.select', Select.onValueClick);
         $element.closest('.input-group')
             .children('.component-link')
             .off('keydown.select')
@@ -84,16 +87,14 @@ class Select extends Control {
     }
 
     static getDropboxPortal(element) {
-        let modal = element.closest('.modal');
-        let portalId = modal ? 'select-dropbox-portal-modal' : 'select-dropbox-portal';
-        let portal = document.getElementById(portalId);
-        if (!portal) {
-            portal = document.createElement('div');
-            portal.id = portalId;
-            portal.className = 'control-select';
-            (modal ?? document.body).appendChild(portal);
+        let $modal = $(element).closest('.modal');
+        let portalId = $modal.length ? 'select-dropbox-portal-modal' : 'select-dropbox-portal';
+        let $portal = $('#' + portalId);
+        if (!$portal.length) {
+            $portal = $('<div>', {id: portalId, class: 'control-select'});
+            $portal.appendTo($modal.length ? $modal : $('body'));
         }
-        return portal;
+        return $portal[0];
     }
 
     static finalize($element, $root) {
@@ -107,6 +108,12 @@ class Select extends Control {
 
     static onChange(event) {
         Transition.triggerEvent($(event.currentTarget), 'change');
+    }
+
+    static onValueClick(event) {
+        if ($(event.currentTarget).closest('.control-select').is('[disabled]')) {
+            event.stopPropagation();
+        }
     }
 
     /**
@@ -130,7 +137,7 @@ class Select extends Control {
 
         event.preventDefault();
         event.stopPropagation();
-        $next[0].focus();
+        $next.trigger('focus');
     }
 
     static onActionKeyDown(event) {
@@ -148,7 +155,7 @@ class Select extends Control {
 
         event.preventDefault();
         event.stopPropagation();
-        $select[0].focus();
+        $select.trigger('focus');
     }
 
     /**
@@ -170,7 +177,7 @@ class Select extends Control {
 
         event.preventDefault();
         event.stopPropagation();
-        ($actions.length ? $actions.last() : $select)[0].focus();
+        ($actions.length ? $actions.last() : $select).trigger('focus');
     }
 
     /**
@@ -190,7 +197,7 @@ class Select extends Control {
         event.preventDefault();
         event.stopPropagation();
         let $trailing = Select.getTrailingFocusable($previous);
-        ($trailing.length ? $trailing.last() : $previous)[0].focus();
+        ($trailing.length ? $trailing.last() : $previous).trigger('focus');
     }
 
     static getTrailingFocusable($element) {

@@ -39,6 +39,10 @@
     color: rgb(var(--elements-primary-bg));
 }
 
+.control-upload .filepond--drop-label .svg-inline--fa {
+    color: inherit !important;
+}
+
 .control-upload .filepond--label-action {
     color: rgb(var(--elements-primary-bg)) !important;
     text-decoration: none;
@@ -69,7 +73,7 @@
     box-shadow: 0 0 0 .125rem rgb(var(--elements-primary-bg-shaded));
 }
 
-.control-upload:focus-within {
+.control-upload:not([disabled]):focus-within {
     box-shadow: 0 0 0 .25rem rgb(var(--elements-primary-bg-shaded));
 }
 
