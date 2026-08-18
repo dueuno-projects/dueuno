@@ -149,9 +149,15 @@ input:focus-visible,
     opacity: 1;
 }
 
+.input-group:has([disabled]) > a,
+.input-group:has([disabled]) > button {
+    color: rgba(var(--elements-main-text), .7) !important;
+}
+
 .input-group-text,
 .input-group .component-help,
-.input-group .component-help:hover {
+.input-group .component-help:hover,
+.input-group .component-help:active {
     background-color: rgb(var(--elements-main-bg));
     color: rgba(var(--elements-main-text), .7);
 }
@@ -160,7 +166,7 @@ input:focus-visible,
 .input-group:has([disabled]) .component-help,
 .input-group:has([disabled]) .component-help:hover {
     background-color: rgba(var(--elements-main-bg), .4) !important;
-    color: rgba(var(--elements-main-text), .4) !important;
+    color: rgba(var(--elements-main-text), .7) !important;
 }
 
 .input-group.error-highlight {

@@ -326,5 +326,5 @@
 .input-group:has(.control-select[disabled]) > a,
 .input-group:has(.control-select[disabled]) > button {
     background-color: rgba(var(--elements-main-bg), .4) !important;
-    color: rgba(var(--elements-main-text), .4) !important;
+    color: rgba(var(--elements-main-text), .7) !important;
 }
