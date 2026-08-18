@@ -2,25 +2,24 @@ class Form extends Component {
 
     static finalize($element, $root) {
         let properties = Component.getProperties($element);
-        if (properties.autofocus) {
-            Form.setFocusOnFirstInput($element);
+        if (!Elements.isMobileDevice && properties.autofocus) {
+            requestAnimationFrame(function() { Form.setFocusOnFirstField($element) });
         }
     }
 
-    static setFocusOnFirstInput($element) {
+    static setFocusOnFirstField($element) {
         let $controls = $element.find('[data-21-control]');
-
-        $controls.each(function() {
-            let $control = $(this);
+        for (let element of $controls) {
+            let $control = $(element);
             let control = Control.getByElement($control);
             let isVisible = Elements.callMethod($control, control, 'getDisplay');
             let isReadonly = Elements.callMethod($control, control, 'getReadonly');
 
-            if (!Elements.isMobileDevice && isVisible && !isReadonly) {
+            if (isVisible && !isReadonly) {
                 Component.setFocus($control, true);
-                return false;
+                break;
             }
-        });
+        }
     }
 
     static setErrors($element, value) {
