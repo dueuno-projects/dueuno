@@ -267,6 +267,7 @@
 .control-select .vscomp-wrapper.multiple .vscomp-option.selected .checkbox-icon::after {
     transform: rotate(90deg) translate(0, -.25rem);
     border-color: rgb(var(--elements-primary-bg));
+    background-color: rgb(var(--elements-primary-bg));
 }
 
 .control-select .vscomp-value-tag {

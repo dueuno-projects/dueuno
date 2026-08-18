@@ -86,6 +86,42 @@
     padding-top: 0;
 }
 
+.component-table-dataset :is(.component-table-selection, .component-table-selection-header) .checkbox.simple {
+    display: inline-flex;
+    position: relative;
+    vertical-align: bottom;
+    width: 15px;
+    height: 15px;
+}
+
+.component-table-dataset :is(.component-table-selection, .component-table-selection-header) .checkbox.simple::after {
+    transition-duration: .2s;
+    border: 2px solid rgba(var(--elements-main-text), .7);
+    border-radius: var(--bs-border-radius-lg);
+    content: "";
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+.component-table-dataset :is(.component-table-selection, .component-table-selection-header) .checkbox.simple:has(.form-check-input:checked)::after {
+    transform: rotate(90deg) translate(0, -.25rem);
+    border-color: rgb(var(--elements-primary-bg));
+    background-color: rgb(var(--elements-primary-bg));
+    width: 50%;
+}
+
+.component-table-dataset :is(.component-table-selection, .component-table-selection-header) .checkbox.simple .form-check-input {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
 .component-table-dataset th:first-child,
 .component-table-dataset td:first-child {
     padding-left: var(--elements-spacing-x);
