@@ -8,6 +8,10 @@ class Form extends Component {
     }
 
     static setFocusOnFirstField($element) {
+        if ($element.has(document.activeElement).length) {
+            return;
+        }
+
         let $controls = $element.find('[data-21-control]');
         for (let element of $controls) {
             let $control = $(element);
