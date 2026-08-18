@@ -1,4 +1,4 @@
-.table>:not(caption)>*>* {
+.table > :not(caption) > * > * {
     padding: calc(var(--elements-spacing-y) * 1.5) calc(var(--elements-spacing-x) * .15);
     padding-right: .5rem;
     background-color: transparent;
@@ -64,12 +64,16 @@
 }
 
 .component-table-dataset .component-table-header a {
+    color: rgb(var(--elements-primary-bg));
     text-decoration: none;
     padding-right: .5rem;
 }
 
 .component-table-dataset .component-table-header a:focus-visible {
     border-radius: var(--bs-border-radius-lg);
+    background-color: rgba(var(--elements-primary-bg-shaded));
+    padding: .25rem .5rem .25rem .5rem;
+    margin-left: -.5rem;
     box-shadow: none;
     outline: none;
 }
@@ -183,14 +187,6 @@
 
 .component-table-dataset .table-striped tbody tr:nth-of-type(odd) {
     --bs-table-striped-bg: rgb(var(--elements-main-bg));
-}
-
-.component-table-dataset .component-table-header a {
-    color: rgb(var(--elements-primary-bg));
-}
-
-.component-table-dataset .component-table-header a:focus-visible {
-    background-color: rgba(var(--elements-primary-bg-shaded));
 }
 
 .component-table-header .sort-asc:after {

@@ -65,12 +65,14 @@ class TransitionCommand {
     }
 
     static render($component, $newComponent, componentEvent) {
+        let focusPath = TransitionCommand.getFocusPath();
         let animation = componentEvent.renderProperties['animate'];
         TransitionCommand.animate(animation, $component, $newComponent)
 
         Page.deactivateComponents();
         $component.replaceWith($newComponent);
         Page.reinitializeContent($newComponent);
+        TransitionCommand.restoreFocus(focusPath);
 
         TransitionCommand.scrollTo($newComponent, componentEvent);
         if (componentEvent.renderProperties['updateUrl']) {
@@ -137,8 +139,44 @@ class TransitionCommand {
             return;
         }
 
+        let focusPath = TransitionCommand.getFocusPath();
         $element.replaceWith($component);
         Page.reinitializeContent($component);
+        TransitionCommand.restoreFocus(focusPath);
+    }
+
+    static getFocusPath() {
+        let $pageContent = PageContent.$self;
+        let $activeElement = $pageContent.find(':focus').addBack(':focus');
+        if (!$activeElement.exists()) {
+            return null;
+        }
+
+        let path = [];
+        let $element = $activeElement.closest('[data-21-id]');
+        while ($element.exists()) {
+            if (!$pageContent.is($element[0]) && !$pageContent.has($element[0]).length) {
+                break;
+            }
+
+            path.unshift($element.data('21-id'));
+            if ($pageContent.is($element[0])) {
+                break;
+            }
+
+            $element = $element.parent().closest('[data-21-id]');
+        }
+
+        return path;
+    }
+
+    static restoreFocus(path) {
+        if (!path || !path.length) {
+            return;
+        }
+
+        let $element = Transition.getTargetElement(path.join('.'));
+        Component.setFocus($element, true);
     }
 
     static remove($element, componentId) {
