@@ -9,6 +9,7 @@ class TransitionCommand {
     static get REMOVE() { return 'REMOVE' }
     static get TRIGGER() { return 'TRIGGER' }
     static get LOADING() { return 'LOADING' }
+    static get DELAY() { return 'DELAY' }
     static get CALL() { return 'CALL' }
     static get SET() { return 'SET' }
 
@@ -263,13 +264,13 @@ class TransitionCommand {
             case 'fade':
                 $prevElement.addClass('fade-out');
                 $nextElement.addClass('fade-in');
-            break;
+                break;
 
             case 'back':
-            break;
+                break;
 
             case 'next':
-            break;
+                break;
         }
     }
 }

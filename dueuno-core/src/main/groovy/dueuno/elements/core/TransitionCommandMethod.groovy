@@ -48,6 +48,9 @@ enum TransitionCommandMethod {
     /** Shows or hides the global loading indicator. */
     LOADING,
 
+    /** Sleep. */
+    DELAY,
+
     /** Invokes a named client-side method on a component. */
     CALL,
 

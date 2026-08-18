@@ -235,6 +235,20 @@ class Transition implements WebRequestAware {
     }
 
     /**
+     * Adds a command to sleep.
+     *
+     * @param milliseconds
+     */
+    void delay(Long milliseconds) {
+        addCommand(
+            TransitionCommandMethod.DELAY,
+            null,
+            null,
+            milliseconds
+        )
+    }
+
+    /**
      * Adds a command to trigger a named event on the specified component.
      *
      * @param component the identifier of the target component
