@@ -122,14 +122,14 @@ input:focus-visible,
     box-shadow: 0 0 0 .25rem rgb(var(--elements-primary-bg-shaded)) !important;
 }
 
-.input-group:has(.form-control) a.btn,
-.input-group:has(.form-control) a.btn:hover,
-.input-group:has(.form-control) a.btn:focus,
-.input-group:has(.form-control) a.btn:active,
-.input-group:has(.form-control) .dropdown-toggle,
-.input-group:has(.form-control) .dropdown-toggle:hover,
-.input-group:has(.form-control) .dropdown-toggle:focus,
-.input-group:has(.form-control) .dropdown-toggle:active,
+.input-group:has(.form-control, .control-select) a.btn,
+.input-group:has(.form-control, .control-select) a.btn:hover,
+.input-group:has(.form-control, .control-select) a.btn:focus,
+.input-group:has(.form-control, .control-select) a.btn:active,
+.input-group:has(.form-control, .control-select) .dropdown-toggle,
+.input-group:has(.form-control, .control-select) .dropdown-toggle:hover,
+.input-group:has(.form-control, .control-select) .dropdown-toggle:focus,
+.input-group:has(.form-control, .control-select) .dropdown-toggle:active,
 .input-group textarea, .input-group textarea:focus,
 .input-group input, .input-group input:focus {
     background-color: rgb(var(--elements-main-bg));
