@@ -92,7 +92,7 @@ class Transition {
                 break;
 
             case TransitionCommand.DELAY:
-                await sleep(valueMap.value);
+                await TransitionCommand.delay(valueMap.value);
                 break;
 
             case TransitionCommand.APPEND:

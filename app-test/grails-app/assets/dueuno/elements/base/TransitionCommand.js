@@ -111,6 +111,10 @@ class TransitionCommand {
         LoadingScreen.show(show);
     }
 
+    static async delay(milliseconds) {
+        await sleep(milliseconds);
+    }
+
     static append($element, componentId, newComponentId, $components) {
         let $component = $components.find('[data-21-id="' + newComponentId + '"]');
         if (!$component) {
