@@ -175,4 +175,11 @@ class Component {
         }
     }
 
+    static addCssClass($element, valueMap) {
+        $element.addClass(valueMap.value);
+    }
+
+    static removeCssClass($element, valueMap) {
+        $element.removeClass(valueMap.value);
+    }
 }

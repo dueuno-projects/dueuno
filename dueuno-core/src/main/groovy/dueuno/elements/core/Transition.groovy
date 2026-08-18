@@ -296,6 +296,26 @@ class Transition implements WebRequestAware {
     }
 
     /**
+     * Adds a command to add CSS classes to the specified component.
+     *
+     * @param component the identifier of the target component
+     * @param name of the CSS class to add
+     */
+    void addCssClass(String component, String cssClass) {
+        call(component, 'addCssClass', [value: cssClass])
+    }
+
+    /**
+     * Adds a command to remove CSS classes to the specified component.
+     *
+     * @param component the identifier of the target component
+     * @param name of the CSS class to remove
+     */
+    void removeCssClass(String component, String cssClass) {
+        call(component, 'removeCssClass', [value: cssClass])
+    }
+
+    /**
      * Adds a command to set the {@code value} property of the specified control,
      * optionally triggering its change event.
      *

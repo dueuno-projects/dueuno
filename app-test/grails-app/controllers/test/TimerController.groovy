@@ -202,16 +202,22 @@ class TimerController implements ElementsController {
         Transition t = createTransition()
         t.loading(false)
         t.setValue('f1', 'A')
+        t.addCssClass('f6', 'invisible')
         t.delay(500)
         t.setValue('f2', 'B')
+        t.removeCssClass('f6', 'invisible')
         t.delay(500)
         t.setValue('f3', 'C')
+        t.addCssClass('f6', 'invisible')
         t.delay(500)
         t.setValue('f4', 'D')
+        t.removeCssClass('f6', 'invisible')
         t.delay(500)
         t.setValue('f5', 'E')
+        t.addCssClass('f6', 'invisible')
         t.delay(500)
         t.setValue('f6', 'F')
+        t.removeCssClass('f6', 'invisible')
         t.delay(1000)
         t.setValue('f1', null)
         t.setValue('f2', null)
@@ -219,6 +225,7 @@ class TimerController implements ElementsController {
         t.setValue('f4', null)
         t.setValue('f5', null)
         t.setValue('f6', null)
+
         display transition: t
     }
 }
