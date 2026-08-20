@@ -87,9 +87,9 @@ class TextField extends Control {
     }
 
     static getValue($element) {
-        let value = Control.getServerValue($element);
-        value['value'] = $element.val();
-        return TypedValue.require(value);
+        let valueMap = Control.getServerValue($element);
+        valueMap['value'] = $element.val();
+        return TypedValue.require(valueMap);
     }
 
     static setPlaceholder($element, value) {

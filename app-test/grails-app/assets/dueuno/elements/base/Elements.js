@@ -78,13 +78,24 @@ class Elements {
 
     static displayArgs(args) {
         let result = [];
+
         for (let obj of args) {
+            if (obj === undefined) {
+                continue;
+            }
+
             if (obj instanceof jQuery) {
                 result.push(obj.data('21-id'));
+
+            } else if (obj !== null && typeof obj === 'object') {
+                result.push(JSON.stringify(obj));
+
             } else {
                 result.push(obj);
             }
         }
-        return result;
+
+        return result.join(', ');
     }
+
 }

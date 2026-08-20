@@ -78,7 +78,7 @@ class Transition {
         let trigger = command.trigger;
         let $components = transition.$components;
 
-        log.trace('EXECUTING: ' + method + ' ' + componentId + '.' + property + ' = ' + JSON.stringify(valueMap));
+        log.trace('EXECUTING: ' + componentId + ' ' + method + ' ' + property);
 
         switch (method) {
             case TransitionCommand.REDIRECT:

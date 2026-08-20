@@ -9,8 +9,8 @@ class MultipleCheckbox extends Control {
         let $checkboxes = $element.siblings().find('input[type="checkbox"]');
         $checkboxes.each(function () {
             if ($(this).is(':checked')) {
-                let value = Control.getProperty($(this), 'option');
-                items.push(value);
+                let valueMap = Control.getProperty($(this), 'option');
+                items.push(valueMap);
             }
         });
         return TypedValue.list(items);

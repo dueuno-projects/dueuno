@@ -131,7 +131,7 @@ class TransitionsController implements ElementsController {
 //                    onChange: 'onSelect2Change',
                 textStyle: TextStyle.BOLD,
                 cols: 12,
-            ).on(event: 'change', submit: 'form', action: 'onSelect2Change')
+            ).component.on(event: 'change', submit: 'form', action: 'onSelect2Change')
 
             addField(
                 class: Select,

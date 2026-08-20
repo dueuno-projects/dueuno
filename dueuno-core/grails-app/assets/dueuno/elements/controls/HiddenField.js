@@ -20,21 +20,21 @@ class HiddenField extends Control {
     }
 
     static getValue($element) {
-        let value = Control.getServerValue($element);
+        let valueMap = Control.getServerValue($element);
 
-        switch (value.type) {
+        switch (valueMap.type) {
             case Type.NA:
             case Type.BOOL:
             case Type.NUMBER:
             case Type.STRING:
-                value.value = $element.val();
+                valueMap.value = $element.val();
                 break
 
             default:
-                value.value = JSON.parse($element.val());
+                valueMap.value = JSON.parse($element.val());
         }
 
-        return TypedValue.require(value);
+        return TypedValue.require(valueMap);
     }
 
 }

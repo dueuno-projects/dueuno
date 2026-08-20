@@ -6,14 +6,8 @@
  */
 class Select extends Control {
 
-    static getValueType($element) {
-        let properties = Component.getProperties($element);
-        return properties.multiple ? Type.LIST : Type.STRING;
-    }
-
     static initialize($element, $root) {
         let element = $element[0];
-        let controlId = Component.getId($element);
         let properties = Component.getProperties($element);
         let dropboxPortal = Select.getDropboxPortal(element);
 
@@ -45,53 +39,31 @@ class Select extends Control {
         let searchEvent = Component.getEvent($element, 'search');
         if (searchEvent) {
             initOptions.search = true;
-            initOptions.onServerSearch = function (searchValue, virtualSelect) {
-                if (searchValue.length < properties.searchMinInputLength) {
-                    virtualSelect.setServerOptions([]);
-                    return;
-                }
-
-                searchEvent.params = {
-                    [controlId]: searchValue ? searchValue.replaceAll('%', '*') : '',
-                };
-
-                $.ajax({
-                    url: Transition.buildUrl(searchEvent),
-                    data: Transition.build21Params(searchEvent),
-                    success: function (data) {
-                        let transition = Transition.fromHtml(data);
-                        let command = transition.commands.findLast(it =>
-                            it.component == controlId && it.property == 'options'
-                        );
-                        let options = command?.value?.value ?? [];
-                        Select.setServerOptions(virtualSelect, options, searchValue);
-                    },
-                    error: function () {
-                        virtualSelect.setServerOptions([]);
-                    },
-                });
+            initOptions.onServerSearch = function (searchValue) {
+                Select.loadServerOptions($element, searchEvent, searchValue);
             };
         }
 
         VirtualSelect.init(initOptions);
+    }
+
+    static finalize($element, $root) {
+        let element = $element[0];
         let $navigationElements = $element.add(element.virtualSelect.$dropboxWrapper);
-        $navigationElements
-            .off('keydown.select')
-            .on('keydown.select', {element: element}, Select.onKeyDown);
-        $element.find('.vscomp-value')
-            .off('click.select')
-            .on('click.select', Select.onValueClick);
-        $element.closest('.input-group')
-            .children('.component-link')
-            .off('keydown.select')
-            .on('keydown.select', Select.onActionKeyDown);
-        $element.closest('.input-group')
-            .children('.component-help')
-            .off('keydown.select')
-            .on('keydown.select', Select.onHelpKeyDown);
-        $element.closest('form')
-            .off('keydown.selectNavigation')
-            .on('keydown.selectNavigation', Select.onFormKeyDown);
+        $navigationElements.off('keydown.select').on('keydown.select', {element: element}, Select.onKeyDown);
+
+        $element.find('.vscomp-value').off('click.select').on('click.select', Select.onValueClick);
+        $element.closest('.input-group').children('.component-link').off('keydown.select').on('keydown.select', Select.onActionKeyDown);
+        $element.closest('.input-group').children('.component-help').off('keydown.select').on('keydown.select', Select.onHelpKeyDown);
+        $element.closest('form').off('keydown.selectNavigation').on('keydown.selectNavigation', Select.onFormKeyDown);
+        $element.off('change').on('change', Select.onChange);
+        $element.off('beforeOpen').on('beforeOpen', Select.onOpen);
+
+        Transition.triggerEvent($element, 'load');
+    }
+
+    static isInitialized($element) {
+        return false;
     }
 
     static getDropboxPortal(element) {
@@ -105,21 +77,22 @@ class Select extends Control {
         return $portal[0];
     }
 
-    static finalize($element, $root) {
-        $element.off('change', Select.onChange).on('change', Select.onChange);
-        Transition.triggerEvent($element, 'load');
-    }
-
-    static isInitialized($element) {
-        return false;
-    }
-
     static onChange(event) {
-        Transition.triggerEvent($(event.currentTarget), 'change');
+        let $element = $(event.currentTarget);
+        Transition.triggerEvent($element, 'change');
+    }
+
+    static onOpen(event) {
+        let $element = $(event.currentTarget);
+        let searchEvent = Component.getEvent($element, 'search');
+        if (searchEvent) {
+            Select.loadServerOptions($element, searchEvent);
+        }
     }
 
     static onValueClick(event) {
-        if ($(event.currentTarget).closest('.control-select').is('[disabled]')) {
+        let $element = $(event.currentTarget);
+        if ($element.closest('.control-select').is('[disabled]')) {
             event.stopPropagation();
         }
     }
@@ -178,7 +151,8 @@ class Select extends Control {
     static onHelpKeyDown(event) {
         if (event.key !== 'Tab' || !event.shiftKey) return;
 
-        let $group = $(event.currentTarget).closest('.input-group');
+        let $element = $(event.currentTarget);
+        let $group = $element.closest('.input-group');
         let $actions = $group
             .children('.component-link:not([disabled])')
             .filter(':visible');
@@ -290,28 +264,61 @@ class Select extends Control {
         let properties = Component.getProperties($element);
         let value = $element[0].value;
 
-        if (value == null || value === '' || (Array.isArray(value) && value.length == 0)) {
+        if (Select.isEmptyValue(value)) {
             return TypedValue.empty(Select.getValueType($element));
-        } else if (!properties.multiple) {
+
+        } else if (properties.multiple) {
+            return TypedValue.list(Array.isArray(value) ? value : [value]);
+
+        } else {
             return TypedValue.string(value);
         }
-        return TypedValue.list(Array.isArray(value) ? value : [value]);
+    }
+
+    static getValueType($element) {
+        let properties = Component.getProperties($element);
+        return properties.multiple ? Type.LIST : Type.STRING;
+    }
+
+    static isEmptyValue(value) {
+        return value == null || value === '' || (Array.isArray(value) && value.length === 0)
     }
 
     static hasOptions($element) {
         return ($element[0].options?.length ?? 0) > 0;
     }
 
-    /**
-     * Prevents VirtualSelect from applying its literal client-side filter to
-     * results already filtered by the server with wildcard search semantics.
-     */
-    static setServerOptions(virtualSelect, options, searchValue) {
-        let currentSearchValue = virtualSelect.searchValue;
-        if (searchValue.includes('*')) virtualSelect.searchValue = '';
+    static loadServerOptions($element, searchEvent, searchValue = '') {
+        let controlId = Component.getId($element);
+        searchEvent.params = {
+            [controlId]: searchValue,
+        };
 
-        virtualSelect.setServerOptions(Select.toVirtualOptions(options));
-        virtualSelect.searchValue = currentSearchValue;
+        $.ajax({
+            url: Transition.buildUrl(searchEvent),
+            data: Transition.build21Params(searchEvent),
+
+            success: function (data) {
+                let transition = Transition.fromHtml(data);
+                let command = transition.commands.findLast(it =>
+                    it.component == controlId && it.property == 'options'
+                );
+                let serverOptions = command?.value?.value ?? [];
+                Select.setSearchResultOptions($element, serverOptions);
+            },
+
+            error: function () {
+                Select.setSearchResultOptions($element, []);
+            },
+        });
+    }
+
+    static setSearchResultOptions($element, options) {
+        let virtualSelect = $element[0].virtualSelect;
+        let virtualSelectOptions = Select.toVirtualOptions(options)
+
+        virtualSelect.searchValue = '';
+        virtualSelect.setServerOptions(virtualSelectOptions);
     }
 
     static setOptions($element, options) {
@@ -320,16 +327,32 @@ class Select extends Control {
         let selectedValues = Select.valueList(valueMap.value);
         let newOptions = options ?? [];
         let optionValues = newOptions.map(option => String(option.id));
-        let validValues = selectedValues.filter(value => optionValues.includes(value));
         let properties = Component.getProperties($element);
 
+        // 1. Preserve the currently selected value(s) if they are still valid.
+        let validValues = selectedValues.filter(value =>
+            optionValues.includes(value)
+        );
+
+        // 2. If there is no valid current selection, restore the value provided
+        //    by the server, if it is still available among the new options.
+        // if (!validValues.length) {
+        //     let serverValue = Control.getServerValue($element).value;
+        //     validValues = Select.valueList(serverValue).filter(value =>
+        //         optionValues.includes(value)
+        //     );
+        // }
+
+        // 3. If there is still no valid value, automatically select the only
+        //    available option when autoSelect is enabled and the field is required.
         if (!validValues.length && properties.autoSelect && !properties.nullable && newOptions.length == 1) {
             validValues = [String(newOptions[0].id)];
         }
 
         element.setOptions(Select.toVirtualOptions(newOptions), false);
-        let value = properties.multiple ? validValues : (validValues[0] ?? null);
-        element.setValue(value, true);
+
+        valueMap.value = validValues;
+        Select.setValue($element, valueMap, false);
     }
 
     static setTemporaryOptions($element, valueMap) {
@@ -351,8 +374,14 @@ class Select extends Control {
     }
 
     static valueList(value) {
-        if (value == null) return [];
-        let values = Array.isArray(value) ? value : [value];
+        if (value == null) {
+            return [];
+        }
+
+        let values = Array.isArray(value)
+            ? value
+            : [value];
+
         return values.map(value => String(value));
     }
 

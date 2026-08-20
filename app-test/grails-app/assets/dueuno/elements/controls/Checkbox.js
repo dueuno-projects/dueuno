@@ -18,9 +18,9 @@ class Checkbox extends Control {
     }
 
     static getValue($element) {
-        let value = Control.getServerValue($element);
-        value['value'] = $element.prop('checked');
-        return TypedValue.require(value);
+        let valueMap = Control.getServerValue($element);
+        valueMap['value'] = $element.prop('checked');
+        return TypedValue.require(valueMap);
     }
 
     static setValue($element, valueMap, trigger = true) {
