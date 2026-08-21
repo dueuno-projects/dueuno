@@ -336,12 +336,12 @@ class Select extends Control {
 
         // 2. If there is no valid current selection, restore the value provided
         //    by the server, if it is still available among the new options.
-        // if (!validValues.length) {
-        //     let serverValue = Control.getServerValue($element).value;
-        //     validValues = Select.valueList(serverValue).filter(value =>
-        //         optionValues.includes(value)
-        //     );
-        // }
+        if (!validValues.length) {
+            let serverValue = Control.getServerValue($element).value;
+            validValues = Select.valueList(serverValue).filter(value =>
+                optionValues.includes(value)
+            );
+        }
 
         // 3. If there is still no valid value, automatically select the only
         //    available option when autoSelect is enabled and the field is required.
