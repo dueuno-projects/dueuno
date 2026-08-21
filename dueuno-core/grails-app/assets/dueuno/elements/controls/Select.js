@@ -246,7 +246,7 @@ class Select extends Control {
         let element = $element[0];
         if (!element.setValue) return;
 
-        if (!trigger) $element.off('change', Select.onChange);
+        if (!trigger) $element.off('change');
 
         let searchEvent = Component.getEvent($element, 'search');
         let loadEvent = Component.getEvent($element, 'load');
@@ -255,24 +255,29 @@ class Select extends Control {
             if (trigger) Transition.submit(loadEvent);
         }
 
-        element.setValue(valueMap.value, !trigger);
+        element.setValue(valueMap.value, true);
 
         if (!trigger) $element.on('change', Select.onChange);
     }
 
     static getValue($element) {
         let properties = Component.getProperties($element);
+        let valueMap = Control.getServerValue($element);
         let value = $element[0].value;
 
-        if (Select.isEmptyValue(value)) {
-            return TypedValue.empty(Select.getValueType($element));
-
-        } else if (properties.multiple) {
-            return TypedValue.list(Array.isArray(value) ? value : [value]);
-
-        } else {
-            return TypedValue.string(value);
+        if (!Select.isEmptyValue(value)) {
+            if (properties.multiple) {
+                return TypedValue.list(Array.isArray(value) ? value : [value]);
+            } else {
+                return TypedValue.string(value);
+            }
         }
+
+        if (!Select.isEmptyValue(valueMap)) {
+            return valueMap
+        }
+
+        return TypedValue.empty(Select.getValueType($element));
     }
 
     static getValueType($element) {
@@ -349,10 +354,11 @@ class Select extends Control {
             validValues = [String(newOptions[0].id)];
         }
 
+        $element.off('change');
         element.setOptions(Select.toVirtualOptions(newOptions), false);
+        element.setValue(validValues, true);
+        $element.on('change', Select.onChange);
 
-        valueMap.value = validValues;
-        Select.setValue($element, valueMap, false);
     }
 
     static setTemporaryOptions($element, valueMap) {
