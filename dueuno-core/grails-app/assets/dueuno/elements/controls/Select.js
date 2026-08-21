@@ -262,22 +262,17 @@ class Select extends Control {
 
     static getValue($element) {
         let properties = Component.getProperties($element);
-        let valueMap = Control.getServerValue($element);
         let value = $element[0].value;
 
-        if (!Select.isEmptyValue(value)) {
-            if (properties.multiple) {
-                return TypedValue.list(Array.isArray(value) ? value : [value]);
-            } else {
-                return TypedValue.string(value);
-            }
-        }
+        if (Select.isEmptyValue(value)) {
+            return TypedValue.empty(Select.getValueType($element));
 
-        if (!Select.isEmptyValue(valueMap)) {
-            return valueMap
-        }
+        } else if (properties.multiple) {
+            return TypedValue.list(Array.isArray(value) ? value : [value]);
 
-        return TypedValue.empty(Select.getValueType($element));
+        } else {
+            return TypedValue.string(value);
+        }
     }
 
     static getValueType($element) {
