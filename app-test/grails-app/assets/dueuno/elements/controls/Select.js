@@ -15,7 +15,7 @@ class Select extends Control {
             ele: element,
             dropboxWrapper: '#' + dropboxPortal.id,
             zIndex: 1060,
-            options: Select.toVirtualOptions(properties.options),
+            options: properties.options,
             multiple: properties.multiple,
             search: properties.search,
             placeholder: properties.multiple ? '' : properties.placeholder,
@@ -70,10 +70,12 @@ class Select extends Control {
         let $modal = $(element).closest('.modal');
         let portalId = $modal.length ? 'select-dropbox-portal-modal' : 'select-dropbox-portal';
         let $portal = $('#' + portalId);
+
         if (!$portal.length) {
             $portal = $('<div>', {id: portalId, class: 'control-select'});
             $portal.appendTo($modal.length ? $modal : $('body'));
         }
+
         return $portal[0];
     }
 
@@ -85,6 +87,7 @@ class Select extends Control {
     static onOpen(event) {
         let $element = $(event.currentTarget);
         let searchEvent = Component.getEvent($element, 'search');
+
         if (searchEvent) {
             Select.loadServerOptions($element, searchEvent);
         }
@@ -92,6 +95,7 @@ class Select extends Control {
 
     static onValueClick(event) {
         let $element = $(event.currentTarget);
+
         if ($element.closest('.control-select').is('[disabled]')) {
             event.stopPropagation();
         }
@@ -107,6 +111,7 @@ class Select extends Control {
 
         let $element = $(event.data.element);
         let $next;
+
         if (event.shiftKey) {
             $next = Select.getAdjacentControl($element, -1);
         } else {
@@ -115,9 +120,11 @@ class Select extends Control {
                 ? $trailing.first()
                 : Select.getAdjacentControl($element, 1);
         }
+
         if (!$next.length) {
             $next = Select.getAdjacentFocusable($element, event.shiftKey ? -1 : 1);
         }
+
         if (!$next.length) return;
 
         event.preventDefault();
@@ -132,10 +139,12 @@ class Select extends Control {
         let $actions = $action.closest('.input-group')
             .children('.component-link:not([disabled])')
             .filter(':visible');
+
         if (!$action.is($actions.first())) return;
 
         let $select = $action.closest('.input-group')
             .children('[data-21-control="Select"]:not([disabled])');
+
         if (!$select.length) return;
 
         event.preventDefault();
@@ -156,9 +165,11 @@ class Select extends Control {
         let $actions = $group
             .children('.component-link:not([disabled])')
             .filter(':visible');
+
         let $select = $group
             .closest('.input-group')
             .children('[data-21-control="Select"]:not([disabled])');
+
         if (!$select.length) return;
 
         event.preventDefault();
@@ -175,13 +186,16 @@ class Select extends Control {
         if (event.key !== 'Tab' || !event.shiftKey) return;
 
         let $control = $(event.target).closest('[data-21-control]');
+
         if (!$control.length || $control.data('21-control') === 'Select') return;
 
         let $previous = Select.getAdjacentControl($control, -1);
+
         if ($previous.data('21-control') !== 'Select') return;
 
         event.preventDefault();
         event.stopPropagation();
+
         let $trailing = Select.getTrailingFocusable($previous);
         ($trailing.length ? $trailing.last() : $previous).trigger('focus');
     }
@@ -199,9 +213,13 @@ class Select extends Control {
      */
     static getAdjacentFocusable($element, direction) {
         let $scope = $element.closest('[data-21-component="PageContent"]');
-        if (!$scope.length) $scope = $(document.body);
+
+        if (!$scope.length) {
+            $scope = $(document.body);
+        }
 
         let element = $element[0];
+
         let $focusable = $scope.find(
             'a[href], button:not(:disabled), input:not([type="hidden"]):not(:disabled), ' +
             'select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
@@ -211,6 +229,7 @@ class Select extends Control {
 
         let candidates = $focusable.get().filter(function (candidate) {
             let position = element.compareDocumentPosition(candidate);
+
             return direction > 0
                 ? position & Node.DOCUMENT_POSITION_FOLLOWING
                 : position & Node.DOCUMENT_POSITION_PRECEDING;
@@ -225,7 +244,10 @@ class Select extends Control {
      */
     static getAdjacentControl($element, direction) {
         let $scope = $element.closest('[data-21-component="PageContent"]');
-        if (!$scope.length) $scope = $element.closest('form');
+
+        if (!$scope.length) {
+            $scope = $element.closest('form');
+        }
 
         let $controls = $scope.find('[data-21-control]');
         let index = $controls.index($element);
@@ -235,7 +257,10 @@ class Select extends Control {
             let control = Control.getByElement($control);
             let isVisible = Elements.callMethod($control, control, 'getDisplay');
             let isReadonly = Elements.callMethod($control, control, 'getReadonly');
-            if (isVisible && !isReadonly && $control.is(':visible')) return $control;
+
+            if (isVisible && !isReadonly && $control.is(':visible')) {
+                return $control;
+            }
         }
 
         return $();
@@ -290,6 +315,7 @@ class Select extends Control {
 
     static loadServerOptions($element, searchEvent, searchValue = '') {
         let controlId = Component.getId($element);
+
         searchEvent.params = {
             [controlId]: searchValue,
         };
@@ -303,6 +329,7 @@ class Select extends Control {
                 let command = transition.commands.findLast(it =>
                     it.component == controlId && it.property == 'options'
                 );
+
                 let serverOptions = command?.value?.value ?? [];
                 Select.setSearchResultOptions($element, serverOptions);
             },
@@ -315,10 +342,9 @@ class Select extends Control {
 
     static setSearchResultOptions($element, options) {
         let virtualSelect = $element[0].virtualSelect;
-        let virtualSelectOptions = Select.toVirtualOptions(options)
 
         virtualSelect.searchValue = '';
-        virtualSelect.setServerOptions(virtualSelectOptions);
+        virtualSelect.setServerOptions(options);
     }
 
     static setOptions($element, options) {
@@ -326,7 +352,7 @@ class Select extends Control {
         let valueMap = TypedValue.require(Select.getValue($element));
         let selectedValues = Select.valueList(valueMap.value);
         let newOptions = options ?? [];
-        let optionValues = newOptions.map(option => String(option.id));
+        let optionValues = newOptions.map(option => String(option.value));
         let properties = Component.getProperties($element);
 
         // 1. Preserve the currently selected value(s) if they are still valid.
@@ -338,6 +364,7 @@ class Select extends Control {
         //    by the server, if it is still available among the new options.
         if (!validValues.length) {
             let serverValue = Control.getServerValue($element).value;
+
             validValues = Select.valueList(serverValue).filter(value =>
                 optionValues.includes(value)
             );
@@ -346,24 +373,28 @@ class Select extends Control {
         // 3. If there is still no valid value, automatically select the only
         //    available option when autoSelect is enabled and the field is required.
         if (!validValues.length && properties.autoSelect && !properties.nullable && newOptions.length == 1) {
-            validValues = [String(newOptions[0].id)];
+            validValues = [String(newOptions[0].value)];
         }
 
         $element.off('change');
-        element.setOptions(Select.toVirtualOptions(newOptions), false);
+        element.setOptions(newOptions, false);
         element.setValue(validValues, true);
         $element.on('change', Select.onChange);
-
     }
 
     static setTemporaryOptions($element, valueMap) {
-        let options = Select.valueList(valueMap.value).map(value => ({value: value, label: '...'}));
+        let options = Select.valueList(valueMap.value).map(value => ({
+            value: value,
+            label: '...'
+        }));
+
         $element[0].setOptions(options, false);
         $element[0].setValue(valueMap.value, true);
     }
 
     static setReadonly($element, value) {
         Component.setReadonly($element, value);
+
         if (value) {
             $element[0].disable();
         } else {
@@ -384,13 +415,6 @@ class Select extends Control {
             : [value];
 
         return values.map(value => String(value));
-    }
-
-    static toVirtualOptions(options) {
-        return (options ?? []).map(option => ({
-            value: String(option.id),
-            label: option.text,
-        }));
     }
 }
 

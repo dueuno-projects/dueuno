@@ -29,11 +29,11 @@ import groovy.transform.CompileStatic
  *   <li>{@code optionsFromRecordset} — built from a GORM/collection result set.</li>
  *   <li>{@code optionsFromList} — built from a plain list of values.</li>
  *   <li>{@code optionsFromEnum} — built from an enum class.</li>
- *   <li>{@code options} — a pre-built list of {@code [id: …, text: …]} maps.</li>
+ *   <li>{@code options} — a pre-built list of {@code [value: …, label: …]} maps.</li>
  * </ul>
  * <p>
  * The value type is {@link dueuno.types.Type#LIST}. Each individual checkbox is accessible
- * via the {@code checkboxes} map, keyed by option ID.
+ * via the {@code checkboxes} map, keyed by option value.
  * </p>
  *
  * @author Gianluca Sartori
@@ -42,19 +42,19 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class MultipleCheckbox extends Control {
 
-    /** The resolved list of option maps ({@code id} → key, {@code text} → display label). */
+    /** The resolved list of option maps ({@code value} → key, {@code label} → display label). */
     List<Map<String, String>> options
 
     /** When {@code true}, all child checkboxes render without the toggle-switch style. */
     Boolean simple
 
-    /** Map of option ID → {@link Checkbox} instance for each rendered checkbox. */
+    /** Map of option value → {@link Checkbox} instance for each rendered checkbox. */
     Map<String, Checkbox> checkboxes
 
-    /** Property names used to build recordset option keys. */
+    /** Property names used to build recordset option values. */
     List<String> keys
 
-    /** Separator used when a recordset option key contains multiple properties. */
+    /** Separator used when a recordset option value contains multiple properties. */
     String keysSeparator
 
     /** Values excluded when options are built from a list or enum. */
@@ -128,20 +128,20 @@ class MultipleCheckbox extends Control {
 
         checkboxes = [:]
         for (option in options) {
-            String id = option.id
-            Object text = option.text
+            String optionValue = option.value
+            Object optionLabel = option.label
 
             Checkbox checkbox = new Checkbox(
-                id: getId() + '_' + id,
-                optionKey: id,
-                optionValue: text,
+                id: getId() + '_' + optionValue,
+                optionKey: optionValue,
+                optionValue: optionLabel,
                 simple: simple,
                 readonly: readonly,
                 primaryTextColor: primaryTextColor,
                 primaryBackgroundColor: primaryBackgroundColor,
                 primaryBackgroundColorAlpha: primaryBackgroundColorAlpha,
             )
-            checkboxes.put(id, checkbox)
+            checkboxes.put(optionValue, checkbox)
         }
 
         containerSpecs.nullable = true
@@ -151,13 +151,12 @@ class MultipleCheckbox extends Control {
      * Sets the selected values for this control.
      * <ul>
      *   <li>A {@link String} is wrapped in a single-element list.</li>
-     *   <li>A {@link Set} or {@link List} is normalised to a list of ID strings (using the
-     *       element's {@code id} property when present, otherwise its string representation).</li>
+     *   <li>A {@link Set} or {@link List} is normalised to a list of value strings.</li>
      * </ul>
      * After setting the value, {@link #renderValue()} is called to update the individual
      * checkbox states.
      *
-     * @param value the selected option key(s); accepts {@code null}, {@link String},
+     * @param value the selected option value(s); accepts {@code null}, {@link String},
      * {@link Set}, or {@link List}
      * @throws ElementsException if {@code value} is of an unsupported type
      */
@@ -188,7 +187,7 @@ class MultipleCheckbox extends Control {
     /**
      * Synchronises the checked state of each {@link Checkbox} in {@code checkboxes} with
      * the current {@code value} list. Clears all checkboxes first, then marks those whose
-     * option key appears in the value list as checked.
+     * option value appears in the value list as checked.
      */
     void renderValue() {
         if (!checkboxes)
@@ -235,19 +234,19 @@ class MultipleCheckbox extends Control {
     /**
      * Replaces the available choices with entries from the supplied map.
      *
-     * @param value map of option IDs to display values
+     * @param value map of option values to display labels
      */
     void setOptions(Map value) {
         applyOptions(Select.options(optionConfiguration(options: value)))
     }
 
     /**
-     * Returns the available choices as a map of option IDs to display text.
+     * Returns the available choices as a map of option values to display labels.
      *
      * @return the configured options
      */
     Map getOptions() {
-        return options.collectEntries { [(it.id): it.text] }
+        return options.collectEntries { [(it.value): it.label] }
     }
 
     /**
@@ -294,20 +293,24 @@ class MultipleCheckbox extends Control {
     private void applyOptions(List<Map<String, String>> value) {
         this.@options = value ?: []
         checkboxes = [:]
+
         for (option in options) {
-            String optionId = option.id
+            String optionValue = option.value
+
             Checkbox checkbox = new Checkbox(
-                id: getId() + '_' + optionId,
-                optionKey: optionId,
-                optionValue: option.text,
+                id: getId() + '_' + optionValue,
+                optionKey: optionValue,
+                optionValue: option.label,
                 simple: simple,
                 readonly: readonly,
                 primaryTextColor: primaryTextColor,
                 primaryBackgroundColor: primaryBackgroundColor,
                 primaryBackgroundColorAlpha: primaryBackgroundColorAlpha,
             )
-            checkboxes.put(optionId, checkbox)
+
+            checkboxes.put(optionValue, checkbox)
         }
+
         renderValue()
     }
 
