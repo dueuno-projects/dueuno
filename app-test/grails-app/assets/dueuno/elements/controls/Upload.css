@@ -1,14 +1,12 @@
 .control-upload {
     width: 100%;
-    height: 100%;
-    min-height: 9.375rem;
+    height: inherit;
     border-radius: var(--bs-border-radius-sm);
 }
 
 .control-upload .filepond--root {
     width: 100%;
-    height: 100%;
-    min-height: 9.375rem;
+    height: inherit;
     margin: 0;
     font-family: inherit;
     font-size: inherit;
@@ -21,16 +19,10 @@
 }
 
 .control-upload .filepond--drop-label {
-    height: 100%;
-    min-height: 9.375rem;
+    height: inherit;
 }
 
 .control-upload .filepond--drop-label label {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
     padding: .5rem .75rem;
     font-size: 1.1rem;
     font-weight: bold;
