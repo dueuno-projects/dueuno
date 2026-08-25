@@ -15,11 +15,12 @@ class Upload extends Control {
 
         let pond = FilePond.create($element.find('input[type="file"]')[0], {
             name: '_21Upload',
-            allowMultiple: properties.allowMultiple,
             acceptedFileTypes: properties.acceptedFileTypes,
             maxFiles: properties.maxFiles,
             maxFileSize: properties.maxFileSize,
+            allowMultiple: properties.allowMultiple,
             allowRevert: false,
+            allowRemove: true,
             credits: false,
 
             labelIdle: properties.labelIdle,
