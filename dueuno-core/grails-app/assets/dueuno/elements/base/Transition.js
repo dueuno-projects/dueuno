@@ -144,6 +144,12 @@ class Transition {
         // A recognized root is handled separately.
         if (roots[parts[0]]) {
             $root = roots[parts.shift()];
+
+            // The component ID is exactly the root.
+            if (parts.length === 0) {
+                return $root;
+            }
+
         } else {
             $root = PageModal.isActive
                 ? PageModal.$self
