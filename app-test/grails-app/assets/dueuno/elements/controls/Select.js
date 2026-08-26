@@ -49,6 +49,8 @@ class Select extends Control {
 
     static finalize($element, $root) {
         let element = $element[0];
+        Transition.triggerEvent($element, 'load');
+
         let $navigationElements = $element.add(element.virtualSelect.$dropboxWrapper);
         $navigationElements.off('keydown.select').on('keydown.select', {element: element}, Select.onKeyDown);
 
@@ -56,10 +58,8 @@ class Select extends Control {
         $element.closest('.input-group').children('.component-link').off('keydown.select').on('keydown.select', Select.onActionKeyDown);
         $element.closest('.input-group').children('.component-help').off('keydown.select').on('keydown.select', Select.onHelpKeyDown);
         $element.closest('form').off('keydown.selectNavigation').on('keydown.selectNavigation', Select.onFormKeyDown);
-        $element.off('change').on('change', Select.onChange);
         $element.off('beforeOpen').on('beforeOpen', Select.onOpen);
-
-        Transition.triggerEvent($element, 'load');
+        $element.off('change').on('change', Select.onChange);
     }
 
     static isInitialized($element) {
@@ -200,78 +200,8 @@ class Select extends Control {
         ($trailing.length ? $trailing.last() : $previous).trigger('focus');
     }
 
-    static getTrailingFocusable($element) {
-        return $element.closest('.input-group')
-            .children('.component-link:not([disabled]), .component-help:not(:disabled)')
-            .filter(':visible');
-    }
-
-    /**
-     * Returns the nearest native focus target outside the Select. This is the
-     * fallback for a Select at the boundary of a form, where there is no next
-     * Dueuno control but the page still contains links or buttons.
-     */
-    static getAdjacentFocusable($element, direction) {
-        let $scope = $element.closest('[data-21-component="PageContent"]');
-
-        if (!$scope.length) {
-            $scope = $(document.body);
-        }
-
-        let element = $element[0];
-
-        let $focusable = $scope.find(
-            'a[href], button:not(:disabled), input:not([type="hidden"]):not(:disabled), ' +
-            'select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
-        ).filter(':visible').filter(function () {
-            return this !== element && !element.contains(this);
-        });
-
-        let candidates = $focusable.get().filter(function (candidate) {
-            let position = element.compareDocumentPosition(candidate);
-
-            return direction > 0
-                ? position & Node.DOCUMENT_POSITION_FOLLOWING
-                : position & Node.DOCUMENT_POSITION_PRECEDING;
-        });
-
-        return $(direction > 0 ? candidates[0] : candidates.at(-1));
-    }
-
-    /**
-     * Returns the nearest visible, enabled form control in the requested
-     * direction, skipping readonly, disabled, and hidden controls.
-     */
-    static getAdjacentControl($element, direction) {
-        let $scope = $element.closest('[data-21-component="PageContent"]');
-
-        if (!$scope.length) {
-            $scope = $element.closest('form');
-        }
-
-        let $controls = $scope.find('[data-21-control]');
-        let index = $controls.index($element);
-
-        for (let i = index + direction; i >= 0 && i < $controls.length; i += direction) {
-            let $control = $controls.eq(i);
-            let control = Control.getByElement($control);
-            let isVisible = Elements.callMethod($control, control, 'getDisplay');
-            let isReadonly = Elements.callMethod($control, control, 'getReadonly');
-
-            if (isVisible && !isReadonly && $control.is(':visible')) {
-                return $control;
-            }
-        }
-
-        return $();
-    }
-
     static setValue($element, valueMap, trigger = true) {
         valueMap = TypedValue.require(valueMap);
-        let element = $element[0];
-        if (!element.setValue) return;
-
-        if (!trigger) $element.off('change');
 
         let searchEvent = Component.getEvent($element, 'search');
         let loadEvent = Component.getEvent($element, 'load');
@@ -280,9 +210,7 @@ class Select extends Control {
             if (trigger) Transition.submit(loadEvent);
         }
 
-        element.setValue(valueMap.value, true);
-
-        if (!trigger) $element.on('change', Select.onChange);
+        $element[0].setValue(valueMap.value, true);
     }
 
     static getValue($element) {
@@ -376,10 +304,8 @@ class Select extends Control {
             validValues = [String(newOptions[0].value)];
         }
 
-        $element.off('change');
         element.setOptions(newOptions, false);
         element.setValue(validValues, true);
-        $element.on('change', Select.onChange);
     }
 
     static setTemporaryOptions($element, valueMap) {
@@ -389,7 +315,6 @@ class Select extends Control {
         }));
 
         $element[0].setOptions(options, false);
-        $element[0].setValue(valueMap.value, true);
     }
 
     static setReadonly($element, value) {
@@ -416,6 +341,73 @@ class Select extends Control {
 
         return values.map(value => String(value));
     }
+
+    static getTrailingFocusable($element) {
+        return $element.closest('.input-group')
+            .children('.component-link:not([disabled]), .component-help:not(:disabled)')
+            .filter(':visible');
+    }
+
+    /**
+     * Returns the nearest native focus target outside the Select. This is the
+     * fallback for a Select at the boundary of a form, where there is no next
+     * Dueuno control but the page still contains links or buttons.
+     */
+    static getAdjacentFocusable($element, direction) {
+        let $scope = $element.closest('[data-21-component="PageContent"]');
+
+        if (!$scope.length) {
+            $scope = $(document.body);
+        }
+
+        let element = $element[0];
+
+        let $focusable = $scope.find(
+            'a[href], button:not(:disabled), input:not([type="hidden"]):not(:disabled), ' +
+            'select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+        ).filter(':visible').filter(function () {
+            return this !== element && !element.contains(this);
+        });
+
+        let candidates = $focusable.get().filter(function (candidate) {
+            let position = element.compareDocumentPosition(candidate);
+
+            return direction > 0
+                ? position & Node.DOCUMENT_POSITION_FOLLOWING
+                : position & Node.DOCUMENT_POSITION_PRECEDING;
+        });
+
+        return $(direction > 0 ? candidates[0] : candidates.at(-1));
+    }
+
+    /**
+     * Returns the nearest visible, enabled form control in the requested
+     * direction, skipping readonly, disabled, and hidden controls.
+     */
+    static getAdjacentControl($element, direction) {
+        let $scope = $element.closest('[data-21-component="PageContent"]');
+
+        if (!$scope.length) {
+            $scope = $element.closest('form');
+        }
+
+        let $controls = $scope.find('[data-21-control]');
+        let index = $controls.index($element);
+
+        for (let i = index + direction; i >= 0 && i < $controls.length; i += direction) {
+            let $control = $controls.eq(i);
+            let control = Control.getByElement($control);
+            let isVisible = Elements.callMethod($control, control, 'getDisplay');
+            let isReadonly = Elements.callMethod($control, control, 'getReadonly');
+
+            if (isVisible && !isReadonly && $control.is(':visible')) {
+                return $control;
+            }
+        }
+
+        return $();
+    }
+
 }
 
 Control.register(Select);
