@@ -324,7 +324,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         }
 
         if (args.focus != null) {
-            t.focus(args.focus as String)
+            t.setFocus(args.focus as String)
         }
 
         return [

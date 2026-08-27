@@ -745,8 +745,7 @@ Grails application running at http://localhost:9992/test in environment: develop
         t.set('placeholderArea', 'placeholder', params.t1 as String)
         t.setValue('t2', params.t1?.plusHours(3))
         t.set('t2', 'min', params.t1?.plusHours(3))
-        t.set('t2', 'focus', true)
-//        t.set('t2', 'focus', false)
+        t.setFocus('t2')
         display transition: t
     }
 

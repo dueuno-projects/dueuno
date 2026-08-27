@@ -291,7 +291,7 @@ class Transition implements WebRequestAware {
      *
      * @param component the identifier of the component that should receive focus
      */
-    void focus(String component) {
+    void setFocus(String component) {
         set(component, 'focus', true)
     }
 
