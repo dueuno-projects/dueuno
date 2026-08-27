@@ -169,9 +169,10 @@ class TableFilters extends Form {
             _21TableOffset : 0,
         ]
 
-        for (field in components) {
-            if (field.component in Control) {
-                Control control = field.component as Control
+        for (field in fields) {
+            FormField formField = field.value
+            if (formField.component in Control) {
+                Control control = formField.component as Control
                 Map args = searchButton.properties
                 args.loading = true
                 control.onSubmit(args)

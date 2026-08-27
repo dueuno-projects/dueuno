@@ -165,6 +165,17 @@ class FormField extends Component {
     }
 
     /**
+     * Sets the Bootstrap column span for this field, validating values against
+     * {@code acceptedCols}.
+     *
+     * @param columns the column span for medium and larger screens (sm breakpoint)
+     * @throws ElementsException if either value is not in {@code acceptedCols}
+     */
+    void setCols(Integer columns) {
+        setCols(columns, columns)
+    }
+
+    /**
      * Sets the number of visible text rows, validating the value against {@code acceptedRows}
      * when that list is non-empty.
      *

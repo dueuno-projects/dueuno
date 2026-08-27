@@ -85,6 +85,15 @@ class Form extends Component {
     }
 
     /**
+     * Returns a Map of all the fields of this form ({@link FormField} instances).
+     *
+     * @return a Map of {@link FormField} children
+     */
+    Map<String, FormField> getFields() {
+        return getComponents().collectEntries { [(it.id): it] }
+    }
+
+    /**
      * Returns all child components of this form that are {@link FormField} instances.
      *
      * @return an ordered list of {@link FormField} children
@@ -133,7 +142,7 @@ class Form extends Component {
         }
 
         // Auto squeeze if first component
-        if (args.sqeeze == null && !components.size()) {
+        if (args.sqeeze == null && !fields.size()) {
             args.squeeze = true
         }
 
@@ -331,8 +340,9 @@ class Form extends Component {
     @Override
     void setReadonly(Boolean isReadonly) {
         super.setReadonly(isReadonly)
-        for (field in components) {
-            (field as FormField).component.readonly = isReadonly
+        for (field in fields) {
+            FormField formField = field.value
+            formField.component.readonly = isReadonly
         }
     }
 
