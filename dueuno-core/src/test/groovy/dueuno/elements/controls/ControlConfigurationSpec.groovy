@@ -132,7 +132,7 @@ class ControlConfigurationSpec extends Specification {
             [final: 'Final'],
         ]
         (field.component as Select).multiple
-        field.cols == ' col-sm-6'
+        field.cols == ' col-sm-6 col-6'
     }
 
 }

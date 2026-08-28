@@ -79,7 +79,7 @@ class FormSpec extends Specification {
         configuredControl.value == 'Jane Doe'
         field.label == 'Name'
         field.help == 'Enter first and last name'
-        field.cols == ' col-sm-6'
+        field.cols == ' col-sm-6 col-6'
     }
 
     void supportsComponents() {
