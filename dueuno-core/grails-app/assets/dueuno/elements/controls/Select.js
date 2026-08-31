@@ -62,10 +62,6 @@ class Select extends Control {
         $element.off('change').on('change', Select.onChange);
     }
 
-    static isInitialized($element) {
-        return false;
-    }
-
     static getDropboxPortal(element) {
         let $modal = $(element).closest('.modal');
         let portalId = $modal.length ? 'select-dropbox-portal-modal' : 'select-dropbox-portal';

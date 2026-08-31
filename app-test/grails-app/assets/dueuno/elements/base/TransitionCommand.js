@@ -66,23 +66,19 @@ class TransitionCommand {
     }
 
     static render($component, $newComponent, componentEvent) {
+        TransitionCommand.animate(componentEvent, $component, $newComponent)
         let focusPath = TransitionCommand.getFocusPath();
-        let animation = componentEvent.renderProperties['animate'];
-        TransitionCommand.animate(animation, $component, $newComponent)
 
         Page.deactivateComponents();
         $component.replaceWith($newComponent);
         Page.reinitializeContent($newComponent);
-        TransitionCommand.restoreFocus(focusPath);
 
-        TransitionCommand.scrollTo($newComponent, componentEvent);
-        if (componentEvent.renderProperties['updateUrl']) {
-            let url = Transition.buildUrl(componentEvent);
-            TransitionCommand.setBrowserUrl(url);
-        }
+        TransitionCommand.restoreFocus(focusPath);
+        TransitionCommand.scrollTo(componentEvent, $newComponent);
+        TransitionCommand.setBrowserUrl(componentEvent);
     }
 
-    static scrollTo($content, componentEvent) {
+    static scrollTo(componentEvent, $content) {
         let scroll = componentEvent.renderProperties['scroll'];
         if (scroll == 'reset') {
             window.scrollTo({top:0, left:0, behavior: 'instant'});
@@ -255,11 +251,16 @@ class TransitionCommand {
         return merged;
     }
 
-    static setBrowserUrl(url) {
-        history.pushState({}, '', url);
+    static setBrowserUrl(componentEvent) {
+        if (componentEvent.renderProperties['updateUrl']) {
+            let url = Transition.buildUrl(componentEvent);
+            history.pushState({}, '', url);
+        }
     }
 
-    static animate(animation, $prevElement, $nextElement) {
+    static animate(componentEvent, $prevElement, $nextElement) {
+        let animation = componentEvent.renderProperties['animate'];
+
         if (!_21_.user.animations || !animation) {
             return;
         }
@@ -268,13 +269,13 @@ class TransitionCommand {
             case 'fade':
                 $prevElement.addClass('fade-out');
                 $nextElement.addClass('fade-in');
-            break;
+                break;
 
             case 'back':
-            break;
+                break;
 
             case 'next':
-            break;
+                break;
         }
     }
 }

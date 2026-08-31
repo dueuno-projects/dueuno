@@ -40,6 +40,7 @@ class PageModal extends Component {
         // Events
         PageModal.$self.off('shown.bs.modal').on('shown.bs.modal', PageModal.onShown);
         PageModal.$self.off('hidden.bs.modal').on('hidden.bs.modal', PageModal.onHidden);
+        PageModal.$self.off('hide.bs.modal').on('hide.bs.modal', PageModal.onHide);
         PageModal.$self.off('keydown').on('keydown', PageModal.onKeyDown);
         $closeButton.off('click').on('click', PageModal.onClose);
     }
@@ -52,6 +53,10 @@ class PageModal extends Component {
     static onClose(event) {
         Page.reinitializeContent(PageContent.$self, false, true);
         PageModal.close();
+    }
+
+    static onHide(event) {
+        document.activeElement.blur();
     }
 
     static onHidden(event) {

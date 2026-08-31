@@ -37,6 +37,8 @@ class PageMessageBox extends Component {
     }
 
     static onHide(event) {
+        document.activeElement.blur();
+
         if (PageModal.isActive) {
             PageModal.show();
         }
