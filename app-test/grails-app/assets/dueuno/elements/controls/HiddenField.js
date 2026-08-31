@@ -31,7 +31,7 @@ class HiddenField extends Control {
                 break
 
             default:
-                valueMap.value = JSON.parse($element.val());
+                valueMap.value = $element.val() ? JSON.parse($element.val()) : {};
         }
 
         return TypedValue.require(valueMap);
