@@ -351,7 +351,7 @@ class Select extends Control {
     /**
      * Returns the nearest native focus target outside the Select. This is the
      * fallback for a Select at the boundary of a form, where there is no next
-     * Dueuno control but the page still contains links or buttons.
+     * control but the page still contains links or buttons.
      */
     static getAdjacentFocusable($element, direction) {
         let $scope = $element.closest('[data-21-component="PageContent"]');
