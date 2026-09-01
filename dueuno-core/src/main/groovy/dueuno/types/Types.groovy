@@ -470,8 +470,15 @@ class Types {
      * @return the deserialised {@link Boolean}
      */
     static Boolean deserializeBoolean(Map valueMap) {
-        Boolean result = valueMap.value as Boolean
-        return result
+        if (!valueMap) {
+            return false
+        }
+
+        if (valueMap.value in Boolean) {
+            return valueMap.value
+        } else {
+            return valueMap.value == 'true'
+        }
     }
 
     /**
@@ -483,6 +490,10 @@ class Types {
      * @return the deserialised {@link BigDecimal}
      */
     static BigDecimal deserializeNumber(Map valueMap) {
+        if (!valueMap) {
+            return null
+        }
+
         BigDecimal result = deserializeBigDecimal(valueMap.value as String, valueMap.decimals as Integer)
         return result
     }
@@ -494,6 +505,10 @@ class Types {
      * @return the deserialised {@link String}
      */
     static String deserializeString(Map valueMap) {
+        if (!valueMap) {
+            return null
+        }
+
         return valueMap.value
     }
 
@@ -504,6 +519,10 @@ class Types {
      * @return the deserialised {@link Map}, or an empty map if the value is absent or not a map
      */
     static Map deserializeMap(Map valueMap) {
+        if (!valueMap) {
+            return [:]
+        }
+
         if (valueMap.value !in Map) {
             return [:]
         }
@@ -562,6 +581,10 @@ class Types {
      * @return the reconstructed {@link LocalDate}, or {@code null} if any field is missing
      */
     static LocalDate deserializeLocalDate(Map valueMap) {
+        if (!valueMap) {
+            return null
+        }
+
         Map date = valueMap.value as Map
         Integer day = (Integer) date.day
         Short month = (Short) date.month
@@ -582,6 +605,10 @@ class Types {
      * @return the reconstructed {@link LocalTime}, or {@code null} if any field is missing
      */
     static LocalTime deserializeLocalTime(Map valueMap) {
+        if (!valueMap) {
+            return null
+        }
+
         Map time = valueMap.value as Map
         Byte hour = (Byte) time.hour
         Byte minute = (Byte) time.minute
@@ -602,6 +629,10 @@ class Types {
      * @return the reconstructed {@link LocalDateTime}, or {@code null} if any field is missing
      */
     static LocalDateTime deserializeLocalDateTime(Map valueMap) {
+        if (!valueMap) {
+            return null
+        }
+
         Map date = valueMap.value as Map
         Short year = (Short) date.year
         Short month = (Short) date.month
