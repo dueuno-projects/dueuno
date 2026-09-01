@@ -22,6 +22,7 @@ class TimeField extends DateTimeField {
                 },
             },
             localization: {
+                locale: _21_.user.language,
                 format: timeFormat,
                 hourCycle: hourCycle,
             }
@@ -98,10 +99,10 @@ class TimeField extends DateTimeField {
         }
 
         return TypedValue.of(Type.TIME, {
-                hour: time.hours,
-                minute: time.minutes,
-                second: time.seconds,
-            });
+            hour: time.hours,
+            minute: time.minutes,
+            second: time.seconds,
+        });
     }
 }
 

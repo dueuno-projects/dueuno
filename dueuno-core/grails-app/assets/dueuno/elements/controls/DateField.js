@@ -20,6 +20,7 @@ class DateField extends DateTimeField {
                 },
             },
             localization: {
+                locale: _21_.user.language,
                 format: dateFormat,
                 startOfTheWeek: startOfTheWeek,
             },
@@ -104,10 +105,10 @@ class DateField extends DateTimeField {
         }
 
         return TypedValue.of(Type.DATE, {
-                year: date.year,
-                month: date.month + 1,
-                day: date.date,
-            });
+            year: date.year,
+            month: date.month + 1,
+            day: date.date,
+        });
     }
 
 }
