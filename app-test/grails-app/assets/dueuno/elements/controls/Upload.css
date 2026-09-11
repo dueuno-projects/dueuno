@@ -65,7 +65,7 @@
 }
 
 .control-upload:not([disabled]):focus-within {
-    box-shadow: 0 0 0 .25rem rgb(var(--elements-primary-bg-shaded));
+    box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded));
 }
 
 .control-upload .filepond--root[data-disabled] .filepond--panel-root {

@@ -17,7 +17,7 @@
 .btn:focus-visible,
 button:focus-visible,
 .nav-link:focus-visible {
-    box-shadow: 0 0 0 .25rem rgb(var(--elements-primary-bg-shaded));
+    box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded));
 }
 
 .component-link:has([data-21-component]) {

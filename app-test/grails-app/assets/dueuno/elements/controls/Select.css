@@ -83,7 +83,7 @@
 .control-select .vscomp-wrapper.focused .vscomp-toggle-button,
 .control-select .vscomp-wrapper:focus .vscomp-toggle-button {
     border: none;
-    box-shadow: 0 0 0 .25rem rgb(var(--elements-primary-bg-shaded));
+    box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded));
 }
 
 /* DROPDOWN */
@@ -159,7 +159,7 @@
     bottom: calc(.75rem - (var(--elements-spacing-y) / 2));
     left: calc(.75rem - var(--elements-spacing-y));
     border-radius: var(--bs-border-radius-sm);
-    box-shadow: 0 0 0 .25rem rgb(var(--elements-primary-bg-shaded));
+    box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded));
     content: "";
     pointer-events: none;
 }

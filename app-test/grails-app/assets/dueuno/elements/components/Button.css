@@ -85,7 +85,7 @@ button:active {
 */
 .btn.dropdown-toggle:focus-visible,
 .form-control:focus-visible {
-    box-shadow: 0 0 0 .25rem rgb(var(--elements-primary-bg-shaded));
+    box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded));
 }
 
 .dropdown-menu a {
