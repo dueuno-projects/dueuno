@@ -94,6 +94,10 @@
     height: 15px;
 }
 
+.component-table-dataset :is(.component-table-selection, .component-table-selection-header) .checkbox.simple:has(.form-check-input:focus-visible)::after {
+    box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded));
+}
+
 .component-table-dataset :is(.component-table-selection, .component-table-selection-header) .checkbox.simple::after {
     transition-duration: .2s;
     border: 2px solid rgba(var(--elements-main-text), .7);

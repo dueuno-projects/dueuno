@@ -7,6 +7,10 @@
     height: 1.3rem;
 }
 
+.control-checkbox-simple .form-check-input:focus {
+    border-radius: 2rem;
+}
+
 .control-checkbox-simple .form-check-input:checked {
     background-color: rgb(var(--elements-primary-bg));
     border: none;
