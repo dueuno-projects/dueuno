@@ -123,6 +123,8 @@ class Upload extends Control {
 
         let pond = $element[0]._filePond;
         if (pond) {
+            let properties = Control.getProperties($element);
+            pond.labelIdle = value ? properties.messages.disabled : properties.labelIdle;
             pond.disabled = value;
         }
     }

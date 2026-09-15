@@ -124,6 +124,7 @@ class Upload extends Control {
             maxFileSize      : maxFileSize,
 
             messages         : [
+                disabled     : message('control.upload.disabled'),
                 tooBig       : message('control.upload.file.too.big'),
                 invalidType  : message('control.upload.invalid.file.type'),
                 responseError: message('control.upload.response.error'),

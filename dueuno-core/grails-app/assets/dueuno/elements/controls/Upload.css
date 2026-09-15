@@ -16,7 +16,7 @@
 
 .control-upload .filepond--panel-root {
     border-radius: var(--bs-border-radius-sm);
-    background-color: rgb(var(--elements-primary-bg-shaded));
+    background-color: rgb(var(--elements-main-bg));
 }
 
 .control-upload .filepond--drop-label {
