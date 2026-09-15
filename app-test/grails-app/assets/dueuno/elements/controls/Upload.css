@@ -11,6 +11,7 @@
     font-family: inherit;
     font-size: inherit;
     font-weight: inherit;
+    cursor: pointer;
 }
 
 .control-upload .filepond--panel-root {
@@ -66,6 +67,10 @@
 
 .control-upload:not([disabled]):focus-within {
     box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded));
+}
+
+.control-upload .filepond--root[data-disabled] {
+    cursor: default;
 }
 
 .control-upload .filepond--root[data-disabled] .filepond--panel-root {
