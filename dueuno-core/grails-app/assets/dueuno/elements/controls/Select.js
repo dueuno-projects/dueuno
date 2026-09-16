@@ -106,6 +106,7 @@ class Select extends Control {
         if (event.key !== 'Tab') return;
 
         let $element = $(event.data.element);
+        $element[0].close();
         let $next;
 
         if (event.shiftKey) {
