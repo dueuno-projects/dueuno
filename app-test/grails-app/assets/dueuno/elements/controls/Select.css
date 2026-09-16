@@ -322,8 +322,7 @@
     border-bottom-right-radius: 0;
 }
 
-.component-form-field:has(.help-message.collapsing, .help-message.collapse.show)
-    .control-select .vscomp-toggle-button {
+.component-form-field:has(.help-message.collapsing, .help-message.collapse.show) .control-select .vscomp-toggle-button {
     border-bottom-left-radius: 0;
 }
 
