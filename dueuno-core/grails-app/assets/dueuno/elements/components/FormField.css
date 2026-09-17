@@ -184,7 +184,7 @@ input:focus-visible,
 
 .input-group.error-highlight {
     border-radius: var(--bs-border-radius-sm);
-    box-shadow: 0 0 0 .08rem rgba(var(--elements-required-text), .5) !important;
+    box-shadow: 0 0 0 .1rem rgba(var(--elements-required-text), .7) !important;
 }
 
 .input-group.field-highlight {
