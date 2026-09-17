@@ -111,6 +111,12 @@ class Select extends Control {
 
         if (event.shiftKey) {
             $next = Select.getAdjacentControl($element, -1);
+            if ($next.length && $next.data('21-control') === 'Select') {
+                let $trailing = Select.getTrailingFocusable($next);
+                if ($trailing.length) {
+                    $next = $trailing.last();
+                }
+            }
         } else {
             let $trailing = Select.getTrailingFocusable($element);
             $next = $trailing.length
