@@ -104,3 +104,40 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         });
     }
 }
+
+for (const moduleName of ['dueuno-core', 'app-test']) {
+    for (const allowClear of [false, true]) {
+        for (const key of ['Backspace', 'Delete', 'ArrowDown']) {
+            for (const searchInput of [false, true]) {
+                test(`${moduleName}: ${key}, allowClear=${allowClear}, searchInput=${searchInput}`, () => {
+                    const wrapper = {};
+                    const element = { virtualSelect: { $wrapper: wrapper } };
+                    let prevented = false;
+                    let stopped = false;
+                    const context = vm.createContext({
+                        Control: class { static register() {} },
+                        $: value => [value],
+                        Component: { getProperties: () => ({ allowClear }) },
+                    });
+                    const source = path.resolve(__dirname, '../../../..', moduleName,
+                        'grails-app/assets/dueuno/elements/controls/Select.js');
+                    vm.runInContext(fs.readFileSync(source, 'utf8'), context);
+                    const Select = vm.runInContext('Select', context);
+
+                    Select.onClearKeyDown({
+                        key,
+                        currentTarget: wrapper,
+                        data: { element },
+                        target: searchInput ? {} : wrapper,
+                        preventDefault() { prevented = true; },
+                        stopImmediatePropagation() { stopped = true; },
+                    });
+
+                    const shouldBlock = !allowClear && !searchInput && key !== 'ArrowDown';
+                    assert.equal(prevented, shouldBlock);
+                    assert.equal(stopped, shouldBlock);
+                });
+            }
+        }
+    }
+}

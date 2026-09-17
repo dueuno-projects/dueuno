@@ -49,6 +49,12 @@ class Select extends Control {
 
     static finalize($element, $root) {
         let element = $element[0];
+        let virtualSelect = element.virtualSelect;
+        // Run the jQuery guard before VirtualSelect's keyboard handler.
+        virtualSelect.removeEvent(virtualSelect.$wrapper, 'keydown', 'onKeyDown');
+        $(virtualSelect.$wrapper).off('keydown.selectClear').on('keydown.selectClear', {element: element}, Select.onClearKeyDown);
+        virtualSelect.addEvent(virtualSelect.$wrapper, 'keydown', 'onKeyDown');
+
         Transition.triggerEvent($element, 'load');
 
         let $navigationElements = $element.add(element.virtualSelect.$dropboxWrapper);
@@ -87,6 +93,18 @@ class Select extends Control {
         if (searchEvent) {
             Select.loadServerOptions($element, searchEvent);
         }
+    }
+
+    static onClearKeyDown(event) {
+        if (event.key !== 'Backspace' && event.key !== 'Delete') return;
+
+        let element = event.data.element;
+        if (event.target !== element.virtualSelect.$wrapper) return;
+        if (Component.getProperties($(element)).allowClear) return;
+
+        // Prevent VirtualSelect from clearing the selection.
+        event.preventDefault();
+        event.stopImmediatePropagation();
     }
 
     static onValueClick(event) {
