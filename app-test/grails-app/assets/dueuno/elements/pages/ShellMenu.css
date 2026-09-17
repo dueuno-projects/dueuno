@@ -104,7 +104,7 @@
 
 #shell-menu-search-icon {
     padding: var(--elements-spacing-y) var(--elements-spacing-x);
-    background-color: rgba(var(--elements-frame-text), .15);
+    background-color: rgba(var(--elements-frame-text), .1);
     margin-left: .75rem;
     margin-top: .75rem;
 }
