@@ -82,6 +82,7 @@
     color: var(--bs-light-rgb);
     --bs-nav-pills-border-radius: var(--bs-border-radius-sm);
 }
+#shell-menu .nav-item a.active,
 #shell-menu .nav-item a:focus {
     background-color: rgba(var(--elements-frame-text), .2) !important;
     outline: none;

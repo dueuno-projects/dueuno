@@ -14,6 +14,19 @@ class ShellMenu extends Component {
         }
     }
 
+    static updateActiveItem() {
+        let controller = Component.getProperty(PageContent.$self, 'controller');
+        let $links = $('#shell-menu-items .nav-link');
+        $links.removeClass('active').removeAttr('aria-current');
+
+        if (!controller) return;
+
+        $links.filter(function () {
+            let clickEvent = Component.getEvent($(this), 'click');
+            return clickEvent && clickEvent.controller === controller;
+        }).first().addClass('active').attr('aria-current', 'page');
+    }
+
     static onShown(event) {
         let $element = $(event.currentTarget);
         let $offcanvas = Page.$self.find('.offcanvas-backdrop');
