@@ -55,7 +55,11 @@ input[type] {
 
 .component-form .input-group input ~ a:not(:last-child),
 .component-form .input-group .dropdown ~ a:not(:last-child) {
-    margin-right: var(--bs-border-width);
+    margin-right: .1rem;
+}
+
+.component-form .input-group > .component-link + .component-link {
+    margin-left: 0 !important;
 }
 
 .component-form .error-message div,

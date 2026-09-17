@@ -338,6 +338,14 @@
     border-bottom-right-radius: 0;
 }
 
+.input-group:has(> .control-select) > .component-link:has(+ .component-help) {
+    margin-right: 0;
+}
+
+.input-group:has(> .control-select) > .component-link + .component-help {
+    margin-left: 0 !important;
+}
+
 .input-group:has(.control-select[disabled]) > a,
 .input-group:has(.control-select[disabled]) > button {
     background-color: rgba(var(--elements-main-bg), .4) !important;
