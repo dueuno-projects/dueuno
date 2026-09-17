@@ -11,6 +11,14 @@
     border-radius: 2rem;
 }
 
+.input-group.control-focus-group:has(> .control-checkbox-simple .form-check-input:focus):not(.field-highlight, .error-highlight) {
+    box-shadow: none !important;
+}
+
+.input-group.control-focus-group .control-checkbox-simple .form-check-input:focus {
+    box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)) !important;
+}
+
 .control-checkbox-simple .form-check-input:checked {
     background-color: rgb(var(--elements-primary-bg));
     border: none;
@@ -58,7 +66,9 @@
 }
 
 .help .control-checkbox.input-group-text {
-    width: calc(100% - (1rem + 1rem * 1.35));
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 0;
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
 }

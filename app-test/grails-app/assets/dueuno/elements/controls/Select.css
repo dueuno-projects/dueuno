@@ -19,6 +19,7 @@
 }
 
 .control-select .vscomp-wrapper {
+    display: flex;
     color: rgb(var(--elements-main-text));
     font-family: inherit;
     font-size: inherit;
