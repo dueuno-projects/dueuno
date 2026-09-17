@@ -53,8 +53,8 @@ input[type] {
     font-weight: bold;
 }
 
-.component-form .input-group input ~ a,
-.component-form .input-group .dropdown ~ a {
+.component-form .input-group input ~ a:not(:last-child),
+.component-form .input-group .dropdown ~ a:not(:last-child) {
     margin-right: var(--bs-border-width);
 }
 

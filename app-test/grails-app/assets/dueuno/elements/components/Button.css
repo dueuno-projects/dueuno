@@ -35,6 +35,10 @@ button,
     opacity: 1;
 }
 
+.component-button.btn-group > .btn:focus {
+    z-index: 5;
+}
+
 .component-button .component-link:not(:last-child),
 .input-group .component-link:not(:last-child) {
     margin-right: .142857rem;
