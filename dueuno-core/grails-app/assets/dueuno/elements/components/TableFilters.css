@@ -1,3 +1,11 @@
+.component-filters-buttons .btn {
+    position: relative;
+}
+
+.component-filters-buttons .btn:focus {
+    z-index: 5;
+}
+
 .component-filters-buttons.btn-group .btn:hover,
 .component-filters-buttons.btn-group .btn:active,
 .component-filters-buttons.btn-group .btn:focus,
