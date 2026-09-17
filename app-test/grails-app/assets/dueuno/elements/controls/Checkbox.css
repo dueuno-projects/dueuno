@@ -1,3 +1,10 @@
+.control-checkbox:has(.form-check-input:enabled),
+.control-checkbox-simple:has(.form-check-input:enabled),
+.control-checkbox .form-check-input:enabled,
+.control-checkbox-simple .form-check-input:enabled {
+    cursor: pointer;
+}
+
 .control-checkbox-simple .form-check-input {
     border-radius: 2rem;
     background-color: rgb(var(--elements-main-bg));

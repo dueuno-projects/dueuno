@@ -9,7 +9,20 @@ class Checkbox extends Control {
             .off('change.bootstrapSwitch')
             .on('change.bootstrapSwitch', Checkbox.onChange);
 
+        $element.closest('.control-checkbox, .control-checkbox-simple')
+            .off('click.checkbox')
+            .on('click.checkbox', {element: $element[0]}, Checkbox.onClick);
+
         Transition.triggerEvent($element, 'load');
+    }
+
+    static onClick(event) {
+        let $element = $(event.data.element);
+        if ($element.is(':disabled')) return;
+        if ($(event.target).closest('input, label, a, button, select, textarea').length) return;
+
+        $element.trigger('focus');
+        $element.trigger('click');
     }
 
     static onChange(event) {
