@@ -87,7 +87,7 @@
 }
 
 /* Virtual Select retains focus while its dropdown is rendered in a portal. */
-.input-group.control-focus-group:has(> .control-select:not([disabled]) .vscomp-wrapper.focused) {
+.input-group.control-focus-group:has(> .control-select:not([disabled]) .vscomp-wrapper.focused):not(:has(a:focus, button:focus)) {
     border-radius: var(--bs-border-radius-sm);
     box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)) !important;
 }

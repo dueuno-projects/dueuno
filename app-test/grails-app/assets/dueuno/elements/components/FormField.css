@@ -122,7 +122,7 @@ input:focus-visible,
     box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)) !important;
 }
 
-.input-group.control-focus-group:focus-within {
+.input-group.control-focus-group:focus-within:not(:has(a:focus, button:focus)) {
     border-radius: var(--elements-focus-border-radius, var(--bs-border-radius-sm));
     box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)) !important;
 }
