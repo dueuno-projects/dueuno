@@ -16,11 +16,14 @@ class QuantityField extends NumberField {
      }
 
      static onSelectUnit(event) {
+        event.preventDefault();
+
         let $selectedUnit = $(this);
         let unitKey = $selectedUnit.data('21-unit');
         let $element = $selectedUnit.closest('.input-group').find('.control-quantity-field');
 
         QuantityField.setUnit($element, unitKey);
+        Component.setFocus($element, true);
      }
 
     static setValue($element, valueMap, trigger = true) {
