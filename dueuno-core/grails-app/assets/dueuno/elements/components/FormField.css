@@ -90,7 +90,7 @@ input[type] {
     border-bottom-right-radius: 0 !important;
 }
 
-.component-form-field:has(.help-message.collapsing,.help-message.collapse.show) > .input-group.error-highlight {
+.component-form-field:has(.help-message.collapsing,.help-message.collapse.show) > .input-group {
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
 }
@@ -120,6 +120,17 @@ input:focus-visible,
 .btn.btn-secondary:focus-visible,
 .btn.dropdown-toggle:focus-visible {
     box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)) !important;
+}
+
+.input-group:has(> :is(.control-date-field, .control-date-time-field, .control-time-field, .control-month-field, .control-text-field):focus),
+.input-group:has(> .control-select:not([disabled]) .vscomp-wrapper:is(:focus-within, .focused)) {
+    border-radius: var(--bs-border-radius-sm);
+    box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)) !important;
+}
+
+.input-group > :is(.control-date-field, .control-date-time-field, .control-time-field, .control-month-field, .control-text-field):focus,
+.input-group > .control-select .vscomp-toggle-button {
+    box-shadow: none !important;
 }
 
 .input-group:has(.form-control, .control-select) a.btn,

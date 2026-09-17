@@ -54,6 +54,7 @@ body, html {
     color: rgb(var(--elements-required-text));
 }
 
+.page-login .input-group:has(#username),
 .page-login .input-group:has(#username) > * {
     border-top-left-radius: var(--bs-border-radius);
     border-top-right-radius: var(--bs-border-radius);
@@ -62,6 +63,7 @@ body, html {
 }
 
 .page-login .input-group:has(#password) {
+    border-radius: 0 0 var(--bs-border-radius) var(--bs-border-radius);
     margin-top: .25rem !important;
 }
 
