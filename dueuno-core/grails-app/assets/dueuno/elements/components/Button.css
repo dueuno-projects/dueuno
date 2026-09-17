@@ -8,6 +8,10 @@ button,
     border: none;
 }
 
+.input-group:has(> .component-button) {
+    --elements-focus-border-radius: var(--bs-border-radius);
+}
+
 .component-button button {
     padding-left: .75rem;
     padding-right: .75rem;

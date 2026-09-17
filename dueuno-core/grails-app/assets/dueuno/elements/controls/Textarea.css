@@ -24,3 +24,8 @@
 .control-textarea.maxlength.disabled label {
     display: none;
 }
+
+.component-form-field:has(.help-message.collapsing, .help-message.collapse.show) .control-textarea textarea {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}

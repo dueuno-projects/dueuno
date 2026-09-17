@@ -81,3 +81,12 @@
     color: rgb(var(--elements-main-text));
     cursor: default;
 }
+
+.input-group.control-focus-group > .control-upload:focus-within {
+    box-shadow: none !important;
+}
+
+.component-form-field:has(.help-message.collapsing, .help-message.collapse.show) .control-upload .filepond--panel-root {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}

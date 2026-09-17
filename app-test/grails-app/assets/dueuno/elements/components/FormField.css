@@ -122,14 +122,12 @@ input:focus-visible,
     box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)) !important;
 }
 
-.input-group:has(> :is(.control-date-field, .control-date-time-field, .control-time-field, .control-month-field, .control-text-field):focus),
-.input-group:has(> .control-select:not([disabled]) .vscomp-wrapper:is(:focus-within, .focused)) {
-    border-radius: var(--bs-border-radius-sm);
+.input-group.control-focus-group:focus-within {
+    border-radius: var(--elements-focus-border-radius, var(--bs-border-radius-sm));
     box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)) !important;
 }
 
-.input-group > :is(.control-date-field, .control-date-time-field, .control-time-field, .control-month-field, .control-text-field):focus,
-.input-group > .control-select .vscomp-toggle-button {
+.input-group.control-focus-group :focus:not(a, button) {
     box-shadow: none !important;
 }
 
@@ -186,6 +184,6 @@ input:focus-visible,
 }
 
 .input-group.field-highlight {
-    border-radius: var(--bs-border-radius-sm);
+    border-radius: var(--elements-focus-border-radius, var(--bs-border-radius-sm));
     box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)) !important;
 }
