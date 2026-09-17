@@ -21,6 +21,8 @@ class PageMessageBox extends Component {
         });
 
         PageMessageBox.$self.off('show.bs.modal').on('show.bs.modal', PageMessageBox.onShow);
+        PageMessageBox.$self.off('shown.bs.modal').on('shown.bs.modal', PageMessageBox.onShown);
+        PageMessageBox.$self.off('keydown.messagebox').on('keydown.messagebox', PageMessageBox.onKeyDown);
         PageMessageBox.$self.off('hide.bs.modal').on('hide.bs.modal', PageMessageBox.onHide);
     }
 
@@ -34,6 +36,17 @@ class PageMessageBox extends Component {
         if (PageModal.isActive) {
             PageModal.hide();
         }
+    }
+
+    static onShown(event) {
+        Component.setFocus(PageMessageBox.$self.attr('tabindex', '-1'), true);
+    }
+
+    static onKeyDown(event) {
+        if (event.key !== 'Enter' || event.target !== PageMessageBox.$self[0]) return;
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
     }
 
     static onHide(event) {
@@ -166,6 +179,7 @@ class PageMessageBox extends Component {
     static show() {
         PageMessageBox.dialog.show('#page-messagebox');
         PageMessageBox.isActive = true;
+        Component.setFocus(PageMessageBox.$self.attr('tabindex', '-1'), true);
     }
 
     static hide() {
