@@ -123,7 +123,8 @@ button:active,
 .dropdown-item:hover,
 .dropdown-item:focus,
 .dropdown-item:active,
-.btn-group :not(.btn-check)+.btn:active {
+.btn-group :not(.btn-check)+.btn:active,
+.btn.dropdown-toggle.show {
     background-color: rgb(var(--elements-secondary-bg));
     color: rgb(var(--elements-secondary-text));
     border: none;

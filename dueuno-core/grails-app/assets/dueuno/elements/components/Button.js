@@ -35,6 +35,16 @@ class Button extends Component {
         }
     }
 
+    static onDropdownKeyDown(event) {
+        if (!Button.dropdown.isDetached || !Button.dropdown.$menu[0].contains(event.target)) {
+            return;
+        }
+
+        // Bootstrap resolves detached menus against the page and can pick another button.
+        // Route navigation through the owning toggle before its document capture listener.
+        bootstrap.Dropdown.dataApiKeydownHandler.call(Button.dropdown.$toggleButton[0], event);
+    }
+
     static detachDropdown($element) {
         let $menu = $element.next();
         let left = $menu.offset().left;
@@ -54,9 +64,11 @@ class Button extends Component {
         Button.dropdown.isDetached = true;
         Button.dropdown.$toggleButton = $element;
         Button.dropdown.$menu = $menu;
+        window.addEventListener('keydown', Button.onDropdownKeyDown, true);
     }
 
     static reattachDropdown() {
+        window.removeEventListener('keydown', Button.onDropdownKeyDown, true);
         Button.dropdown.$menu.detach();
         Button.dropdown.$menu.css.position = false;
         Button.dropdown.$menu.css.left = false;
