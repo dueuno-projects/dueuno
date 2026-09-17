@@ -33,7 +33,7 @@ import groovy.util.logging.Slf4j
 class Color {
 
     /** Foreground (text) colour for danger/error states. */
-    static final String DANGER_TEXT = '#aa0000'
+    static final String DANGER_TEXT = '#c04c48'
 
     /** Background colour for danger/error states. */
     static final String DANGER_BACKGROUND = '#ffdddd'
