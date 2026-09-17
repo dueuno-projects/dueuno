@@ -36,7 +36,7 @@ class Color {
     static final String DANGER_TEXT = '#c04c48'
 
     /** Background colour for danger/error states. */
-    static final String DANGER_BACKGROUND = '#ffdddd'
+    static final String DANGER_BACKGROUND = '#F9E4E4'
 
     /** Foreground (text) colour for warning states. */
     static final String WARNING_TEXT = '#755e01'
