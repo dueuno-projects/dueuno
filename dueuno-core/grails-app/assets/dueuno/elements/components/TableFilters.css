@@ -15,7 +15,11 @@
 }
 
 .component-filters-search {
-    margin-left: var(--bs-border-width);
+    margin-left: .1rem;
+}
+
+.component-filters-search > .component-link:not(:last-child) {
+    margin-right: .1rem;
 }
 
 .component-filters-toggle:not(.btn.collapsed) {
