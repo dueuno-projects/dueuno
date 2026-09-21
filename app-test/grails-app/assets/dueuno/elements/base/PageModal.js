@@ -140,6 +140,10 @@ class PageModal extends Component {
     }
 
     static open($content, componentEvent) {
+        if (!PageModal.isActive) {
+            PageContent.saveScrollPosition();
+        }
+
         PageModal.isActive = true;
         PageModal.renderContent($content, componentEvent);
         Page.initializeContent(PageModal.$self, true, true);

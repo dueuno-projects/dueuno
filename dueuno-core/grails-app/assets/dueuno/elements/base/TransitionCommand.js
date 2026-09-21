@@ -79,28 +79,30 @@ class TransitionCommand {
     }
 
     static scrollTo(componentEvent, $content) {
-        let scroll = componentEvent.renderProperties['scroll'];
-        if (scroll == 'reset') {
-            window.scrollTo({top:0, left:0, behavior: 'instant'});
-
-        } else if (scroll == 'top') {
-            window.scrollTo({
-                top:0,
-                left:0,
-                behavior: _21_.user.animations ? 'smooth' : 'instant',
-            });
-
-        } else { // Scroll to top of the specified component
-            let $element = $content.find('[data-21-id="' + scroll + '"]');
-            if ($element.exists()) {
-                let position = $element.position();
-                window.scrollTo({
-                    top: position.top,
-                    left: position.left,
-                    behavior: _21_.user.animations ? 'smooth' : 'instant',
-                });
-            }
+        if (!$content.exists()) {
+            return;
         }
+
+        let scroll = componentEvent.renderProperties['scroll'];
+        if (scroll == null) {
+            PageContent.restoreScrollPosition($content);
+            return;
+        }
+
+        let position = {top: 0, left: 0};
+        if (scroll != 'reset' && scroll != 'top') {
+            let $element = $content.find('[data-21-id="' + scroll + '"]');
+            if (!$element.exists()) {
+                return;
+            }
+            position = $element.position();
+        }
+
+        window.scrollTo({
+            top: position.top,
+            left: position.left,
+            behavior: scroll == 'reset' || !_21_.user.animations ? 'instant' : 'smooth',
+        });
     }
 
     static loading(show) {
