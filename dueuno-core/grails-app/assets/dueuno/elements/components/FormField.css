@@ -55,7 +55,7 @@ input[type] {
 
 .component-form .input-group input ~ a:not(:last-child),
 .component-form .input-group .dropdown ~ a:not(:last-child) {
-    margin-right: .1rem;
+    margin-right: var(--elements-1px);
 }
 
 .component-form .input-group > .component-link + .component-link {

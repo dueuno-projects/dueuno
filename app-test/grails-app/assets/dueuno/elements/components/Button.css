@@ -41,7 +41,7 @@ button,
 
 .component-button .component-link:not(:last-child),
 .input-group .component-link:not(:last-child) {
-    margin-right: .1rem;
+    margin-right: var(--elements-1px);
 }
 
 .component-button.btn-group > .btn + .btn {
