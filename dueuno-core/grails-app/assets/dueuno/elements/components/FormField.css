@@ -16,15 +16,15 @@ input[type] {
     color: rgb(var(--elements-required-text));
 }
 
-.component-form .input-group {
+.component-form-field > .input-group {
     margin-top: -.3rem;
 }
 
-.component-form select,
-.component-form textarea,
-.component-form textarea:focus,
-.component-form input,
-.component-form input:focus {
+.input-group select,
+.input-group textarea,
+.input-group textarea:focus,
+.input-group input,
+.input-group input:focus {
     border-radius: var(--bs-border-radius-sm);
     border: none;
     font-weight: bold;
@@ -48,34 +48,34 @@ input[type] {
     cursor: default;
 }
 
-.component-form .input-group-text {
+.input-group-text {
     border: none;
     font-weight: bold;
 }
 
-.component-form .input-group input ~ a:not(:last-child),
-.component-form .input-group .dropdown ~ a:not(:last-child) {
+.input-group input ~ a:not(:last-child),
+.input-group .dropdown ~ a:not(:last-child) {
     margin-right: var(--elements-1px);
 }
 
-.component-form .input-group > .component-link + .component-link {
+.input-group > .component-link + .component-link {
     margin-left: 0 !important;
 }
 
-.component-form .error-message div,
-.component-form .help-message div {
+.component-form-field .error-message div,
+.component-form-field .help-message div {
     font-size: .85rem;
 }
 
-.component-form .error-message div {
+.component-form-field .error-message div {
     padding: .25rem .25rem 0 .25rem;
 }
 
-.component-form .help-message div {
+.component-form-field .help-message div {
     padding: .5rem .75rem .5rem .75rem;
 }
 
-.component-form .help-message {
+.component-form-field .help-message {
     color: rgba(var(--elements-main-text), .7) !important;
     background-color: rgba(var(--elements-main-bg), .4);
     border-bottom-left-radius: var(--bs-border-radius-sm);
@@ -99,17 +99,17 @@ input[type] {
     border-bottom-right-radius: 0 !important;
 }
 
-.component-form .input-group .component-help,
-.component-form .input-group .component-help:hover {
+.input-group .component-help,
+.input-group .component-help:hover {
     border: none;
 }
 
-.component-form .help-message {
+.component-form-field .help-message {
     color: rgb(var(--elements-main-text));
 }
 
-.component-form .error-icon,
-.component-form .error-message {
+.component-form-field .error-icon,
+.component-form-field .error-message {
     color: rgb(var(--elements-required-text));
 }
 

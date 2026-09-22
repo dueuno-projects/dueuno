@@ -179,29 +179,6 @@
     padding-bottom: .5rem;
 }
 
-.component-table-cell select,
-.component-table-cell textarea,
-.component-table-cell textarea:focus,
-.component-table-cell input,
-.component-table-cell input:focus {
-    border-radius: var(--bs-border-radius-lg);
-    border: none;
-    font-weight: bold;
-}
-
-
-.component-table-cell:has([disabled]) > span,
-.component-table-cell:has([disabled]) > a,
-.component-table-cell:has([disabled]) > a:hover,
-.component-table-cell:has([disabled]) > a:focus,
-.component-table-cell:has([disabled]) > a:focus:hover,
-.component-table-cell:has([disabled]) > select,
-.component-table-cell:has([disabled]) textarea,
-.component-table-cell:has([disabled]) > input {
-    box-shadow: none !important;
-    cursor: default;
-}
-
 /* COLORS
 */
 .component-table tr.table-no-results,

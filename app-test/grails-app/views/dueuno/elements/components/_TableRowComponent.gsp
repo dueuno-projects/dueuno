@@ -80,7 +80,7 @@ When modifying this template, please update also:
                     data-21-properties="${cell.propertiesAsJSON}"
                     data-21-events="${cell.eventsAsJSON}"
                     ${cell.cssStyleColors ? raw('style="' + cell.cssStyleColors + '"') : ''}
-                ><div ${cell.label ? '' : raw('class="input-group"')}
+                ><div ${cell.label ? '' : raw('class="input-group control-focus-group"')}
                       ${c.table.widths[column] ? raw('style="width: ' + c.table.widths[column] + 'px"') : ''}>
                     <render:component instance="${cell.component}" />
                 </div>
