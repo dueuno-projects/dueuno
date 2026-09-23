@@ -95,6 +95,10 @@ class Transition {
                 await TransitionCommand.delay(valueMap.value);
                 break;
 
+            case TransitionCommand.SCROLL:
+                TransitionCommand.scrollTo(valueMap.value);
+                break;
+
             case TransitionCommand.APPEND:
                 TransitionCommand.append($element, componentId, valueMap.value, $components);
                 break;

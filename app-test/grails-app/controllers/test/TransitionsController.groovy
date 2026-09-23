@@ -63,21 +63,29 @@ class TransitionsController implements ElementsController {
                 id: 'messageButton',
                 action: 'showMessage',
                 displayLabel: false,
-                cols: 4,
+                cols: 3,
             )
             addField(
                 class: Button,
                 id: 'errorButton',
                 action: 'showError',
                 displayLabel: false,
-                cols: 4,
+                cols: 3,
             )
             addField(
                 class: Button,
                 id: 'confirmButton',
                 action: 'showConfirm',
                 displayLabel: false,
-                cols: 4,
+                cols: 3,
+            )
+            addField(
+                class: Button,
+                id: 'shakeButton',
+                action: 'shake',
+                text: 'SHAKE!',
+                displayLabel: false,
+                cols: 3,
             )
             addField(
                 class: Button,
@@ -218,7 +226,7 @@ class TransitionsController implements ElementsController {
 
         // RENDERING
         //
-        display content: c, modal: true
+        display content: c
     }
 
     def showMessage() {
@@ -242,6 +250,18 @@ class TransitionsController implements ElementsController {
         )
         def t = createTransition()
         t.confirmMessage('transitions.messagebox.confirm', [securityService.currentUser.fullname], onConfirm)
+        display transition: t
+    }
+
+    def shake() {
+        def t = createTransition()
+        t.loading(false)
+        for (Integer i = 0; i < 5; i++) {
+            t.delay(300)
+            t.scrollTo('bottom')
+            t.delay(300)
+            t.scrollTo('messageButton')
+        }
         display transition: t
     }
 
