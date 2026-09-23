@@ -16,11 +16,11 @@ class Transition {
         Transition.wsSubscribe(wsClient, "/queue/username/" + username);
 
         $.ajax({url: _21_.app.url + "transition/channels"})
-        .done(function(channels) {
-            for (let channel of channels) {
-                Transition.wsSubscribe(wsClient, "/queue/channel/" + channel);
-            }
-        });
+            .done(function(channels) {
+                for (let channel of channels) {
+                    Transition.wsSubscribe(wsClient, "/queue/channel/" + channel);
+                }
+            });
     }
 
     static wsOnError(frame) {
@@ -93,6 +93,10 @@ class Transition {
 
             case TransitionCommand.DELAY:
                 await TransitionCommand.delay(valueMap.value);
+                break;
+
+            case TransitionCommand.SCROLL:
+                TransitionCommand.scrollTo(valueMap.value);
                 break;
 
             case TransitionCommand.APPEND:

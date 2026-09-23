@@ -260,7 +260,7 @@ class TransitionsController implements ElementsController {
             t.delay(300)
             t.scrollTo('bottom')
             t.delay(300)
-            t.scrollTo('messageButton')
+            t.scrollTo('top')
         }
         display transition: t
     }
