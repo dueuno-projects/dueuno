@@ -10,6 +10,7 @@ class TransitionCommand {
     static get TRIGGER() { return 'TRIGGER' }
     static get LOADING() { return 'LOADING' }
     static get DELAY() { return 'DELAY' }
+    static get SCROLL() { return 'SCROLL' }
     static get CALL() { return 'CALL' }
     static get SET() { return 'SET' }
 
@@ -74,33 +75,43 @@ class TransitionCommand {
         Page.reinitializeContent($newComponent);
 
         TransitionCommand.restoreFocus(focusPath);
-        TransitionCommand.scrollTo(componentEvent, $newComponent);
+        let scroll = componentEvent.renderProperties['scroll'];
+        TransitionCommand.scrollTo(scroll);
         TransitionCommand.setBrowserUrl(componentEvent);
     }
 
-    static scrollTo(componentEvent, $content) {
-        let scroll = componentEvent.renderProperties['scroll'];
-        if (scroll == 'reset') {
-            window.scrollTo({top:0, left:0, behavior: 'instant'});
+    static scrollTo(path) {
+        if (PageModal.isActive) {
+            return;
+        }
+        let top = 0;
+        let left = 0;
+        let offset = 40;
+        let behavior = _21_.user.animations ? 'smooth' : 'instant';
 
-        } else if (scroll == 'top') {
-            window.scrollTo({
-                top:0,
-                left:0,
-                behavior: _21_.user.animations ? 'smooth' : 'instant',
-            });
+        if (path == 'reset') {
+            behavior = 'instant';
+
+        } else if (path == 'top') {
+
+        } else if (path == 'bottom') {
+            top = document.body.scrollHeight;
 
         } else { // Scroll to top of the specified component
-            let $element = $content.find('[data-21-id="' + scroll + '"]');
-            if ($element.exists()) {
-                let position = $element.position();
-                window.scrollTo({
-                    top: position.top,
-                    left: position.left,
-                    behavior: _21_.user.animations ? 'smooth' : 'instant',
-                });
+            let $element = Transition.getTargetElement(path);
+            if (!$element.exists()) {
+                return;
             }
+            let position = $element.offset();
+            top = position.top - offset;
+            left = position.left;
         }
+
+        window.scrollTo({
+            top: top,
+            left: left,
+            behavior: behavior,
+        });
     }
 
     static loading(show) {

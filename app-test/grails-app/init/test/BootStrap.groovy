@@ -347,7 +347,6 @@ class BootStrap {
                 parent: 'elements',
                 controller: 'transitions',
                 icon: 'fa-wand-sparkles',
-                modal: true,
                 favourite: true,
             )
             applicationService.registerFeature(

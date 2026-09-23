@@ -296,6 +296,20 @@ class Transition implements WebRequestAware {
     }
 
     /**
+     * Adds a command to scroll to the specified component.
+     *
+     * @param component the identifier of the component that should scroll to
+     */
+    void scrollTo(String component) {
+        addCommand(
+            TransitionCommandMethod.SCROLL,
+            null,
+            null,
+            component
+        )
+    }
+
+    /**
      * Adds a command to add CSS classes to the specified component.
      *
      * @param component the identifier of the target component

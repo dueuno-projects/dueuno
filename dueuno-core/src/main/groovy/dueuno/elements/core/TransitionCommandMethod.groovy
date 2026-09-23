@@ -51,6 +51,9 @@ enum TransitionCommandMethod {
     /** Sleep. */
     DELAY,
 
+    /** Scroll to. */
+    SCROLL,
+
     /** Invokes a named client-side method on a component. */
     CALL,
 
