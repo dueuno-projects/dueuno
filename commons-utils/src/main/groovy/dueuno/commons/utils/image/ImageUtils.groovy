@@ -14,6 +14,10 @@
  */
 package dueuno.commons.utils.image
 
+import com.drew.imaging.ImageMetadataReader
+import com.drew.imaging.ImageProcessingException
+import com.drew.metadata.Metadata
+import com.drew.metadata.exif.ExifIFD0Directory
 import dueuno.commons.utils.FileUtils
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
@@ -76,18 +80,96 @@ import java.util.List
 class ImageUtils {
 
     /**
-     * Loads an image from the given file path.
+     * Loads an image from the given path and applies the EXIF orientation
+     * to the image pixels.
      *
-     * @param pathname The pathname of the file to load
-     * @return The loaded {@link BufferedImage}
+     * <p>The returned {@link BufferedImage} contains the correctly oriented
+     * pixels and does not depend on EXIF metadata for its display orientation.</p>
      *
-     * <h3>Example</h3>
-     * <pre>
-     * BufferedImage image = ImageUtils.load("/images/photo.png")
-     * </pre>
+     * @param pathname path to the image file
+     * @return the loaded image with its EXIF orientation applied
+     * @throws IOException if the image cannot be read
      */
-    static BufferedImage load(String pathname) {
-        return ImageIO.read(new File(pathname))
+    static BufferedImage load(String pathname) throws IOException {
+        File file = new File(pathname)
+        BufferedImage image = ImageIO.read(file)
+
+        if (image == null) {
+            throw new IOException("Cannot read image '${pathname}'")
+        }
+
+        int orientation = 1
+        try {
+            Metadata metadata = ImageMetadataReader.readMetadata(file)
+            ExifIFD0Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory)
+
+            if (directory?.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
+                orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION)
+            }
+        } catch (ImageProcessingException | IOException e) {
+            log.warn("Cannot read EXIF orientation for '${pathname}'", e)
+        }
+
+        if (orientation == 1) {
+            return image
+        }
+
+        int w = image.width
+        int h = image.height
+        AffineTransform transform
+        int outW = w
+        int outH = h
+
+        switch (orientation) {
+            case 2: // Flip horizontal
+                transform = new AffineTransform(-1, 0, 0, 1, w, 0)
+                break
+            case 3: // Rotate 180°
+                transform = new AffineTransform(-1, 0, 0, -1, w, h)
+                break
+            case 4: // Flip vertical
+                transform = new AffineTransform(1, 0, 0, -1, 0, h)
+                break
+            case 5: // Transpose
+                transform = new AffineTransform(0, 1, 1, 0, 0, 0)
+                outW = h
+                outH = w
+                break
+            case 6: // Rotate 90° CW
+                transform = new AffineTransform(0, 1, -1, 0, h, 0)
+                outW = h
+                outH = w
+                break
+            case 7: // Transverse
+                transform = new AffineTransform(0, -1, -1, 0, h, w)
+                outW = h
+                outH = w
+                break
+            case 8: // Rotate 90° CCW
+                transform = new AffineTransform(0, -1, 1, 0, 0, w)
+                outW = h
+                outH = w
+                break
+            default:
+                log.warn("Unknown EXIF orientation ${orientation} for '${pathname}'")
+                return image
+        }
+
+        int type = image.colorModel.hasAlpha()
+            ? BufferedImage.TYPE_INT_ARGB
+            : BufferedImage.TYPE_INT_RGB
+
+        BufferedImage oriented = new BufferedImage(outW, outH, type)
+        Graphics2D graphics = oriented.createGraphics()
+
+        try {
+            graphics.setComposite(AlphaComposite.Src)
+            graphics.drawImage(image, transform, null)
+        } finally {
+            graphics.dispose()
+        }
+
+        return oriented
     }
 
     /**
