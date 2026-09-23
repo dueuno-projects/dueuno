@@ -437,6 +437,9 @@ Grails application running at http://localhost:9992/test in environment: develop
                     cols: 12,
                 )
             }
+            keys = [
+                'company.id'
+            ]
             columns = [
                 'company',
                 'name',
@@ -515,6 +518,9 @@ Grails application running at http://localhost:9992/test in environment: develop
 //                        cols: 12,
 //                )
 //            }
+            keys = [
+                'companyId'
+            ]
             columns = [
                 'company',
                 'name',

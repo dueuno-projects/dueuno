@@ -21,6 +21,7 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.grails.core.artefact.DomainClassArtefactHandler
 import org.grails.datastore.mapping.model.PersistentEntity
+import org.grails.datastore.mapping.model.types.ToOne
 
 /**
  * Elements utils. Internal use only.
@@ -92,6 +93,16 @@ class Elements {
 
                 Object value = ObjectUtils.getValue(object, name)
                 results.put(name, value)
+            }
+
+            // GORM association ID getters are not listed among persistent properties.
+            for (association in entity.associations) {
+                if (association instanceof ToOne && !association.embedded) {
+                    String name = association.name + 'Id'
+                    if (!(name in excludes)) {
+                        results[name] = ObjectUtils.getValue(object, name)
+                    }
+                }
             }
 
             for (propertyName in includes) {

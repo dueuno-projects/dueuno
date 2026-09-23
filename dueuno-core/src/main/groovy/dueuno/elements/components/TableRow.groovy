@@ -398,14 +398,21 @@ class TableRow extends Component {
     /**
      * Resolves the key values from the row's value map according to the table's key column list.
      * GORM object IDs are extracted as strings. Custom key columns (user-declared keys that have
-     * no matching value) are back-filled from the {@code id} column to avoid conflicts when
-     * passing IDs to another page.
+     * no matching value and no nested property path) are back-filled from the {@code id} column
+     * to avoid conflicts when passing IDs to another page.
      *
      * @return a map of key column name → resolved key value
      */
     private Map processKeys() {
         Map results = [:]
         List<String> keyColumns = table.keys
+
+        // Resolve nested keys before filling aliases, regardless of the position of 'id'.
+        for (keyColumn in keyColumns) {
+            if (keyColumn.contains('.') && !(values as Map).containsKey(keyColumn)) {
+                values[keyColumn] = ObjectUtils.getValue(values, keyColumn)
+            }
+        }
 
         for (keyColumn in keyColumns) {
             Object value
@@ -419,9 +426,9 @@ class TableRow extends Component {
             if (keyColumn == 'id') {
                 results[keyColumn] = value
 
-                // We copy id's value into null keyColumns (user declared keyColumns that don't match any record value)
+                // Copy id into null aliases, but preserve null values of nested property paths.
                 // These keyColumns are used when passing an id to another page to avoid "id" conflicts with the next page
-                List customKeyColumns = keyColumns.findAll { values[it] == null }
+                List customKeyColumns = keyColumns.findAll { !it.contains('.') && values[it] == null }
                 for (customKeyColumn in customKeyColumns) {
                     values[customKeyColumn] = value
                 }
