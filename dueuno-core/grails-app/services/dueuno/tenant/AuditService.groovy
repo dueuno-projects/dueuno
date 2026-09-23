@@ -75,7 +75,7 @@ class AuditService implements WebRequestAware {
         String username = securityService.currentUsername ?: 'super'
         LocalDateTime dateCreated = LocalDateTime.now()
 
-        Map log = buildLog(dateCreated, username, operation, message, objectName, stateBefore, stateAfter)
+        Map log = buildLog(dateCreated, username, operation, message, objectName, stateBefore, stateAfter, getClientIp(request), request.getHeader('User-Agent'))
         Map integrity = buildLogIntegrity(log)
 
         // We can not use the following to compute HMAC since they could be different on each request
@@ -87,23 +87,16 @@ class AuditService implements WebRequestAware {
     }
 
     Boolean verifyLogIntegrity(TAuditLog obj) {
-        Map log = buildLog(obj.id)
+        Map log = buildLog(obj.dateCreated, obj.username, obj.operation, obj.message, obj.objectName, obj.stateBefore, obj.stateAfter, obj.ip, obj.userAgent)
         byte[] AESKey = cryptoService.getTenantAESKey()
         String actualDigest = computeHmac(log, AESKey)
 
         return MessageDigest.isEqual(actualDigest.bytes, obj.digest.bytes)
     }
 
-    private Map buildLog(Serializable id) {
-        TAuditLog obj = get(id)
-        return buildLog(obj.dateCreated, obj.username, obj.operation, obj.message, obj.objectName, obj.stateBefore, obj.stateAfter)
-    }
-
-    private Map buildLog(LocalDateTime dateCreated, String username, AuditOperation operation, String message, String objectName, String stateBefore, String stateAfter) {
+    private Map buildLog(LocalDateTime dateCreated, String username, AuditOperation operation, String message, String objectName, String stateBefore, String stateAfter, String ip, String userAgent) {
         String sDateCreated = DateUtils.format(dateCreated, 'yyyy-MM-dd @ HH:mm:ss')
         String sOperation = operation.toString()
-        String userAgent = request.getHeader('User-Agent')
-        String ip = getClientIp(request)
 
         Map log = [
             ip         : ip,
