@@ -37,7 +37,7 @@ import java.time.temporal.Temporal
  * The row lifecycle consists of two phases driven by {@link TableRowset}:
  * </p>
  * <ol>
- *   <li>{@link #preProcessRow()} — converts the raw record to a value map, creates all cells,
+ *   <li>{@link #preProcessRow()} — creates all cells from the value map,
  *       processes keys, copies actions from the table, applies transformers, creates hidden
  *       submit fields, and applies pretty-printer configuration.</li>
  *   <li>{@link #postProcessRow()} — injects key params into the action button, resolves final
@@ -70,8 +70,8 @@ class TableRow extends Component {
     /** Zero-based index of this row within its rowset. */
     Integer index
 
-    /** The raw record or value map used to populate this row's cells. */
-    Object values
+    /** Value map used to populate this row's cells, converted from the raw record during construction. */
+    Map<String, Object> values
 
     /** Per-row action {@link Button} populated from the table's action definitions. */
     Button actions
@@ -96,7 +96,7 @@ class TableRow extends Component {
 
     /**
      * Creates a {@code TableRow} instance configured from the supplied argument map.
-     * Initialises the per-row action button and selection checkbox.
+     * Converts the raw record to a value map and initialises the per-row action button and selection checkbox.
      *
      * @param args initialisation arguments; recognised keys include:
      * {@code table} ({@link Table}, required),
@@ -120,7 +120,7 @@ class TableRow extends Component {
 
         cells = [:]
         submit = [:]
-        values = args.values ?: [:]
+        values = Elements.toMap(args.values, table.columns, table.includeValues, table.excludeValues)
 
         isHeader = (args.isHeader == null) ? false : args.isHeader
         isFooter = (args.isFooter == null) ? false : args.isFooter
@@ -145,14 +145,13 @@ class TableRow extends Component {
     }
 
     /**
-     * First phase of row processing: converts the raw record to a value map, creates all
+     * First phase of row processing: creates all
      * {@link TableCell} instances, and runs the key, action, transformer, submit-value, and
      * pretty-printer processing steps.
      * Called by {@link TableRowset#setRows(Collection)} before the user's {@code eachRow} closure.
      */
     void preProcessRow() {
         selected.readonly = table.readonly
-        values = Elements.toMap(values, table.columns, table.includeValues, table.excludeValues)
 
         createCells()
 
@@ -409,7 +408,7 @@ class TableRow extends Component {
 
         // Resolve nested keys before filling aliases, regardless of the position of 'id'.
         for (keyColumn in keyColumns) {
-            if (keyColumn.contains('.') && !(values as Map).containsKey(keyColumn)) {
+            if (keyColumn.contains('.') && !values.containsKey(keyColumn)) {
                 values[keyColumn] = ObjectUtils.getValue(values, keyColumn)
             }
         }
