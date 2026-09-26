@@ -226,7 +226,7 @@ class TransitionsController implements ElementsController {
 
         // RENDERING
         //
-        display content: c
+        display content: c, modal: true
     }
 
     def showMessage() {
