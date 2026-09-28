@@ -1,13 +1,14 @@
 class HiddenField extends Control {
 
     static setValue($element, valueMap, trigger = false) {
+        valueMap = TypedValue.require(valueMap);
         let value;
 
         switch (valueMap.type) {
             case Type.NA:
-            case Type.BOOLEAN:
+            case Type.BOOL:
             case Type.NUMBER:
-            case Type.TEXT:
+            case Type.STRING:
                 value = valueMap.value;
                 break
 
@@ -19,21 +20,21 @@ class HiddenField extends Control {
     }
 
     static getValue($element) {
-        let value = Control.getServerValue($element);
+        let valueMap = Control.getServerValue($element);
 
-        switch (value.type) {
+        switch (valueMap.type) {
             case Type.NA:
-            case Type.BOOLEAN:
+            case Type.BOOL:
             case Type.NUMBER:
-            case Type.TEXT:
-                value.value = $element.val();
+            case Type.STRING:
+                valueMap.value = $element.val();
                 break
 
             default:
-                value.value = JSON.parse($element.val());
+                valueMap.value = $element.val() ? JSON.parse($element.val()) : {};
         }
 
-        return value;
+        return TypedValue.require(valueMap);
     }
 
 }

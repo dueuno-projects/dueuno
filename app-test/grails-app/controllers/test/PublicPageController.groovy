@@ -14,12 +14,12 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.TextField
-import dueuno.elements.ElementsController
 import dueuno.elements.style.TextDefault
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -31,9 +31,9 @@ class PublicPageController implements ElementsController {
 
         def c = createContent(ContentTable)
         c.header.addNextButton(
-                action: 'create',
-                text: TextDefault.NEW,
-                icon: 'fa-plus',
+            action: 'create',
+            text: TextDefault.NEW,
+            icon: 'fa-plus',
         )
 
         c.table.with {
@@ -45,16 +45,16 @@ class PublicPageController implements ElementsController {
                         keys: ['username'],
                 )*/
                 addField(
-                        class: TextField,
-                        id: 'name',
+                    class: TextField,
+                    id: 'name',
                 )
                 addField(
-                        class: TextField,
-                        id: 'textfield1',
+                    class: TextField,
+                    id: 'textfield1',
                 )
                 addField(
-                        class: TextField,
-                        id: 'textfield2',
+                    class: TextField,
+                    id: 'textfield2',
                 )
             }
 
@@ -67,20 +67,20 @@ class PublicPageController implements ElementsController {
             actions.addAction(controller: 'controller3')
 
             sortable = [
-                    name: 'asc',
-                    address: 'desc',
+                name   : 'asc',
+                address: 'desc',
             ]
             columns = [
-                    'company',
-                    'name',
-                    'picture',
-                    'address',
-                    'postcode',
-                    'salary',
-                    'distanceKm',
-                    'dateStart',
-                    'dateEnd',
-                    'active',
+                'company',
+                'name',
+                'picture',
+                'address',
+                'postcode',
+                'salary',
+                'distanceKm',
+                'dateStart',
+                'dateEnd',
+                'active',
             ]
 
             max = 5
@@ -116,52 +116,52 @@ class PublicPageController implements ElementsController {
 
     private buildForm(Map args = [:]) {
         def c = args.create
-                ? createContent(ContentCreate)
-                : createContent(ContentEdit)
+            ? createContent(ContentCreate)
+            : createContent(ContentEdit)
         c.form.with {
             validate = TPerson
             addField(
-                    class: 'Select',
-                    id: 'company',
-                    optionsFromRecordset: TCompany.list(),
+                class: 'Select',
+                id: 'company',
+                optionsFromRecordset: TCompany.list(),
             )
             addField(
-                    class: 'TextField',
-                    id: 'name',
+                class: 'TextField',
+                id: 'name',
             )
             addField(
-                    class: 'TextField',
-                    id: 'address',
-                    help: 'Runtime help message',
-                    label: 'Indirizzo (runtime label)',
+                class: 'TextField',
+                id: 'address',
+                help: 'Runtime help message',
+                label: 'Indirizzo (runtime label)',
             )
             addField(
-                    class: 'NumberField',
-                    id: 'postcode',
+                class: 'NumberField',
+                id: 'postcode',
             )
             addField(
-                    class: 'MoneyField',
-                    id: 'salary',
+                class: 'MoneyField',
+                id: 'salary',
             )
             addField(
-                    class: 'QuantityField',
-                    id: 'distanceKm',
+                class: 'QuantityField',
+                id: 'distanceKm',
             )
             addField(
-                    class: 'DateField',
-                    id: 'dateStart',
+                class: 'DateField',
+                id: 'dateStart',
             )
             addField(
-                    class: 'DateField',
-                    id: 'dateEnd',
+                class: 'DateField',
+                id: 'dateEnd',
             )
             addField(
-                    class: 'Checkbox',
-                    id: 'active',
+                class: 'Checkbox',
+                id: 'active',
             )
             addField(
-                    class: 'Upload',
-                    id: 'picture',
+                class: 'Upload',
+                id: 'picture',
             )
         }
         return c

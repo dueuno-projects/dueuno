@@ -23,14 +23,21 @@ import grails.gorm.transactions.Transactional
 @Service(TPerson)
 abstract class PersonDataService {
     protected abstract TPerson get(Serializable id)
+
     protected abstract TPerson getByName(String name)
 
     protected abstract Long count()
+
     protected abstract List<TPerson> list(Map args)
+
     protected abstract List<TPerson> listByNameLike(String name, Map args)
+
     protected abstract Long countByNameLike(String name)
+
     protected abstract TPerson save(TPerson obj)
+
     protected abstract TPerson update(Serializable id, String name)
+
     protected abstract TPerson delete(Serializable id)
 
     TPerson create(Map properties) {

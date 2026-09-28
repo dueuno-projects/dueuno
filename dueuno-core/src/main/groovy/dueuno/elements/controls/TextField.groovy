@@ -14,15 +14,15 @@
  */
 package dueuno.elements.controls
 
-import dueuno.elements.Control
-import dueuno.elements.Elements
 import dueuno.elements.components.Button
+import dueuno.elements.core.Control
+import dueuno.elements.core.Elements
 import dueuno.elements.style.TextTransform
 import dueuno.types.Type
 import groovy.transform.CompileStatic
 
 /**
- * A single-line text-input control backed by {@link dueuno.types.Type#TEXT}.
+ * A single-line text-input control backed by {@link dueuno.types.Type#STRING}.
  * <p>
  * Serves as the base class for specialised text controls (e.g. {@link PasswordField},
  * {@link NumberField}, {@link TelephoneField}, {@link Textarea}). Supports configurable
@@ -75,23 +75,23 @@ class TextField extends Control {
      * Creates a {@code TextField} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code inputType} ({@link TextFieldInputType}, default {@link TextFieldInputType#TEXT}),
-     *             {@code inputMode} ({@link TextFieldInputMode}, default {@link TextFieldInputMode#TEXT}),
-     *             {@code icon} ({@link String}),
-     *             {@code prefix} ({@link String}),
-     *             {@code maxSize} ({@link Integer}),
-     *             {@code placeholder} ({@link String}),
-     *             {@code autocomplete} ({@link Boolean}, default {@code false}),
-     *             {@code autoSelect} ({@link Boolean}, default {@code true}),
-     *             {@code textTransform} ({@link TextTransform}, default {@link TextTransform#NONE}),
-     *             {@code renderTextPrefix} ({@link Boolean}, default {@code false}),
-     *             {@code onChangeAsync} ({@link Boolean}, default {@code false}),
+     * {@code inputType} ({@link TextFieldInputType}, default {@link TextFieldInputType#TEXT}),
+     * {@code inputMode} ({@link TextFieldInputMode}, default {@link TextFieldInputMode#TEXT}),
+     * {@code icon} ({@link String}),
+     * {@code prefix} ({@link String}),
+     * {@code maxSize} ({@link Integer}),
+     * {@code placeholder} ({@link String}),
+     * {@code autocomplete} ({@link Boolean}, default {@code false}),
+     * {@code autoSelect} ({@link Boolean}, default {@code true}),
+     * {@code textTransform} ({@link TextTransform}, default {@link TextTransform#NONE}),
+     * {@code renderTextPrefix} ({@link Boolean}, default {@code false}),
+     * {@code onChangeAsync} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link Control#Control(Map)}
      */
     TextField(Map args) {
         super(args)
 
-        valueType = Type.TEXT
+        valueType = Type.STRING
         inputType = args.inputType as TextFieldInputType ?: TextFieldInputType.TEXT
         inputMode = args.inputMode as TextFieldInputMode ?: TextFieldInputMode.TEXT
 
@@ -108,10 +108,10 @@ class TextField extends Control {
         //onChangeMinChars = args.onChangeMinChars ?: 0 // forse in futuro
 
         actions = createControl(
-                class: Button,
-                id: 'actions',
-                group: true,
-                dontCreateDefaultAction: true,
+            class: Button,
+            id: 'actions',
+            group: true,
+            dontCreateDefaultAction: true,
         )
     }
 
@@ -156,8 +156,8 @@ class TextField extends Control {
     }
 
     /**
-     * Serialises this control's properties to JSON, adding {@link #autocomplete},
-     * {@link #autoSelect}, {@link #textTransform}, and {@link #onChangeAsync}.
+     * Serialises this control's properties to JSON, adding {@code autocomplete},
+     * {@code autoSelect}, {@code textTransform}, and {@code onChangeAsync}.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this control's properties
@@ -165,10 +165,10 @@ class TextField extends Control {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                autocomplete: autocomplete,
-                autoSelect: autoSelect,
-                textTransform: textTransform as String,
-                onChangeAsync: onChangeAsync,
+            autocomplete : autocomplete,
+            autoSelect   : autoSelect,
+            textTransform: textTransform as String,
+            onChangeAsync: onChangeAsync,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
@@ -182,8 +182,8 @@ class TextField extends Control {
     @Override
     String getValueAsJSON() {
         Map valueMap = [
-                type: valueType,
-                value: prettyPrint(value, prettyPrinterProperties),
+            type : valueType,
+            value: prettyPrint(value, prettyPrinterProperties),
         ]
 
         return Elements.encodeAsJSON(valueMap)

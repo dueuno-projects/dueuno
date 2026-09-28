@@ -36,8 +36,8 @@ class TelephoneField extends TextField {
      * can be overridden via {@code args.pattern} and {@code args.inputMode} respectively.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code pattern} ({@link String}, default {@code "^[0-9\\+]*$"}),
-     *             {@code inputMode} ({@link TextFieldInputMode}, default {@link TextFieldInputMode#TEL}),
+     * {@code pattern} ({@link String}, default {@code "^[0-9\\+]*$"}),
+     * {@code inputMode} ({@link TextFieldInputMode}, default {@link TextFieldInputMode#TEL}),
      *             plus all keys accepted by {@link TextField#TextField(Map)}
      */
     TelephoneField(Map args) {

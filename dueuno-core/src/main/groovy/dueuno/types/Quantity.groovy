@@ -14,10 +14,10 @@
  */
 package dueuno.types
 
-import dueuno.core.PrettyPrinter
-import dueuno.core.PrettyPrinterProperties
+import dueuno.elements.ElementsException
 import dueuno.elements.controls.QuantityField
-import dueuno.exceptions.ElementsException
+import dueuno.elements.core.PrettyPrinter
+import dueuno.elements.core.PrettyPrinterProperties
 import groovy.transform.CompileDynamic
 import org.grails.datastore.gorm.GormEntity
 
@@ -31,7 +31,7 @@ import org.grails.datastore.gorm.GormEntity
  * {@code *}, {@code /}) are provided for {@code Quantity × Number} operations, and
  * {@code +}/{@code -} for {@code Quantity × Quantity} (with automatic unit conversion).
  * Cross-dimension operations are checked and throw
- * {@link dueuno.exceptions.ElementsException} on incompatibility.
+ * {@link ElementsException} on incompatibility.
  * </p>
  * <p>
  * The associated UI control is {@link dueuno.elements.controls.QuantityField}.
@@ -44,18 +44,6 @@ import org.grails.datastore.gorm.GormEntity
 
 @CompileDynamic
 class Quantity extends Number implements CustomType, GormEntity {
-
-    /** The Elements type name used to identify this custom type in the serialisation protocol. */
-    static final TYPE_NAME = 'QUANTITY'
-
-    /** The UI control class used to render and edit {@code Quantity} values. */
-    static final TYPE_FIELD = QuantityField
-
-    /** The Java type of the primary value property ({@link #amount}). */
-    static final TYPE_VALUE_PROPERTY_TYPE = Number
-
-    /** The name of the primary value property. */
-    static final TYPE_VALUE_PROPERTY_NAME = 'amount'
 
     /** The numeric amount, stored with up to 6 decimal places. */
     BigDecimal amount
@@ -78,7 +66,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      * {@link BigDecimal} via its {@code double} representation.
      *
      * @param amount the numeric amount
-     * @param unit   the unit of measurement; defaults to {@link QuantityUnit#PCS}
+     * @param unit the unit of measurement; defaults to {@link QuantityUnit#PCS}
      */
     Quantity(Number amount, QuantityUnit unit = QuantityUnit.PCS) {
         this(new BigDecimal(amount as Double), unit)
@@ -88,12 +76,20 @@ class Quantity extends Number implements CustomType, GormEntity {
      * Creates a {@code Quantity} from a {@link BigDecimal} amount.
      *
      * @param amount the numeric amount
-     * @param unit   the unit of measurement; defaults to {@link QuantityUnit#PCS}
+     * @param unit the unit of measurement; defaults to {@link QuantityUnit#PCS}
      */
     Quantity(BigDecimal amount, QuantityUnit unit = QuantityUnit.PCS) {
         this.amount = amount
         this.unit = unit
     }
+
+    String getTypeName() { 'QUANTITY' }
+
+    Class getTypeField() { QuantityField }
+
+    Class getValuePropertyType() { Number }
+
+    String getValuePropertyName() { 'amount' }
 
     /**
      * Serialises this instance to the typed-value map protocol expected by the Elements frontend.
@@ -103,11 +99,11 @@ class Quantity extends Number implements CustomType, GormEntity {
      */
     Map serialize() {
         return [
-                type : TYPE_NAME,
-                value: [
-                        amount: amount,
-                        unit: unit as String,
-                ]
+            type : typeName,
+            value: [
+                amount: amount,
+                unit  : unit as String,
+            ]
         ]
     }
 
@@ -126,8 +122,8 @@ class Quantity extends Number implements CustomType, GormEntity {
 
         unit = value.unit ? (QuantityUnit) value.unit : QuantityUnit.NR
         amount = Types.deserializeBigDecimal(
-                value.amount as String,
-                value.decimals as Integer
+            value.amount as String,
+            value.decimals as Integer
         )
     }
 
@@ -135,7 +131,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      * Returns a human-readable representation of this quantity.
      * The unit token is placed before or after the formatted amount depending on
      * {@link PrettyPrinterProperties#prefixedUnit} (defaults to suffix).
-     * Returns an empty string when {@link #amount} is {@code null}.
+     * Returns an empty string when {@code amount} is {@code null}.
      *
      * @param properties formatting options (decimal format, locale, unit display mode, etc.)
      * @return the formatted quantity string (e.g. {@code "1.234,56 KG"} or {@code "kg 1,234.56"})
@@ -149,12 +145,12 @@ class Quantity extends Number implements CustomType, GormEntity {
 
         Boolean prefixedUnit = properties.prefixedUnit == null ? false : properties.prefixedUnit
         return prefixedUnit
-                ? unit + ' ' + amount
-                : amount + ' ' + unit
+            ? unit + ' ' + amount
+            : amount + ' ' + unit
     }
 
     /**
-     * Returns the string representation of the {@link #amount} (without unit).
+     * Returns the string representation of the {@code amount} (without unit).
      *
      * @return the amount as a string
      */
@@ -168,7 +164,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      * unit name is resolved through the i18n message source under the
      * {@code quantity.unit} prefix (e.g. {@code quantity.unit.KG} → {@code "kg"}).
      * Otherwise the raw enum name is returned.
-     * Returns an empty string when {@link #unit} is {@code null}.
+     * Returns an empty string when {@code unit} is {@code null}.
      *
      * @param properties formatting options (locale, symbolic quantity flag)
      * @return the formatted unit token (e.g. {@code "kg"} or {@code "KG"})
@@ -189,22 +185,22 @@ class Quantity extends Number implements CustomType, GormEntity {
         }
     }
 
-    /** @return the {@link #amount} as an {@code int} */
+    /** @return the {@code amount} as an {@code int} */
     int intValue() {
         return amount.intValue()
     }
 
-    /** @return the {@link #amount} as a {@code long} */
+    /** @return the {@code amount} as a {@code long} */
     long longValue() {
         return amount.longValue()
     }
 
-    /** @return the {@link #amount} as a {@code float} */
+    /** @return the {@code amount} as a {@code float} */
     float floatValue() {
         return amount.floatValue()
     }
 
-    /** @return the {@link #amount} as a {@code double} */
+    /** @return the {@code amount} as a {@code double} */
     double doubleValue() {
         return amount.doubleValue()
     }
@@ -219,7 +215,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      *
      * @param q the addend; must share the same dimension as this instance
      * @return the sum as a new {@code Quantity} in this instance's unit
-     * @throws dueuno.exceptions.ElementsException if the dimensions are incompatible
+     * @throws ElementsException if the dimensions are incompatible
      */
     Quantity plus(Quantity q) {
         return new Quantity((this.amount + q.convert(this.unit).amount), this.unit)
@@ -231,7 +227,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      *
      * @param q the subtrahend; must share the same dimension as this instance
      * @return the difference as a new {@code Quantity} in this instance's unit
-     * @throws dueuno.exceptions.ElementsException if the dimensions are incompatible
+     * @throws ElementsException if the dimensions are incompatible
      */
     Quantity minus(Quantity q) {
         return new Quantity((this.amount - q.convert(this.unit).amount), this.unit)
@@ -298,7 +294,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      *
      * @param toUnit the target unit; must belong to the same dimension group as this instance's unit
      * @return a new {@code Quantity} expressed in {@code toUnit}
-     * @throws dueuno.exceptions.ElementsException if the units belong to different dimensions
+     * @throws ElementsException if the units belong to different dimensions
      */
     Quantity convert(QuantityUnit toUnit) {
         if (unit.parent != toUnit.parent) {
@@ -323,9 +319,9 @@ class Quantity extends Number implements CustomType, GormEntity {
      * Converts a raw number of seconds into a {@code Quantity} expressed in the given time unit.
      *
      * @param seconds the number of seconds to convert
-     * @param unit    the target time unit; must belong to the {@code TIME} dimension
+     * @param unit the target time unit; must belong to the {@code TIME} dimension
      * @return a new {@code Quantity} in the requested time unit
-     * @throws dueuno.exceptions.ElementsException if {@code unit} is not a {@code TIME} unit
+     * @throws ElementsException if {@code unit} is not a {@code TIME} unit
      *         or if the unit is not one of the supported time units
      */
     private Quantity fromSeconds(Double seconds, QuantityUnit unit) {
@@ -348,7 +344,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      *
      * @param quantity the time quantity to convert; must belong to the {@code TIME} dimension
      * @return the equivalent number of seconds as a {@code Double}
-     * @throws dueuno.exceptions.ElementsException if {@code quantity} is not a {@code TIME} quantity
+     * @throws ElementsException if {@code quantity} is not a {@code TIME} quantity
      *         or if the unit is not one of the supported time units
      */
     private Double toSeconds(Quantity quantity) {
@@ -372,7 +368,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      *
      * @param quantity the right-hand operand of the multiplication
      * @return the {@link QuantityUnit} of the result
-     * @throws dueuno.exceptions.ElementsException if the dimension combination is not supported
+     * @throws ElementsException if the dimension combination is not supported
      */
     private QuantityUnit getResultUnit(Quantity quantity) {
         if (unit.parent == quantity.unit.parent) {
@@ -397,7 +393,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      *
      * @param toUnit the unit of the result dimension
      * @return this quantity converted to the appropriate intermediate unit
-     * @throws dueuno.exceptions.ElementsException if the dimension combination is not supported
+     * @throws ElementsException if the dimension combination is not supported
      */
     private Quantity convertForMultiply(QuantityUnit toUnit) {
         if (unit.parent == toUnit.parent) {
@@ -421,7 +417,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      *
      * @param quantity the quantity whose unit to promote
      * @return the next-higher {@link QuantityUnit} in the dimension hierarchy
-     * @throws dueuno.exceptions.ElementsException if no upper unit is defined
+     * @throws ElementsException if no upper unit is defined
      */
     private QuantityUnit getUpperUnit(Quantity quantity) {
         return quantity.getUpperUnit(quantity.unit)
@@ -433,7 +429,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      *
      * @param unit the unit to promote
      * @return the next-higher {@link QuantityUnit} in the dimension hierarchy
-     * @throws dueuno.exceptions.ElementsException if {@code unit} has no defined upper unit
+     * @throws ElementsException if {@code unit} has no defined upper unit
      */
     private QuantityUnit getUpperUnit(QuantityUnit unit) {
         QuantityUnit result
@@ -477,7 +473,7 @@ class Quantity extends Number implements CustomType, GormEntity {
      *
      * @param unit the unit to demote
      * @return the next-lower {@link QuantityUnit} in the dimension hierarchy
-     * @throws dueuno.exceptions.ElementsException if {@code unit} has no defined lower unit
+     * @throws ElementsException if {@code unit} has no defined lower unit
      */
     private QuantityUnit getLowerUnit(QuantityUnit unit) {
         QuantityUnit result

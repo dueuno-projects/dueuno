@@ -14,7 +14,7 @@
  */
 package dueuno.security
 
-import dueuno.tenants.TTenant
+import dueuno.tenant.TTenant
 import grails.compiler.GrailsCompileStatic
 import groovy.transform.EqualsAndHashCode
 import org.grails.datastore.gorm.GormEntity
@@ -24,7 +24,7 @@ import org.grails.datastore.gorm.GormEntity
  */
 
 @GrailsCompileStatic
-@EqualsAndHashCode(includes='username')
+@EqualsAndHashCode(includes = 'username')
 class TUser implements GormEntity, Serializable {
 
     private static final long serialVersionUID = 1
@@ -36,7 +36,7 @@ class TUser implements GormEntity, Serializable {
 
     String username
     String password
-    String externalId
+    String physicalId
     boolean enabled
     boolean accountExpired
     boolean accountLocked
@@ -77,7 +77,7 @@ class TUser implements GormEntity, Serializable {
         password blank: false, password: true
         username blank: false, unique: true
         apiKey nullable: true, unique: true
-        externalId nullable: true, unique: true
+        physicalId nullable: true, unique: true
         firstname nullable: true
         lastname nullable: true
         email nullable: true, email: true
@@ -86,6 +86,7 @@ class TUser implements GormEntity, Serializable {
     }
 
     static mapping = {
+        table 'sys_user'
         password column: '`password`'
     }
 

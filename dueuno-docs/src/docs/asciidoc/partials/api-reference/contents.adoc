@@ -1,0 +1,40 @@
+[[contents]]
+== Contents
+
+Contents are the canvas to each feature. You can create a `ContentBlank`, which is a plain empty canvas, and add <<components>> to it. This is not something you will usually want to do since Dueuno provides pre-assembled contents to be used right away.
+
+Components are added to the content in a _vertical strip_, one after another. Components cannot be laid out directly; to create a layout, use the `Form` or `Grid` component, or create a custom component.
+
+=== ContentBase
+
+Embeds a `Header` and a _Confirm_ `Button` that submits a component called `form` (not provided) to an action called `onConfirm`.
+
+=== ContentForm
+Extends `ContentHeader` and embeds a `Form` called `form`.
+
+=== ContentCreate
+Extends `ContentForm` and provides a _Create_ `Button` that submits the `form` component to an action called `onCreate`.
+
+=== ContentEdit
+Extends `ContentForm` and provides a _Save_ `Button` that submits the `form` component to an action called `onEdit`.
+
+=== ContentTable
+Extends `ContentHeader` and embeds a `Table` component. Provides a _New_ `Button` that redirects to an action called `create`.
+
+The `Table` component is configured to present and _Edit_ and a _Delete_ `Button` for each displayed row. The _Edit_ `Button` submits the raw id to an action called `edit` while the _Delete_ `Button` asks for confirmation before redirecting to an action called `onDelete`.
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to you under the Apache License, Version 2.0.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+////
+

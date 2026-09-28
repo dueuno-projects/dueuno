@@ -69,8 +69,8 @@ class Login extends Page {
                    };
                 } else if ($search.val().length > 0) {
                     data = {
-                        processUrl: 'api/auth/external',
-                        externalId: $search.val(),
+                        processUrl: 'api/auth/physical',
+                        physicalId: $search.val(),
                     };
                 }
 

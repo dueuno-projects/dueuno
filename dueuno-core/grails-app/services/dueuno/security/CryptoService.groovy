@@ -14,9 +14,9 @@
  */
 package dueuno.security
 
+import dueuno.application.ApplicationService
 import dueuno.commons.utils.CryptoUtils
-import dueuno.core.ApplicationService
-import dueuno.tenants.TenantService
+import dueuno.tenant.TenantService
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 

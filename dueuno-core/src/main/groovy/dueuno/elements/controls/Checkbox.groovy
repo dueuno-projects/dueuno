@@ -14,9 +14,9 @@
  */
 package dueuno.elements.controls
 
-import dueuno.core.PrettyPrinterProperties
-import dueuno.elements.Component
-import dueuno.elements.Control
+import dueuno.elements.core.Component
+import dueuno.elements.core.Control
+import dueuno.elements.core.PrettyPrinterProperties
 import dueuno.types.Type
 import groovy.transform.CompileStatic
 
@@ -24,14 +24,14 @@ import groovy.transform.CompileStatic
  * A boolean checkbox control that can operate in two modes:
  * <ul>
  *   <li><b>Simple mode</b> — stores {@code true}/{@code false}; {@link #getChecked()} returns
- *       {@code true} when the value is {@code true}.</li>
+ * {@code true} when the value is {@code true}.</li>
  *   <li><b>Option mode</b> — stores an arbitrary key/value pair set via {@link #setOption(Map)};
- *       {@link #getChecked()} returns {@code true} when the current value equals
- *       {@link #optionKey}.</li>
+ * {@link #getChecked()} returns {@code true} when the current value equals
+ * {@code optionKey}.</li>
  * </ul>
  * <p>
  * The value type is always {@link dueuno.types.Type#BOOL}. An optional inline label
- * ({@link #text}) is displayed next to the checkbox tick.
+ * ({@code text}) is displayed next to the checkbox tick.
  * </p>
  *
  * @author Gianluca Sartori
@@ -43,7 +43,7 @@ class Checkbox extends Control {
     /** Inline label text displayed beside the checkbox tick (i18n key or literal). */
     String text
 
-    /** Interpolation arguments for the {@link #text} i18n message key. */
+    /** Interpolation arguments for the {@code text} i18n message key. */
     List textArgs
 
     /** When {@code true}, renders a simplified checkbox without a toggle-switch style. */
@@ -55,18 +55,18 @@ class Checkbox extends Control {
      */
     Object optionKey
 
-    /** The display label associated with {@link #optionKey} in option mode. */
+    /** The display label associated with {@code optionKey} in option mode. */
     Object optionValue
 
     /**
      * Creates a {@code Checkbox} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code text} ({@link String}) — inline label (defaults to {@code id.text} i18n key),
-     *             {@code textArgs} ({@link List}),
-     *             {@code simple} ({@link Boolean}, default {@code false}),
-     *             {@code option} ({@link Map}) — single-entry map {@code {key: value}} for option mode,
-     *             {@code optionKey}, {@code optionValue} — alternative to {@code option},
+     * {@code text} ({@link String}) — inline label (defaults to {@code id.text} i18n key),
+     * {@code textArgs} ({@link List}),
+     * {@code simple} ({@link Boolean}, default {@code false}),
+     * {@code option} ({@link Map}) — single-entry map {@code {key: value}} for option mode,
+     * {@code optionKey}, {@code optionValue} — alternative to {@code option},
      *             plus all keys accepted by {@link Control#Control(Map)}
      */
     Checkbox(Map args) {
@@ -93,8 +93,8 @@ class Checkbox extends Control {
      * <ul>
      *   <li>Returns {@code false} when the value is {@code null} or falsy.</li>
      *   <li>Returns {@code true} when the value is {@code true} (simple mode).</li>
-     *   <li>Returns {@code true} when {@link #optionKey} is set and the value equals
-     *       {@link #optionKey} (option mode).</li>
+     *   <li>Returns {@code true} when {@code optionKey} is set and the value equals
+     * {@code optionKey} (option mode).</li>
      * </ul>
      *
      * @return {@code true} if the checkbox should appear checked
@@ -108,12 +108,12 @@ class Checkbox extends Control {
 
     /**
      * Configures this checkbox in option mode using a single-entry map.
-     * The map's first entry provides the {@link #optionKey} and {@link #optionValue}.
+     * The map's first entry provides the {@code optionKey} and {@code optionValue}.
      *
      * @param option a single-entry map {@code {key: value}} representing the option
      */
     void setOption(Map option) {
-        option.find {key, value ->
+        option.find { key, value ->
             optionKey = key
             optionValue = value
             return true
@@ -121,7 +121,7 @@ class Checkbox extends Control {
     }
 
     /**
-     * Returns the current option as a single-entry map ({@link #optionKey} → {@link #optionValue}).
+     * Returns the current option as a single-entry map ({@code optionKey} → {@code optionValue}).
      *
      * @return the option map
      */
@@ -135,7 +135,7 @@ class Checkbox extends Control {
      * Registers a {@code change} event listener that submits the form when the checkbox
      * is toggled, if no {@code change} handler has already been registered.
      *
-     * @param args event configuration forwarded to {@link dueuno.elements.Component#on(Map)}
+     * @param args event configuration forwarded to {@link Component#on(Map)}
      * @return this component for chaining
      */
     @Override
@@ -150,8 +150,8 @@ class Checkbox extends Control {
     }
 
     /**
-     * Serialises this checkbox's properties to JSON, adding {@link #simple}, the toggle
-     * mode identifier, and {@link #optionKey}.
+     * Serialises this checkbox's properties to JSON, adding {@code simple}, the toggle
+     * mode identifier, and {@code optionKey}.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this checkbox's properties
@@ -159,9 +159,9 @@ class Checkbox extends Control {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                simple: simple,
-                toggle: 'toggle',
-                option: optionKey,
+            simple: simple,
+            toggle: 'toggle',
+            option: optionKey,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

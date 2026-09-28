@@ -263,13 +263,13 @@ class SshUtils {
         String remoteFileN = "${remoteDirN}${localFilePath.fileName}"
 
         uploadFile(
-                localFileN,
-                remoteFileN,
-                host,
-                port,
-                username,
-                password,
-                indent
+            localFileN,
+            remoteFileN,
+            host,
+            port,
+            username,
+            password,
+            indent
         )
     }
 

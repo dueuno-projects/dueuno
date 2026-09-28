@@ -14,7 +14,7 @@
  */
 package dueuno
 
-import dueuno.core.ApplicationService
+import dueuno.application.ApplicationService
 
 class BootStrap {
 

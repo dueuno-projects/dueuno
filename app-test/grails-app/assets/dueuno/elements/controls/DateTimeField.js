@@ -1,5 +1,9 @@
 class DateTimeField extends Control {
 
+    static get valueType() {
+        return Type.DATETIME;
+    }
+
     static initialize($element, $root) {
         let properties = Component.getProperties($element);
         let dateFormat = _21_.user.invertedMonth ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
@@ -14,6 +18,7 @@ class DateTimeField extends Control {
                 theme: 'light',
             },
             localization: {
+                locale: _21_.user.language,
                 format: dateFormat + ' ' + timeFormat,
                 hourCycle: hourCycle,
                 startOfTheWeek: startOfTheWeek,
@@ -121,7 +126,7 @@ class DateTimeField extends Control {
 
     static onError(event) {
         let $element = $(event.currentTarget).find('input');
-        DateTimeField.setValue($element, {value: null}, false);
+        DateTimeField.setValue($element, TypedValue.empty(DateTimeField.valueType), false);
     }
 
     static onChange(event) {
@@ -165,6 +170,7 @@ class DateTimeField extends Control {
     }
 
     static setValue($element, valueMap, trigger = true) {
+        valueMap = TypedValue.require(valueMap);
         let td = $element.data('td');
         let value = valueMap.value;
 
@@ -192,29 +198,24 @@ class DateTimeField extends Control {
     static getValue($element) {
         let value = $element.val();
         if (!value) {
-            return null;
+            return TypedValue.empty(DateTimeField.valueType);
         }
 
         let td = $element.data('td');
         let date = td.dates.parseInput(value);
 
         if (!date) {
-            return null;
+            return TypedValue.empty(DateTimeField.valueType);
         }
 
-        let result = {
-            type: Type.DATETIME,
-            value: {
+        return TypedValue.of(Type.DATETIME, {
                 year: date.year,
                 month: date.month + 1,
                 day: date.date,
                 hour: date.hours,
                 minute: date.minutes,
                 second: date.seconds,
-            }
-        }
-
-        return result;
+            });
     }
 
     static setReadonly($element, value) {

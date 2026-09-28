@@ -93,15 +93,15 @@
 .modal-backdrop.show {
     opacity: 1;
     background-color: rgba(100,100,100,.5);
-    backdrop-filter: blur(21px) grayscale(100%);
-    -webkit-backdrop-filter: blur(21px) grayscale(100%);
+    backdrop-filter: blur(1.5rem) grayscale(100%);
+    -webkit-backdrop-filter: blur(1.5rem) grayscale(100%);
 }
 
 .modal-backdrop {
     opacity: 0;
     background-color: rgba(100,100,100,.5);
-    backdrop-filter: blur(21px) grayscale(100%);
-    -webkit-backdrop-filter: blur(21px) grayscale(100%);
+    backdrop-filter: blur(1.5rem) grayscale(100%);
+    -webkit-backdrop-filter: blur(1.5rem) grayscale(100%);
 }
 
 #page-modal-body {

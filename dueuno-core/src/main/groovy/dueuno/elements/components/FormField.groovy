@@ -14,18 +14,18 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.Component
-import dueuno.exceptions.ElementsException
+import dueuno.elements.ElementsException
+import dueuno.elements.core.Component
 import groovy.transform.CompileStatic
 
 /**
- * A layout wrapper that pairs a single {@link Component} (typically a {@link dueuno.elements.Control})
+ * A layout wrapper that pairs a single {@link Component} (typically a {@link dueuno.elements.core.Control})
  * with its associated label, help text, and Bootstrap grid-column configuration.
  * <p>
  * {@code FormField} instances are created internally by {@link Form#addField(Map)} and are
- * not usually constructed directly. The wrapped {@link #component} is accessible for direct
- * manipulation; its display width is governed by {@link #cols}/{@link #colsSmall} and validated
- * against {@link #acceptedCols}.
+ * not usually constructed directly. The wrapped {@code component} is accessible for direct
+ * manipulation; its display width is governed by {@code cols}/{@code colsSmall} and validated
+ * against {@code acceptedCols}.
  * </p>
  *
  * @author Gianluca Sartori
@@ -39,13 +39,13 @@ class FormField extends Component {
     /** The i18n label key or literal label text displayed above/beside the control. */
     String label
 
-    /** Interpolation arguments for the {@link #label} message key. */
+    /** Interpolation arguments for the {@code label} message key. */
     List labelArgs
 
     /** The i18n help-text key or literal help string shown below the control. */
     String help
 
-    /** Interpolation arguments for the {@link #help} message key. */
+    /** Interpolation arguments for the {@code help} message key. */
     List helpArgs
 
     /** Whether the help text is rendered in a collapsed (hidden) state by default. */
@@ -82,18 +82,18 @@ class FormField extends Component {
      * Creates a {@code FormField} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code component} ({@link Component}) — the wrapped control (required),
-     *             {@code label} ({@link String}), {@code labelArgs} ({@link List}),
-     *             {@code help} ({@link String}), {@code helpArgs} ({@link List}),
-     *             {@code helpCollapsed} ({@link Boolean}, default {@code false}),
-     *             {@code nullable} ({@link Boolean}, default {@code true}),
-     *             {@code displayLabel} ({@link Boolean}, default {@code true}),
-     *             {@code highlight} ({@link Boolean}, default {@code false}),
-     *             {@code multiline} ({@link Boolean}, default {@code false}),
-     *             {@code cols} ({@link Integer}, default {@code 12}),
-     *             {@code colsSmall} ({@link Integer}, default {@code 12}),
-     *             {@code rows} ({@link Integer}, default {@code 3}),
-     *             {@code acceptedCols} ({@link List}), {@code acceptedRows} ({@link List}),
+     * {@code component} ({@link Component}) — the wrapped control (required),
+     * {@code label} ({@link String}), {@code labelArgs} ({@link List}),
+     * {@code help} ({@link String}), {@code helpArgs} ({@link List}),
+     * {@code helpCollapsed} ({@link Boolean}, default {@code false}),
+     * {@code nullable} ({@link Boolean}, default {@code true}),
+     * {@code displayLabel} ({@link Boolean}, default {@code true}),
+     * {@code highlight} ({@link Boolean}, default {@code false}),
+     * {@code multiline} ({@link Boolean}, default {@code false}),
+     * {@code cols} ({@link Integer}, default {@code 12}),
+     * {@code colsSmall} ({@link Integer}, default {@code 12}),
+     * {@code rows} ({@link Integer}, default {@code 3}),
+     * {@code acceptedCols} ({@link List}), {@code acceptedRows} ({@link List}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     FormField(Map args) {
@@ -149,11 +149,11 @@ class FormField extends Component {
 
     /**
      * Sets the Bootstrap column span for this field, validating both values against
-     * {@link #acceptedCols}.
+     * {@code acceptedCols}.
      *
-     * @param columns      the column span for medium and larger screens (sm breakpoint)
+     * @param columns the column span for medium and larger screens (sm breakpoint)
      * @param columnsSmall the column span for small (xs) screens
-     * @throws dueuno.exceptions.ElementsException if either value is not in {@link #acceptedCols}
+     * @throws ElementsException if either value is not in {@code acceptedCols}
      */
     void setCols(Integer columns, Integer columnsSmall) {
         if (columns in acceptedCols && columnsSmall in acceptedCols) {
@@ -165,11 +165,22 @@ class FormField extends Component {
     }
 
     /**
-     * Sets the number of visible text rows, validating the value against {@link #acceptedRows}
+     * Sets the Bootstrap column span for this field, validating values against
+     * {@code acceptedCols}.
+     *
+     * @param columns the column span for medium and larger screens (sm breakpoint)
+     * @throws ElementsException if either value is not in {@code acceptedCols}
+     */
+    void setCols(Integer columns) {
+        setCols(columns, columns)
+    }
+
+    /**
+     * Sets the number of visible text rows, validating the value against {@code acceptedRows}
      * when that list is non-empty.
      *
      * @param lines the number of rows
-     * @throws dueuno.exceptions.ElementsException if {@code lines} is not in {@link #acceptedRows}
+     * @throws ElementsException if {@code lines} is not in {@code acceptedRows}
      */
     void setRows(Integer lines) {
         if (acceptedRows) {
@@ -185,7 +196,7 @@ class FormField extends Component {
 
     /**
      * Returns the Bootstrap CSS column classes for this field (e.g. {@code " col-sm-6 col-4"}).
-     * The {@code col-} (xs) class is omitted when {@link #colsSmall} is {@code 12}.
+     * The {@code col-} (xs) class is omitted when {@code colsSmall} is {@code 12}.
      *
      * @return the CSS column class string
      */
@@ -197,7 +208,7 @@ class FormField extends Component {
 
     /**
      * Returns an inline CSS {@code height} style for multiline fields with more than one row.
-     * Returns an empty string for single-line fields or when {@link #rows} is {@code ≤ 1}.
+     * Returns an empty string for single-line fields or when {@code rows} is {@code ≤ 1}.
      *
      * @return the inline {@code height} style string, or an empty string
      */

@@ -13,6 +13,10 @@ class Shell extends Page {
     }
 
     static onContentChange() {
+        ShellMenu.updateActiveItem();
+        ShellMenu.prepareInitialNavigation();
+        ShellMenu.focusContentAfterNavigation();
+
         let $navbar = $('#shell-navbar');
         if (PageStickyBox.isActive) {
             $navbar.addClass('has-sticky');

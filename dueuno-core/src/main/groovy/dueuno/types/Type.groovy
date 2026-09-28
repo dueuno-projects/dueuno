@@ -29,7 +29,7 @@ enum Type {
     NUMBER(Number),
 
     /** Plain text string. Maps to {@link String}. */
-    TEXT(String),
+    STRING(String),
 
     /** Key-value map. Maps to {@link Map}. */
     MAP(Map),

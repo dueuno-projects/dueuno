@@ -15,7 +15,7 @@
 package dueuno.security
 
 
-import dueuno.tenants.TTenant
+import dueuno.tenant.TTenant
 import grails.compiler.GrailsCompileStatic
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
@@ -26,8 +26,8 @@ import org.grails.datastore.gorm.GormEntity
  */
 
 @GrailsCompileStatic
-@EqualsAndHashCode(includes='name')
-@ToString(includes='name', includeNames=true, includePackage=false)
+@EqualsAndHashCode(includes = 'name')
+@ToString(includes = 'name', includeNames = true, includePackage = false)
 class TRoleGroup implements GormEntity, Serializable {
 
     private static final long serialVersionUID = 1
@@ -46,6 +46,7 @@ class TRoleGroup implements GormEntity, Serializable {
     }
 
     static mapping = {
+        table 'sys_role_group'
         cache true
     }
 

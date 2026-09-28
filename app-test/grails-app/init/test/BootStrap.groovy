@@ -14,15 +14,15 @@
  */
 package test
 
+import dueuno.application.ApplicationPropertyService
+import dueuno.application.ApplicationService
+import dueuno.application.ConnectionSourceService
 import dueuno.commons.utils.FileUtils
-import dueuno.elements.pages.ShellService
-import dueuno.core.ApplicationService
-import dueuno.core.ConnectionSourceService
-import dueuno.properties.SystemPropertyService
 import dueuno.elements.TransitionService
+import dueuno.elements.pages.ShellService
 import dueuno.security.SecurityService
-import dueuno.properties.TenantPropertyService
-import dueuno.tenants.TenantService
+import dueuno.tenant.TenantPropertyService
+import dueuno.tenant.TenantService
 import dueuno.types.QuantityService
 import grails.web.servlet.mvc.GrailsHttpSession
 import jakarta.servlet.ServletContext
@@ -37,7 +37,7 @@ class BootStrap {
     ApplicationService applicationService
     TestService testService
     QuantityService quantityService
-    SystemPropertyService systemPropertyService
+    ApplicationPropertyService applicationPropertyService
     TenantPropertyService tenantPropertyService
     TenantService tenantService
     SecurityService securityService
@@ -64,31 +64,31 @@ class BootStrap {
         }
 
         applicationService.onInstall {
-            systemPropertyService.setBoolean('DISPLAY_MENU', true)
-            systemPropertyService.setString('DEFAULT_LANGUAGE', 'it')
-            systemPropertyService.setString('EXCLUDED_LANGUAGES', 'de,pi')
-            systemPropertyService.setString('TEST_JOB_PROPERTY', 'CHANGE ME')
+            applicationPropertyService.setBoolean('DISPLAY_MENU', true)
+            applicationPropertyService.setString('DEFAULT_LANGUAGE', 'it')
+            applicationPropertyService.setString('EXCLUDED_LANGUAGES', 'de,pi')
+            applicationPropertyService.setString('TEST_JOB_PROPERTY', 'CHANGE ME')
 
             connectionSourceService.create(
-                    name: 'dynamicDatasource',
-                    driverClassName: 'org.h2.Driver',
-                    dbCreate: 'update',
-                    username: 'sa',
-                    password: '',
-                    url: 'jdbc:h2:mem:DYNAMIC_CONNECTION;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=TRUE',
+                name: 'dynamicDatasource',
+                driverClassName: 'org.h2.Driver',
+                dbCreate: 'update',
+                username: 'sa',
+                password: '',
+                url: 'jdbc:h2:mem:DYNAMIC_CONNECTION;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=TRUE',
             )
 
             tenantService.create(
-                    tenantId: 'TEST',
-                    description: 'Test tenant',
-                    host: 'localhost:9443',
-                    failOnError: true,
-                    connectionSource: [
-                            driverClassName: 'com.mysql.cj.jdbc.Driver',
-                            url            : 'jdbc:mysql://localhost:3306/dueuno_elements_test?useSSL=false&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Europe/Rome',
-                            username       : 'root',
-                            password       : 'root',
-                    ]
+                tenantId: 'TEST',
+                description: 'Test tenant',
+                host: 'localhost:9443',
+                failOnError: true,
+                connectionSource: [
+                    driverClassName: 'com.mysql.cj.jdbc.Driver',
+                    url            : 'jdbc:mysql://localhost:3306/dueuno_test?useSSL=false&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Europe/Rome',
+                    username       : 'root',
+                    password       : 'root',
+                ]
             )
         }
 
@@ -114,29 +114,29 @@ class BootStrap {
             tenantPropertyService.setString('LOGIN_REGISTRATION_URL', appLink + '/crud/register')
             tenantPropertyService.setString('LOGIN_PASSWORD_RECOVERY_URL', appLink + '/crud/passwordRecovery')
             tenantPropertyService.setString(
-                    'LOGIN_COPY',
-                    'Copyright &copy; Dueuno.<br/>All rights reserved.<br/><br/><a href="' + appLink + '">&lt;&lt; Back to website</a>'
+                'LOGIN_COPY',
+                'Copyright &copy; Dueuno.<br/>All rights reserved.<br/><br/><a href="' + appLink + '">&lt;&lt; Back to website</a>'
             )
 
             securityService.updateGroup(
-                    failOnError: true,
-                    tenantId: tenantId,
-                    name: 'USERS',
-                    landingPage: 'table',
+                failOnError: true,
+                tenantId: tenantId,
+                name: 'USERS',
+                landingPage: 'table',
             )
             securityService.createGroup(
-                    failOnError: true,
-                    tenantId: tenantId,
-                    name: 'PROJECT MANAGER',
-                    authorities: ['ROLE_PROJECT_MANAGER'],
+                failOnError: true,
+                tenantId: tenantId,
+                name: 'PROJECT MANAGER',
+                authorities: ['ROLE_PROJECT_MANAGER'],
             )
             securityService.createUser(
-                    failOnError: true,
-                    tenantId: tenantId,
-                    firstname: "Developer",
-                    username: tenantId == tenantService.defaultTenantId ? 'dev' : "${tenantId}/dev",
-                    password: 'dev',
-                    groups: ['DEVELOPERS', 'PROJECT MANAGER'],
+                failOnError: true,
+                tenantId: tenantId,
+                firstname: "Developer",
+                username: tenantId == tenantService.defaultTenantId ? 'dev' : "${tenantId}/dev",
+                password: 'dev',
+                groups: ['DEVELOPERS', 'PROJECT MANAGER'],
             )
 
             FileUtils.createDirectory(tenantService.publicDir + 'upload')
@@ -152,81 +152,81 @@ class BootStrap {
         applicationService.onDevInstall { String tenantId ->
             println "${tenantId} Tenant - INSTALLING STUFF ONLY WHEN IN DEVELOPMENT ENVIRONMENT"
 
-            systemPropertyService.setBoolean('TEST_DENY_LOGIN', false)
+            applicationPropertyService.setBoolean('TEST_DENY_LOGIN', false)
 
-            systemPropertyService.setNumber('TEST_NUMBER', 5 * 60)
-            systemPropertyService.setString('TEST_STRING', 'This is a string', 'This is its default value')
-            systemPropertyService.setDateTime('TEST_DATE_TIME', LocalDateTime.now())
-            systemPropertyService.setDate('TEST_DATE', LocalDate.now())
-            systemPropertyService.setTime('TEST_TIME', LocalTime.now())
-            systemPropertyService.setBoolean('TEST_BOOLEAN', true)
-            systemPropertyService.setDirectory('TEST_DIRECTORY', '', '/pippo/pluto')
-            systemPropertyService.setFilename('TEST_FILENAME', '', '\\pippo\\pluto\\config.txt')
-            systemPropertyService.setUrl('TEST_URL', 'http://www.dueuno.com', 'http://www.google.com/search')
-            systemPropertyService.setDirectory('TEST_WRONG_DIRECTORY', '\\this\\directory\\doesnt\\exist', '')
-            systemPropertyService.setFilename('TEST_WRONG_FILENAME', '\\this\\file\\doesnt\\exist.txt', '')
-            systemPropertyService.setUrl('TEST_WRONG_URL', 'htp://www.wrong.url', '')
-            systemPropertyService.setString('TEST_ON_CHANGE', 'Change me and check the console!', '')
+            applicationPropertyService.setNumber('TEST_NUMBER', 5 * 60)
+            applicationPropertyService.setString('TEST_STRING', 'This is a string', 'This is its default value')
+            applicationPropertyService.setDateTime('TEST_DATE_TIME', LocalDateTime.now())
+            applicationPropertyService.setDate('TEST_DATE', LocalDate.now())
+            applicationPropertyService.setTime('TEST_TIME', LocalTime.now())
+            applicationPropertyService.setBoolean('TEST_BOOLEAN', true)
+            applicationPropertyService.setDirectory('TEST_DIRECTORY', '', '/pippo/pluto')
+            applicationPropertyService.setFilename('TEST_FILENAME', '', '\\pippo\\pluto\\config.txt')
+            applicationPropertyService.setUrl('TEST_URL', 'http://www.dueuno.com', 'http://www.google.com/search')
+            applicationPropertyService.setDirectory('TEST_WRONG_DIRECTORY', '\\this\\directory\\doesnt\\exist', '')
+            applicationPropertyService.setFilename('TEST_WRONG_FILENAME', '\\this\\file\\doesnt\\exist.txt', '')
+            applicationPropertyService.setUrl('TEST_WRONG_URL', 'htp://www.wrong.url', '')
+            applicationPropertyService.setString('TEST_ON_CHANGE', 'Change me and check the console!', '')
 
             securityService.createAuthority('ROLE_1')
             securityService.createAuthority('ROLE_2')
             securityService.createAuthority('ROLE_3')
 
             securityService.createGroup(
-                    tenantId: tenantId,
-                    name: "GROUP_1",
-                    authorities: ['ROLE_1'],
+                tenantId: tenantId,
+                name: "GROUP_1",
+                authorities: ['ROLE_1'],
             )
             securityService.createGroup(
-                    tenantId: tenantId,
-                    name: "GROUP_2",
-                    authorities: ['ROLE_2'],
+                tenantId: tenantId,
+                name: "GROUP_2",
+                authorities: ['ROLE_2'],
             )
             securityService.createGroup(
-                    tenantId: tenantId,
-                    name: "GROUP_3",
-                    authorities: ['ROLE_3'],
+                tenantId: tenantId,
+                name: "GROUP_3",
+                authorities: ['ROLE_3'],
             )
 
             securityService.createUser(
-                    tenantId: tenantId,
-                    username: tenantId == tenantService.defaultTenantId ? 'user1' : "${tenantId}/user1",
-                    password: 'user1',
-                    groups: ['GROUP_1'],
-                    email: 'user@company.it',
-                    firstname: 'User',
-                    lastname: 'ONE',
-                    externalId: tenantId == tenantService.defaultTenantId ? 'FB78E50B' : null,
+                tenantId: tenantId,
+                username: tenantId == tenantService.defaultTenantId ? 'user1' : "${tenantId}/user1",
+                password: 'user1',
+                groups: ['GROUP_1'],
+                email: 'user@company.it',
+                firstname: 'User',
+                lastname: 'ONE',
+                physicalId: tenantId == tenantService.defaultTenantId ? 'FB78E50B' : null,
             )
             securityService.createUser(
-                    tenantId: tenantId,
-                    username: tenantId == tenantService.defaultTenantId ? 'user2' : "${tenantId}/user2",
-                    password: 'user2',
-                    groups: ['GROUP_2', 'GROUP_1'],
-                    email: 'user@company.it',
-                    firstname: 'User',
-                    lastname: 'ONE TWO',
+                tenantId: tenantId,
+                username: tenantId == tenantService.defaultTenantId ? 'user2' : "${tenantId}/user2",
+                password: 'user2',
+                groups: ['GROUP_2', 'GROUP_1'],
+                email: 'user@company.it',
+                firstname: 'User',
+                lastname: 'ONE TWO',
             )
             securityService.createUser(
-                    tenantId: tenantId,
-                    username: tenantId == tenantService.defaultTenantId ? 'user3' : "${tenantId}/user3",
-                    password: 'user3',
-                    groups: ['GROUP_3'],
-                    email: 'user@company.it',
-                    firstname: 'User',
-                    lastname: 'THREE',
+                tenantId: tenantId,
+                username: tenantId == tenantService.defaultTenantId ? 'user3' : "${tenantId}/user3",
+                password: 'user3',
+                groups: ['GROUP_3'],
+                email: 'user@company.it',
+                firstname: 'User',
+                lastname: 'THREE',
             )
 
             securityService.createSystemUser(
-                    username: '*',
-                    firstname: 'Nessun',
-                    lastname: 'Utente',
+                username: '*',
+                firstname: 'Nessun',
+                lastname: 'Utente',
             )
         }
 
         securityService.afterLogin { String tenantId, GrailsHttpSession session ->
             println "${tenantId}: Benvenuto in ${shellService.shell.id} caro ${securityService.currentUsername}"
-            if (systemPropertyService.getBoolean('TEST_DENY_LOGIN', true)) {
+            if (applicationPropertyService.getBoolean('TEST_DENY_LOGIN', true)) {
                 securityService.denyLogin('Cannot execute login because of X reason')
             }
         }
@@ -247,7 +247,7 @@ class BootStrap {
             transitionService.subscribe('macchina-1')
             transitionService.subscribe('macchina-2')
 
-            systemPropertyService.onChange('TEST_ON_CHANGE') { Object oldValue, Object value, Object defaultValue ->
+            applicationPropertyService.onChange('TEST_ON_CHANGE') { Object oldValue, Object value, Object defaultValue ->
                 println "*** TEST_ON_CHANGE *************************************************************"
                 println "OLD VALUE: $oldValue"
                 println "VALUE: $value"
@@ -267,27 +267,27 @@ class BootStrap {
             //
 
             applicationService.registerUserFeature(
-                    controller: 'sandbox',
-                    icon: 'fa-book',
-                    text: 'Manual...',
+                controller: 'sandbox',
+                icon: 'fa-book',
+                text: 'Manual...',
             )
 
             applicationService.registerFeature(
-                    controller: 'crud',
-                    icon: 'fa-file',
-                    favourite: true,
+                controller: 'crud',
+                icon: 'fa-file',
+                favourite: true,
             )
             applicationService.registerFeature(
-                    controller: 'crudCustom',
-                    icon: 'fa-regular fa-file',
+                controller: 'crudCustom',
+                icon: 'fa-regular fa-file',
             )
             applicationService.registerFeature(
-                    controller: 'crudDataServices',
-                    icon: 'fa-file-circle-check',
+                controller: 'crudDataServices',
+                icon: 'fa-file-circle-check',
             )
             applicationService.registerFeature(
-                    controller: 'crudSql',
-                    icon: 'fa-database',
+                controller: 'crudSql',
+                icon: 'fa-database',
             )
 //            applicationService.registerFeature(
 //                    controller: 'crudRest',
@@ -296,140 +296,139 @@ class BootStrap {
 //            )
 
             applicationService.registerFeature(
-                    controller: 'elements',
-                    favourite: true,
+                controller: 'elements',
+                favourite: true,
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'sandbox',
-                    icon: 'fa-umbrella-beach',
-                    favourite: true,
+                parent: 'elements',
+                controller: 'sandbox',
+                icon: 'fa-umbrella-beach',
+                favourite: true,
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'table',
-                    icon: 'fa-table',
-                    favourite: true,
+                parent: 'elements',
+                controller: 'table',
+                icon: 'fa-table',
+                favourite: true,
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'tableStressTest',
-                    icon: 'fa-table',
+                parent: 'elements',
+                controller: 'tableStressTest',
+                icon: 'fa-table',
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'form',
-                    icon: 'fa-check-square',
-                    favourite: true,
+                parent: 'elements',
+                controller: 'form',
+                icon: 'fa-check-square',
+                favourite: true,
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'select',
-                    icon: 'fa-table-list',
-                    favourite: true,
+                parent: 'elements',
+                controller: 'select',
+                icon: 'fa-table-list',
+                favourite: true,
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'grid',
-                    icon: 'fa-border-none',
+                parent: 'elements',
+                controller: 'grid',
+                icon: 'fa-border-none',
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'tabs',
-                    icon: 'fa-ellipsis-h',
+                parent: 'elements',
+                controller: 'tabs',
+                icon: 'fa-ellipsis-h',
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'timer',
-                    icon: 'fa-hourglass',
+                parent: 'elements',
+                controller: 'timer',
+                icon: 'fa-hourglass',
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'transitions',
-                    icon: 'fa-wand-sparkles',
-                    modal: true,
-                    favourite: true,
+                parent: 'elements',
+                controller: 'transitions',
+                icon: 'fa-wand-sparkles',
+                favourite: true,
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'websocket',
-                    icon: 'fa-envelope',
-                    favourite: true,
+                parent: 'elements',
+                controller: 'websocket',
+                icon: 'fa-envelope',
+                favourite: true,
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'charts',
-                    icon: 'fa-chart-pie',
-                    favourite: true,
+                parent: 'elements',
+                controller: 'charts',
+                icon: 'fa-chart-pie',
+                favourite: true,
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'upload',
-                    icon: 'fa-upload',
-                    favourite: true,
+                parent: 'elements',
+                controller: 'upload',
+                icon: 'fa-upload',
+                favourite: true,
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'staticResources',
-                    icon: 'fa-images',
+                parent: 'elements',
+                controller: 'staticResources',
+                icon: 'fa-images',
             )
             applicationService.registerFeature(
-                    parent: 'elements',
-                    controller: 'customPage',
-                    icon: 'fa-palette',
-                    direct: true,
-            )
-
-            applicationService.registerFeature(
-                    controller: 'errorMessages',
-            )
-            applicationService.registerFeature(
-                    parent: 'errorMessages',
-                    controller: 'handledException',
-                    icon: 'fa-regular fa-comment',
-            )
-            applicationService.registerFeature(
-                    parent: 'errorMessages',
-                    controller: 'denied',
-                    icon: 'fa-user-lock',
-            )
-            applicationService.registerFeature(
-                    parent: 'errorMessages',
-                    controller: 'notFound',
-                    icon: 'fa-search-location',
-            )
-            applicationService.registerFeature(
-                    parent: 'errorMessages',
-                    controller: 'exception',
-                    icon: 'fa-solid fa-bug',
+                parent: 'elements',
+                controller: 'customPage',
+                icon: 'fa-palette',
+                direct: true,
             )
 
             applicationService.registerFeature(
-                    controller: 'authDemo',
-                    icon: 'fa-group',
-                    favourite: true,
-                    authorities: ['ROLE_1', 'ROLE_2', 'ROLE_3']
+                controller: 'errorMessages',
             )
             applicationService.registerFeature(
-                    parent: 'authDemo',
-                    controller: 'user1',
-                    icon: 'fa-users',
-                    favourite: true,
-                    authorities: ['ROLE_1']
+                parent: 'errorMessages',
+                controller: 'handledException',
+                icon: 'fa-regular fa-comment',
             )
             applicationService.registerFeature(
-                    parent: 'authDemo',
-                    controller: 'user2',
-                    icon: 'fa-users',
-                    favourite: true,
-                    authorities: ['ROLE_2']
+                parent: 'errorMessages',
+                controller: 'denied',
+                icon: 'fa-user-lock',
             )
             applicationService.registerFeature(
-                    parent: 'authDemo',
-                    controller: 'user3',
-                    icon: 'fa-users',
-                    favourite: true,
-                    authorities: ['ROLE_3']
+                parent: 'errorMessages',
+                controller: 'notFound',
+                icon: 'fa-search-location',
+            )
+            applicationService.registerFeature(
+                parent: 'errorMessages',
+                controller: 'exception',
+                icon: 'fa-solid fa-bug',
+            )
+
+            applicationService.registerFeature(
+                controller: 'authDemo',
+                icon: 'fa-group',
+                favourite: true,
+                authorities: ['ROLE_1', 'ROLE_2', 'ROLE_3']
+            )
+            applicationService.registerFeature(
+                parent: 'authDemo',
+                controller: 'user1',
+                icon: 'fa-users',
+                favourite: true,
+                authorities: ['ROLE_1']
+            )
+            applicationService.registerFeature(
+                parent: 'authDemo',
+                controller: 'user2',
+                icon: 'fa-users',
+                favourite: true,
+                authorities: ['ROLE_2']
+            )
+            applicationService.registerFeature(
+                parent: 'authDemo',
+                controller: 'user3',
+                icon: 'fa-users',
+                favourite: true,
+                authorities: ['ROLE_3']
             )
         }
     }

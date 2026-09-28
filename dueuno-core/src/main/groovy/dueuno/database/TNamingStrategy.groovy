@@ -44,4 +44,5 @@ class TNamingStrategy implements PersistentEntityNamingStrategy {
     String resolveForeignKeyForPropertyDomainClass(HibernatePersistentProperty property) {
         return property.name
     }
+
 }

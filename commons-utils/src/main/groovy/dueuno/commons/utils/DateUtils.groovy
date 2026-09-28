@@ -42,7 +42,7 @@ import java.time.temporal.TemporalAccessor
  * LocalDateTime ldt = DateUtils.parseLocalDateTime("10/02/2026 14:35");
  * Date date = DateUtils.toDate(ldt);
  * String formatted = DateUtils.format(ldt, "yyyy/MM/dd HH:mm");
- * }</pre>
+ *}</pre>
  *
  * @author Gianluca
  */
@@ -210,14 +210,14 @@ class DateUtils {
     /**
      * Formats a {@link java.time.LocalDate} using the locale-sensitive medium date style.
      *
-     * @param date   the local date to format
+     * @param date the local date to format
      * @param locale the locale to use for formatting (default: system default)
      * @return the formatted date string, e.g., {@code "Feb 10, 2026"} for {@code Locale.ENGLISH}
      */
     static String format(LocalDate date, Locale locale = Locale.getDefault()) {
         DateTimeFormatter formatter = DateTimeFormatter
-                .ofLocalizedDate(FormatStyle.SHORT)
-                .withLocale(locale)
+            .ofLocalizedDate(FormatStyle.SHORT)
+            .withLocale(locale)
 
         return formatWith(date, formatter)
     }
@@ -225,9 +225,9 @@ class DateUtils {
     /**
      * Formats a {@link java.time.LocalDate} using the given pattern.
      *
-     * @param date    the local date to format
+     * @param date the local date to format
      * @param pattern the pattern to use, e.g., {@code "yyyy/MM/dd"}
-     * @param locale  the locale to use for formatting (default: system default)
+     * @param locale the locale to use for formatting (default: system default)
      * @return the formatted date string
      */
     static String format(LocalDate date, String pattern, Locale locale = Locale.getDefault()) {
@@ -238,13 +238,13 @@ class DateUtils {
      * Formats a {@link java.time.LocalDateTime} using the locale-sensitive medium date-time style.
      *
      * @param dateTime the local date-time to format
-     * @param locale   the locale to use for formatting (default: system default)
+     * @param locale the locale to use for formatting (default: system default)
      * @return the formatted date-time string, e.g., {@code "Feb 10, 2026, 2:35:20 PM"} for {@code Locale.ENGLISH}
      */
     static String format(LocalDateTime dateTime, Locale locale = Locale.getDefault()) {
         DateTimeFormatter formatter = DateTimeFormatter
-                .ofLocalizedDateTime(FormatStyle.SHORT)
-                .withLocale(locale)
+            .ofLocalizedDateTime(FormatStyle.SHORT)
+            .withLocale(locale)
 
         return formatWith(dateTime, formatter)
     }
@@ -253,8 +253,8 @@ class DateUtils {
      * Formats a {@link java.time.LocalDateTime} using the given pattern.
      *
      * @param dateTime the local date-time to format
-     * @param pattern  the pattern to use, e.g., {@code "yyyy/MM/dd HH:mm"}
-     * @param locale   the locale to use for formatting (default: system default)
+     * @param pattern the pattern to use, e.g., {@code "yyyy/MM/dd HH:mm"}
+     * @param locale the locale to use for formatting (default: system default)
      * @return the formatted date-time string
      */
     static String format(LocalDateTime dateTime, String pattern, Locale locale = Locale.getDefault()) {
@@ -264,14 +264,14 @@ class DateUtils {
     /**
      * Formats a {@link java.time.LocalTime} using the locale-sensitive medium time style.
      *
-     * @param time   the local time to format
+     * @param time the local time to format
      * @param locale the locale to use for formatting (default: system default)
      * @return the formatted time string, e.g., {@code "2:35:20 PM"} for {@code Locale.ENGLISH}
      */
     static String format(LocalTime time, Locale locale = Locale.getDefault()) {
         DateTimeFormatter formatter = DateTimeFormatter
-                .ofLocalizedTime(FormatStyle.SHORT)
-                .withLocale(locale)
+            .ofLocalizedTime(FormatStyle.SHORT)
+            .withLocale(locale)
 
         return formatWith(time, formatter)
     }
@@ -279,9 +279,9 @@ class DateUtils {
     /**
      * Formats a {@link java.time.LocalTime} using the given pattern.
      *
-     * @param time    the local time to format
+     * @param time the local time to format
      * @param pattern the pattern to use, e.g., {@code "HH:mm"}
-     * @param locale  the locale to use for formatting (default: system default)
+     * @param locale the locale to use for formatting (default: system default)
      * @return the formatted time string
      */
     static String format(LocalTime time, String pattern, Locale locale = Locale.getDefault()) {
@@ -291,7 +291,7 @@ class DateUtils {
     /**
      * Formats a {@link java.util.Date} using the locale-sensitive medium date-time style.
      *
-     * @param date   the date to format
+     * @param date the date to format
      * @param locale the locale to use for formatting (default: system default)
      * @return the formatted date-time string, e.g., {@code "Feb 10, 2026, 2:35:20 PM"} for {@code Locale.ENGLISH}
      */
@@ -300,8 +300,8 @@ class DateUtils {
         ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault())
 
         DateTimeFormatter formatter = DateTimeFormatter
-                .ofLocalizedDateTime(FormatStyle.SHORT)
-                .withLocale(locale)
+            .ofLocalizedDateTime(FormatStyle.SHORT)
+            .withLocale(locale)
 
         return formatWith(zdt, formatter)
     }
@@ -309,9 +309,9 @@ class DateUtils {
     /**
      * Formats a {@link java.util.Date} using the given pattern.
      *
-     * @param date    the date to format
+     * @param date the date to format
      * @param pattern the pattern to use, e.g., {@code "yyyy/MM/dd HH:mm"}
-     * @param locale  the locale to use for formatting (default: system default)
+     * @param locale the locale to use for formatting (default: system default)
      * @return the formatted date-time string
      */
     static String format(Date date, String pattern, Locale locale = Locale.getDefault()) {
@@ -324,7 +324,7 @@ class DateUtils {
     /**
      * Formats a {@link java.time.temporal.TemporalAccessor} using the given {@link java.time.format.DateTimeFormatter}.
      *
-     * @param temporal  the temporal value to format
+     * @param temporal the temporal value to format
      * @param formatter the formatter to apply
      * @return the formatted string
      */
@@ -341,11 +341,11 @@ class DateUtils {
      * Example:
      * <pre>{@code
      * String result = DateUtils.reformat("2026-02-10", "yyyy-MM-dd", "dd/MM/yyyy"); // "10/02/2026"
-     * }</pre>
+     *}</pre>
      *
-     * @param date        the date string to reformat
+     * @param date the date string to reformat
      * @param patternFrom the pattern of the input string, e.g., {@code "yyyy-MM-dd"}
-     * @param patternTo   the pattern for the output string, e.g., {@code "dd/MM/yyyy"}
+     * @param patternTo the pattern for the output string, e.g., {@code "dd/MM/yyyy"}
      * @return the reformatted date string, or an empty string if input is null or blank
      */
     static String reformat(String date, String patternFrom, String patternTo) {

@@ -83,12 +83,23 @@
     --bs-nav-pills-border-radius: var(--bs-border-radius-sm);
 }
 #shell-menu .nav-item a:focus {
-    background-color: rgba(var(--elements-frame-text), .2) !important;
+    background-color: rgba(var(--elements-frame-text), .15) !important;
     outline: none;
 }
 
 #shell-menu .nav-item a:hover {
-    background-color: rgba(var(--elements-frame-text), .2) !important;
+    background-color: rgba(var(--elements-frame-text), .15) !important;
+}
+
+#shell-menu .nav-item a.active,
+#shell-menu .nav-item a.active:hover {
+    background-color: rgba(var(--elements-primary-bg), .7) !important;
+    color: rgb(var(--elements-primary-text));
+}
+
+#shell-menu .nav-item a.active:focus {
+    background-color: rgba(var(--elements-frame-text), .15) !important;
+    color: rgb(var(--elements-frame-text));
 }
 
 #shell-menu-search-icon {

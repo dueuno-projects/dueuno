@@ -1,6 +1,6 @@
 .control-multiple-checkbox {
     position: relative;
-    margin-bottom: 10px;
+    margin-bottom: .714286rem;
     width: 100%;
 }
 
@@ -8,4 +8,12 @@
     margin-left: 5.357em;
     position: absolute;
     top: .571em;
+}
+
+.input-group.control-focus-group:has(> .control-multiple-checkbox input:focus):not(.field-highlight, .error-highlight) {
+    box-shadow: none !important;
+}
+
+.control-multiple-checkbox .control-checkbox:focus-within {
+    box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)) !important;
 }

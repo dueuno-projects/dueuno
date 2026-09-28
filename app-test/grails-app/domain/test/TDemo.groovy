@@ -40,14 +40,15 @@ class TDemo implements GormEntity, MultiTenant<TDemo> {
     String filename
 
     static embedded = [
-            'moneyfield',
-            'quantityfield',
+        'moneyfield',
+        'quantityfield',
     ]
 
     static constraints = {
-        textfield nullable: false
-        numberfield nullable: false
-        moneyfield nullable: false
+        quantityfield nullable: true
+        datefield nullable: true
+        timefield nullable: true
+        filename nullable: true
     }
 
 }

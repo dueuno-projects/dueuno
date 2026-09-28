@@ -125,8 +125,8 @@ class FileUtils {
 
         def dot = pathname.lastIndexOf('.')
         return pathname
-                .substring(dot + 1)
-                .toLowerCase()
+            .substring(dot + 1)
+            .toLowerCase()
     }
 
     /**
@@ -160,13 +160,13 @@ class FileUtils {
         def space = '[ ]'
 
         return filename.replaceAll(
-                unixFilenameInvalidChars
-                        + '|' + unixFilenameInvalidNonPrintableChars
-                        + '|' + win32FilenameInvalidChars
-                        + '|' + win32FilenameInvalidNonPrintableChars
-                        + '|' + urlInvalidChars
-                        + '|' + space,
-                spaceReplacementChar)
+            unixFilenameInvalidChars
+                + '|' + unixFilenameInvalidNonPrintableChars
+                + '|' + win32FilenameInvalidChars
+                + '|' + win32FilenameInvalidNonPrintableChars
+                + '|' + urlInvalidChars
+                + '|' + space,
+            spaceReplacementChar)
     }
 
     /**
@@ -272,7 +272,7 @@ class FileUtils {
 
         if (filePartsCount != userPartsCount) {
             throw new Exception("Error deserializing filename '${logFilename}'. Cannot match filename " +
-                    "'${filePartsCount}' parts with the supplied '${userPartsCount}' parts: ${parts}.")
+                "'${filePartsCount}' parts with the supplied '${userPartsCount}' parts: ${parts}.")
         }
 
         result['timestamp'] = fileParts[0]
@@ -474,10 +474,10 @@ class FileUtils {
         }
         log.info "${indent}Deleting '${dirToDelete.fileName}'"
         Files.walk(dirToDelete)
-                .sorted(Comparator.reverseOrder())
-                .forEach {
-                    deleteFile(it.toString(), indent * 2)
-                }
+            .sorted(Comparator.reverseOrder())
+            .forEach {
+                deleteFile(it.toString(), indent * 2)
+            }
         log.info "${indent}... done."
     }
 

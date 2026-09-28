@@ -18,6 +18,7 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import java.security.MessageDigest
+import java.security.SecureRandom
 
 /**
  * Utility class for string manipulation and encoding operations.
@@ -34,6 +35,8 @@ import java.security.MessageDigest
 @Slf4j
 @CompileStatic
 class StringUtils {
+
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom()
 
     // --- Naming convention conversions ---
 
@@ -188,18 +191,19 @@ class StringUtils {
     }
 
     /**
-     * Generates a random token string.
+     * Generates a cryptographically secure random token.
      *
-     * @param size length of the token
-     * @param alphabet optional list of characters to use
-     * @return random token string
+     * @param size the token length, defaults to 32
+     * @param alphabet optional custom character set
+     * @return a secure random token
      */
-    static String generateRandomToken(Integer size = 16, List alphabet = []) {
-        List theAlphabet = alphabet ?: ('A'..'Z') + ('0'..'9') + ('a'..'z')
+    static String generateRandomToken(Integer size = 32, List alphabet = []) {
+        List defaultAlphabet = ('A'..'Z') + ('0'..'9') + ('a'..'z') + ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', ';', ':', '?', '.', '>']
+        List tokenAlphabet = alphabet ?: defaultAlphabet
 
-        return new Random().with {
-            (1..size).collect { theAlphabet[nextInt(theAlphabet.size())] }.join('')
-        }
+        return (1..size)
+            .collect { tokenAlphabet[SECURE_RANDOM.nextInt(tokenAlphabet.size())] }
+            .join('')
     }
 
     /**
@@ -250,7 +254,7 @@ class StringUtils {
     static String inputStreamToString(InputStream inputStream) {
         ByteArrayOutputStream result = new ByteArrayOutputStream()
         byte[] buffer = new byte[1024]
-        for (int length; (length = inputStream.read(buffer)) != -1; ) {
+        for (int length; (length = inputStream.read(buffer)) != -1;) {
             result.write(buffer, 0, length)
         }
 

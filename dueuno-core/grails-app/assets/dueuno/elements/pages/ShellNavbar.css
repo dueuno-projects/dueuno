@@ -4,8 +4,8 @@
     padding: .5rem;
     height: 3.3rem;
     background-color: rgba(var(--elements-main-bg), .7);
-    backdrop-filter: blur(21px);
-    -webkit-backdrop-filter: blur(21px);
+    backdrop-filter: blur(1.5rem);
+    -webkit-backdrop-filter: blur(1.5rem);
 }
 
 #shell-navbar.has-sticky {
@@ -60,7 +60,7 @@
 }
 
 #shell-navbar-notifications-toggle div {
-    padding: 1px 10px 1px 10px;
+    padding: .071429rem .714286rem .071429rem .714286rem;
     border-radius: var(--bs-border-radius-xl);
 }
 

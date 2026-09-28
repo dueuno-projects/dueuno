@@ -16,6 +16,8 @@
                 <render:component instance="${c.closeButton}" />
             </div>
             <div id="page-modal-body" class="modal-body"></div>
+            <%-- Keep one extra Tab stop before focus leaves the modal for browser chrome. --%>
+            <div class="visually-hidden" tabindex="0"></div>
         </div>
     </div>
 </div>

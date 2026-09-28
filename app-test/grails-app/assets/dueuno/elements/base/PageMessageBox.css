@@ -16,6 +16,11 @@
     font-weight: bold;
 }
 
+#page-messagebox .btn:focus-visible,
+#page-messagebox input:focus {
+    box-shadow: 0 0 0 .27rem rgba(var(--elements-frame-text), .5) !important;
+}
+
 #page-messagebox input::placeholder {
     font-weight: normal;
     color: rgba(var(--elements-frame-text), .7);

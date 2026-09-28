@@ -14,14 +14,14 @@
  */
 package test
 
+import dueuno.application.ApplicationService
 import dueuno.commons.utils.SqlUtils
+import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.*
-import dueuno.core.ApplicationService
-import dueuno.elements.ElementsController
 import dueuno.types.Money
 import dueuno.types.Quantity
 import dueuno.types.QuantityUnit
@@ -36,14 +36,14 @@ class CrudSqlController implements ElementsController {
 
     def dataSource
 
-    String tblPerson = 't_person'
-    String tblCompany = 't_company'
+    String tblPerson = 'person'
+    String tblCompany = 'company'
 
     @PostConstruct
     void init() {
-//        applicationService.registerPrettyPrinter('T_COMPANY', '${it.name} (${it.date_created.toLocalDate().year})')
-        applicationService.registerPrettyPrinter('T_COMPANY', '${it.name}')
-        applicationService.registerTransformer('T_COMPANY') { value ->
+//        applicationService.registerPrettyPrinter('COMPANY', '${it.name} (${it.date_created.toLocalDate().year})')
+        applicationService.registerPrettyPrinter('COMPANY', '${it.name}')
+        applicationService.registerTransformer('COMPANY') { value ->
             Map r = SqlUtils.get(dataSource, tblCompany, [id: value])
             return r.name
         }
@@ -58,24 +58,24 @@ class CrudSqlController implements ElementsController {
     }
 
     def index() {
-        applicationService.registerPrettyPrinter('T_COMPANY', '${it.name}')
+        applicationService.registerPrettyPrinter('COMPANY', '${it.name}')
         def c = createContent(ContentTable)
         c.table.with {
             filters.with {
                 addField(
-                        class: Select,
-                        id: 'company_id',
-                        optionsFromRecordset: SqlUtils.list(dataSource, tblCompany),
-                        keys: ['id'],
-                        prettyPrinter: 'T_COMPANY',
-                        renderTextPrefix: false,
-                        cols: 4,
+                    class: Select,
+                    id: 'company_id',
+                    optionsFromRecordset: SqlUtils.list(dataSource, tblCompany),
+                    keys: ['id'],
+                    prettyPrinter: 'COMPANY',
+                    renderTextPrefix: false,
+                    cols: 4,
                 )
                 addField(
-                        class: TextField,
-                        id: 'name',
-                        help: 'Hai bisogno di aiuto? Inserisci oil nome dell\'azienda! :)',
-                        cols: 8,
+                    class: TextField,
+                    id: 'name',
+                    help: 'Hai bisogno di aiuto? Inserisci oil nome dell\'azienda! :)',
+                    cols: 8,
                 )
             }
 
@@ -83,26 +83,26 @@ class CrudSqlController implements ElementsController {
             rowHighlight = false
             stickyHeader = true
             sortable = [
-                    name: 'asc',
-                    address: 'desc',
+                name   : 'asc',
+                address: 'desc',
             ]
             columns = [
-                    'company_id',
-                    'name',
-                    'picture',
-                    'address',
-                    'postcode',
-                    'salary_amount',
+                'company_id',
+                'name',
+                'picture',
+                'address',
+                'postcode',
+                'salary_amount',
 //                    'distance_km_amount',
 //                    'date_start',
 //                    'date_end',
 //                    'active',
             ]
             transformers = [
-                    company_id: 'T_COMPANY',
+                company_id: 'COMPANY',
             ]
             prettyPrinters = [
-                    company_id: 'T_COMPANY',
+                company_id: 'COMPANY',
             ]
 
             body.eachRow { TableRow row, Map values ->
@@ -112,11 +112,11 @@ class CrudSqlController implements ElementsController {
         }
 
         c.table.body = SqlUtils.list(
-                dataSource,
-                tblPerson,
-                ['name'],
-                c.table.filterParams,
-                c.table.fetchParams,
+            dataSource,
+            tblPerson,
+            ['name'],
+            c.table.filterParams,
+            c.table.fetchParams,
         )
         c.table.paginate = SqlUtils.count(dataSource, tblPerson, c.table.filterParams)
         display content: c
@@ -129,61 +129,61 @@ class CrudSqlController implements ElementsController {
         }
 
         def c = args.create
-                ? createContent(ContentCreate)
-                : createContent(ContentEdit)
+            ? createContent(ContentCreate)
+            : createContent(ContentEdit)
 
         c.form.with {
             validate = CrudRestValidator
             addKeyField('version', 0)
-            addKeyField('salary_currency', Type.TEXT, 'EUR')
-            addKeyField('distance_km_unit', Type.TEXT,'KM')
+            addKeyField('salary_currency', Type.STRING, 'EUR')
+            addKeyField('distance_km_unit', Type.STRING, 'KM')
             addField(
-                    class: Select,
-                    id: 'company_id',
-                    optionsFromRecordset: SqlUtils.list(dataSource, tblCompany),
-                    prettyPrinter: 'T_COMPANY',
+                class: Select,
+                id: 'company_id',
+                optionsFromRecordset: SqlUtils.list(dataSource, tblCompany),
+                prettyPrinter: 'COMPANY',
             )
             addField(
-                    class: MoneyField,
-                    id: 'prezzo',
-                    transformer: 'MONEY',
-                    defaultValue: '3,3'
+                class: MoneyField,
+                id: 'prezzo',
+                transformer: 'MONEY',
+                defaultValue: '3,3'
             )
             addField(
-                    class: TextField,
-                    id: 'name',
+                class: TextField,
+                id: 'name',
             )
             addField(
-                    class: TextField,
-                    id: 'address',
+                class: TextField,
+                id: 'address',
             )
             addField(
-                    class: NumberField,
-                    id: 'postcode',
+                class: NumberField,
+                id: 'postcode',
             )
             addField(
-                    class: NumberField,
-                    id: 'salary_amount',
+                class: NumberField,
+                id: 'salary_amount',
             )
             addField(
-                    class: NumberField,
-                    id: 'distance_km_amount',
+                class: NumberField,
+                id: 'distance_km_amount',
             )
             addField(
-                    class: DateField,
-                    id: 'date_start',
+                class: DateField,
+                id: 'date_start',
             )
             addField(
-                    class: DateField,
-                    id: 'date_end',
+                class: DateField,
+                id: 'date_end',
             )
             addField(
-                    class: Checkbox,
-                    id: 'active',
+                class: Checkbox,
+                id: 'active',
             )
             addField(
-                    class: Upload,
-                    id: 'picture',
+                class: Upload,
+                id: 'picture',
             )
         }
         return c
@@ -216,9 +216,9 @@ class CrudSqlController implements ElementsController {
 
         try {
             def results = SqlUtils.create(
-                    dataSource,
-                    tblPerson,
-                    cleanupValues(val.properties + [date_created: LocalDate.now()])
+                dataSource,
+                tblPerson,
+                cleanupValues(val.properties + [date_created: LocalDate.now()])
             )
             display action: 'index'
 
@@ -243,10 +243,10 @@ class CrudSqlController implements ElementsController {
 
         try {
             SqlUtils.update(
-                    dataSource,
-                    tblPerson,
-                    [id: params.id],
-                    cleanupValues(val.properties)
+                dataSource,
+                tblPerson,
+                [id: params.id],
+                cleanupValues(val.properties)
             )
             display action: 'index'
 

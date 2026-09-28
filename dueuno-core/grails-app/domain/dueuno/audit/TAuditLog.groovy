@@ -14,6 +14,7 @@
  */
 package dueuno.audit
 
+import dueuno.tenant.AuditOperation
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.MultiTenant
 import org.grails.datastore.gorm.GormEntity
@@ -58,4 +59,9 @@ class TAuditLog implements GormEntity, MultiTenant<TAuditLog> {
         stateAfter nullable: true, maxSize: TAuditLog.LOG_MESSAGE_MAX_SIZE
         digest nullable: true
     }
+
+    static mapping = {
+        table 'sys_audit_log'
+    }
+
 }

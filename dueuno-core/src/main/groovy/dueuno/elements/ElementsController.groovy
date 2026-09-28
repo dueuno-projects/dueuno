@@ -15,14 +15,16 @@
 package dueuno.elements
 
 import dueuno.commons.utils.LogUtils
-import dueuno.core.LinkGeneratorAware
-import dueuno.core.WebRequestAware
 import dueuno.elements.contents.ContentHeader
+import dueuno.elements.core.ComponentEvent
+import dueuno.elements.core.Page
+import dueuno.elements.core.PageContent
+import dueuno.elements.core.Transition
 import dueuno.elements.pages.PageBlank
-import dueuno.exceptions.ElementsException
 import grails.artefact.Controller
 import grails.artefact.Enhances
 import grails.artefact.controller.RestResponder
+import grails.util.Holders
 import grails.validation.Validateable
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -60,11 +62,11 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
 
     /**
      * Property-style shorthand for {@link #display(Map)} with no arguments.
-     * Renders the current {@link Transition} and returns {@code true}.
-     * Throws {@link dueuno.exceptions.ElementsException} if called more than once per action.
+     * Renders the current {@link dueuno.elements.core.Transition} and returns {@code true}.
+     * Throws {@link ElementsException} if called more than once per action.
      *
      * @return {@code true} after the transition has been rendered
-     * @throws dueuno.exceptions.ElementsException if {@code display} has already been rendered in this action
+     * @throws ElementsException if {@code display} has already been rendered in this action
      */
     @CompileDynamic
     Boolean getDisplay() {
@@ -83,15 +85,15 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
     }
 
     /**
-     * Renders the response for the current action, choosing between a {@link Transition}
-     * (AJAX) or a full {@link Page} depending on whether the request carries the
+     * Renders the response for the current action, choosing between a {@link dueuno.elements.core.Transition}
+     * (AJAX) or a full {@link dueuno.elements.core.Page} depending on whether the request carries the
      * {@code _21Transition} flag.
      * <p>
      * Supported {@code args} keys:
      * </p>
      * <ul>
-     *     <li>{@code page} — a {@link Page} instance to render directly (forces a full-page render)</li>
-     *     <li>{@code content} — a {@link PageContent} to inject into the transition or page</li>
+     *     <li>{@code page} — a {@link dueuno.elements.core.Page} instance to render directly (forces a full-page render)</li>
+     *     <li>{@code content} — a {@link dueuno.elements.core.PageContent} to inject into the transition or page</li>
      *     <li>{@code message} / {@code messageArgs} — show an info message in the message box</li>
      *     <li>{@code confirmMessage} / {@code messageArgs} — show a confirmation dialog</li>
      *     <li>{@code errorMessage} / {@code messageArgs} — show an error message</li>
@@ -99,15 +101,15 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      *     <li>{@code errors} — display field-level or global validation errors on a submitted component</li>
      *     <li>{@code controller} / {@code action} — redirect the browser</li>
      *     <li>{@code loading} — show or hide the loading indicator</li>
-     *     <li>{@code transition} — use an explicit {@link Transition} instance instead of creating a new one</li>
+     *     <li>{@code transition} — use an explicit {@link dueuno.elements.core.Transition} instance instead of creating a new one</li>
      * </ul>
      * <p>
      * This method must be the last statement of a controller action; calling it more than
-     * once throws {@link dueuno.exceptions.ElementsException}.
+     * once throws {@link ElementsException}.
      * </p>
      *
      * @param args optional map of display arguments (see above)
-     * @throws dueuno.exceptions.ElementsException if {@code display} has already been rendered in this action
+     * @throws ElementsException if {@code display} has already been rendered in this action
      */
     @CompileDynamic
     void display(Map args = [:]) {
@@ -149,6 +151,12 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         }
     }
 
+    void closeModal() {
+        Transition t = createTransition()
+        t.closeModal()
+        display transition: t
+    }
+
     /**
      * Returns the name of the key that was pressed by the user in the current request,
      * as reported by the main page's key-press component.
@@ -159,12 +167,13 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         return getMainPage().keyPress.keyPressed
     }
 
-    /** Returns the application-scoped {@link PageService} bean. */
+    /** Returns the application-scoped {@link dueuno.elements.PageService} bean. */
     private PageService getPageService() {
-        return Elements.getBean('pageService') as PageService
+        PageService pageService = Holders.applicationContext.getBean('pageService') as PageService
+        return pageService
     }
 
-    /** Returns the main {@link Page} for the current session, falling back to a blank page. */
+    /** Returns the main {@link dueuno.elements.core.Page} for the current session, falling back to a blank page. */
     private Page getMainPage() {
         return getPageService().mainPage ?: createPage(PageBlank, params)
     }
@@ -173,7 +182,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      * Creates and returns a new instance of the specified {@link Page} subclass.
      *
      * @param clazz the {@link Page} subclass to instantiate
-     * @param args  optional map of constructor/property arguments
+     * @param args optional map of constructor/property arguments
      * @return the newly created page instance
      */
     public <T> T createPage(Class<T> clazz, Map args = [:]) {
@@ -190,10 +199,10 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
     }
 
     /**
-     * Creates and returns a new instance of the specified {@link PageContent} subclass.
+     * Creates and returns a new instance of the specified {@link dueuno.elements.core.PageContent} subclass.
      *
-     * @param clazz the {@link PageContent} subclass to instantiate
-     * @param args  optional map of constructor/property arguments
+     * @param clazz the {@link dueuno.elements.core.PageContent} subclass to instantiate
+     * @param args optional map of constructor/property arguments
      * @return the newly created content instance
      */
     public <T> T createContent(Class<T> clazz, Map args = [:]) {
@@ -201,9 +210,9 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
     }
 
     /**
-     * Creates and returns a new {@link Transition} scoped to the current request.
+     * Creates and returns a new {@link dueuno.elements.core.Transition} scoped to the current request.
      *
-     * @return a new {@link Transition} instance
+     * @return a new {@link dueuno.elements.core.Transition} instance
      */
     Transition createTransition() {
         return getPageService().createTransition()
@@ -213,8 +222,8 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      * Returns an {@link OutputStream} that streams a file to the browser.
      *
      * @param pathname the server-side path of the file to stream
-     * @param inline   {@code true} to suggest inline display (e.g. PDF preview);
-     *                 {@code false} (default) to force a download prompt
+     * @param inline {@code true} to suggest inline display (e.g. PDF preview);
+     * {@code false} (default) to force a download prompt
      * @return the output stream to write the file content to
      */
     OutputStream getDownloadOutputStream(String pathname, Boolean inline = false) {
@@ -225,7 +234,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      * Streams a file from the server to the browser as a download (or inline display).
      *
      * @param pathname the server-side path of the file to send
-     * @param inline   {@code true} to suggest inline display; {@code false} (default) to force download
+     * @param inline {@code true} to suggest inline display; {@code false} (default) to force download
      */
     void download(String pathname, Boolean inline = false) {
         getPageService().download(pathname, inline)
@@ -267,7 +276,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
             Exception e = args.exception as Exception
             log.error LogUtils.logStackTrace(e)
             String message = e.message ?: e.cause.message ?: "${e.toString()} caused by ${e.cause.toString()}"
-            t.errorMessage(message , new ComponentEvent(args))
+            t.errorMessage(message, new ComponentEvent(args))
 
         } else if (args.errors) {
             Integer submittedComponentCount = requestParams._21SubmittedCount as Integer
@@ -314,9 +323,13 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
             t.redirect(args)
         }
 
+        if (args.focus != null) {
+            t.setFocus(args.focus as String)
+        }
+
         return [
-                template: t.view,
-                model   : t.model,
+            template: t.view,
+            model   : t.model,
         ]
     }
 
@@ -325,7 +338,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      * format expected by the Elements frontend component.
      *
      * @param componentName the identifier of the target component (used for debug logging)
-     * @param errorsMap     a map of field names to i18n error message keys or literal messages
+     * @param errorsMap a map of field names to i18n error message keys or literal messages
      * @return a map with an {@code errors} key holding a list of {@code {field, message}} maps
      */
     private Map getErrorsFromMap(String componentName, Map errorsMap) {
@@ -335,8 +348,8 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
             String fieldName = error.key
             String fieldError = message(error.value as String)
             errors.add([
-                    field  : fieldName,
-                    message: fieldError,
+                field  : fieldName,
+                message: fieldError,
             ])
             log.debug "[${componentName}] ${fieldName}: ${fieldError}"
         }
@@ -349,7 +362,7 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      * Grails {@link grails.validation.Validateable} (or GORM domain) instance and logs each error.
      *
      * @param componentName the identifier of the target component (used for debug logging)
-     * @param validateable  a Grails {@link grails.validation.Validateable} or GORM domain instance
+     * @param validateable a Grails {@link grails.validation.Validateable} or GORM domain instance
      * @return the {@link org.springframework.validation.Errors} object from the validateable
      */
     private Errors getErrorsFromValidatable(String componentName, Object validateable) {
@@ -369,8 +382,8 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
      *     <li>Anything else — adds an error message to {@code t} and returns an empty map</li>
      * </ul>
      *
-     * @param t               the current {@link Transition} (used to display an error message on unsupported types)
-     * @param componentName   the identifier of the target component
+     * @param t the current {@link Transition} (used to display an error message on unsupported types)
+     * @param componentName the identifier of the target component
      * @param componentErrors the errors object (a {@link Map}, a validateable, or a GORM domain instance)
      * @return the resolved error structure to set on the component
      */
@@ -414,8 +427,8 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         }
 
         return [
-                template: p.view,
-                model   : p.model + args,
+            template: p.view,
+            model   : p.model + args,
         ]
     }
 }

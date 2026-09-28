@@ -26,7 +26,7 @@ import org.grails.datastore.gorm.GormEntity
  */
 
 @GrailsCompileStatic
-@ToString(cache=true, includeNames=true, includePackage=false)
+@ToString(cache = true, includeNames = true, includePackage = false)
 class TRoleGroupRole implements GormEntity, Serializable {
 
     private static final long serialVersionUID = 1
@@ -35,6 +35,7 @@ class TRoleGroupRole implements GormEntity, Serializable {
     TRole role
 
     static mapping = {
+        table 'sys_role_group_role'
         id composite: ['roleGroup', 'role']
         version false
     }
@@ -69,7 +70,7 @@ class TRoleGroupRole implements GormEntity, Serializable {
     private static DetachedCriteria criteriaFor(long roleGroupId, long roleId) {
         TRoleGroupRole.where {
             roleGroup == TRoleGroup.load(roleGroupId) &&
-            role == TRole.load(roleId)
+                role == TRole.load(roleId)
         }
     }
 

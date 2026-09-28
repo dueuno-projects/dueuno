@@ -1,3 +1,10 @@
+.control-checkbox:has(.form-check-input:enabled),
+.control-checkbox-simple:has(.form-check-input:enabled),
+.control-checkbox .form-check-input:enabled,
+.control-checkbox-simple .form-check-input:enabled {
+    cursor: pointer;
+}
+
 .control-checkbox-simple .form-check-input {
     border-radius: 2rem;
     background-color: rgb(var(--elements-main-bg));
@@ -7,13 +14,24 @@
     height: 1.3rem;
 }
 
+.control-checkbox-simple .form-check-input:focus {
+    border-radius: 2rem;
+}
+
+.input-group.control-focus-group:has(> .control-checkbox-simple .form-check-input:focus):not(.field-highlight, .error-highlight) {
+    box-shadow: none !important;
+}
+
+.input-group.control-focus-group .control-checkbox-simple .form-check-input:focus {
+    box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)) !important;
+}
+
 .control-checkbox-simple .form-check-input:checked {
     background-color: rgb(var(--elements-primary-bg));
     border: none;
 }
 
-.control-checkbox.input-group-text,
-.input-group:has([readonly], [disabled]) .control-checkbox.input-group-text {
+.control-checkbox.input-group-text {
     border-radius: var(--bs-border-radius-sm) !important;
     color: rgb(var(--elements-main-text)) !important;
     width: 100%;
@@ -55,7 +73,9 @@
 }
 
 .help .control-checkbox.input-group-text {
-    width: calc(100% - (1rem + 1rem * 1.35));
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 0;
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
 }
@@ -78,7 +98,7 @@
 }
 
 .control-checkbox .form-switch .form-check-input:focus-visible {
-    box-shadow: 0 0 0 .25rem rgb(var(--elements-primary-bg-shaded));
+    box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded));
     background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba(132,132,132,1)'/></svg>");
 }
 .control-checkbox .form-switch .form-check-input:checked {

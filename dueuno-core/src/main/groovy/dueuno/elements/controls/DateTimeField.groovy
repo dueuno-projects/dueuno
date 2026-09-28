@@ -14,8 +14,8 @@
  */
 package dueuno.elements.controls
 
-import dueuno.elements.Component
-import dueuno.elements.Control
+import dueuno.elements.core.Component
+import dueuno.elements.core.Control
 import dueuno.types.Type
 import groovy.transform.CompileStatic
 
@@ -28,7 +28,7 @@ import java.time.LocalTime
  * <p>
  * Serves as the base class for {@link DateField} and {@link TimeField}. The value type
  * defaults to {@link dueuno.types.Type#DATETIME} and can be overridden by subclasses.
- * Optional {@link #min} and {@link #max} boundaries accept {@link LocalDateTime},
+ * Optional {@code min} and {@code max} boundaries accept {@link LocalDateTime},
  * {@link LocalDate}, or {@link LocalTime} and are normalised to {@link LocalDateTime}
  * internally. An input validation regex pattern is applied client-side to restrict entry
  * to valid date/time characters.
@@ -61,10 +61,10 @@ class DateTimeField extends Control {
      * a {@link LocalDate}, {@link LocalTime}, or {@link LocalDateTime} is supplied.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code min} ({@link LocalDateTime}/{@link LocalDate}/{@link LocalTime}),
-     *             {@code max} ({@link LocalDateTime}/{@link LocalDate}/{@link LocalTime}),
-     *             {@code timeStep} ({@link Integer}),
-     *             {@code autoPopulate} ({@link Boolean}, default {@code false}),
+     * {@code min} ({@link LocalDateTime}/{@link LocalDate}/{@link LocalTime}),
+     * {@code max} ({@link LocalDateTime}/{@link LocalDate}/{@link LocalTime}),
+     * {@code timeStep} ({@link Integer}),
+     * {@code autoPopulate} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link Control#Control(Map)}
      */
     DateTimeField(Map args) {
@@ -76,31 +76,50 @@ class DateTimeField extends Control {
         addContainerAttribute('data-td-target-input', 'nearest')
         addContainerAttribute('data-td-target-toggle', 'nearest')
 
-        if (args.min in LocalTime) {
-            min = LocalDateTime.of(LocalDate.of(1900, 1, 1), args.min as LocalTime)
-        } else if (args.min in LocalDate) {
-            min = LocalDateTime.of(args.min as LocalDate, LocalTime.of(0, 0))
-        } else if (args.min in LocalDateTime) {
-            min = args.min as LocalDateTime
-        }
-
-        if (args.max in LocalTime) {
-            max = LocalDateTime.of(LocalDate.of(1900, 1, 1), args.max as LocalTime)
-        } else if (args.max in LocalDate) {
-            max = LocalDateTime.of(args.max as LocalDate, LocalTime.of(0, 0))
-        } else if (args.max in LocalDateTime) {
-            max = args.max as LocalDateTime
-        }
+        setMin(args.min)
+        setMax(args.max)
 
         timeStep = args.timeStep as Integer
         autoPopulate = args.autoPopulate as Boolean ?: false
     }
 
     /**
+     * Sets the earliest date and time accepted by this field.
+     * A {@link LocalDate} is converted to midnight and a {@link LocalTime} is associated
+     * with 1 January 1900.
+     *
+     * @param value the minimum boundary, or {@code null} for no minimum
+     */
+    void setMin(Object value) {
+        this.@min = normalizeBoundary(value)
+    }
+
+    /**
+     * Sets the latest date and time accepted by this field.
+     * A {@link LocalDate} is converted to midnight and a {@link LocalTime} is associated
+     * with 1 January 1900.
+     *
+     * @param value the maximum boundary, or {@code null} for no maximum
+     */
+    void setMax(Object value) {
+        this.@max = normalizeBoundary(value)
+    }
+
+    private static LocalDateTime normalizeBoundary(Object value) {
+        if (value in LocalTime) {
+            return LocalDateTime.of(LocalDate.of(1900, 1, 1), value as LocalTime)
+        }
+        if (value in LocalDate) {
+            return LocalDateTime.of(value as LocalDate, LocalTime.of(0, 0))
+        }
+        return value in LocalDateTime ? value as LocalDateTime : null
+    }
+
+    /**
      * Registers {@code enter} and {@code change} event listeners that submit the form
      * when the user confirms a date/time value, if those handlers have not already been set.
      *
-     * @param args event configuration forwarded to {@link dueuno.elements.Component#on(Map)}
+     * @param args event configuration forwarded to {@link Component#on(Map)}
      * @return this component for chaining
      */
     @Override
@@ -121,8 +140,8 @@ class DateTimeField extends Control {
     }
 
     /**
-     * Serialises this field's properties to JSON, adding {@link #min}, {@link #max},
-     * the input validation pattern, {@link #timeStep}, and {@link #autoPopulate}.
+     * Serialises this field's properties to JSON, adding {@code min}, {@code max},
+     * the input validation pattern, {@code timeStep}, and {@code autoPopulate}.
      * The default pattern ({@code ^[0-9/: ]*$}) can be overridden by passing a
      * {@code pattern} key in {@code properties}.
      *
@@ -132,11 +151,11 @@ class DateTimeField extends Control {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                min         : min?.toString(),
-                max         : max?.toString(),
-                pattern     : properties.pattern ?: '^[0-9/: ]*$',
-                timeStep: timeStep,
-                autoPopulate: autoPopulate,
+            min         : min?.toString(),
+            max         : max?.toString(),
+            pattern     : properties.pattern ?: '^[0-9/: ]*$',
+            timeStep    : timeStep,
+            autoPopulate: autoPopulate,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

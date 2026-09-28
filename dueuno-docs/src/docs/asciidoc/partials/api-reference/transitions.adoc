@@ -1,0 +1,115 @@
+[[transitions]]
+== Transitions
+A Transition is a set of instructions sent from the server to the client (browser) to alter the currently displayed content. For instance, when selecting a book from a list we want a text field to be populated with its description. To implement such behaviours we use transitions.
+
+NOTE: Please refer to <<controls>> and <<components>> to see what events are available to each component.
+
+NOTE: Refer to <<websockets>> to understand how to trigger events programmatically from sources other than the user input.
+
+.grails-app/controllers/ReadController.groovy
+[source,groovy]
+----
+class ReadController implements ElementsController {
+
+    BookService bookService
+
+    def index() {
+        def c = createContent(ContentForm)
+
+        c.header.removeNextButton()
+
+        c.form.with {
+            addField(
+                    class: Select,
+                    id: 'book',
+                    optionsFromRecordset: bookService.list(),
+                    onChange: 'onChangeBook', // <1>
+            )
+            addField(
+                    class: Textarea,
+                    id: 'description',
+            )
+        }
+
+        display content: c
+    }
+
+    def onChangeBook() {
+        def t = createTransition() // <2>
+        def book = bookService.get(params.book)
+
+        if (book) {
+            t.set('description', book.description) // <3>
+            t.set('description', 'readonly', true) // <4>
+        } else {
+            t.set('description', null)
+            t.set('description', 'readonly', false)
+        }
+
+        display transition: t
+    }
+}
+----
+<1> We tell the `Select` field which action to execute when the `change` event occurs (See <<events>>)
+<2> We create a new Transition
+<3> The `set` method sets the value of the `description` field
+<4> We also set the `Textarea` to a `readonly` state
+
+image::images/api-reference/reference-book-transition.png[onChange transition]
+
+To finish it up we register a Pretty Printer for the book record and tell the 'Select' control to use it to display the items.
+
+.grails-app/init/BootStrap.groovy
+[source,groovy]
+----
+class BootStrap {
+
+    ApplicationService applicationService
+
+    def init = {
+
+        applicationService.onInit {
+            registerPrettyPrinter('BOOK', '${it.title} - ${it.author}') // <1>
+        }
+
+    }
+}
+----
+<1> A pretty printer called `BOOK` will display each book by title and author. The `it` variable refers to an instance of the book record (a `Map` in this case)
+
+.grails-app/controllers/ReadController.groovy
+[source,groovy]
+----
+class ReadController implements ElementsController {
+    ...
+
+        addField(
+                class: Select,
+                id: 'book',
+                optionsFromRecordset: bookService.list(),
+                prettyPrinter: 'BOOK', // <1>
+                onChange: 'onChangeBook',
+        )
+
+    ...
+}
+----
+<1> We configure the `Select` control to use the `BOOK` pretty printer to format the books
+
+image::images/api-reference/reference-book-transition-pretty.png[onChange transition]
+////
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to you under the Apache License, Version 2.0.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+////
+

@@ -1,0 +1,28 @@
+plugins {
+    id "org.asciidoctor.jvm.convert"
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.grails.org/grails/core" }
+}
+
+asciidoctor {
+    attributes = [
+            "application-name"  : projectName,
+            "revnumber"         : projectVersion,
+            "version-java"      : javaVersion,
+            "version-grails"    : grailsVersion,
+            "source-highlighter": "coderay",
+            "icons"             : "font",
+            "toc"               : "left",
+            "toclevels"         : 2,
+    ]
+
+    baseDirFollowsSourceDir()
+
+    outputDir = file("${projectDir}/docs/")
+    outputOptions {
+        backends = ["html5"]
+    }
+}

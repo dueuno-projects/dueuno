@@ -14,8 +14,8 @@
  */
 package dueuno.elements.components
 
-import dueuno.core.PrettyPrinterProperties
-import dueuno.elements.Component
+import dueuno.elements.core.Component
+import dueuno.elements.core.PrettyPrinterProperties
 import dueuno.elements.style.TextAlign
 import dueuno.elements.style.TextStyle
 import dueuno.elements.style.TextWrap
@@ -27,8 +27,8 @@ import groovy.transform.CompileStatic
  * and supports rich text styling options.
  * <p>
  * The displayed value is passed as {@code text} and is pretty-printed on read via
- * {@link dueuno.core.PrettyPrinter} using the configured {@link #prettyPrinterProperties}.
- * Alternatively, raw HTML can be provided via {@link #html}. Boolean values are rendered as
+ * {@link dueuno.elements.core.PrettyPrinter} using the configured {@code prettyPrinterProperties}.
+ * Alternatively, raw HTML can be provided via {@code html}. Boolean values are rendered as
  * a check-mark icon; negative numbers are highlighted in red by default.
  * </p>
  *
@@ -40,7 +40,7 @@ class Label extends Component {
     /** The raw value to be pretty-printed and displayed. Use {@link #setText(Object)} to set it. */
     Object text
 
-    /** Raw HTML content to render instead of {@link #text}; bypasses pretty-printing. */
+    /** Raw HTML content to render instead of {@code text}; bypasses pretty-printing. */
     String html
 
     /** Optional URL associated with the label (e.g. for rendering as a hyperlink). */
@@ -85,32 +85,32 @@ class Label extends Component {
     /**
      * Whether the label is rendered as a visually boxed tag.
      * Set {@code backgroundColor} to control the tag's background colour.
-     * Defaults to {@code true} unless {@link #html} is set.
+     * Defaults to {@code true} unless {@code html} is set.
      */
     Boolean tag
 
-    /** Formatting options used when pretty-printing {@link #text} and {@link #html}. */
+    /** Formatting options used when pretty-printing {@code text} and {@code html}. */
     PrettyPrinterProperties prettyPrinterProperties
 
     /**
      * Creates a {@code Label} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code text} (the display value),
-     *             {@code html} ({@link String}),
-     *             {@code url} ({@link String}),
-     *             {@code icon} ({@link String}), {@code iconClass} ({@link String}),
-     *             {@code image} ({@link String}), {@code imageClass} ({@link String}),
-     *             {@code tooltip} ({@link String}),
-     *             {@code verticalAlign} ({@link VerticalAlign}),
-     *             {@code textAlign} ({@link TextAlign}),
-     *             {@code textWrap} ({@link TextWrap}),
-     *             {@code textStyle} ({@link TextStyle} or {@link List}),
-     *             {@code userSelect} ({@link Boolean}, default {@code false}),
-     *             {@code tag} ({@link Boolean}),
-     *             {@code renderTextPrefix} ({@link Boolean}, default {@code false}),
-     *             {@code renderBoolean} ({@link Boolean}, default {@code true}),
-     *             {@code highlightNegative} ({@link Boolean}, default {@code true}),
+     * {@code text} (the display value),
+     * {@code html} ({@link String}),
+     * {@code url} ({@link String}),
+     * {@code icon} ({@link String}), {@code iconClass} ({@link String}),
+     * {@code image} ({@link String}), {@code imageClass} ({@link String}),
+     * {@code tooltip} ({@link String}),
+     * {@code verticalAlign} ({@link VerticalAlign}),
+     * {@code textAlign} ({@link TextAlign}),
+     * {@code textWrap} ({@link TextWrap}),
+     * {@code textStyle} ({@link TextStyle} or {@link List}),
+     * {@code userSelect} ({@link Boolean}, default {@code false}),
+     * {@code tag} ({@link Boolean}),
+     * {@code renderTextPrefix} ({@link Boolean}, default {@code false}),
+     * {@code renderBoolean} ({@link Boolean}, default {@code true}),
+     * {@code highlightNegative} ({@link Boolean}, default {@code true}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      *             and {@link PrettyPrinterProperties#PrettyPrinterProperties(Map)}
      */
@@ -151,7 +151,7 @@ class Label extends Component {
      *   <li>{@code null} — the label is auto-generated from the component {@code id}.</li>
      *   <li>{@link Boolean} — a check-mark icon is shown when {@code true}; text is cleared.</li>
      *   <li>{@link Number} — negative values are highlighted in red when
-     *       {@link PrettyPrinterProperties#highlightNegative} is {@code true}.</li>
+     * {@link PrettyPrinterProperties#highlightNegative} is {@code true}.</li>
      *   <li>Any other value — stored as-is for later pretty-printing by {@link #getText()}.</li>
      * </ul>
      *
@@ -184,7 +184,7 @@ class Label extends Component {
 
     /**
      * Returns the pretty-printed text for this label, resolving i18n keys and applying
-     * number/date formatting according to {@link #prettyPrinterProperties}.
+     * number/date formatting according to {@code prettyPrinterProperties}.
      *
      * @return the formatted display string
      */
@@ -194,7 +194,7 @@ class Label extends Component {
     }
 
     /**
-     * Sets the interpolation arguments used when resolving the {@link #text} i18n message key.
+     * Sets the interpolation arguments used when resolving the {@code text} i18n message key.
      *
      * @param value the list of message arguments
      */
@@ -203,7 +203,7 @@ class Label extends Component {
     }
 
     /**
-     * Returns the interpolation arguments for the {@link #text} i18n message key.
+     * Returns the interpolation arguments for the {@code text} i18n message key.
      *
      * @return the list of message arguments
      */
@@ -215,7 +215,7 @@ class Label extends Component {
      * Sets the text style(s) for this label. Accepts a single {@link TextStyle} constant or
      * a {@link List} of constants; any other value resets the style to {@link TextStyle#NONE}.
      *
-     * @param value a {@link TextStyle}, a {@link List}{@code <TextStyle>}, or {@code null}
+     * @param value a {@link TextStyle}, a {@link List} {@code <TextStyle>}, or {@code null}
      */
     void setTextStyle(Object value) {
         switch (value) {
@@ -257,7 +257,7 @@ class Label extends Component {
 
     /**
      * Returns the pretty-printed HTML content for this label, applying i18n and formatting
-     * according to {@link #prettyPrinterProperties}.
+     * according to {@code prettyPrinterProperties}.
      *
      * @return the formatted HTML string
      */

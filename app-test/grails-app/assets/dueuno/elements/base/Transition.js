@@ -32,7 +32,7 @@ class Transition {
         log.debug('Subscribed to ' + channel);
     }
 
-    static executeFromWebsocket(message) {
+    static async executeFromWebsocket(message) {
         // We cannot send $components in a Web Socket transition since
         // Components can only exists in the context of a web request
         let commands = JSON.parse(message.body);
@@ -41,17 +41,17 @@ class Transition {
         };
 
         log.debug('');
-        log.debug('>>> WEB SOCKET');
+        log.debug('%c>>> WEB SOCKET', 'font-weight: bold');
         Transition.log(transition);
 
         for (let command of transition.commands) {
-            Transition.executeCommand(transition, command, null);
+            await Transition.executeCommand(transition, command, null);
         }
     }
 
-    static execute(transition, componentEvent) {
+    static async execute(transition, componentEvent) {
         log.debug('');
-        log.debug('<<< RESPONSE /' + componentEvent.controller + '/' + componentEvent.action);
+        log.debug('%c<<< RESPONSE /' + componentEvent.controller + '/' + componentEvent.action, 'font-weight: bold');
         Transition.log(transition);
 
         if (!transition.commands) {
@@ -64,11 +64,11 @@ class Transition {
         }
 
         for (let command of transition.commands) {
-            Transition.executeCommand(transition, command, componentEvent);
+            await Transition.executeCommand(transition, command, componentEvent);
         }
     }
 
-    static executeCommand(transition, command, componentEvent) {
+    static async executeCommand(transition, command, componentEvent) {
         let $element = Transition.getTargetElement(command.component);
         let component = Elements.getByElement($element);
         let componentId = command.component;
@@ -78,19 +78,25 @@ class Transition {
         let trigger = command.trigger;
         let $components = transition.$components;
 
-        log.trace('EXECUTING: ' + method + ' ' + componentId + '.' + property + ' = ' + JSON.stringify(valueMap));
+        log.trace('EXECUTING: ' + componentId + ' ' + method + ' ' + property);
 
         switch (method) {
             case TransitionCommand.REDIRECT:
-                TransitionCommand.redirect(valueMap.value);
-                break;
+                return TransitionCommand.redirect(valueMap.value);
 
-            case TransitionCommand.CONTENT:
-                TransitionCommand.renderContent($components, componentEvent);
-                break;
+            case TransitionCommand.RENDER_CONTENT:
+                return TransitionCommand.renderContent($components, componentEvent);
 
             case TransitionCommand.LOADING:
                 TransitionCommand.loading(valueMap.value);
+                break;
+
+            case TransitionCommand.DELAY:
+                await TransitionCommand.delay(valueMap.value);
+                break;
+
+            case TransitionCommand.SCROLL:
+                TransitionCommand.scrollTo(valueMap.value);
                 break;
 
             case TransitionCommand.APPEND:
@@ -125,68 +131,55 @@ class Transition {
 
     static getTargetElement(componentId) {
         if (!componentId) {
-            return $(null);
+            return $();
         }
 
-        let dotPosition = componentId.indexOf('.');
-        let rootName = dotPosition > 0 ? componentId.substring(0, dotPosition) : componentId;
-        let targetName = componentId.slice(dotPosition + 1);
+        const roots = {
+            page: Page.$self,
+            messagebox: PageMessageBox.$self,
+            modal: PageModal.$self,
+            content: $.merge(PageContent.$self, PageStickyBox.$self),
+        };
+
+        const parts = componentId.split('.');
 
         let $root;
-        switch (rootName) {
-            case 'page':
-                $root = Page.$self;
-                if (rootName == targetName) return $root;
-                break;
 
-            case 'messagebox':
-                $root = PageMessageBox.$self;
-                if (rootName == targetName) return $root;
-                break;
+        // A recognized root is handled separately.
+        if (roots[parts[0]]) {
+            $root = roots[parts.shift()];
 
-            case 'modal':
-                $root = PageModal.$self;
-                if (rootName == targetName) return $root;
-                break;
-
-            case 'content':
-                $root = $.merge(PageContent.$self, PageStickyBox.$self);
-                if (rootName == targetName) return $root;
-                break;
-
-            default:
-                $root = PageModal.isActive
-                    ? PageModal.$self
-                    : $.merge(PageContent.$self, PageStickyBox.$self);
-                targetName = componentId;
-        }
-
-        // Check for components with dotted name (Eg. 'company.name')
-        let $component = $root.find('[data-21-id="' + componentId + '"]');
-        if ($component.exists()) {
-            return $component;
-        }
-
-        // Select the component from its dotted path
-        let path = '';
-        let nameList = targetName.split('.');
-        for (let name of nameList) {
-            path += '[data-21-id="' + name + '"] ';
-        }
-
-        $component = $root.find(path);
-        if (!$component.exists()) {
-            log.error('Cannot find component "' + componentId + '"');
-            return $(null);
-
-        } else if ($component.length > 1) {
-            log.error('Multiple components found with the same id "' + targetName
-                + '". Do you have a controller named "' + capitalize(targetName) + "Controller'? ");
-            return $(null);
+            // The component ID is exactly the root.
+            if (parts.length === 0) {
+                return $root;
+            }
 
         } else {
-            return $component;
+            $root = PageModal.isActive
+                ? PageModal.$self
+                : $.merge(PageContent.$self, PageStickyBox.$self);
         }
+
+        for (let i = 0; i < parts.length; i++) {
+            const id = parts.slice(i).join('.');
+
+            // First try the complete remaining ID.
+            const $component = $root.find('[data-21-id="' + CSS.escape(id) + '"]');
+
+            if ($component.length) {
+                return $component;
+            }
+
+            // Move into the first component and continue searching.
+            $root = $root.find('[data-21-id="' + CSS.escape(parts[i]) + '"]');
+
+            if (!$root.length) {
+                break;
+            }
+        }
+
+        log.error(`Cannot find component "${componentId}"`);
+        return $();
     }
 
     static triggerEvent($element, eventName, async = true) {
@@ -296,7 +289,8 @@ class Transition {
 
     static call(url, values, componentEvent, async, silentFail) {
         log.debug('');
-        log.debug('>>> REQUEST ' + url);
+        log.debug('%c>>> REQUEST ' + url, 'font-weight: bold');
+        log.debug('VALUES:');
         log.debug(JSON.stringify(JSON.parse(values._21Params), null, 2));
 
         Transition.ajaxCall(url, values, componentEvent, async, silentFail);
@@ -378,13 +372,20 @@ class Transition {
     }
 
     static log(transition) {
-        let commands = JSON.stringify(transition.commands, null, 2)
-        log.debug(commands);
+        if (!_21_.log?.debug) {
+            return;
+        }
+
         let hasComponents = transition.$components && transition.$components.children().length;
         if (hasComponents) {
+            log.debug('COMPONENTS:');
             for (let element of transition.$components.children().children()) {
-                log.debug(element);
+                log.debug(element.cloneNode(true));
             }
         }
+
+        let commands = JSON.stringify(transition.commands, null, 2)
+        log.debug('COMMANDS:');
+        log.debug(commands);
     }
 }

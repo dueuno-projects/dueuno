@@ -15,24 +15,24 @@
 package dueuno.elements.components
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.elements.Component
-import dueuno.elements.Elements
+import dueuno.elements.core.Component
+import dueuno.elements.core.Elements
 import dueuno.elements.style.TextDefault
 import groovy.transform.CompileStatic
 
 /**
  * A data-grid component that renders a recordset as a pageable, sortable, filterable HTML table.
  * <p>
- * {@code Table} manages three logical sections — {@link #header}, {@link #body}, and
- * {@link #footer} — each backed by a {@link TableRowset}. Data is bound by calling
+ * {@code Table} manages three logical sections — {@code header}, {@code body}, and
+ * {@code footer} — each backed by a {@link TableRowset}. Data is bound by calling
  * {@link #setBody(Collection)} (and optionally {@link #setHeader(Collection)} /
  * {@link #setFooter(Collection)}). Columns are inferred automatically from the recordset or
- * can be specified explicitly via {@link #columns}. Per-column labels, widths, sort order,
+ * can be specified explicitly via {@code columns}. Per-column labels, widths, sort order,
  * transformers, and pretty-printer properties are configurable through the corresponding maps.
  * </p>
  * <p>
- * The table provides a built-in row-actions {@link Button} ({@link #actions}) pre-configured
- * with "Edit" and "Delete" actions, a group-actions button ({@link #groupActions}), a
+ * The table provides a built-in row-actions {@link Button} ({@code actions}) pre-configured
+ * with "Edit" and "Delete" actions, a group-actions button ({@code groupActions}), a
  * {@link TableFilters} bar, a {@link TablePagination} control, and a {@link TableDataset}
  * for client-side data exchange.
  * </p>
@@ -79,7 +79,7 @@ class Table extends Component {
     /** Per-column custom pretty-printer instances. */
     Map<String, Object> prettyPrinters
 
-    /** Per-column {@link dueuno.core.PrettyPrinterProperties} maps. */
+    /** Per-column {@link dueuno.elements.core.PrettyPrinterProperties} maps. */
     Map<String, Map> prettyPrinterProperties
 
     /** Column names whose values are always included in the rendered output. */
@@ -222,59 +222,59 @@ class Table extends Component {
         // COMPONENTS
         //
         title = createControl(
-                class: Separator,
-                id: 'title',
-                text: buildLabel(getId()),
-                squeeze: true,
-                display: false,
+            class: Separator,
+            id: 'title',
+            text: buildLabel(getId()),
+            squeeze: true,
+            display: false,
         )
         header = createComponent(TableRowset, 'header', [
-                table: this,
-                isHeader: true,
+            table   : this,
+            isHeader: true,
         ])
         body = createComponent(TableRowset, 'body', [
-                table: this,
+            table: this,
         ])
         footer = createComponent(TableRowset, 'footer', [
-                table: this,
-                isFooter: true,
+            table   : this,
+            isFooter: true,
         ])
         filters = createComponent(TableFilters, 'filters', [
-                table: this,
+            table: this,
         ])
         actionbar = filters.actionbar
         dataset = createComponent(TableDataset, 'dataset', [
-                table: this,
+            table: this,
         ])
         pagination = createComponent(TablePagination, 'pagination', [
-                table: this,
+            table: this,
         ])
 
         // CONTROLS
         //
         actions = createControl(
-                class: Button,
-                id: 'commonActions',
-                dontCreateDefaultAction: true,
+            class: Button,
+            id: 'commonActions',
+            dontCreateDefaultAction: true,
         )
         actions.addDefaultAction(
-                action: 'edit',
-                text: '',
-                icon: 'fa-pencil-alt',
-                tooltip: TextDefault.EDIT,
+            action: 'edit',
+            text: '',
+            icon: 'fa-pencil-alt',
+            tooltip: TextDefault.EDIT,
         )
         actions.addTailAction(
-                action: 'onDelete',
-                text: '',
-                icon: 'fa-solid fa-trash-alt',
-                tooltip: TextDefault.HARD_DELETE,
-                confirmMessage: TextDefault.MESSAGE_CONFIRM_UNRECOVERABLE_OPERATION,
+            action: 'onDelete',
+            text: '',
+            icon: 'fa-solid fa-trash-alt',
+            tooltip: TextDefault.HARD_DELETE,
+            confirmMessage: TextDefault.MESSAGE_CONFIRM_UNRECOVERABLE_OPERATION,
         )
         groupActions = createControl(
-                class: Button,
-                id: 'groupActions',
-                dontCreateDefaultAction: true,
-                display: false,
+            class: Button,
+            id: 'groupActions',
+            dontCreateDefaultAction: true,
+            display: false,
         )
     }
 
@@ -291,8 +291,8 @@ class Table extends Component {
     }
 
     /**
-     * Serialises this table's client-side properties to JSON, adding {@link #hasComponents},
-     * {@link #stickyHeaderOffset}, and {@link #stickyHeaderZIndex}.
+     * Serialises this table's client-side properties to JSON, adding {@code hasComponents},
+     * {@code stickyHeaderOffset}, and {@code stickyHeaderZIndex}.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this table's properties
@@ -300,9 +300,9 @@ class Table extends Component {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                hasComponents: hasComponents,
-                stickyHeaderOffset: stickyHeaderOffset,
-                stickyHeaderZIndex: stickyHeaderZIndex,
+            hasComponents     : hasComponents,
+            stickyHeaderOffset: stickyHeaderOffset,
+            stickyHeaderZIndex: stickyHeaderZIndex,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
@@ -327,7 +327,7 @@ class Table extends Component {
     /**
      * Applies the given sort map to this table, merging it with any sort override requested
      * via the current HTTP request parameters. The resolved sort is stored in the action session
-     * and propagated to {@link #fetchParams}.
+     * and propagated to {@code fetchParams}.
      *
      * @param values the default sort map ({@code column → direction}); ignored if empty or {@code null}
      */
@@ -387,7 +387,7 @@ class Table extends Component {
     }
 
     /**
-     * Populates {@link #columns} from the declared properties of the given class.
+     * Populates {@code columns} from the declared properties of the given class.
      * For GORM domain classes the constrained-properties map is used; for other classes
      * the declared fields are used. The {@code class} meta-property is excluded and the
      * resulting list is sorted alphabetically.
@@ -486,8 +486,8 @@ class Table extends Component {
     }
 
     /**
-     * Builds the header row list from the {@link #columns} list, substituting any
-     * per-column label overrides from {@link #labels}.
+     * Builds the header row list from the {@code columns} list, substituting any
+     * per-column label overrides from {@code labels}.
      *
      * @return a single-element list containing a map of {@code column → label}
      */
@@ -506,8 +506,8 @@ class Table extends Component {
     }
 
     /**
-     * Ensures that the {@link #keys} list is populated.
-     * If the first record has an {@code id} property, {@code "id"} is added to {@link #keys}.
+     * Ensures that the {@code keys} list is populated.
+     * If the first record has an {@code id} property, {@code "id"} is added to {@code keys}.
      * If no keys are configured and at least one column exists, the first column is used as the key.
      *
      * @param recordset the data recordset (must be non-empty)
@@ -524,7 +524,7 @@ class Table extends Component {
     }
 
     /**
-     * Prepends key columns that are not already in {@link #columns} to the displayed column list
+     * Prepends key columns that are not already in {@code columns} to the displayed column list
      * when developer display hints are active. This makes hidden key fields visible during
      * development.
      */

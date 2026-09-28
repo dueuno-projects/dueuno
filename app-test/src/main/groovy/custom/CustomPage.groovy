@@ -1,6 +1,6 @@
 package custom
 
-import dueuno.elements.Page
+import dueuno.elements.core.Page
 import dueuno.elements.components.Header
 import dueuno.elements.contents.ContentBlank
 

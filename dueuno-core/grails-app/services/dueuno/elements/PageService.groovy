@@ -14,13 +14,15 @@
  */
 package dueuno.elements
 
+
 import dueuno.commons.utils.FileUtils
-import dueuno.core.LinkGeneratorAware
-import dueuno.core.WebRequestAware
 import dueuno.elements.contents.ContentHeader
-import dueuno.properties.TenantPropertyService
+import dueuno.elements.core.Component
+import dueuno.elements.core.Page
+import dueuno.elements.core.Transition
 import dueuno.security.SecurityService
-import dueuno.tenants.TenantService
+import dueuno.tenant.TenantPropertyService
+import dueuno.tenant.TenantService
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -106,10 +108,10 @@ class PageService implements WebRequestAware, LinkGeneratorAware {
         args.requiredTextColor = tenantPropertyService.getString('REQUIRED_TEXT_COLOR')
 
         args.keyPress = [
-                triggerKey: tenantPropertyService.getString('KEYPRESS_TRIGGER_KEY'),
-                readingSpeed: tenantPropertyService.getNumber('KEYPRESS_READING_SPEED'),
-                bufferCleanupTimeout: tenantPropertyService.getNumber('KEYPRESS_BUFFER_CLEANUP_TIMEOUT'),
-                keepClean: tenantPropertyService.getBoolean('KEYPRESS_KEEP_CLEAN'),
+            triggerKey          : tenantPropertyService.getString('KEYPRESS_TRIGGER_KEY'),
+            readingSpeed        : tenantPropertyService.getNumber('KEYPRESS_READING_SPEED'),
+            bufferCleanupTimeout: tenantPropertyService.getNumber('KEYPRESS_BUFFER_CLEANUP_TIMEOUT'),
+            keepClean           : tenantPropertyService.getBoolean('KEYPRESS_KEEP_CLEAN'),
         ]
 
         return args

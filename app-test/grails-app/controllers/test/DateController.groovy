@@ -14,10 +14,10 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.controls.DateField
 import dueuno.elements.controls.TimeField
-import dueuno.elements.ElementsController
 
 import java.time.LocalDate
 
@@ -30,30 +30,30 @@ class DateController implements ElementsController {
         c.with {
             form.with {
                 addField(
-                        class: DateField,
-                        id: 'date1',
-                        min: LocalDate.now()
+                    class: DateField,
+                    id: 'date1',
+                    min: LocalDate.now()
                 )
                 addField(
-                        class: DateField,
-                        id: 'date2',
-                        max: new LocalDate(2017, 5, 5)
+                    class: DateField,
+                    id: 'date2',
+                    max: new LocalDate(2017, 5, 5)
                 )
                 addField(
-                        class: TimeField,
-                        id: 'time1',
-                        //min: new LocalTime(16, 0, 0, 0),
+                    class: TimeField,
+                    id: 'time1',
+                    //min: new LocalTime(16, 0, 0, 0),
                 )
                 addField(
-                        class: TimeField,
-                        id: 'time2',
-                        //max: new LocalTime(12, 0, 0, 0),
+                    class: TimeField,
+                    id: 'time2',
+                    //max: new LocalTime(12, 0, 0, 0),
                 )
                 addField(
-                        class: Button,
-                        id: 'test1',
-                        isDefaultAction: true,
-                        stretch: true,
+                    class: Button,
+                    id: 'test1',
+                    isDefaultAction: true,
+                    stretch: true,
                 )
                 //readonly = true
             }

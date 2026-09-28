@@ -79,7 +79,7 @@ Open the displayed URL: `http://localhost:8080[http://localhost:8080, window=_bl
 
 image::images/chapter-2/image-3.webp[The application running]
 
-With a bit of luck, at this point you should be able to see something on the screen. You can login with the following `username/password`:
+With a bit of luck, at this point you should be able to see something on the screen. You can log in with the following `username/password`:
 
 - `super/super` +
 This is the _Superuser_, it has full power on the system. You can create new tenants, configure the system properties and monitor the whole application.

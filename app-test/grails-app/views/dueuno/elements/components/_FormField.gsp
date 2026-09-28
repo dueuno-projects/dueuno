@@ -18,7 +18,7 @@
         </label>
     </g:if>
 
-    <div class="input-group ${c.highlight ? 'field-highlight' : ''} ${c.displayLabel ? '' : 'mt-2'}"
+    <div class="input-group control-focus-group ${c.highlight ? 'field-highlight' : ''} ${c.displayLabel ? '' : 'mt-2'}"
          ${raw(c.component.getContainerAttributes())}
          ${c.rows ? raw('style="' + c.rows + '"') : ''}
     >

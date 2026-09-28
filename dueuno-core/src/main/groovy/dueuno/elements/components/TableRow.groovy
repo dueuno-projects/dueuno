@@ -15,11 +15,11 @@
 package dueuno.elements.components
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.core.Transformer
-import dueuno.elements.Component
-import dueuno.elements.Elements
 import dueuno.elements.controls.Checkbox
 import dueuno.elements.controls.HiddenField
+import dueuno.elements.core.Component
+import dueuno.elements.core.Elements
+import dueuno.elements.core.Transformer
 import dueuno.elements.style.TextAlign
 import dueuno.elements.style.TextStyle
 import dueuno.elements.style.TextWrap
@@ -37,7 +37,7 @@ import java.time.temporal.Temporal
  * The row lifecycle consists of two phases driven by {@link TableRowset}:
  * </p>
  * <ol>
- *   <li>{@link #preProcessRow()} — converts the raw record to a value map, creates all cells,
+ *   <li>{@link #preProcessRow()} — creates all cells from the value map,
  *       processes keys, copies actions from the table, applies transformers, creates hidden
  *       submit fields, and applies pretty-printer configuration.</li>
  *   <li>{@link #postProcessRow()} — injects key params into the action button, resolves final
@@ -70,8 +70,8 @@ class TableRow extends Component {
     /** Zero-based index of this row within its rowset. */
     Integer index
 
-    /** The raw record or value map used to populate this row's cells. */
-    Object values
+    /** Value map used to populate this row's cells, converted from the raw record during construction. */
+    Map<String, Object> values
 
     /** Per-row action {@link Button} populated from the table's action definitions. */
     Button actions
@@ -96,18 +96,18 @@ class TableRow extends Component {
 
     /**
      * Creates a {@code TableRow} instance configured from the supplied argument map.
-     * Initialises the per-row action button and selection checkbox.
+     * Converts the raw record to a value map and initialises the per-row action button and selection checkbox.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code table} ({@link Table}, required),
-     *             {@code rowset} ({@link TableRowset}, required),
-     *             {@code index} ({@link Integer}, required),
-     *             {@code values} (record data),
-     *             {@code isHeader} ({@link Boolean}, default {@code false}),
-     *             {@code isFooter} ({@link Boolean}, default {@code false}),
-     *             {@code hasSelection} ({@link Boolean}, default {@code true}),
-     *             {@code checked} ({@link Boolean}, default {@code false}),
-     *             {@code textStyle} ({@link TextStyle} or {@link List}&lt;{@link TextStyle}&gt;),
+     * {@code table} ({@link Table}, required),
+     * {@code rowset} ({@link TableRowset}, required),
+     * {@code index} ({@link Integer}, required),
+     * {@code values} (record data),
+     * {@code isHeader} ({@link Boolean}, default {@code false}),
+     * {@code isFooter} ({@link Boolean}, default {@code false}),
+     * {@code hasSelection} ({@link Boolean}, default {@code true}),
+     * {@code checked} ({@link Boolean}, default {@code false}),
+     * {@code textStyle} ({@link TextStyle} or {@link List}&lt;{@link TextStyle}&gt;),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     @Requires({ args.table && args.rowset && args.index != null })
@@ -120,7 +120,7 @@ class TableRow extends Component {
 
         cells = [:]
         submit = [:]
-        values = args.values ?: [:]
+        values = Elements.toMap(args.values, table.columns, table.includeValues, table.excludeValues)
 
         isHeader = (args.isHeader == null) ? false : args.isHeader
         isFooter = (args.isFooter == null) ? false : args.isFooter
@@ -130,29 +130,28 @@ class TableRow extends Component {
         setTextStyle(args.textStyle)
 
         actions = createControl(
-                class: Button,
-                id: getId() + '-actions',
-                dontCreateDefaultAction: true,
+            class: Button,
+            id: getId() + '-actions',
+            dontCreateDefaultAction: true,
         )
 
         selected = createControl(
-                class: Checkbox,
-                id: getId() + '-selected',
-                simple: true,
-                cssClass: 'selectRow',
-                checked: (args.checked == null) ? false : args.checked,
+            class: Checkbox,
+            id: getId() + '-selected',
+            simple: true,
+            cssClass: 'selectRow',
+            checked: (args.checked == null) ? false : args.checked,
         )
     }
 
     /**
-     * First phase of row processing: converts the raw record to a value map, creates all
+     * First phase of row processing: creates all
      * {@link TableCell} instances, and runs the key, action, transformer, submit-value, and
      * pretty-printer processing steps.
      * Called by {@link TableRowset#setRows(Collection)} before the user's {@code eachRow} closure.
      */
     void preProcessRow() {
         selected.readonly = table.readonly
-        values = Elements.toMap(values, table.columns, table.includeValues, table.excludeValues)
 
         createCells()
 
@@ -172,7 +171,7 @@ class TableRow extends Component {
         if (!isHeader && !isFooter) {
             // Adds key columns to actions params
             Map _21Params = [
-                    _21RowId: id,
+                _21RowId: id,
             ]
             actions.addParams(_21Params + getKeys())
         }
@@ -268,33 +267,33 @@ class TableRow extends Component {
 
         values['_index_'] = index
         submit['_index_'] = createControl(
-                class: HiddenField,
-                id: '_index_',
-                value: index,
+            class: HiddenField,
+            id: '_index_',
+            value: index,
         ) as HiddenField
 
         for (key in getKeys()) {
             String keyName = key.key
             HiddenField hiddenValue = createControl(
-                    class: HiddenField,
-                    id: keyName,
-                    value: key.value,
+                class: HiddenField,
+                id: keyName,
+                value: key.value,
             )
             submit[keyName] = hiddenValue
         }
 
         for (columnName in table.submit) {
             HiddenField hiddenValue = createControl(
-                    class: HiddenField,
-                    id: getId() + '-' + columnName + '-value',
-                    value: values[columnName],
+                class: HiddenField,
+                id: getId() + '-' + columnName + '-value',
+                value: values[columnName],
             )
             submit[columnName] = hiddenValue
         }
     }
 
     /**
-     * Applies the table's per-column {@link dueuno.core.PrettyPrinterProperties} and
+     * Applies the table's per-column {@link dueuno.elements.core.PrettyPrinterProperties} and
      * pretty-printer class overrides to each cell's inner {@link Label}. Skipped for header rows
      * and cells that contain a custom component instead of a label.
      */
@@ -314,7 +313,7 @@ class TableRow extends Component {
             Label cellLabel = columnCell.label
             if (table.prettyPrinterProperties[columnName]) {
                 cellLabel.prettyPrinterProperties.set(
-                        table.prettyPrinterProperties[columnName]
+                    table.prettyPrinterProperties[columnName]
                 )
             }
 
@@ -398,8 +397,8 @@ class TableRow extends Component {
     /**
      * Resolves the key values from the row's value map according to the table's key column list.
      * GORM object IDs are extracted as strings. Custom key columns (user-declared keys that have
-     * no matching value) are back-filled from the {@code id} column to avoid conflicts when
-     * passing IDs to another page.
+     * no matching value and no nested property path) are back-filled from the {@code id} column
+     * to avoid conflicts when passing IDs to another page.
      *
      * @return a map of key column name → resolved key value
      */
@@ -407,7 +406,14 @@ class TableRow extends Component {
         Map results = [:]
         List<String> keyColumns = table.keys
 
-        for (keyColumn in keyColumns) {
+        // Resolve nested keys before filling aliases, regardless of the position of 'id'.
+        for (String keyColumn in keyColumns) {
+            if (keyColumn.contains('.') && !values.containsKey(keyColumn)) {
+                values[keyColumn] = ObjectUtils.getValue(values, keyColumn)
+            }
+        }
+
+        for (String keyColumn in keyColumns) {
             Object value
 
             try {
@@ -419,9 +425,9 @@ class TableRow extends Component {
             if (keyColumn == 'id') {
                 results[keyColumn] = value
 
-                // We copy id's value into null keyColumns (user declared keyColumns that don't match any record value)
+                // Copy id into null aliases, but preserve null values of nested property paths.
                 // These keyColumns are used when passing an id to another page to avoid "id" conflicts with the next page
-                List customKeyColumns = keyColumns.findAll { values[it] == null }
+                List customKeyColumns = keyColumns.findAll { !it.contains('.') && values[it] == null }
                 for (customKeyColumn in customKeyColumns) {
                     values[customKeyColumn] = value
                 }
@@ -493,7 +499,7 @@ class TableRow extends Component {
      * header cells.
      *
      * @param columnName the column whose cell alignment should be set
-     * @param value      the resolved cell value used to determine alignment
+     * @param value the resolved cell value used to determine alignment
      */
     private void setCellAlignment(String columnName, Object value) {
         if (value == null) {
@@ -534,21 +540,21 @@ class TableRow extends Component {
 
     /**
      * Creates a plain body (or custom-component) {@link TableCell} for the given column and
-     * registers it in {@link #cells}.
+     * registers it in {@code cells}.
      *
      * @param columnName the column name to create a cell for
-     * @param component  an optional custom {@link Component} to embed; uses a {@link Label} when {@code null}
+     * @param component an optional custom {@link Component} to embed; uses a {@link Label} when {@code null}
      * @return the newly created {@link TableCell}
      */
     private TableCell addCell(String columnName, Component component = null) {
         String cellName = getId() + '-' + columnName
         TableCell cell = createComponent(
-                class: TableCell,
-                id: cellName,
-                table: table,
-                column: columnName,
-                row: this,
-                component: component,
+            class: TableCell,
+            id: cellName,
+            table: table,
+            column: columnName,
+            row: this,
+            component: component,
         )
 
         cells.put(columnName, cell)
@@ -564,14 +570,14 @@ class TableRow extends Component {
      */
     private TableCell addCellHeader(String columnName) {
         Label header = createComponent(
-                class: Label,
-                id: columnName,
-                action: actionName,
-                textPrefix: controllerName,
-                renderTextPrefix: isHeader && !table.labels[columnName],
-                textWrap: TextWrap.NO_WRAP,
-                textStyle: TextStyle.BOLD,
-                tag: false,
+            class: Label,
+            id: columnName,
+            action: actionName,
+            textPrefix: controllerName,
+            renderTextPrefix: isHeader && !table.labels[columnName],
+            textWrap: TextWrap.NO_WRAP,
+            textStyle: TextStyle.BOLD,
+            tag: false,
         )
 
         return addCell(columnName, header)
@@ -587,24 +593,24 @@ class TableRow extends Component {
     private TableCell addCellHeaderSortable(String columnName) {
         String order = table.sort[columnName] == 'asc' ? 'desc' : 'asc'
         Link sortableHeader = createComponent(
-                class: Link,
-                id: columnName,
-                action: actionName,
-                params: table.submitParams + (Map) [
-                        _21Table    : table.id,
-                        _21TableSort: [(columnName): order],
-                ],
-                textPrefix: controllerName,
-                renderTextPrefix: isHeader && !table.labels[columnName],
-                textWrap: TextWrap.NO_WRAP,
-                textStyle: TextStyle.BOLD,
+            class: Link,
+            id: columnName,
+            action: actionName,
+            params: table.submitParams + (Map) [
+                _21Table    : table.id,
+                _21TableSort: [(columnName): order],
+            ],
+            textPrefix: controllerName,
+            renderTextPrefix: isHeader && !table.labels[columnName],
+            textWrap: TextWrap.NO_WRAP,
+            textStyle: TextStyle.BOLD,
         )
 
         return addCell(columnName, sortableHeader)
     }
 
     /**
-     * Hides the row-selection checkbox for this row by setting {@link #hasSelection}
+     * Hides the row-selection checkbox for this row by setting {@code hasSelection}
      * to {@code false}.
      */
     void removeSelection() {

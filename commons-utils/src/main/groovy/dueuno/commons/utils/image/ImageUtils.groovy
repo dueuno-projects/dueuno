@@ -14,6 +14,10 @@
  */
 package dueuno.commons.utils.image
 
+import com.drew.imaging.ImageMetadataReader
+import com.drew.imaging.ImageProcessingException
+import com.drew.metadata.Metadata
+import com.drew.metadata.exif.ExifIFD0Directory
 import dueuno.commons.utils.FileUtils
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
@@ -76,18 +80,96 @@ import java.util.List
 class ImageUtils {
 
     /**
-     * Loads an image from the given file path.
+     * Loads an image from the given path and applies the EXIF orientation
+     * to the image pixels.
      *
-     * @param pathname The pathname of the file to load
-     * @return The loaded {@link BufferedImage}
+     * <p>The returned {@link BufferedImage} contains the correctly oriented
+     * pixels and does not depend on EXIF metadata for its display orientation.</p>
      *
-     * <h3>Example</h3>
-     * <pre>
-     * BufferedImage image = ImageUtils.load("/images/photo.png")
-     * </pre>
+     * @param pathname path to the image file
+     * @return the loaded image with its EXIF orientation applied
+     * @throws IOException if the image cannot be read
      */
-    static BufferedImage load(String pathname) {
-        return ImageIO.read(new File(pathname))
+    static BufferedImage load(String pathname) throws IOException {
+        File file = new File(pathname)
+        BufferedImage image = ImageIO.read(file)
+
+        if (image == null) {
+            throw new IOException("Cannot read image '${pathname}'")
+        }
+
+        int orientation = 1
+        try {
+            Metadata metadata = ImageMetadataReader.readMetadata(file)
+            ExifIFD0Directory directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory)
+
+            if (directory?.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
+                orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION)
+            }
+        } catch (ImageProcessingException | IOException e) {
+            log.warn("Cannot read EXIF orientation for '${pathname}'", e)
+        }
+
+        if (orientation == 1) {
+            return image
+        }
+
+        int w = image.width
+        int h = image.height
+        AffineTransform transform
+        int outW = w
+        int outH = h
+
+        switch (orientation) {
+            case 2: // Flip horizontal
+                transform = new AffineTransform(-1, 0, 0, 1, w, 0)
+                break
+            case 3: // Rotate 180°
+                transform = new AffineTransform(-1, 0, 0, -1, w, h)
+                break
+            case 4: // Flip vertical
+                transform = new AffineTransform(1, 0, 0, -1, 0, h)
+                break
+            case 5: // Transpose
+                transform = new AffineTransform(0, 1, 1, 0, 0, 0)
+                outW = h
+                outH = w
+                break
+            case 6: // Rotate 90° CW
+                transform = new AffineTransform(0, 1, -1, 0, h, 0)
+                outW = h
+                outH = w
+                break
+            case 7: // Transverse
+                transform = new AffineTransform(0, -1, -1, 0, h, w)
+                outW = h
+                outH = w
+                break
+            case 8: // Rotate 90° CCW
+                transform = new AffineTransform(0, -1, 1, 0, 0, w)
+                outW = h
+                outH = w
+                break
+            default:
+                log.warn("Unknown EXIF orientation ${orientation} for '${pathname}'")
+                return image
+        }
+
+        int type = image.colorModel.hasAlpha()
+            ? BufferedImage.TYPE_INT_ARGB
+            : BufferedImage.TYPE_INT_RGB
+
+        BufferedImage oriented = new BufferedImage(outW, outH, type)
+        Graphics2D graphics = oriented.createGraphics()
+
+        try {
+            graphics.setComposite(AlphaComposite.Src)
+            graphics.drawImage(image, transform, null)
+        } finally {
+            graphics.dispose()
+        }
+
+        return oriented
     }
 
     /**
@@ -152,7 +234,7 @@ class ImageUtils {
      * BufferedImage scaled = ImageUtils.scaleWidth(image, 300)
      * </pre>
      */
-    static BufferedImage scaleWidth(BufferedImage image , Integer width) {
+    static BufferedImage scaleWidth(BufferedImage image, Integer width) {
         return resize(image, width, -1)
     }
 
@@ -169,7 +251,7 @@ class ImageUtils {
      * BufferedImage scaled = ImageUtils.scaleHeight(image, 200)
      * </pre>
      */
-    static BufferedImage scaleHeight(BufferedImage image , Integer height) {
+    static BufferedImage scaleHeight(BufferedImage image, Integer height) {
         return resize(image, -1, height)
     }
 
@@ -189,7 +271,7 @@ class ImageUtils {
      * BufferedImage resized = ImageUtils.resize(image, 1024, 768)
      * </pre>
      */
-    static BufferedImage resize(BufferedImage image , Integer width, Integer height = -1 /* auto calculate height by default */) {
+    static BufferedImage resize(BufferedImage image, Integer width, Integer height = -1 /* auto calculate height by default */) {
         Image resizedImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH)
         return imageToBufferedImage(resizedImage)
     }
@@ -219,11 +301,11 @@ class ImageUtils {
 
         Graphics2D g2 = dst.createGraphics()
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BICUBIC)
+            RenderingHints.VALUE_INTERPOLATION_BICUBIC)
         g2.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY)
+            RenderingHints.VALUE_RENDER_QUALITY)
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON)
+            RenderingHints.VALUE_ANTIALIAS_ON)
 
 
         g2.drawImage(src, 0, 0, targetWidth, targetHeight, null)
@@ -255,7 +337,7 @@ class ImageUtils {
 
         AffineTransform at = new AffineTransform()
         at.translate((h - w) / 2 as double, (w - h) / 2 as double)
-        at.rotate(Math.toRadians(angle), w/2 as double, h/2 as double)
+        at.rotate(Math.toRadians(angle), w / 2 as double, h / 2 as double)
         g2d.setTransform(at)
         g2d.drawImage(bi, 0, 0, null)
         g2d.dispose()
@@ -293,8 +375,8 @@ class ImageUtils {
 
         // Create a buffered image with transparency
         BufferedImage bi = new BufferedImage(
-                img.getWidth(null), img.getHeight(null),
-                BufferedImage.TYPE_INT_RGB)
+            img.getWidth(null), img.getHeight(null),
+            BufferedImage.TYPE_INT_RGB)
 
         Graphics2D graphics2D = bi.createGraphics()
         graphics2D.drawImage(img, 0, 0, null)
@@ -316,8 +398,8 @@ class ImageUtils {
      */
     static BufferedImage toGrayscale(BufferedImage src) {
         BufferedImage gray = new BufferedImage(
-                src.width, src.height,
-                BufferedImage.TYPE_BYTE_GRAY
+            src.width, src.height,
+            BufferedImage.TYPE_BYTE_GRAY
         )
         Graphics2D g = gray.createGraphics()
         g.drawImage(src, 0, 0, null)

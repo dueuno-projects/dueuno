@@ -40,12 +40,12 @@ class TPerson implements GormEntity, MultiTenant<TPerson> {
 
     TCompany company
     static belongsTo = [
-            company: TCompany,
+        company: TCompany,
     ]
 
     static embedded = [
-            'salary',
-            'distanceKm'
+        'salary',
+        'distanceKm'
     ]
 
     static constraints = {

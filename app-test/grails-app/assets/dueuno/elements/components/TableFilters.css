@@ -1,3 +1,11 @@
+.component-filters-buttons .btn {
+    position: relative;
+}
+
+.component-filters-buttons .btn:focus {
+    z-index: 5;
+}
+
 .component-filters-buttons.btn-group .btn:hover,
 .component-filters-buttons.btn-group .btn:active,
 .component-filters-buttons.btn-group .btn:focus,
@@ -7,7 +15,11 @@
 }
 
 .component-filters-search {
-    margin-left: var(--bs-border-width);
+    margin-left: var(--elements-1px);
+}
+
+.component-filters-search > .component-link:not(:last-child) {
+    margin-right: var(--elements-1px);
 }
 
 .component-filters-toggle:not(.btn.collapsed) {

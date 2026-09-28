@@ -2,6 +2,10 @@
 
 class NumberField extends TextField {
 
+    static get valueType() {
+        return Type.NUMBER;
+    }
+
     static finalize($element, $root) {
         TextField.finalize($element, $root);
 
@@ -61,10 +65,7 @@ class NumberField extends TextField {
             value = value.replace(',', '.');
         }
 
-        return {
-            type: Type.NUMBER,
-            value: value,
-        };
+        return TypedValue.number(value);
     }
 
     static setValue($element, valueMap, trigger = true) {

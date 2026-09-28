@@ -14,7 +14,7 @@
  */
 package dueuno.elements
 
-import dueuno.tenants.TenantService
+import dueuno.tenant.TenantService
 
 /**
  * @author Gianluca Sartori
@@ -28,4 +28,5 @@ class TenantTagLib {
     def current = { Map attrs ->
         out << tenantService.currentTenantId
     }
+
 }

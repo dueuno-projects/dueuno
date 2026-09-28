@@ -14,7 +14,7 @@
  */
 package dueuno.types
 
-import dueuno.exceptions.ElementsException
+import dueuno.elements.ElementsException
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -39,7 +39,7 @@ import java.time.LocalTime
  * <ul>
  *     <li>{@link Boolean} → {@link Type#BOOL}</li>
  *     <li>{@link Number} → {@link Type#NUMBER}</li>
- *     <li>{@link String} / {@link Enum} → {@link Type#TEXT}</li>
+ *     <li>{@link String} / {@link Enum} → {@link Type#STRING}</li>
  *     <li>{@link Map} → {@link Type#MAP}</li>
  *     <li>{@link java.util.List} → {@link Type#LIST}</li>
  *     <li>{@link java.time.LocalDateTime} → {@link Type#DATETIME}</li>
@@ -59,29 +59,33 @@ class Types {
 
     /**
      * Registers a custom type so that it can be serialised and deserialised by the framework.
-     * The supplied class must implement {@link CustomType} and expose a static {@code TYPE_NAME}
-     * field that serves as the unique type identifier.
+     * The supplied class must implement {@link CustomType}; its {@link CustomType#getTypeName()}
+     * method supplies the unique type identifier.
      *
      * @param type the class to register; must implement {@link CustomType}
-     * @throws dueuno.exceptions.ElementsException if the class does not implement {@link CustomType}
+     * @throws ElementsException if the class does not implement {@link CustomType}
      */
     static register(Class type) {
         if (type !in CustomType) {
             throw new ElementsException("Cannot register class '${type}'. Ony classes implementing '${CustomType.getName()}' can be registered as custom types.")
         }
 
-        String typeName = type['TYPE_NAME']
+        CustomType metadata = createMetadata(type)
+        String typeName = metadata.typeName
+        if (!typeName) {
+            throw new ElementsException("Cannot register custom type '${type}': its type name cannot be empty.")
+        }
         registry[typeName] = type
     }
 
     /**
      * Returns {@code true} if a custom type with the given type-name string has been registered.
      *
-     * @param typeName the type identifier (value of {@code TYPE_NAME} on the custom type class)
+     * @param typeName the type identifier (value returned by {@link CustomType#getTypeName()})
      * @return {@code true} if the type is registered, {@code false} otherwise
      */
     static Boolean isRegistered(String typeName) {
-        return registry[typeName]
+        return registry.containsKey(typeName)
     }
 
     /**
@@ -91,7 +95,7 @@ class Types {
      * @return {@code true} if the class is a registered custom type
      */
     static Boolean isRegistered(Object value) {
-        return isRegistered(value.class)
+        return value != null && isRegistered(value.class)
     }
 
     /**
@@ -105,7 +109,7 @@ class Types {
             return false
         }
 
-        return registry[type['TYPE_NAME']]
+        return registry.containsValue(type)
     }
 
     /**
@@ -113,7 +117,7 @@ class Types {
      *
      * @param typeName the type identifier
      * @return a new {@link CustomType} instance
-     * @throws dueuno.exceptions.ElementsException if the type has not been registered
+     * @throws ElementsException if the type has not been registered
      */
     private static CustomType create(String typeName) {
         if (registry.containsKey(typeName)) {
@@ -122,6 +126,35 @@ class Types {
         } else {
             throw new ElementsException("Cannot instantiate custom type '${typeName}', please register the new type (eg. Types.register('CUSTOM_TYPE', CustomType)")
         }
+    }
+
+    private static CustomType createMetadata(Class type) {
+        return type.getDeclaredConstructor().newInstance() as CustomType
+    }
+
+    /** Returns metadata for a custom type class, without requiring registration. */
+    static CustomType metadata(Class type) {
+        if (type !in CustomType) {
+            return null
+        }
+
+        return createMetadata(type)
+    }
+
+    static String getTypeName(Class type) {
+        return metadata(type)?.typeName
+    }
+
+    static Class getTypeField(Class type) {
+        return metadata(type)?.typeField
+    }
+
+    static Class getValuePropertyType(Class type) {
+        return metadata(type)?.valuePropertyType
+    }
+
+    static String getValuePropertyName(Class type) {
+        return metadata(type)?.valuePropertyName
     }
 
     /**
@@ -154,8 +187,8 @@ class Types {
      * @return a list of strings in the form {@code "TYPE_NAME (fully.qualified.ClassName)"}
      */
     static List<String> getAvailableTypeNames() {
-        List primitiveTypes = Type.values().collect {"${it.name()} (${it.clazz?.name})" }
-        List customTypes = registry.collect { "${it.key} (${it.value.name})"}
+        List primitiveTypes = Type.values().collect { "${it.name()} (${it.clazz?.name})" }
+        List customTypes = registry.collect { "${it.key} (${it.value.name})" }
         return (primitiveTypes + customTypes) as List<String>
     }
 
@@ -177,13 +210,13 @@ class Types {
      * to the runtime type of {@code value}.
      * <ul>
      *     <li>{@code null} → {@link Type#NA}</li>
-     *     <li>{@link Enum} → {@link Type#TEXT}</li>
-     *     <li>Registered {@link CustomType} → the value of its {@code TYPE_NAME} field</li>
+     *     <li>{@link Enum} → {@link Type#STRING}</li>
+     *     <li>Registered {@link CustomType} → the value returned by {@link CustomType#getTypeName()}</li>
      * </ul>
      *
      * @param value the object to inspect
      * @return the type name string for {@code value}
-     * @throws dueuno.exceptions.ElementsException if the runtime class is not a known type
+     * @throws ElementsException if the runtime class is not a known type
      */
     static String getType(Object value) {
         if (value == null) {
@@ -191,11 +224,11 @@ class Types {
         }
 
         if (value in Enum) {
-            return Type.TEXT
+            return Type.STRING
         }
 
         if (isRegistered(value)) {
-            return value.getClass()['TYPE_NAME']
+            return (value as CustomType).typeName
         }
 
         switch (value) {
@@ -206,7 +239,7 @@ class Types {
                 return Type.NUMBER
 
             case String:
-                return Type.TEXT
+                return Type.STRING
 
             case Map:
                 return Type.MAP
@@ -224,7 +257,7 @@ class Types {
                 return Type.TIME
 
             case Enum:
-                return Type.TEXT
+                return Type.STRING
 
             default:
                 throw new ElementsException("Object of class '${value.getClass()}' cannot be identified as one of the available types: ${availableTypeNames}.")
@@ -242,7 +275,7 @@ class Types {
      *     <li>All other known types are wrapped as-is.</li>
      * </ul>
      *
-     * @param value     the object to serialise; may be {@code null}
+     * @param value the object to serialise; may be {@code null}
      * @param valueType optional type override used only when {@code value} is {@code null}
      *                  or falls through to the {@code default} branch
      * @return a map with {@code type} and {@code value} keys
@@ -250,8 +283,8 @@ class Types {
     static Map serializeValue(Object value, String valueType = null) {
         if (value == null) {
             return [
-                    type: valueType ?: Type.NA.toString(),
-                    value: value,
+                type : valueType ?: Type.NA.toString(),
+                value: value,
             ]
         }
 
@@ -263,75 +296,75 @@ class Types {
         switch (value) {
             case Boolean:
                 return [
-                        type : Type.BOOL.toString(),
-                        value: value,
+                    type : Type.BOOL.toString(),
+                    value: value,
                 ]
 
             case Number:
                 return [
-                        type : Type.NUMBER.toString(),
-                        value: value,
+                    type : Type.NUMBER.toString(),
+                    value: value,
                 ]
 
             case String:
                 return [
-                        type : Type.TEXT.toString(),
-                        value: value,
+                    type : Type.STRING.toString(),
+                    value: value,
                 ]
 
             case Map:
                 return [
-                        type : Type.MAP.toString(),
-                        value: value,
+                    type : Type.MAP.toString(),
+                    value: value,
                 ]
 
             case List:
                 return [
-                        type : Type.LIST.toString(),
-                        value: value,
+                    type : Type.LIST.toString(),
+                    value: value,
                 ]
 
             case LocalDateTime:
                 return [
-                        type : Type.DATETIME.toString(),
-                        value: [
-                                year  : (value as LocalDateTime).year,
-                                month : (value as LocalDateTime).monthValue,
-                                day   : (value as LocalDateTime).dayOfMonth,
-                                hour  : (value as LocalDateTime).hour,
-                                minute: (value as LocalDateTime).minute,
-                        ]
+                    type : Type.DATETIME.toString(),
+                    value: [
+                        year  : (value as LocalDateTime).year,
+                        month : (value as LocalDateTime).monthValue,
+                        day   : (value as LocalDateTime).dayOfMonth,
+                        hour  : (value as LocalDateTime).hour,
+                        minute: (value as LocalDateTime).minute,
+                    ]
                 ]
 
             case LocalDate:
                 return [
-                        type : Type.DATE.toString(),
-                        value: [
-                                year : (value as LocalDate).year,
-                                month: (value as LocalDate).monthValue,
-                                day  : (value as LocalDate).dayOfMonth,
-                        ]
+                    type : Type.DATE.toString(),
+                    value: [
+                        year : (value as LocalDate).year,
+                        month: (value as LocalDate).monthValue,
+                        day  : (value as LocalDate).dayOfMonth,
+                    ]
                 ]
 
             case LocalTime:
                 return [
-                        type : Type.TIME.toString(),
-                        value: [
-                                hour  : (value as LocalTime).hour,
-                                minute: (value as LocalTime).minute,
-                        ]
+                    type : Type.TIME.toString(),
+                    value: [
+                        hour  : (value as LocalTime).hour,
+                        minute: (value as LocalTime).minute,
+                    ]
                 ]
 
             case Enum:
                 return [
-                        type: Type.TEXT.toString(),
-                        value: (value as Enum).name(),
+                    type : Type.STRING.toString(),
+                    value: (value as Enum).name(),
                 ]
 
             default:
                 return [
-                        type: valueType ?: Type.NA.toString(),
-                        value: value,
+                    type : valueType ?: Type.NA.toString(),
+                    value: value,
                 ]
         }
     }
@@ -376,49 +409,56 @@ class Types {
             return value
         }
 
-        Map valueMap = value as Map
+        Map map = value as Map
+        Object mapType = map.type
+        Object mapValue = map.value
+
+        if (mapValue == null) {
+            return null
+        }
+
         try {
-            switch (valueMap.type) {
-                case Type.BOOL.toString():
-                    return deserializeBoolean(valueMap)
+            switch (mapType) {
+                case Type.BOOL.name():
+                    return deserializeBoolean(map)
 
-                case Type.NUMBER.toString():
-                    return deserializeNumber(valueMap)
+                case Type.NUMBER.name():
+                    return deserializeNumber(map)
 
-                case Type.TEXT.toString():
-                    return deserializeString(valueMap)
+                case Type.STRING.name():
+                    return deserializeString(map)
 
-                case Type.MAP.toString():
-                    return deserializeMap(valueMap)
+                case Type.MAP.name():
+                    return deserializeMap(map)
 
-                case Type.LIST.toString():
-                    return deserializeList(valueMap)
+                case Type.LIST.name():
+                    return deserializeList(map)
 
-                case Type.DATETIME.toString():
-                    return deserializeLocalDateTime(valueMap)
+                case Type.DATETIME.name():
+                    return deserializeLocalDateTime(map)
 
-                case Type.DATE.toString():
-                    return deserializeLocalDate(valueMap)
+                case Type.DATE.name():
+                    return deserializeLocalDate(map)
 
-                case Type.TIME.toString():
-                    return deserializeLocalTime(valueMap)
+                case Type.TIME.name():
+                    return deserializeLocalTime(map)
 
-                case Type.NA.toString():
-                    return valueMap.value
+                case Type.NA.name():
+                    return mapValue
 
                 default:
                     try {
-                        CustomType customTypeValue = create(valueMap.type as String)
-                        customTypeValue.deserialize(valueMap)
+                        CustomType customTypeValue = create(mapType as String)
+                        customTypeValue.deserialize(map)
                         return customTypeValue
 
                     } catch (Exception ignore) {
-                        return valueMap.value
+                        return mapValue
                     }
             }
 
         } catch (Exception e) {
-            log.error "Error deserializing '${valueMap}': ${e.message}"
+            log.error "Error deserializing '${map}': ${e.message}"
             return null
         }
     }
@@ -430,8 +470,15 @@ class Types {
      * @return the deserialised {@link Boolean}
      */
     static Boolean deserializeBoolean(Map valueMap) {
-        Boolean result = valueMap.value as Boolean
-        return result
+        if (!valueMap) {
+            return false
+        }
+
+        if (valueMap.value in Boolean) {
+            return valueMap.value
+        } else {
+            return valueMap.value == 'true'
+        }
     }
 
     /**
@@ -443,6 +490,10 @@ class Types {
      * @return the deserialised {@link BigDecimal}
      */
     static BigDecimal deserializeNumber(Map valueMap) {
+        if (!valueMap) {
+            return null
+        }
+
         BigDecimal result = deserializeBigDecimal(valueMap.value as String, valueMap.decimals as Integer)
         return result
     }
@@ -450,10 +501,14 @@ class Types {
     /**
      * Extracts a {@link String} from a typed-value map.
      *
-     * @param valueMap the typed-value map with type {@link Type#TEXT}
+     * @param valueMap the typed-value map with type {@link Type#STRING}
      * @return the deserialised {@link String}
      */
     static String deserializeString(Map valueMap) {
+        if (!valueMap) {
+            return null
+        }
+
         return valueMap.value
     }
 
@@ -464,11 +519,15 @@ class Types {
      * @return the deserialised {@link Map}, or an empty map if the value is absent or not a map
      */
     static Map deserializeMap(Map valueMap) {
+        if (!valueMap) {
+            return [:]
+        }
+
         if (valueMap.value !in Map) {
             return [:]
         }
 
-        return deserialize(valueMap.value as Map)?: [:]
+        return deserialize(valueMap.value as Map) ?: [:]
     }
 
     /**
@@ -496,7 +555,7 @@ class Types {
      * Parses a string representation of a decimal number and returns it as a
      * {@link BigDecimal} with the requested scale (defaulting to 2 decimal places).
      *
-     * @param value    the string to parse
+     * @param value the string to parse
      * @param decimals the number of decimal places for scaling; defaults to {@code 2} if {@code null}
      * @return the parsed {@link BigDecimal}, or {@code null} if parsing fails
      */
@@ -522,6 +581,10 @@ class Types {
      * @return the reconstructed {@link LocalDate}, or {@code null} if any field is missing
      */
     static LocalDate deserializeLocalDate(Map valueMap) {
+        if (!valueMap) {
+            return null
+        }
+
         Map date = valueMap.value as Map
         Integer day = (Integer) date.day
         Short month = (Short) date.month
@@ -542,6 +605,10 @@ class Types {
      * @return the reconstructed {@link LocalTime}, or {@code null} if any field is missing
      */
     static LocalTime deserializeLocalTime(Map valueMap) {
+        if (!valueMap) {
+            return null
+        }
+
         Map time = valueMap.value as Map
         Byte hour = (Byte) time.hour
         Byte minute = (Byte) time.minute
@@ -562,6 +629,10 @@ class Types {
      * @return the reconstructed {@link LocalDateTime}, or {@code null} if any field is missing
      */
     static LocalDateTime deserializeLocalDateTime(Map valueMap) {
+        if (!valueMap) {
+            return null
+        }
+
         Map date = valueMap.value as Map
         Short year = (Short) date.year
         Short month = (Short) date.month

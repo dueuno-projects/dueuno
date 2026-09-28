@@ -15,9 +15,9 @@
 package dueuno.elements.components
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.core.PrettyPrinterProperties
-import dueuno.elements.Component
 import dueuno.elements.controls.HiddenField
+import dueuno.elements.core.Component
+import dueuno.elements.core.PrettyPrinterProperties
 import dueuno.elements.style.TextAlign
 import dueuno.elements.style.TextStyle
 import dueuno.elements.style.TextWrap
@@ -71,10 +71,10 @@ class TableCell extends Component {
      * otherwise a {@link Label} is created automatically.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code table} ({@link Table}, required),
-     *             {@code row} ({@link TableRow}, required),
-     *             {@code column} ({@link String}, required),
-     *             {@code component} ({@link Component}),
+     * {@code table} ({@link Table}, required),
+     * {@code row} ({@link TableRow}, required),
+     * {@code column} ({@link String}, required),
+     * {@code component} ({@link Component}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     @Requires({ args.table && args.row && args.column })
@@ -96,7 +96,7 @@ class TableCell extends Component {
     }
 
     /**
-     * Serialises this cell's properties to JSON, including the bound {@link #column} name.
+     * Serialises this cell's properties to JSON, including the bound {@code column} name.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this cell's properties
@@ -104,7 +104,7 @@ class TableCell extends Component {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                column: column,
+            column: column,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
@@ -128,12 +128,12 @@ class TableCell extends Component {
      */
     private void setLabel() {
         addComponent(
-                class: Label,
-                id: componentId,
-                replace: true,
-                textPrefix: controllerName,
-                textWrap: TextWrap.NO_WRAP,
-                tag: false,
+            class: Label,
+            id: componentId,
+            replace: true,
+            textPrefix: controllerName,
+            textWrap: TextWrap.NO_WRAP,
+            tag: false,
         )
     }
 
@@ -172,7 +172,7 @@ class TableCell extends Component {
      * Replaces the default label with a component built from the given argument map.
      * Flags the parent table and row as containing components (switching the row template).
      *
-     * @param args component configuration arguments; {@code id} defaults to {@link #componentId}
+     * @param args component configuration arguments; {@code id} defaults to {@code componentId}
      */
     void setComponent(Map args) {
         if (!row.isHeader) {
@@ -206,10 +206,10 @@ class TableCell extends Component {
      */
     void setSubmitValue(Object value) {
         addComponent(
-                class: HiddenField,
-                id: getId() + '-value',
-                value: value,
-                replace: true,
+            class: HiddenField,
+            id: getId() + '-value',
+            value: value,
+            replace: true,
         )
     }
 
@@ -227,7 +227,7 @@ class TableCell extends Component {
      * Applies the given pretty-printer properties to the inner {@link Label}.
      * Has no effect if the cell contains a custom component.
      *
-     * @param value a map of {@link dueuno.core.PrettyPrinterProperties} settings
+     * @param value a map of {@link PrettyPrinterProperties} settings
      */
     void setPrettyPrinterProperties(Map value) {
         Label label = getLabel()
@@ -237,7 +237,7 @@ class TableCell extends Component {
     }
 
     /**
-     * Returns the {@link dueuno.core.PrettyPrinterProperties} of the inner {@link Label},
+     * Returns the {@link PrettyPrinterProperties} of the inner {@link Label},
      * or a default instance if the cell contains a custom component.
      *
      * @return the label's pretty-printer properties
@@ -336,14 +336,14 @@ class TableCell extends Component {
 
         if (label && (labelValue != null || label.icon)) {
             String backgroundColor = table.rowStriped
-                    ? (row.index % 2 == 0 ? mainForegroundColor : mainBackgroundColor)
-                    : mainBackgroundColor
+                ? (row.index % 2 == 0 ? mainForegroundColor : mainBackgroundColor)
+                : mainBackgroundColor
 
             textAlign = TextAlign.CENTER
             label.tag = value
             label.backgroundColor = value
-                    ? backgroundColor
-                    : null
+                ? backgroundColor
+                : null
         }
     }
 

@@ -14,7 +14,7 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.Component
+import dueuno.elements.core.Component
 import groovy.contracts.Requires
 import groovy.transform.CompileStatic
 
@@ -37,23 +37,25 @@ class GridColumn extends Component {
     /** The parent {@link Grid} that owns this column. */
     Grid grid
 
-    /** Column-level override for the {@code xs} breakpoint, or {@code null} to inherit from {@link #grid}. */
+    /** Column-level override for the {@code xs} breakpoint, or {@code null} to inherit from {@code grid}. */
     Integer xs
 
-    /** Column-level override for the {@code sm} breakpoint, or {@code null} to inherit from {@link #grid}. */
+    /** Column-level override for the {@code sm} breakpoint, or {@code null} to inherit from {@code grid}. */
     Integer sm
 
-    /** Column-level override for the {@code md} breakpoint, or {@code null} to inherit from {@link #grid}. */
+    /** Column-level override for the {@code md} breakpoint, or {@code null} to inherit from {@code grid}. */
     Integer md
 
-    /** Column-level override for the {@code lg} breakpoint, or {@code null} to inherit from {@link #grid}. */
+    /** Column-level override for the {@code lg} breakpoint, or {@code null} to inherit from {@code grid}. */
     Integer lg
 
-    /** Column-level override for the {@code xl} breakpoint, or {@code null} to inherit from {@link #grid}. */
+    /** Column-level override for the {@code xl} breakpoint, or {@code null} to inherit from {@code grid}. */
     Integer xl
 
-    /** Column-level override for the {@code xxl} breakpoint, or {@code null} to inherit from {@link #grid}. */
+    /** Column-level override for the {@code xxl} breakpoint, or {@code null} to inherit from {@code grid}. */
     Integer xxl
+
+    Boolean scrollable
 
     /**
      * Creates a {@code GridColumn} instance configured from the supplied argument map.
@@ -61,7 +63,7 @@ class GridColumn extends Component {
      *
      * @param args initialisation arguments; required key: {@code grid} ({@link Grid});
      *             optional keys: {@code xs}, {@code sm}, {@code md}, {@code lg}, {@code xl},
-     *             {@code xxl} ({@link Integer}), plus all keys accepted by {@link Component#Component(Map)}
+     * {@code xxl} ({@link Integer}), plus all keys accepted by {@link Component#Component(Map)}
      */
     @Requires({ args.grid })
     GridColumn(Map args) {
@@ -77,6 +79,8 @@ class GridColumn extends Component {
         lg = args.lg as Integer
         xl = args.xl as Integer
         xxl = args.xxl as Integer
+
+        scrollable = args.scrollable == null ? false : args.scrollable
     }
 
     /**

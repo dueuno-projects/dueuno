@@ -5,6 +5,7 @@
 let PageModal_dialog = null;
 let PageModal_isActive = false;
 let PageModal_isShowRequested = false;
+let PageModal_isReady = false;
 let PageModal_hasCloseButton = true;
 
 class PageModal extends Component {
@@ -15,6 +16,8 @@ class PageModal extends Component {
     static set isActive(value) { PageModal_isActive = value }
     static get isShowRequested() { return PageModal_isShowRequested }
     static set isShowRequested(value) { PageModal_isShowRequested = value }
+    static get isReady() { return PageModal_isReady }
+    static set isReady(value) { PageModal_isReady = value }
     static get hasCloseButton() { return PageModal_hasCloseButton }
     static set hasCloseButton(value) { PageModal_hasCloseButton = value }
 
@@ -25,6 +28,7 @@ class PageModal extends Component {
 
     static initialize() {
         PageModal.isActive = false;
+        PageModal.isReady = false;
         PageModal.dialog = new bootstrap.Modal('#page-modal', { backdrop: 'static' });
 
         // Close Button
@@ -36,11 +40,13 @@ class PageModal extends Component {
         // Events
         PageModal.$self.off('shown.bs.modal').on('shown.bs.modal', PageModal.onShown);
         PageModal.$self.off('hidden.bs.modal').on('hidden.bs.modal', PageModal.onHidden);
+        PageModal.$self.off('hide.bs.modal').on('hide.bs.modal', PageModal.onHide);
         PageModal.$self.off('keydown').on('keydown', PageModal.onKeyDown);
         $closeButton.off('click').on('click', PageModal.onClose);
     }
 
     static onShown(event) {
+        PageModal.isReady = true;
         Page.finalizeContent(PageModal.$self);
     }
 
@@ -49,7 +55,13 @@ class PageModal extends Component {
         PageModal.close();
     }
 
+    static onHide(event) {
+        document.activeElement.blur();
+    }
+
     static onHidden(event) {
+        PageModal.isReady = false;
+
         if (!PageModal.isActive) {
             PageModal.$body.empty();
 
@@ -122,7 +134,9 @@ class PageModal extends Component {
 
         // Scrollbar
         enableSimpleBar(PageModal.$body[0]);
-        PageModal.$body.find('.simplebar-content-wrapper').off('scroll').on('scroll', PageModal.onScroll);
+        let $scrollableContent = PageModal.$body.find('.simplebar-content-wrapper');
+        $scrollableContent.removeAttr('tabindex');
+        $scrollableContent.off('scroll').on('scroll', PageModal.onScroll);
     }
 
     static open($content, componentEvent) {
@@ -131,12 +145,15 @@ class PageModal extends Component {
         Page.initializeContent(PageModal.$self, true, true);
         PageModal.renderDialog(componentEvent);
 
-        if (PageModal.isShown()) {
+        if (PageModal.isReady) {
             Page.finalizeContent(PageModal.$self);
+            return Promise.resolve();
 
         } else {
+            let shown = new Promise(resolve => PageModal.$self.one('shown.bs.modal', resolve));
             PageModal.show();
             // Will be finalized onShown()
+            return shown;
         }
     }
 
@@ -156,6 +173,7 @@ class PageModal extends Component {
     }
 
     static hide() {
+        PageModal.isReady = false;
         PageModal.dialog.hide();
     }
 }

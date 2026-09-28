@@ -14,10 +14,10 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.Select
-import dueuno.elements.ElementsController
 
 class SelectController implements ElementsController {
 
@@ -41,12 +41,12 @@ class SelectController implements ElementsController {
 //                        cols: 3,
 //                )
                 addField(
-                        class: Select,
-                        id: 'company1Default',
-                        optionsFromRecordset: companyService.list(),
-                        placeholder: 'Sync load (defaultValue)',
-                        defaultValue: 3,
-                        cols: 3,
+                    class: Select,
+                    id: 'company1Default',
+                    optionsFromRecordset: companyService.list(),
+                    placeholder: 'Sync load (defaultValue)',
+                    defaultValue: 3,
+                    cols: 3,
                 )
 //                addField(
 //                        class: Select,
@@ -75,21 +75,21 @@ class SelectController implements ElementsController {
             }
 
             sortable = [
-                    address: 'asc',
-                    name   : 'desc',
+                address: 'asc',
+                name   : 'desc',
             ]
             columns = [
-                    'company',
-                    'name',
-                    'picture',
-                    'address',
-                    'postcode',
-                    'salary',
-                    'salaryPerMonth',
-                    'distanceKm',
-                    'dateStart',
-                    'dateEnd',
-                    'active',
+                'company',
+                'name',
+                'picture',
+                'address',
+                'postcode',
+                'salary',
+                'salaryPerMonth',
+                'distanceKm',
+                'dateStart',
+                'dateEnd',
+                'active',
             ]
 
             actions.removeDefaultAction()
@@ -103,9 +103,9 @@ class SelectController implements ElementsController {
         if (filters.name) query = query.where { name =~ "%${filters.name}%" }
         if (filters.company1) query = query.where { company.id == filters.company1 }
         if (filters.company1Default) query = query.where { company.id == filters.company1Default }
-        if (filters.company2) query = query.where { company.id in filters.company2.collect { it as Long }  }
-        if (filters.company3) query = query.where { company.id in filters.company3.collect { it as Long }  }
-        if (filters.company4) query = query.where { company.id in filters.company4.collect { it as Long }  }
+        if (filters.company2) query = query.where { company.id in filters.company2.collect { it as Long } }
+        if (filters.company3) query = query.where { company.id in filters.company3.collect { it as Long } }
+        if (filters.company4) query = query.where { company.id in filters.company4.collect { it as Long } }
 
         c.table.body = companyService.list(params)
         c.table.paginate = companyService.count()

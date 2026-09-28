@@ -14,9 +14,9 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.Component
-import dueuno.elements.ComponentEvent
-import dueuno.elements.Menu
+import dueuno.elements.core.Component
+import dueuno.elements.core.ComponentEvent
+import dueuno.elements.core.Menu
 import dueuno.elements.style.TextWrap
 import groovy.transform.CompileStatic
 import groovy.transform.Synchronized
@@ -27,10 +27,10 @@ import groovy.transform.Synchronized
  * A {@code Button} is composed of up to three visual slots:
  * </p>
  * <ul>
- *   <li>{@link #defaultAction} — the main clickable area of the button.</li>
- *   <li>{@link #tailAction} — an optional secondary action rendered at the trailing
+ *   <li>{@code defaultAction} — the main clickable area of the button.</li>
+ *   <li>{@code tailAction} — an optional secondary action rendered at the trailing
  *       edge of the button (e.g. a split-button arrow).</li>
- *   <li>{@link #actionMenu} — a drop-down {@link Menu} listing additional actions
+ *   <li>{@code actionMenu} — a drop-down {@link Menu} listing additional actions
  *       beyond the default and tail slots.</li>
  * </ul>
  * <p>
@@ -72,12 +72,12 @@ class Button extends Component {
      * unless {@code dontCreateDefaultAction} is set.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code primary} ({@link Boolean}),
-     *             {@code stretch} ({@link Boolean}),
-     *             {@code group} ({@link Boolean}),
-     *             {@code maxWidth} ({@link Integer}),
-     *             {@code text} ({@link String}) — label for the default action,
-     *             {@code dontCreateDefaultAction} ({@link Boolean}) — skip auto-creation of the default action,
+     * {@code primary} ({@link Boolean}),
+     * {@code stretch} ({@link Boolean}),
+     * {@code group} ({@link Boolean}),
+     * {@code maxWidth} ({@link Integer}),
+     * {@code text} ({@link String}) — label for the default action,
+     * {@code dontCreateDefaultAction} ({@link Boolean}) — skip auto-creation of the default action,
      *             plus all keys accepted by {@link Component#Component(Map)} and {@link Menu}
      */
     Button(Map args) {
@@ -188,7 +188,7 @@ class Button extends Component {
         }
     }
 
-    /** @return whether the default action opens in a modal window */
+    /** @return whether the default action opens in a modal window  */
     Boolean getModal() {
         return defaultAction.modal
     }
@@ -202,7 +202,7 @@ class Button extends Component {
         defaultAction.modal = value
     }
 
-    /** @return whether the default action uses a small button style */
+    /** @return whether the default action uses a small button style  */
     Boolean getSmall() {
         return defaultAction.small
     }
@@ -216,7 +216,7 @@ class Button extends Component {
         defaultAction.small = value
     }
 
-    /** @return whether the default action uses a large button style */
+    /** @return whether the default action uses a large button style  */
     Boolean getLarge() {
         return defaultAction.large
     }
@@ -230,7 +230,7 @@ class Button extends Component {
         defaultAction.large = value
     }
 
-    /** @return the animation name applied to the default action transition */
+    /** @return the animation name applied to the default action transition  */
     String getAnimate() {
         return defaultAction.animate
     }
@@ -244,7 +244,7 @@ class Button extends Component {
         defaultAction.animate = value
     }
 
-    /** @return whether the default action performs a direct (non-AJAX) navigation */
+    /** @return whether the default action performs a direct (non-AJAX) navigation  */
     Boolean getDirect() {
         return defaultAction.direct
     }
@@ -258,7 +258,7 @@ class Button extends Component {
         defaultAction.direct = value
     }
 
-    /** @return whether the default action renders as a modal close button */
+    /** @return whether the default action renders as a modal close button  */
     Boolean getCloseButton() {
         return defaultAction.closeButton
     }
@@ -272,7 +272,7 @@ class Button extends Component {
         defaultAction.closeButton = value
     }
 
-    /** @return the scroll target of the default action */
+    /** @return the scroll target of the default action  */
     String getScroll() {
         return defaultAction.scroll
     }
@@ -394,7 +394,7 @@ class Button extends Component {
      * when not supplied.
      *
      * @param args action configuration; recognised keys: {@code action}, {@code controller},
-     *             {@code id}, {@code loading}, and all keys accepted by {@link Menu}
+     * {@code id}, {@code loading}, and all keys accepted by {@link Menu}
      * @return the newly created {@link Menu} item
      * @see Menu
      */
@@ -437,14 +437,14 @@ class Button extends Component {
      */
     Button addSeparator(String text = null) {
         addMenu(
-                separator: true,
-                text: text,
+            separator: true,
+            text: text,
         )
         return this
     }
 
     /**
-     * Adds a new action and immediately promotes it to the {@link #defaultAction} slot.
+     * Adds a new action and immediately promotes it to the {@code defaultAction} slot.
      *
      * @param args action configuration forwarded to {@link #addMenu(Map)}
      * @return this {@code Button} instance for chaining
@@ -456,7 +456,7 @@ class Button extends Component {
     }
 
     /**
-     * Adds a new action and immediately promotes it to the {@link #tailAction} slot.
+     * Adds a new action and immediately promotes it to the {@code tailAction} slot.
      *
      * @param args action configuration forwarded to {@link #addMenu(Map)}
      * @return this {@code Button} instance for chaining
@@ -537,7 +537,7 @@ class Button extends Component {
     }
 
     /**
-     * Promotes an existing action to the {@link #defaultAction} slot.
+     * Promotes an existing action to the {@code defaultAction} slot.
      * The action's text-wrap style is reset to {@link TextWrap#DEFAULT}.
      *
      * @param args map with {@code action} and optional {@code controller} identifying the action to promote
@@ -549,14 +549,14 @@ class Button extends Component {
     }
 
     /**
-     * Clears the {@link #defaultAction} slot without removing the underlying action from the menu.
+     * Clears the {@code defaultAction} slot without removing the underlying action from the menu.
      */
     void unsetDefaultAction() {
         defaultAction = null
     }
 
     /**
-     * Promotes an existing action to the {@link #tailAction} slot.
+     * Promotes an existing action to the {@code tailAction} slot.
      * The action's text-wrap style is reset to {@link TextWrap#DEFAULT}.
      *
      * @param args map with {@code action} and optional {@code controller} identifying the action to promote
@@ -568,7 +568,7 @@ class Button extends Component {
     }
 
     /**
-     * Clears the {@link #tailAction} slot without removing the underlying action from the menu.
+     * Clears the {@code tailAction} slot without removing the underlying action from the menu.
      */
     void unsetTailAction() {
         tailAction = null
@@ -576,7 +576,7 @@ class Button extends Component {
 
     /**
      * Returns all actions registered in the action menu that are neither the
-     * {@link #defaultAction} nor the {@link #tailAction}, sorted by their {@code order} property.
+     * {@code defaultAction} nor the {@code tailAction}, sorted by their {@code order} property.
      *
      * @return an ordered list of {@link Menu} items for the drop-down portion of the button
      * @see Menu
@@ -585,7 +585,7 @@ class Button extends Component {
     List<Menu> getMenuActions() {
         List<Menu> result = []
 
-        for (action in actionMenu.items.sort {it.order }) {
+        for (action in actionMenu.items.sort { it.order }) {
             if (action != defaultAction && action != tailAction) {
                 result.add(action)
             }

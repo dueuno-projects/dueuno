@@ -3,12 +3,14 @@ class TransitionCommand {
     // Temporary solutions until we get support for static fields
     // See: https://github.com/google/closure-compiler/issues/2731
     static get REDIRECT() { return 'REDIRECT' }
-    static get CONTENT() { return 'CONTENT' }
+    static get RENDER_CONTENT() { return 'RENDER_CONTENT' }
     static get APPEND() { return 'APPEND' }
     static get REPLACE() { return 'REPLACE' }
     static get REMOVE() { return 'REMOVE' }
     static get TRIGGER() { return 'TRIGGER' }
     static get LOADING() { return 'LOADING' }
+    static get DELAY() { return 'DELAY' }
+    static get SCROLL() { return 'SCROLL' }
     static get CALL() { return 'CALL' }
     static get SET() { return 'SET' }
 
@@ -48,8 +50,9 @@ class TransitionCommand {
         let contentRenderProperties = Component.getProperty($content, 'renderProperties');
         componentEvent.renderProperties = TransitionCommand.mergeRenderProperties(componentEvent.renderProperties, contentRenderProperties);
 
+        let rendered;
         if (componentEvent.renderProperties['modal']) {
-            PageModal.open($content, componentEvent);
+            rendered = PageModal.open($content, componentEvent);
 
         } else {
             PageModal.close();
@@ -59,50 +62,64 @@ class TransitionCommand {
         if (PageMessageBox.isActive) {
             PageMessageBox.hide();
         }
+
+        return rendered;
     }
 
     static render($component, $newComponent, componentEvent) {
-        let animation = componentEvent.renderProperties['animate'];
-        TransitionCommand.animate(animation, $component, $newComponent)
+        TransitionCommand.animate(componentEvent, $component, $newComponent)
+        let focusPath = TransitionCommand.getFocusPath();
 
         Page.deactivateComponents();
         $component.replaceWith($newComponent);
         Page.reinitializeContent($newComponent);
 
-        TransitionCommand.scrollTo($newComponent, componentEvent);
-        if (componentEvent.renderProperties['updateUrl']) {
-            let url = Transition.buildUrl(componentEvent);
-            TransitionCommand.setBrowserUrl(url);
-        }
+        TransitionCommand.restoreFocus(focusPath);
+        let scroll = componentEvent.renderProperties['scroll'];
+        TransitionCommand.scrollTo(scroll);
+        TransitionCommand.setBrowserUrl(componentEvent);
     }
 
-    static scrollTo($content, componentEvent) {
-        let scroll = componentEvent.renderProperties['scroll'];
-        if (scroll == 'reset') {
-            window.scrollTo({top:0, left:0, behavior: 'instant'});
+    static scrollTo(path) {
+        if (PageModal.isActive) {
+            return;
+        }
+        let top = 0;
+        let left = 0;
+        let offset = 40;
+        let behavior = _21_.user.animations ? 'smooth' : 'instant';
 
-        } else if (scroll == 'top') {
-            window.scrollTo({
-                top:0,
-                left:0,
-                behavior: _21_.user.animations ? 'smooth' : 'instant',
-            });
+        if (path == 'reset') {
+            behavior = 'instant';
+
+        } else if (path == 'top') {
+
+        } else if (path == 'bottom') {
+            top = document.body.scrollHeight;
 
         } else { // Scroll to top of the specified component
-            let $element = $content.find('[data-21-id="' + scroll + '"]');
-            if ($element.exists()) {
-                let position = $element.position();
-                window.scrollTo({
-                    top: position.top,
-                    left: position.left,
-                    behavior: _21_.user.animations ? 'smooth' : 'instant',
-                });
+            let $element = Transition.getTargetElement(path);
+            if (!$element.exists()) {
+                return;
             }
+            let position = $element.offset();
+            top = position.top - offset;
+            left = position.left;
         }
+
+        window.scrollTo({
+            top: top,
+            left: left,
+            behavior: behavior,
+        });
     }
 
     static loading(show) {
         LoadingScreen.show(show);
+    }
+
+    static async delay(milliseconds) {
+        await sleep(milliseconds);
     }
 
     static append($element, componentId, newComponentId, $components) {
@@ -134,8 +151,44 @@ class TransitionCommand {
             return;
         }
 
+        let focusPath = TransitionCommand.getFocusPath();
         $element.replaceWith($component);
         Page.reinitializeContent($component);
+        TransitionCommand.restoreFocus(focusPath);
+    }
+
+    static getFocusPath() {
+        let $pageContent = PageContent.$self;
+        let $activeElement = $pageContent.find(':focus').addBack(':focus');
+        if (!$activeElement.exists()) {
+            return null;
+        }
+
+        let path = [];
+        let $element = $activeElement.closest('[data-21-id]');
+        while ($element.exists()) {
+            if (!$pageContent.is($element[0]) && !$pageContent.has($element[0]).length) {
+                break;
+            }
+
+            path.unshift($element.data('21-id'));
+            if ($pageContent.is($element[0])) {
+                break;
+            }
+
+            $element = $element.parent().closest('[data-21-id]');
+        }
+
+        return path;
+    }
+
+    static restoreFocus(path) {
+        if (!path || !path.length) {
+            return;
+        }
+
+        let $element = Transition.getTargetElement(path.join('.'));
+        Component.setFocus($element, true);
     }
 
     static remove($element, componentId) {
@@ -209,11 +262,16 @@ class TransitionCommand {
         return merged;
     }
 
-    static setBrowserUrl(url) {
-        history.pushState({}, '', url);
+    static setBrowserUrl(componentEvent) {
+        if (componentEvent.renderProperties['updateUrl']) {
+            let url = Transition.buildUrl(componentEvent);
+            history.pushState({}, '', url);
+        }
     }
 
-    static animate(animation, $prevElement, $nextElement) {
+    static animate(componentEvent, $prevElement, $nextElement) {
+        let animation = componentEvent.renderProperties['animate'];
+
         if (!_21_.user.animations || !animation) {
             return;
         }
@@ -222,13 +280,13 @@ class TransitionCommand {
             case 'fade':
                 $prevElement.addClass('fade-out');
                 $nextElement.addClass('fade-in');
-            break;
+                break;
 
             case 'back':
-            break;
+                break;
 
             case 'next':
-            break;
+                break;
         }
     }
 }

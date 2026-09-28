@@ -2,35 +2,28 @@ class Form extends Component {
 
     static finalize($element, $root) {
         let properties = Component.getProperties($element);
-        if (properties.autofocus) {
-            Form.setFocusOnFirstInput($element);
+        if (!Elements.isMobileDevice && properties.autofocus) {
+            requestAnimationFrame(function() { Form.setFocusOnFirstField($element, $root) });
         }
     }
 
-    static setFocusOnFirstInput($element) {
-        let $form = $('[data-21-id="' + $element.prop('id') + '"]');
-        let $controls = $form.find('[data-21-control]');
+    static setFocusOnFirstField($element, $root) {
+        if ($root.find('[data-21-component="Form"]').has(document.activeElement).length) {
+            return;
+        }
 
-        $controls.each(function() {
-            let $control = $(this);
+        let $controls = $element.find('[data-21-control]');
+        for (let element of $controls) {
+            let $control = $(element);
             let control = Control.getByElement($control);
-            let className = Control.getClassName($control);
-            let readonly = Elements.callMethod($control, control, 'getReadonly');
+            let isVisible = Elements.callMethod($control, control, 'getDisplay');
+            let isReadonly = Elements.callMethod($control, control, 'getReadonly');
 
-            let excludedControls = [
-                'HiddenField',
-                'PasswordField',
-                'Button',
-                'Link',
-                'Label',
-                'Separator',
-            ];
-            if (!Elements.isMobileDevice && !excludedControls.includes(className) && !readonly) {
-                $control.css('visibility', 'visible');
-                $control.triggerHandler('focus');
-                return false;
+            if (isVisible && !isReadonly) {
+                Component.setFocus($control, true);
+                break;
             }
-        });
+        }
     }
 
     static setErrors($element, value) {

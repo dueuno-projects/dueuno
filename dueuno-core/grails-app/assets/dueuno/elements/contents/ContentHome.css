@@ -8,7 +8,7 @@
     top: 1rem;
     right: 1rem;
     opacity: .1;
-    filter: blur(14px);
+    filter: blur(1rem);
 }
 
 .shell-content-card .card > i {
@@ -17,7 +17,7 @@
     top: 1rem;
     right: 1rem;
     opacity: .07;
-    /*filter: blur(3px);*/
+    /*filter: blur(.214286rem);*/
 }
 
 .shell-content-card .card {

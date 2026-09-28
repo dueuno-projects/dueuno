@@ -14,10 +14,10 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
-import dueuno.elements.ElementsController
 
 class CrudRestController implements ElementsController {
 
@@ -28,15 +28,15 @@ class CrudRestController implements ElementsController {
         ContentTable c = createContent(ContentTable)
         c.table.with {
             keys = [
-                    'RecordID',
+                'RecordID',
             ]
             columns = [
-                    'RecordID',
-                    'C001_CodArt',
-                    'C002_Descrizione_IT',
-                    'C002_Descrizione_EN',
-                    'C002_Descrizione_RU',
-                    'C150_Disponibilita',
+                'RecordID',
+                'C001_CodArt',
+                'C002_Descrizione_IT',
+                'C002_Descrizione_EN',
+                'C002_Descrizione_RU',
+                'C150_Disponibilita',
             ]
             actions.removeDefaultAction()
             actions.removeTailAction()
@@ -46,12 +46,12 @@ class CrudRestController implements ElementsController {
         def filters = c.table.filterParams
 
         fileMakerClient.connect(
-                'https',
-                'fm6.zanatto.com',
-                443,
-                'apitest',
-                'Karma8LHR',
-                'WebSiteMirho'
+            'https',
+            'fm6.zanatto.com',
+            443,
+            'apitest',
+            'Karma8LHR',
+            'WebSiteMirho'
         )
         Map rs = fileMakerClient.list(LAYOUT, filters, params)
 
@@ -65,8 +65,8 @@ class CrudRestController implements ElementsController {
 
     private buildForm(Map args = [:]) {
         def c = args.create
-                ? createContent(ContentCreate)
-                : createContent(ContentEdit)
+            ? createContent(ContentCreate)
+            : createContent(ContentEdit)
 
         c.form.with {
             validate = CrudRestValidator
@@ -80,8 +80,8 @@ class CrudRestController implements ElementsController {
 //                    id: 'C002_Descrizione_IT',
 //            )
             addField(
-                    class: 'NumberField',
-                    id: 'C150_Disponibilita',
+                class: 'NumberField',
+                id: 'C150_Disponibilita',
             )
         }
         return c
@@ -115,7 +115,7 @@ class CrudRestController implements ElementsController {
     }
 
     def onEdit(CrudRestValidator val) {
-        if (val.hasErrors() ) {
+        if (val.hasErrors()) {
             display errors: val
             return
         }

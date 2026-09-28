@@ -7,7 +7,7 @@
 >
     <div class="row g-${c.spacing} ${c.tag ? 'my-0' : ''}">
         <g:each var="column" in="${c.components}">
-            <div class="grid-column ${column.breakpoints}" data-21-id="${column.id}" data-21-component="${column.className}">
+            <div class="grid-column ${column.breakpoints} ${column.scrollable ? 'scrollable' : ''}" data-21-id="${column.id}" data-21-component="${column.className}">
             <g:if test="${c.tag}">
                 <div class="grid-tag shadow ${c.cssClass}"
                      ${c.cssStyleColors ? raw('style="' + c.cssStyleColors + '"') : ''}>

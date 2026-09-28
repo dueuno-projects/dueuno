@@ -14,12 +14,12 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.*
-import dueuno.elements.ElementsController
 import dueuno.types.Type
 
 import java.time.LocalDate
@@ -34,36 +34,36 @@ class CrudDataServicesController implements ElementsController {
             table.with {
                 filters.with {
                     addField(
-                            class: TextField,
-                            id: 'name',
-                            cols: 12,
+                        class: TextField,
+                        id: 'name',
+                        cols: 12,
                     )
                 }
 
                 sortable = [
-                        address: 'asc',
-                        name: 'desc',
+                    address: 'asc',
+                    name   : 'desc',
                 ]
                 columns = [
-                        'company',
-                        'employeeCount',
-                        'name',
-                        'picture',
-                        'address',
-                        'postcode',
-                        'salary',
-                        'salaryPerMonth',
-                        'distanceKm',
-                        'dateStart',
-                        'dateEnd',
-                        'active',
+                    'company',
+                    'employeeCount',
+                    'name',
+                    'picture',
+                    'address',
+                    'postcode',
+                    'salary',
+                    'salaryPerMonth',
+                    'distanceKm',
+                    'dateStart',
+                    'dateEnd',
+                    'active',
                 ]
                 includeValues = [
-                        'company.employees',
+                    'company.employees',
                 ]
                 prettyPrinterProperties = [
-                        salary: [highlightNegative: false, renderZero: '-'],
-                        name: [renderTextPrefix: true],
+                    salary: [highlightNegative: false, renderZero: '-'],
+                    name  : [renderTextPrefix: true],
                 ]
 
                 body.eachRow { TableRow row, Map values ->
@@ -85,8 +85,8 @@ class CrudDataServicesController implements ElementsController {
 
     private buildForm(TPerson obj = null) {
         def c = obj
-                ? createContent(ContentEdit)
-                : createContent(ContentCreate)
+            ? createContent(ContentEdit)
+            : createContent(ContentCreate)
 
         if (params.embedded) {
             c.header.addBackButton(animate: params.animate)
@@ -106,54 +106,54 @@ class CrudDataServicesController implements ElementsController {
             addKeyField('selection', Type.LIST, [[id: 1]])
 
             addField(
-                    class: Select,
-                    id: 'company',
-                    optionsFromRecordset: TCompany.list(),
-                    prettyPrinter: 'customCompanyPrinter',
-                    onChange: 'onCompanyChange',
+                class: Select,
+                id: 'company',
+                optionsFromRecordset: TCompany.list(),
+                prettyPrinter: 'customCompanyPrinter',
+                onChange: 'onCompanyChange',
             )
             addField(
-                    class: TextField,
-                    id: 'companyName',
-                    readonly: true,
+                class: TextField,
+                id: 'companyName',
+                readonly: true,
             )
             addField(
-                    class: TextField,
-                    id: 'name',
+                class: TextField,
+                id: 'name',
             )
             addField(
-                    class: Textarea,
-                    id: 'address',
+                class: Textarea,
+                id: 'address',
             )
             addField(
-                    class: NumberField,
-                    id: 'postcode',
+                class: NumberField,
+                id: 'postcode',
             )
             addField(
-                    class: MoneyField,
-                    id: 'salary',
+                class: MoneyField,
+                id: 'salary',
             )
             addField(
-                    class: QuantityField,
-                    id: 'distanceKm',
+                class: QuantityField,
+                id: 'distanceKm',
             )
             addField(
-                    class: DateField,
-                    id: 'dateStart',
-                    min: LocalDate.now().minusDays(3),
-                    max: LocalDate.now().plusDays(3),
+                class: DateField,
+                id: 'dateStart',
+                min: LocalDate.now().minusDays(3),
+                max: LocalDate.now().plusDays(3),
             )
             addField(
-                    class: DateField,
-                    id: 'dateEnd',
+                class: DateField,
+                id: 'dateEnd',
             )
             addField(
-                    class: Checkbox,
-                    id: 'active',
+                class: Checkbox,
+                id: 'active',
             )
             addField(
-                    class: Upload,
-                    id: 'picture',
+                class: Upload,
+                id: 'picture',
             )
         }
 

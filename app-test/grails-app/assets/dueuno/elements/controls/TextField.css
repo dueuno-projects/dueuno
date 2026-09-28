@@ -40,6 +40,12 @@
     opacity: .5;
 }
 
+.input-group:has(.control-text-field[disabled]) > a,
+.input-group:has(.control-text-field[disabled]) > button {
+    background-color: rgba(var(--elements-main-bg), .4) !important;
+    color: rgba(var(--elements-main-text), .7) !important;
+}
+
 /* Edge 12 -18 */
 .input-group ::-ms-input-placeholder {
     color: rgb(var(--elements-main-text));

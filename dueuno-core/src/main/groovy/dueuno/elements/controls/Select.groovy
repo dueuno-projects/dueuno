@@ -15,20 +15,16 @@
 package dueuno.elements.controls
 
 import dueuno.commons.utils.ObjectUtils
-import dueuno.core.PrettyPrinter
-import dueuno.core.PrettyPrinterProperties
-import dueuno.elements.Component
-import dueuno.elements.Control
-import dueuno.elements.Elements
+import dueuno.elements.ElementsException
 import dueuno.elements.components.Button
-import dueuno.exceptions.ElementsException
+import dueuno.elements.core.*
 import dueuno.types.Type
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 /**
- * A dropdown/select control that renders a list of options backed by Select2.
+ * A dropdown/select control that renders a list of options backed by Virtual Select.
  * <p>
  * Options can be supplied in four ways (checked in order):
  * </p>
@@ -36,12 +32,12 @@ import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
  *   <li>{@code optionsFromRecordset} — built from a GORM/collection result set.</li>
  *   <li>{@code optionsFromList} — built from a plain list of values.</li>
  *   <li>{@code optionsFromEnum} — built from an enum class.</li>
- *   <li>{@code options} — a pre-built {@code [key: label]} map.</li>
+ *   <li>{@code options} — a pre-built {@code [value: label]} map.</li>
  * </ul>
  * <p>
  * Supports single and multiple selection, optional search, auto-clear, and an optional
  * action {@link Button} rendered next to the selector. When a single option is available
- * and {@link #autoSelect} is {@code true}, that option is pre-selected automatically.
+ * and {@code autoSelect} is {@code true}, that option is pre-selected automatically.
  * </p>
  *
  * @author Gianluca Sartori
@@ -50,11 +46,20 @@ import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 @CompileStatic
 class Select extends Control {
 
-    /** The resolved list of option maps ({@code id} → key, {@code text} → display label). */
+    /** The resolved list of option maps ({@code value} → display {@code label}). */
     List<Map<String, String>> options
 
     /** Optional closure invoked for each option during option-list construction. */
     Closure forEachOption
+
+    /** Property names used to build recordset option values. */
+    List<String> keys
+
+    /** Separator used when a recordset option value contains multiple properties. */
+    String keysSeparator
+
+    /** Values excluded when options are built from a list or enum. */
+    List exclude
 
     /** Action button rendered adjacent to the selector (hidden by default). */
     Button actions
@@ -71,7 +76,7 @@ class Select extends Control {
     /** When {@code true}, allows selection of multiple values. */
     Boolean multiple
 
-    /** When {@code true}, the Select2 search box is enabled. */
+    /** When {@code true}, the Select search box is enabled. */
     Boolean search
 
     /** Minimum number of characters required before the search triggers. Defaults to {@code 0}. */
@@ -84,16 +89,16 @@ class Select extends Control {
      * creates the adjacent action button.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code autoSelect} ({@link Boolean}, default {@code true}),
-     *             {@code multiple} ({@link Boolean}, default {@code false}),
-     *             {@code search} ({@link Boolean}),
-     *             {@code allowClear} ({@link Boolean}),
-     *             {@code placeholder} ({@link String}),
-     *             {@code searchMinInputLength} ({@link Integer}, default {@code 0}),
-     *             {@code optionsFromRecordset}, {@code optionsFromList}, {@code optionsFromEnum},
-     *             {@code options}, {@code keys}, {@code keysSeparator}, {@code exclude},
-     *             {@code transformer}, {@code renderTextPrefix}, {@code forEachOption} ({@link Closure}),
-     *             plus all keys accepted by {@link Control#Control(Map)}
+     * {@code autoSelect} ({@link Boolean}, default {@code true}),
+     * {@code multiple} ({@link Boolean}, default {@code false}),
+     * {@code search} ({@link Boolean}),
+     * {@code allowClear} ({@link Boolean}),
+     * {@code placeholder} ({@link String}),
+     * {@code searchMinInputLength} ({@link Integer}, default {@code 0}),
+     * {@code optionsFromRecordset}, {@code optionsFromList}, {@code optionsFromEnum},
+     * {@code options}, {@code keys}, {@code keysSeparator}, {@code exclude},
+     * {@code transformer}, {@code renderTextPrefix}, {@code forEachOption} ({@link Closure}),
+     * plus all keys accepted by {@link Control#Control(Map)}
      */
     Select(Map args) {
         super(args)
@@ -101,70 +106,77 @@ class Select extends Control {
         autoSelect = (args.autoSelect == null) ? true : args.autoSelect
         multiple = (args.multiple == null) ? false : args.multiple
         forEachOption = args.forEachOption as Closure ?: null
-        placeholder = args.placeholder ? message(args.placeholder as String) : message('control.select.placeholder')
+        keys = args.keys as List<String> ?: []
+        keysSeparator = args.keysSeparator ?: ','
+        exclude = args.exclude as List ?: []
+        setPlaceholder(args.placeholder as String)
 
         searchMinInputLength = (args.searchMinInputLength == null) ? 0 : args.searchMinInputLength as Integer
 
         if (args.optionsFromRecordset) {
             search = (args.search == null) ? true : args.search
             allowClear = (args.allowClear == null) ? true : args.allowClear
+
             options = optionsFromRecordset(
-                    recordset: args.optionsFromRecordset,
-                    keys: args.keys,
-                    keysSeparator: args.keysSeparator,
-                    prettyPrinter: prettyPrinter,
-                    transformer: args.transformer,
-                    forEachOption: args.forEachOption,
-                    textPrefix: prettyPrinterProperties.textPrefix,
-                    renderTextPrefix: args.renderTextPrefix == null ? false : args.renderTextPrefix,
-                    locale: locale,
+                recordset: args.optionsFromRecordset,
+                keys: args.keys,
+                keysSeparator: args.keysSeparator,
+                prettyPrinter: prettyPrinter,
+                transformer: args.transformer,
+                forEachOption: args.forEachOption,
+                textPrefix: prettyPrinterProperties.textPrefix,
+                renderTextPrefix: args.renderTextPrefix == null ? false : args.renderTextPrefix,
+                locale: locale,
             )
 
         } else if (args.optionsFromList) {
             search = (args.search == null) ? false : args.search
             allowClear = (args.allowClear == null) ? false : args.allowClear
+
             options = optionsFromList(
-                    list: args.optionsFromList,
-                    exclude: args.exclude,
-                    prettyPrinter: prettyPrinter,
-                    transformer: args.transformer,
-                    forEachOption: args.forEachOption,
-                    textPrefix: prettyPrinterProperties.textPrefix,
-                    renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
-                    locale: locale,
+                list: args.optionsFromList,
+                exclude: args.exclude,
+                prettyPrinter: prettyPrinter,
+                transformer: args.transformer,
+                forEachOption: args.forEachOption,
+                textPrefix: prettyPrinterProperties.textPrefix,
+                renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
+                locale: locale,
             )
 
         } else if (args.optionsFromEnum) {
             search = (args.search == null) ? false : args.search
             allowClear = (args.allowClear == null) ? false : args.allowClear
+
             options = optionsFromEnum(
-                    enum: args.optionsFromEnum,
-                    exclude: args.exclude,
-                    prettyPrinter: prettyPrinter,
-                    transformer: args.transformer,
-                    forEachOption: args.forEachOption,
-                    textPrefix: prettyPrinterProperties.textPrefix,
-                    renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
-                    locale: locale,
+                enum: args.optionsFromEnum,
+                exclude: args.exclude,
+                prettyPrinter: prettyPrinter,
+                transformer: args.transformer,
+                forEachOption: args.forEachOption,
+                textPrefix: prettyPrinterProperties.textPrefix,
+                renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
+                locale: locale,
             )
 
         } else {
             search = (args.search == null) ? true : args.search
             allowClear = (args.allowClear == null) ? false : args.allowClear
+
             options = options(
-                    options: args.options,
-                    prettyPrinter: prettyPrinter,
-                    transformer: args.transformer,
-                    forEachOption: args.forEachOption,
-                    textPrefix: prettyPrinterProperties.textPrefix,
-                    renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
-                    locale: locale,
+                options: args.options,
+                prettyPrinter: prettyPrinter,
+                transformer: args.transformer,
+                forEachOption: args.forEachOption,
+                textPrefix: prettyPrinterProperties.textPrefix,
+                renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
+                locale: locale,
             )
         }
 
         // Automatically selects the first element if it's the only choice
         if (autoSelect && !nullable && options.size() == 1) {
-            defaultValue = options[0]
+            defaultValue = options[0].value
         }
 
         setMultiple(args.multiple as Boolean)
@@ -174,17 +186,17 @@ class Select extends Control {
         }
 
         actions = createControl(
-                class: Button,
-                id: 'actions',
-                group: true,
-                dontCreateDefaultAction: true,
-                cssClass: 'hide',
+            class: Button,
+            id: 'actions',
+            group: true,
+            dontCreateDefaultAction: true,
+            cssClass: 'hide',
         )
     }
 
     /**
      * Sets whether multiple values can be selected.
-     * When {@code true}, {@link #allowClear} is forced to {@code false} as it is
+     * When {@code true}, {@code allowClear} is forced to {@code false} as it is
      * incompatible with multiple selection mode.
      *
      * @param value {@code true} to enable multiple selection; {@code null} is treated as {@code false}
@@ -195,12 +207,93 @@ class Select extends Control {
     }
 
     /**
-     * Returns the resolved options as a flat map of option ID → display text.
+     * Sets the localized placeholder displayed when no option is selected.
      *
-     * @return a map of option key strings to their localised display labels
+     * @param value the placeholder message code; defaults to {@code control.select.placeholder}
      */
-    Map getOptions() {
-        return options.collectEntries { [(it.id): it.text]}
+    void setPlaceholder(String value) {
+        placeholder = message(value ?: 'control.select.placeholder')
+    }
+
+    /**
+     * Replaces the available choices with entries from the supplied map.
+     *
+     * @param value map of option values to display labels
+     */
+    void setOptions(Map value) {
+        search = false
+        allowClear = true
+        applyOptions(Select.options(optionConfiguration(options: value)))
+    }
+
+    /**
+     * Replaces the available choices with entries derived from a list.
+     *
+     * @param value the values from which to create the options
+     */
+    void setOptionsFromList(List value) {
+        search = false
+        allowClear = false
+        applyOptions(Select.optionsFromList(
+            optionConfiguration(
+                list: value,
+                exclude: exclude
+            )
+        ))
+    }
+
+    /**
+     * Replaces the available choices with the constants of an enum.
+     *
+     * @param value the enum class from which to create the options
+     */
+    void setOptionsFromEnum(Class value) {
+        search = false
+        allowClear = false
+        applyOptions(Select.optionsFromEnum(
+            optionConfiguration(
+                enum: value,
+                exclude: exclude
+            )
+        ))
+    }
+
+    /**
+     * Replaces the available choices with entries derived from a record collection.
+     *
+     * @param value the records from which to create the options
+     */
+    void setOptionsFromRecordset(Collection value) {
+        search = true
+        allowClear = true
+
+        applyOptions(Select.optionsFromRecordset(
+            optionConfiguration(
+                recordset: value,
+                keys: keys,
+                keysSeparator: keysSeparator,
+                renderTextPrefix: false,
+            )
+        ))
+    }
+
+    private Map optionConfiguration(Map source) {
+        return [
+            prettyPrinter   : prettyPrinter,
+            transformer     : transformer,
+            forEachOption   : forEachOption,
+            textPrefix      : textPrefix,
+            renderTextPrefix: renderTextPrefix == null ? true : renderTextPrefix,
+            locale          : locale,
+        ] + source
+    }
+
+    private void applyOptions(List<Map<String, String>> value) {
+        this.@options = value ?: []
+
+        if (autoSelect && !nullable && options.size() == 1) {
+            defaultValue = options[0].value
+        }
     }
 
     /**
@@ -213,6 +306,7 @@ class Select extends Control {
     @Override
     Component onSubmit(Map args) {
         String submitEvent = 'change'
+
         if (!hasEvent(submitEvent)) {
             args.event = submitEvent
             on(args)
@@ -274,23 +368,23 @@ class Select extends Control {
     //
 
     /**
-     * Builds a list of {@code [id, text]} option maps from a GORM/collection result set.
+     * Builds a list of {@code [value, label]} option maps from a GORM/collection result set.
      * <p>
-     * If the records have an {@code id} property and no explicit {@code keys} are given,
-     * {@code "id"} is used automatically. Multiple keys are joined with {@code keysSeparator}
-     * (default: {@code ","}). Each record's display text is rendered via
+     * The option value is built from the properties specified in {@code keys}.
+     * Multiple keys are joined with {@code keysSeparator} (default: {@code ","}).
+     * Each record's display label is rendered via
      * {@link PrettyPrinter#print(Object, PrettyPrinterProperties)}.
      * </p>
      *
      * @param args configuration map; recognised keys:
-     *             {@code recordset} ({@link Collection}),
-     *             {@code keys} ({@link List}&lt;{@link String}&gt;),
-     *             {@code keysSeparator} ({@link String}, default {@code ","}),
-     *             {@code forEachOption} ({@link Closure}),
-     *             {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
-     *             {@code renderTextPrefix}, {@code locale}
-     * @return a list of {@code [id: key, text: label]} maps
-     * @throws dueuno.exceptions.ElementsException if the record has no {@code id} and no {@code keys} are given
+     * {@code recordset} ({@link Collection}),
+     * {@code keys} ({@link List}&lt;{@link String}&gt;),
+     * {@code keysSeparator} ({@link String}, default {@code ","}),
+     * {@code forEachOption} ({@link Closure}),
+     * {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
+     * {@code renderTextPrefix}, {@code locale}
+     * @return a list of {@code [value: key, label: displayLabel]} maps
+     * @throws ElementsException if no records are available or no keys are specified
      */
     static List<Map<String, String>> optionsFromRecordset(Map args) {
         Collection recordset = args.recordset as Collection ?: []
@@ -298,7 +392,8 @@ class Select extends Control {
         String keysSeparator = args.keysSeparator ?: ','
         Closure forEachOption = args.forEachOption as Closure ?: null
 
-        PrettyPrinterProperties prettyPrinterProperties = initializePrettyPrinterProperties(args, recordset.getAt(0))
+        PrettyPrinterProperties prettyPrinterProperties =
+            initializePrettyPrinterProperties(args, recordset.getAt(0))
 
         List<Map<String, String>> results = []
 
@@ -324,32 +419,36 @@ class Select extends Control {
                 forEachOption.call(row)
             }
 
-            String text = PrettyPrinter.print(row, prettyPrinterProperties)
-
-            results.add([id: buildKey(row, keys, keysSeparator), text: text])
+            String label = PrettyPrinter.print(row, prettyPrinterProperties)
+            String optionValue = buildKey(row, keys, keysSeparator)
+            results.add([value: optionValue, label: label])
         }
+
         return results
     }
 
     /**
-     * Builds a list of {@code [id, text]} option maps from a plain list of values.
+     * Builds a list of {@code [value, label]} option maps from a plain list of values.
      * Values present in the {@code exclude} list are omitted.
      *
      * @param args configuration map; recognised keys:
-     *             {@code list} ({@link List}),
-     *             {@code exclude} ({@link List}),
-     *             {@code forEachOption} ({@link Closure}),
-     *             {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
-     *             {@code renderTextPrefix}, {@code locale}
-     * @return a list of {@code [id: value, text: label]} maps
+     * {@code list} ({@link List}),
+     * {@code exclude} ({@link List}),
+     * {@code forEachOption} ({@link Closure}),
+     * {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
+     * {@code renderTextPrefix}, {@code locale}
+     * @return a list of {@code [value: value, label: displayLabel]} maps
      */
     static List<Map<String, String>> optionsFromList(Map args) {
         List list = args.list as List ?: []
         List exclude = args.exclude as List ?: []
         Closure forEachOption = args.forEachOption as Closure ?: null
-        PrettyPrinterProperties prettyPrinterProperties = initializePrettyPrinterProperties(args, list.getAt(0))
+
+        PrettyPrinterProperties prettyPrinterProperties =
+            initializePrettyPrinterProperties(args, list.getAt(0))
 
         List<Map<String, String>> results = []
+
         for (value in list) {
             if (exclude.contains(value)) {
                 continue
@@ -359,21 +458,21 @@ class Select extends Control {
                 forEachOption.call(value)
             }
 
-            String text = PrettyPrinter.print(value, prettyPrinterProperties)
-            results.add([id: value as String, text: text])
+            String label = PrettyPrinter.print(value, prettyPrinterProperties)
+            results.add([value: value as String, label: label])
         }
 
         return results
     }
 
     /**
-     * Builds a list of {@code [id, text]} option maps from the values of an enum class.
+     * Builds a list of {@code [value, label]} option maps from the values of an enum class.
      * Delegates to {@link #optionsFromList(Map)} after converting the enum constants to a list.
      *
      * @param args configuration map; recognised keys:
-     *             {@code enum} (enum {@link Class}),
-     *             plus all keys accepted by {@link #optionsFromList(Map)}
-     * @return a list of {@code [id: enumName, text: label]} maps
+     * {@code enum} (enum {@link Class}),
+     * plus all keys accepted by {@link #optionsFromList(Map)}
+     * @return a list of {@code [value: enumName, label: displayLabel]} maps
      */
     @CompileDynamic
     static List<Map<String, String>> optionsFromEnum(Map args) {
@@ -382,28 +481,35 @@ class Select extends Control {
     }
 
     /**
-     * Builds a list of {@code [id, text]} option maps from a pre-built {@code [key: label]} map.
+     * Builds a list of {@code [value, label]} option maps from a pre-built
+     * {@code [value: label]} map.
      *
      * @param args configuration map; recognised keys:
-     *             {@code options} ({@link Map}),
-     *             {@code forEachOption} ({@link Closure}),
-     *             {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
-     *             {@code renderTextPrefix}, {@code locale}
-     * @return a list of {@code [id: key, text: label]} maps
+     * {@code options} ({@link Map}),
+     * {@code forEachOption} ({@link Closure}),
+     * {@code prettyPrinter}, {@code transformer}, {@code textPrefix},
+     * {@code renderTextPrefix}, {@code locale}
+     * @return a list of {@code [value: key, label: displayLabel]} maps
      */
     static List<Map<String, String>> options(Map args) {
         Map options = args.options as Map ?: [:]
         Closure forEachOption = args.forEachOption as Closure ?: null
-        PrettyPrinterProperties prettyPrinterProperties = initializePrettyPrinterProperties(args, options.keySet().getAt(0))
+
+        PrettyPrinterProperties prettyPrinterProperties =
+            initializePrettyPrinterProperties(
+                args,
+                options.keySet().getAt(0)
+            )
 
         List<Map<String, String>> results = []
+
         for (entry in options) {
             if (forEachOption) {
                 forEachOption.call(entry)
             }
 
-            String text = PrettyPrinter.print(entry, prettyPrinterProperties)
-            results.add([id: entry.key as String, text: text])
+            String label = PrettyPrinter.print(entry.value, prettyPrinterProperties)
+            results.add([value: entry.key as String, label: label])
         }
 
         return results
@@ -413,25 +519,29 @@ class Select extends Control {
      * Initialises a {@link PrettyPrinterProperties} instance from the given argument map,
      * auto-detecting the pretty-printer from the first item when not explicitly provided.
      *
-     * @param args  configuration map containing {@code textPrefix}, {@code renderTextPrefix},
-     *              {@code locale}, {@code transformer}, and optionally {@code prettyPrinter}
+     * @param args configuration map containing {@code textPrefix}, {@code renderTextPrefix},
+     * {@code locale}, {@code transformer}, and optionally {@code prettyPrinter}
      * @param firstItem the first item in the option source, used for auto-detecting the pretty-printer
      * @return a configured {@link PrettyPrinterProperties} instance
      */
     private static PrettyPrinterProperties initializePrettyPrinterProperties(Map args, Object firstItem) {
         PrettyPrinterProperties result = new PrettyPrinterProperties()
+
         result.textPrefix = args.textPrefix
         result.renderTextPrefix = args.renderTextPrefix
         result.locale = args.locale as Locale
 
         // We set the 'transformer' property to PrettyPrint the options
-        if (args.transformer) result.transformer = args.transformer
+        if (args.transformer) {
+            result.transformer = args.transformer
+        }
 
         if (args.prettyPrinter) {
             result.prettyPrinter = args.prettyPrinter
 
         } else if (firstItem) {
             result.prettyPrinter = firstItem.getClass()
+
             if (PrettyPrinter.isRegistered(result.prettyPrinter)) {
                 result.renderTextPrefix = false
             }
@@ -441,19 +551,21 @@ class Select extends Control {
     }
 
     /**
-     * Builds a composite key string from the specified properties of an object,
-     * joining multiple key values with the given separator.
+     * Builds a composite option value from the specified properties of an object,
+     * joining multiple values with the given separator.
      *
-     * @param obj       the source object to read key values from
-     * @param keys      the list of property names to use as key parts
-     * @param separator the string used to join multiple key parts
-     * @return the composite key string
+     * @param obj the source object to read key values from
+     * @param keys the list of property names to use as value parts
+     * @param separator the string used to join multiple value parts
+     * @return the composite option value
      */
     private static String buildKey(Object obj, List<String> keys, String separator) {
         List results = []
+
         for (__key__ in keys) {
             results.add(obj[__key__])
         }
+
         return results.join(separator)
     }
 
@@ -470,7 +582,7 @@ class Select extends Control {
     /**
      * Serialises the current selected value(s) to a JSON string.
      * A {@link Collection} value is serialised as {@link dueuno.types.Type#LIST};
-     * a scalar value is serialised as {@link dueuno.types.Type#TEXT}.
+     * a scalar value is serialised as {@link dueuno.types.Type#STRING}.
      *
      * @return a JSON string representing the current selection
      */
@@ -480,13 +592,13 @@ class Select extends Control {
 
         if (value in Collection) {
             valueMap = [
-                    type : Type.LIST.toString(),
-                    value: value.collect { it != null ? it as String : null },
+                type : Type.LIST.toString(),
+                value: value.collect { it != null ? it as String : null },
             ]
         } else {
             valueMap = [
-                    type : Type.TEXT.toString(),
-                    value: value != null ? value as String : null,
+                type : Type.STRING.toString(),
+                value: value != null ? value as String : null,
             ]
         }
 
@@ -494,9 +606,9 @@ class Select extends Control {
     }
 
     /**
-     * Serialises this control's client-side configuration to JSON, including Select2 options
-     * ({@link #multiple}, {@link #searchMinInputLength}, {@link #allowClear}, {@link #autoSelect},
-     * {@link #placeholder}, {@link #search}) and the localised UI strings for the search widget.
+     * Serialises this control's client-side configuration to JSON, including Virtual Select options
+     * ({@code multiple}, {@code searchMinInputLength}, {@code allowClear}, {@code autoSelect},
+     * {@code placeholder}, {@code search}) and the localised UI strings for the search widget.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this control's properties
@@ -504,19 +616,25 @@ class Select extends Control {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                multiple            : multiple,
-                searchMinInputLength: searchMinInputLength,
-                allowClear          : allowClear,
-                autoSelect          : autoSelect,
-                placeholder         : placeholder,
-                search              : search,
-                text                : [
-                        inputTooShort: message('control.select.inputTooShort'),
-                        errorLoading : message('control.select.errorLoading'),
-                        noResults    : message('control.select.noResults'),
-                        searching    : message('control.select.searching'),
-                ]
+            options             : options ?: [],
+            multiple            : multiple,
+            searchMinInputLength: searchMinInputLength,
+            allowClear          : allowClear,
+            autoSelect          : autoSelect,
+            placeholder         : placeholder,
+            search              : search,
+            text                : [
+                inputTooShort: message('control.select.inputTooShort'),
+                errorLoading : message('control.select.errorLoading'),
+                noResults    : message('control.select.noResults'),
+                search       : message('control.select.search'),
+                searching    : message('control.select.searching'),
+                oneSelected  : message('control.select.oneSelected'),
+                manySelected : message('control.select.manySelected'),
+                allSelected  : message('control.select.allSelected'),
+            ]
         ]
+
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
 }

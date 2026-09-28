@@ -8,12 +8,12 @@ class Textarea extends TextField {
     }
 
     static getValue($element) {
-        let serverValue = Control.getServerValue($element);
+        let valueMap = Control.getServerValue($element);
         let value = $element.val();
         let encode = Component.getProperty($element, 'encode');
         if (encode) value = btoa(value);
-        serverValue['value'] = value;
-        return serverValue;
+        valueMap['value'] = value;
+        return valueMap;
     }
 
     static onKeyPress(event) {

@@ -17,7 +17,6 @@ dependencies {
     // Websockets
     api "io.github.zyro23:grails-spring-websocket:2.7.1"
 
-
     // System monitoring
     implementation "net.bull.javamelody:javamelody-spring-boot4-starter:2.7.0"
 

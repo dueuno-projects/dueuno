@@ -124,7 +124,7 @@ class Component {
     }
 
     static getDisplay($element) {
-        return $element.hasClass('d-none');
+        return $element.closest('.d-none').length == 0;
     }
 
     static setDisplay($element, value) {
@@ -136,17 +136,17 @@ class Component {
     }
 
     static getReadonly($element) {
-        return $element.prop('readonly') ?? false;
+        return $element.prop('disabled') ?? false;
     }
 
     static setReadonly($element, value) {
         if (value == null || value == false) {
-            $element.removeAttr('readonly');
+            $element.removeAttr('disabled');
             $element.removeAttr('tabindex');
 
         } else {
             for (let element of $element) {
-                element.setAttribute('readonly', '');
+                element.setAttribute('disabled', '');
                 element.setAttribute('tabindex', '-1');
             }
         }
@@ -160,4 +160,26 @@ class Component {
         $element.css('color', value);
     }
 
+    static setFocus($element, value) {
+        if (value) {
+            $element.trigger('focus');
+            if (document.activeElement !== $element[0]) {
+                $element
+                    .find('input:not([type="hidden"]):not(:disabled), button:not(:disabled), [tabindex]:not([tabindex="-1"])')
+                    .filter(':visible')
+                    .first()[0]
+                    ?.focus();
+            }
+        } else {
+            document.activeElement.blur();
+        }
+    }
+
+    static addCssClass($element, valueMap) {
+        $element.addClass(valueMap.value);
+    }
+
+    static removeCssClass($element, valueMap) {
+        $element.removeClass(valueMap.value);
+    }
 }

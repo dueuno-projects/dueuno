@@ -14,7 +14,7 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.Component
+import dueuno.elements.core.Component
 import groovy.contracts.Requires
 import groovy.transform.CompileStatic
 
@@ -26,7 +26,7 @@ import groovy.transform.CompileStatic
  * a {@link TableRow}. For each row the processing pipeline runs in order:
  * {@link TableRow#preProcessRow()}, the optional {@link #eachRow(Closure)} user closure,
  * and {@link TableRow#postProcessRow()}. Convenience references to the first and last
- * created rows are kept in {@link #firstRow} and {@link #lastRow}.
+ * created rows are kept in {@code firstRow} and {@code lastRow}.
  * </p>
  *
  * @author Gianluca Sartori
@@ -38,10 +38,10 @@ class TableRowset extends Component {
     /** The {@link Table} this rowset belongs to. */
     Table table
 
-    /** The raw collection of records used to populate {@link #rows}. */
+    /** The raw collection of records used to populate {@code rows}. */
     Collection recordset
 
-    /** The ordered list of {@link TableRow} instances created from {@link #recordset}. */
+    /** The ordered list of {@link TableRow} instances created from {@code recordset}. */
     List<TableRow> rows
 
     /** Reference to the first {@link TableRow} created; {@code null} before {@link #setRows(Collection)} is called. */
@@ -63,9 +63,9 @@ class TableRowset extends Component {
      * Creates a {@code TableRowset} instance configured from the supplied argument map.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code table} ({@link Table}, required),
-     *             {@code isHeader} ({@link Boolean}, default {@code false}),
-     *             {@code isFooter} ({@link Boolean}, default {@code false}),
+     * {@code table} ({@link Table}, required),
+     * {@code isHeader} ({@link Boolean}, default {@code false}),
+     * {@code isFooter} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     @Requires({ args.table })
@@ -95,8 +95,8 @@ class TableRowset extends Component {
 
     /**
      * Populates this rowset from the given collection, creating a {@link TableRow} for each
-     * record. Tracks {@link #firstRow} and {@link #lastRow}, runs the per-row processing
-     * pipeline, and invokes {@link #eachRowClosure} when set.
+     * record. Tracks {@code firstRow} and {@code lastRow}, runs the per-row processing
+     * pipeline, and invokes {@code eachRowClosure} when set.
      *
      * @param collection the source records; each element becomes one {@link TableRow}
      */
@@ -144,21 +144,21 @@ class TableRowset extends Component {
     }
 
     /**
-     * Creates a {@link TableRow} for the given record, registers it in {@link #rows},
+     * Creates a {@link TableRow} for the given record, registers it in {@code rows},
      * and returns it.
      *
-     * @param index  the zero-based row index
+     * @param index the zero-based row index
      * @param values the record data for this row
      * @return the newly created {@link TableRow}
      */
     private TableRow addRow(Integer index, Object values) {
         TableRow row = createComponent(TableRow, buildRowName(index), [
-                table: table,
-                rowset: this,
-                index: index,
-                isHeader: isHeader,
-                isFooter: isFooter,
-                values: values,
+            table   : table,
+            rowset  : this,
+            index   : index,
+            isHeader: isHeader,
+            isFooter: isFooter,
+            values  : values,
         ])
 
         rows.add(row)
@@ -177,7 +177,7 @@ class TableRowset extends Component {
     /**
      * Returns {@code true} if this rowset contains at least one row.
      *
-     * @return {@code true} when {@link #rows} is non-empty
+     * @return {@code true} when {@code rows} is non-empty
      */
     Boolean hasRows() {
         return rows.size() > 0

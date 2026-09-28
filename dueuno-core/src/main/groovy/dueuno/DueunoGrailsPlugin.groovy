@@ -14,11 +14,11 @@
  */
 package dueuno
 
-import dueuno.core.SessionInitializer
-import dueuno.security.CustomUserDetailsService
-import dueuno.security.ExternalIdAuthenticationFilter
-import dueuno.security.ExternalIdAuthenticationProvider
-import dueuno.tenants.TenantForCurrentUserResolver
+import dueuno.application.SessionInitializer
+import dueuno.security.PhysicalUserDetailsService
+import dueuno.security.PhysicalIdAuthenticationFilter
+import dueuno.security.PhysicalIdAuthenticationProvider
+import dueuno.tenant.TenantForCurrentUserResolver
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugins.Plugin
 import groovy.transform.CompileDynamic
@@ -73,28 +73,30 @@ class DueunoGrailsPlugin extends Plugin {
 //    def scm = [ url: 'http://svn.codehaus.org/grails-plugins/' ]
 
     @CompileDynamic
-    Closure doWithSpring() { {->
-        tenantForCurrentUserResolver(TenantForCurrentUserResolver)
-        sessionInitializer(SessionInitializer)
+    Closure doWithSpring() {
+        { ->
+            tenantForCurrentUserResolver(TenantForCurrentUserResolver)
+            sessionInitializer(SessionInitializer)
 
-        customUserDetailsService(CustomUserDetailsService) {
-            grailsApplication = ref('grailsApplication')
-        }
+            physicalUserDetailsService(PhysicalUserDetailsService) {
+                grailsApplication = ref('grailsApplication')
+            }
 
-        externalIdAuthenticationProvider(ExternalIdAuthenticationProvider) {
-            customUserDetailsService = ref('customUserDetailsService')
-        }
+            physicalIdAuthenticationProvider(PhysicalIdAuthenticationProvider) {
+                physicalUserDetailsService = ref('physicalUserDetailsService')
+            }
 
-        ConfigObject conf = SpringSecurityUtils.securityConfig
-        externalIdAuthenticationFilter(ExternalIdAuthenticationFilter, conf.externalId.filterProcessesUrl) {
-            authenticationManager = ref('authenticationManager')
-            authenticationSuccessHandler = ref('authenticationSuccessHandler')
-            authenticationFailureHandler = ref('authenticationFailureHandler')
-            sessionAuthenticationStrategy = ref('sessionAuthenticationStrategy')
-            rememberMeServices = ref('rememberMeServices')
-            securityContextRepository = ref('securityContextRepository')
+            ConfigObject conf = SpringSecurityUtils.securityConfig
+            physicalIdAuthenticationFilter(PhysicalIdAuthenticationFilter, conf.physicalId.filterProcessesUrl) {
+                authenticationManager = ref('authenticationManager')
+                authenticationSuccessHandler = ref('authenticationSuccessHandler')
+                authenticationFailureHandler = ref('authenticationFailureHandler')
+                sessionAuthenticationStrategy = ref('sessionAuthenticationStrategy')
+                rememberMeServices = ref('rememberMeServices')
+                securityContextRepository = ref('securityContextRepository')
+            }
         }
-    } }
+    }
 
     void doWithDynamicMethods() {
         // TODO Implement registering dynamic methods to classes (optional)

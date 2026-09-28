@@ -14,7 +14,7 @@
  */
 package dueuno.elements.controls
 
-import dueuno.elements.Elements
+import dueuno.elements.core.Elements
 import dueuno.types.Type
 import groovy.transform.CompileStatic
 
@@ -51,11 +51,11 @@ class NumberField extends TextField {
      * based on whether decimal places are required.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code decimals} ({@link Integer}, default {@code 0}),
-     *             {@code negative} ({@link Boolean}, default {@code true}),
-     *             {@code min} ({@link Integer}),
-     *             {@code max} ({@link Integer}),
-     *             {@code pattern} ({@link String}) — overrides the default regex,
+     * {@code decimals} ({@link Integer}, default {@code 0}),
+     * {@code negative} ({@link Boolean}, default {@code true}),
+     * {@code min} ({@link Integer}),
+     * {@code max} ({@link Integer}),
+     * {@code pattern} ({@link String}) — overrides the default regex,
      *             plus all keys accepted by {@link TextField#TextField(Map)}
      */
     NumberField(Map args) {
@@ -64,18 +64,27 @@ class NumberField extends TextField {
         viewTemplate = 'TextField'
         valueType = Type.NUMBER
         pattern = args.pattern ?: '^[0-9\\-\\.\\,]*$'
-        decimals = args.decimals as Integer ?: 0
+        setDecimals(args.decimals as Integer ?: 0)
         negative = (args.negative == null) ? true : args.negative
         min = args.min as Integer
         max = args.max as Integer
 
         inputType = TextFieldInputType.TEXT
+    }
+
+    /**
+     * Sets the number of decimal places accepted by this field and updates its input mode.
+     *
+     * @param value the number of decimal places; {@code null} defaults to {@code 0}
+     */
+    void setDecimals(Integer value) {
+        decimals = value ?: 0
         inputMode = decimals ? TextFieldInputMode.DECIMAL : TextFieldInputMode.NUMERIC
     }
 
     /**
      * Builds the client-side input validation regex pattern based on the current
-     * {@link #negative} and {@link #decimals} settings.
+     * {@code negative} and {@code decimals} settings.
      * <p>Examples:</p>
      * <ul>
      *   <li>integers only, no negatives: {@code ^[0-9]*$}</li>
@@ -101,8 +110,8 @@ class NumberField extends TextField {
 
     /**
      * Serialises this field's properties to JSON, first regenerating the validation pattern
-     * via {@link #buildPattern()}, then adding {@link #decimals}, {@link #negative},
-     * {@link #min}, and {@link #max}.
+     * via {@link #buildPattern()}, then adding {@code decimals}, {@code negative},
+     * {@code min}, and {@code max}.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this field's properties
@@ -111,10 +120,10 @@ class NumberField extends TextField {
     String getPropertiesAsJSON(Map properties = [:]) {
         pattern = buildPattern()
         Map thisProperties = [
-                decimals: decimals,
-                negative: negative,
-                min: min,
-                max: max,
+            decimals: decimals,
+            negative: negative,
+            min     : min,
+            max     : max,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
@@ -128,9 +137,9 @@ class NumberField extends TextField {
     @Override
     String getValueAsJSON() {
         Map valueMap = [
-                type: valueType,
-                value: value,
-                decimals: decimals,
+            type    : valueType,
+            value   : value,
+            decimals: decimals,
         ]
 
         return Elements.encodeAsJSON(valueMap)

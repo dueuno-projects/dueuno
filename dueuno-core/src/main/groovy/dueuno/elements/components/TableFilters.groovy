@@ -14,7 +14,7 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.Control
+import dueuno.elements.core.Control
 import groovy.transform.CompileStatic
 
 /**
@@ -23,11 +23,11 @@ import groovy.transform.CompileStatic
  * Filter fields are added with {@link #addField(Map)}, which automatically shows the filter
  * panel and prepends the {@code filters.} prefix to the label key. Filter values are resolved
  * from request parameters and the action session via {@link #getValues()}, which also sets
- * {@link #isFiltering} and {@link #prettyValues} as side effects.
+ * {@code isFiltering} and {@code prettyValues} as side effects.
  * </p>
  * <p>
  * The component creates a {@link TableActionbar} and two built-in link controls: a
- * {@link #searchButton} that submits the filter form, and a {@link #resetButton} that clears
+ * {@code searchButton} that submits the filter form, and a {@code resetButton} that clears
  * all filters.
  * </p>
  *
@@ -63,12 +63,12 @@ class TableFilters extends Form {
 
     /**
      * Creates a {@code TableFilters} instance configured from the supplied argument map.
-     * Initialises the {@link #actionbar}, {@link #searchButton}, and {@link #resetButton} controls.
+     * Initialises the {@code actionbar}, {@code searchButton}, and {@code resetButton} controls.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code table} ({@link Table}, required),
-     *             {@code fold} ({@link Boolean}, default {@code false}),
-     *             {@code autoFold} ({@link Boolean}, default {@code false}),
+     * {@code table} ({@link Table}, required),
+     * {@code fold} ({@link Boolean}, default {@code false}),
+     * {@code autoFold} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link Form#Form(Map)}
      */
     TableFilters(Map args) {
@@ -85,27 +85,27 @@ class TableFilters extends Form {
         // CONTROLS
         //
         actionbar = createComponent(
-                class: TableActionbar,
-                id: 'tableActionbar',
-                table: table,
-                filters: this,
+            class: TableActionbar,
+            id: 'tableActionbar',
+            table: table,
+            filters: this,
         )
 
         searchButton = createControl(
-                class: Link,
-                id: 'searchButton',
-                action: actionName,
-                submit: [id],
-                icon: 'fa-magnifying-glass',
-                text: '',
+            class: Link,
+            id: 'searchButton',
+            action: actionName,
+            submit: [id],
+            icon: 'fa-magnifying-glass',
+            text: '',
         )
         resetButton = createControl(
-                class: Link,
-                id: 'resetButton',
-                action: actionName,
-                icon: 'fa-delete-left',
-                tooltip: 'component.table.filters.reset',
-                text: '',
+            class: Link,
+            id: 'resetButton',
+            action: actionName,
+            icon: 'fa-delete-left',
+            tooltip: 'component.table.filters.reset',
+            text: '',
         )
     }
 
@@ -120,7 +120,7 @@ class TableFilters extends Form {
     String getPropertiesAsJSON(Map properties = [:]) {
         setSubmitParams()
         Map thisProperties = [
-                autoFold: autoFold,
+            autoFold: autoFold,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
@@ -158,20 +158,21 @@ class TableFilters extends Form {
      * each filter control to submit the filter form on change.
      */
     private void setSubmitParams() {
-        searchButton.params = table.submitParams + (Map)[
-                _21Table: table.id,
-                _21FiltersSearch: true,
-                _21TableOffset: 0,
+        searchButton.params = table.submitParams + (Map) [
+            _21Table        : table.id,
+            _21FiltersSearch: true,
+            _21TableOffset  : 0,
         ]
-        resetButton.params = table.submitParams + (Map)[
-                _21Table: table.id,
-                _21FiltersReset: true,
-                _21TableOffset: 0,
+        resetButton.params = table.submitParams + (Map) [
+            _21Table       : table.id,
+            _21FiltersReset: true,
+            _21TableOffset : 0,
         ]
 
-        for (field in components) {
-            if (field.component in Control) {
-                Control control = field.component as Control
+        for (field in fields) {
+            FormField formField = field.value
+            if (formField.component in Control) {
+                Control control = formField.component as Control
                 Map args = searchButton.properties
                 args.loading = true
                 control.onSubmit(args)
@@ -240,7 +241,7 @@ class TableFilters extends Form {
     /**
      * Returns whether the filter panel is currently in its folded (collapsed) state.
      * Checks the action session for a user-toggled fold preference before falling back
-     * to the {@link #fold} default.
+     * to the {@code fold} default.
      *
      * @return {@code true} if the filter panel is folded
      */
@@ -255,9 +256,9 @@ class TableFilters extends Form {
 
     /**
      * Resolves and returns the current filter values as a parameter map (keyed by control name
-     * without the {@code filters.} prefix). As a side effect, sets {@link #isFiltering} to
+     * without the {@code filters.} prefix). As a side effect, sets {@code isFiltering} to
      * {@code true} when at least one filter has a non-empty value, and populates
-     * {@link #prettyValues} with a human-readable summary of the active filters.
+     * {@code prettyValues} with a human-readable summary of the active filters.
      *
      * @return a map of filter control name → current value for all controls with a non-empty value
      */

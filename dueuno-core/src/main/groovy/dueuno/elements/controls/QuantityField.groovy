@@ -14,17 +14,18 @@
  */
 package dueuno.elements.controls
 
-import dueuno.core.PrettyPrinterProperties
-import dueuno.elements.Elements
-import dueuno.exceptions.ElementsException
+import dueuno.elements.ElementsException
+import dueuno.elements.core.Elements
+import dueuno.elements.core.PrettyPrinterProperties
 import dueuno.types.Quantity
 import dueuno.types.QuantityUnit
+import dueuno.types.Types
 import groovy.transform.CompileStatic
 
 /**
  * A numeric input control for entering {@link Quantity} values (amount + unit of measure).
  * <p>
- * Extends {@link NumberField} with the value type fixed to {@link Quantity#TYPE_NAME}. The
+ * Extends {@link NumberField} with the value type fixed to {@code QUANTITY}. The
  * unit of measure is displayed as a selector populated from the list of available units, and
  * is automatically updated when a {@link Quantity} value is set. Defaults to 2 decimal places
  * and no negative values.
@@ -47,30 +48,47 @@ class QuantityField extends NumberField {
      * Sets the view template, value type, decimal places, negative-value flag, and available units.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code decimals} ({@link Integer}, default {@code 2}),
-     *             {@code negative} ({@link Boolean}, default {@code false}),
-     *             {@code availableUnits} ({@link List} of {@link QuantityUnit}),
-     *             {@code defaultUnit} ({@link QuantityUnit}),
+     * {@code decimals} ({@link Integer}, default {@code 2}),
+     * {@code negative} ({@link Boolean}, default {@code false}),
+     * {@code availableUnits} ({@link List} of {@link QuantityUnit}),
+     * {@code defaultUnit} ({@link QuantityUnit}),
      *             plus all keys accepted by {@link NumberField#NumberField(Map)}
      */
     QuantityField(Map args) {
         super(args)
 
         viewTemplate = 'QuantityField'
-        valueType = Quantity.TYPE_NAME
+        valueType = Types.getTypeName(Quantity)
 
-        decimals = args.decimals == null ? 2 : args.decimals as Integer
+        setDecimals(args.decimals == null ? 2 : args.decimals as Integer)
         negative = (args.negative == null) ? false : args.negative
-        unitOptions = unitListToOptions(args.availableUnits as List)
+        setAvailableUnits(args.availableUnits as List<QuantityUnit>)
         setDefaultUnit(args.defaultUnit as QuantityUnit)
+    }
 
-        inputMode = decimals ? TextFieldInputMode.DECIMAL : TextFieldInputMode.NUMERIC
+    /**
+     * Sets the units available for selection and resets the default unit.
+     *
+     * @param value the available quantity units
+     */
+    void setAvailableUnits(List<QuantityUnit> value) {
+        unitOptions = unitListToOptions(value)
+        setDefaultUnit(null)
+    }
+
+    /**
+     * Returns the units currently available for selection.
+     *
+     * @return the available quantity units
+     */
+    List<QuantityUnit> getAvailableUnits() {
+        return unitOptions.keySet().collect { QuantityUnit.valueOf(it) }
     }
 
     /**
      * Sets the default unit for this field.
      * <ul>
-     *   <li>If {@link #unitOptions} is non-empty and {@code value} is {@code null}, the first
+     *   <li>If {@code unitOptions} is non-empty and {@code value} is {@code null}, the first
      *       available unit is used.</li>
      *   <li>If {@code value} is non-null, it is used directly.</li>
      *   <li>Otherwise, {@link QuantityUnit#ND} is used as a fallback.</li>
@@ -113,9 +131,9 @@ class QuantityField extends NumberField {
     }
 
     /**
-     * Returns the localised display label for the current {@link #defaultUnit}.
+     * Returns the localised display label for the current {@code defaultUnit}.
      *
-     * @return the pretty-printed string representation of {@link #defaultUnit} in the field's locale
+     * @return the pretty-printed string representation of {@code defaultUnit} in the field's locale
      */
     String getPrettyDefaultUnit() {
         // We only need to translate the Unit, not to transform it or do other stuff with it
@@ -126,10 +144,10 @@ class QuantityField extends NumberField {
 
     /**
      * Sets the value of this field, enforcing that it must be a {@link Quantity} instance.
-     * When a {@link Quantity} value is set, the {@link #defaultUnit} is updated to its unit.
+     * When a {@link Quantity} value is set, the {@code defaultUnit} is updated to its unit.
      *
      * @param value the {@link Quantity} value to set, or {@code null} to clear the field
-     * @throws dueuno.exceptions.ElementsException if {@code value} is not a {@link Quantity} instance
+     * @throws ElementsException if {@code value} is not a {@link Quantity} instance
      */
     @Override
     void setValue(Object value) {
@@ -153,12 +171,12 @@ class QuantityField extends NumberField {
     @Override
     String getValueAsJSON() {
         Map valueMap = [
-                type: valueType,
-                value: [
-                        amount: (value as Quantity)?.amount,
-                        unit: (value as Quantity)?.unit as String,
-                        decimals: decimals,
-                ]
+            type : valueType,
+            value: [
+                amount  : (value as Quantity)?.amount,
+                unit    : (value as Quantity)?.unit as String,
+                decimals: decimals,
+            ]
         ]
 
         return Elements.encodeAsJSON(valueMap)

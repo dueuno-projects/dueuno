@@ -36,7 +36,7 @@ class UrlField extends TextField {
      * via {@code args.pattern}.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code pattern} ({@link String}, default {@code "^[a-zA-Z0-9@\\-_.:\\/~#=!?&\\*()]*$"}),
+     * {@code pattern} ({@link String}, default {@code "^[a-zA-Z0-9@\\-_.:\\/~#=!?&\\*()]*$"}),
      *             plus all keys accepted by {@link TextField#TextField(Map)}
      */
     UrlField(Map args) {

@@ -48,7 +48,7 @@ We normal people avoid developing web applications as much as we can. We love _W
 
 Because the problem is with the UI. We keep reinventing the wheel each and every time. _“Hey, but each time gets better!”_ you would say. No. Each time gets worse.
 
-For back-office web applications most of the costs lies in the UI development. The _Front End_, code executed by the browser. Something invented to display text and links is nowadays used to render a GUI whose development requires us to draw lines and align pixels.
+For business web applications, most costs lie in UI development: the _front end_, which is the code executed by the browser. Something invented to display text and links is now used to render GUIs whose development requires us to draw lines and align pixels.
 
 We can’t just say _“Hey, browser, I need a modal dialog with a title and three buttons”_. We need to code an _HTML_ page to structure the content, tell the browser how to display it with _CSS_, write _JavaScript_ code so that the button _“click”_ event can send an _HTTP request_ to a server that executes a _Java_ function that returns a _JSON_ or _HTML_ we then use to update the page again with _JavaScript_ code.
 
@@ -73,7 +73,7 @@ So I jumped into this adventure of creating something to hide away all the _low 
 
 CAUTION: I want to code the _“what”_ and let the computer handle the _“how”_. Cause I am not one of those folks who just like doing stuff. _I want stuff to be done_.
 
-So, we had to build what is called a _Back-Office Application_. One of the most basic type of applications (I mean, it’s not a videogame, right?) We needed to develop the _usual suspects_, something the IT world have been doing for the last 50 years:
+So, we had to build what is called a _Business Application_, one of the most basic types of application (I mean, it’s not a video game, right?). We needed to develop the _usual suspects_, something the IT world has been doing for the last 50 years:
 
 - _Authenticate_ and _Authorise_ users
 - Show them a _Menu_ to access the main features
@@ -90,12 +90,12 @@ We decided to go with Java because _Java is everywhere_. We have the most compre
 
 So, Dueuno runs on the _JVM_. It builds on top of open source technologies like the https://grails.org/[Grails Framework (Spring), window=_blank], https://getbootstrap.com/[Bootstrap, window=_blank] and https://jquery.com/[jQuery, window=_blank] but lets you develop web applications with just one single programming language: the beautiful https://groovy-lang.org/[Apache Groovy, window=_blank].
 
-- No need to know HTML, CSS, JavaScript or any frotend framework;
+- No need to know HTML, CSS, JavaScript, or any front-end framework;
 - No need to know the screen resolution of the device your app will be consumed;
 - No need to be a super hero (A.k.a. full-stack developer), you can just be a normal person.
 
-CAUTION: We took decisions, of course. We created our standard UI and UX. Is it perfect? No. Does it do the job. Yes. And we can only make it better from now on. At least we were able to develop our back office web applications that https://world.hey.com/dhh/the-one-person-framework-711e6318[One-Person, window=_blank] can handle.
+CAUTION: We made decisions, of course. We created our standard UI and UX. Is it perfect? No. Does it do the job? Yes. And we can only make it better from now on. At least we were able to develop business web applications that https://world.hey.com/dhh/the-one-person-framework-711e6318[one person, window=_blank] can handle.
 
 TIP: BEWARE: If you like doing things, Dueuno is not for you. If you like things to be done, follow me down the rabbit hole, you may find something useful.
 
-In the next chapters we’ll be going through the _Quirks and Quarks_ of building back-office web applications with Dueuno.
+In the next chapters, we’ll go through the quirks of building business web applications with Dueuno.

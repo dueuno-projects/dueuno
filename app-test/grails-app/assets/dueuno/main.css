@@ -1,5 +1,6 @@
 :root {
     /* Spacing */
+    --elements-1px: 1px;
     --elements-spacing-x: .65rem;
     --elements-spacing-y: .25rem;
 

@@ -14,13 +14,13 @@
  */
 package dueuno.elements.pages
 
+import dueuno.application.ApplicationService
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Label
 import dueuno.elements.contents.ContentForm
-import dueuno.core.ApplicationService
-import dueuno.security.SecurityService
 import dueuno.elements.style.TextAlign
-import dueuno.properties.TenantPropertyService
+import dueuno.security.SecurityService
+import dueuno.tenant.TenantPropertyService
 import grails.plugin.springsecurity.annotation.Secured
 
 /**
@@ -51,28 +51,28 @@ class ShellController implements ElementsController {
 
         c.form.with {
             addField(
-                    class: Label,
-                    id: 'logo',
-                    html: """<img width="50%" src="${logoImage}" />""",
-                    textAlign: TextAlign.CENTER,
-                    displayLabel: false,
+                class: Label,
+                id: 'logo',
+                html: """<img width="50%" src="${logoImage}" />""",
+                textAlign: TextAlign.CENTER,
+                displayLabel: false,
             )
             addField(
-                    class: Label,
-                    id: 'title',
-                    html: """<div class="m-4">${message('app.credits.text')}</div>""",
-                    textAlign: TextAlign.CENTER,
-                    displayLabel: false,
+                class: Label,
+                id: 'title',
+                html: """<div class="m-4">${message('app.credits.text')}</div>""",
+                textAlign: TextAlign.CENTER,
+                displayLabel: false,
             )
 
             Integer i = 0
             for (item in applicationService.credits) {
                 addField(
-                        class: Label,
-                        id: "credits${i}",
-                        html: """${item.key}<br/><strong>${item.value.join('</strong><br/><strong>')}</strong>""",
-                        textAlign: TextAlign.CENTER,
-                        label: '',
+                    class: Label,
+                    id: "credits${i}",
+                    html: """${item.key}<br/><strong>${item.value.join('</strong><br/><strong>')}</strong>""",
+                    textAlign: TextAlign.CENTER,
+                    label: '',
                 )
                 i++
             }

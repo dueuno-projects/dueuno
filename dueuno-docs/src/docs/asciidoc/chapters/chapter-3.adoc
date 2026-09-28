@@ -43,7 +43,7 @@ class BootStrap {
 
 The object in charge of creating a feature, and other application-wide stuff, is the `ApplicationService`.
 
-To register a Feature we need to specify the name of the controller that implemets the feature. Eg. in our case, the feature will be available at the following URL:
+To register a feature, we need to specify the name of the controller that implements it. For example, in our case, the feature will be available at the following URL:
 
 `http://localhost:8080/*person*`
 
@@ -133,7 +133,7 @@ Please focus your attention to:
 
 . The controller class name must be suffixed by the word `Controller`. That’s why our person controller is called `PersonController` (this is a convention of the Grails Framework).
 . The person controller implements `ElementsController`. This makes the https://www.dueuno.com/docs/[Dueuno API,window=_blank] available to our actions (NOTE: If you use https://www.jetbrains.com/idea/download/[IntelliJ IDEA Ultimate,window=_blank] with the https://plugins.jetbrains.com/plugin/18504-grails[Grails plugin,window=_blank] you can avoid implementing `ElementsController` and everything will magically work as expected. Yay!).
-. We use a convention to name the actions. When they start with the `on` prefix, they execute some logic in the background. When they don’t, they render a user interface. We are also using a naming standard here, we may change the action names, but for now let’s not add too much complications.
+. We use a convention to name actions. When they start with the `on` prefix, they execute logic in the background. When they don’t, they render a user interface. We are also using a naming standard here. We may change the action names, but for now let’s not add too many complications.
 
 === Controller Implementation
 

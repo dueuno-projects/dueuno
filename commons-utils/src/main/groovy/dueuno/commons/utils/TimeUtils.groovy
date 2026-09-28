@@ -49,7 +49,7 @@ class TimeUtils {
             timeEnd = timeStart
         }
 
-        LocalDate aDay = LocalDate.of(2021,1,1)
+        LocalDate aDay = LocalDate.of(2021, 1, 1)
         LocalDateTime aDayIn = aDay.atTime(timeStart)
         LocalDateTime aDayOut = aDay.atTime(timeEnd)
 

@@ -1,219 +1,432 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to you under the Apache License, Version 2.0.
+ */
 class Select extends Control {
 
     static initialize($element, $root) {
-        let controlId = Component.getId($element);
+        let element = $element[0];
         let properties = Component.getProperties($element);
-        let hasButtons = $element.parent().has('a, .component-help').exists();
+        let dropboxPortal = Select.getDropboxPortal(element);
 
         let initOptions = {
-            theme: 'bootstrap-5',
-            dropdownParent: $root,
-            language: _21_.user.language,
-            multiple: properties['multiple'],
-            placeholder: properties['multiple'] ? null : properties['placeholder'],
-            minimumResultsForSearch: properties['search'] ? 0 : -1,
-            allowClear: properties['multiple'] ? false : properties['allowClear'],
-            dropdownAutoWidth : true,
-            width: hasButtons ? 'auto' : '100%',
-            escapeMarkup: function(markup) { return markup; },
-            language: {
-                inputTooShort: function (args) {
-                    var remainingChars = args.minimum - args.input.length;
-                    var message = properties.text['inputTooShort'].replace('{0}', remainingChars);
-                    return message;
-                },
-                errorLoading: function() {
-                    return properties.text['errorLoading'];
-                },
-                noResults: function() {
-                    return properties.text['noResults'];;
-                },
-                searching: function() {
-                    return properties.text['searching'];;
-                },
-            },
+            ele: element,
+            dropboxWrapper: '#' + dropboxPortal.id,
+            zIndex: 1060,
+            options: properties.options,
+            multiple: properties.multiple,
+            search: properties.search,
+            placeholder: properties.multiple ? '' : properties.placeholder,
+            hideClearButton: properties.multiple || !properties.allowClear,
+            autoSelectFirstOption: false,
+            disableSelectAll: true,
+            searchPlaceholderText: properties.text.search,
+            loadingText: properties.text.searching,
+            noOptionsText: properties.text.noResults,
+            noSearchResultsText: properties.text.noResults,
+            optionSelectedText: properties.text.oneSelected,
+            optionsSelectedText: properties.text.manySelected,
+            allOptionsSelectedText: properties.text.allSelected,
+            additionalClasses: 'w-100',
+            silentInitialValueSet: true,
+            showDropboxAsPopup: false,
+            showDuration: 0,
+            hideDuration: 0,
         };
 
         let searchEvent = Component.getEvent($element, 'search');
         if (searchEvent) {
-            initOptions.minimumInputLength = properties['searchMinInputLength'];
-            initOptions.ajax = {
-                url: Transition.buildUrl(searchEvent),
-                data: function (params) {
-                    searchEvent.params = {
-                        [controlId]: params.term ? params.term.replaceAll('%', '*') : '',
-                    };
-                    let submitEvent = Transition.build21Params(searchEvent);
-                    return submitEvent;
-                },
-                processResults: function (data) {
-                    let transition = Transition.fromHtml(data);
-                    let optionsCommand = transition.commands.findLast(it => it.component == controlId && it.property == 'options');
-                    if (optionsCommand) {
-                        let options = optionsCommand.value.value ?? {};
-                        return {results: options};
-                    }
-                }
-            }
+            initOptions.search = true;
+            initOptions.onServerSearch = function (searchValue) {
+                Select.loadServerOptions($element, searchEvent, searchValue);
+            };
         }
 
-        $element.select2(initOptions);
+        VirtualSelect.init(initOptions);
     }
 
     static finalize($element, $root) {
-        $element.off('select2:select select2:unselect').on('select2:select select2:unselect', Select.onChange);
-
-        // We need this to auto-focus the text input
-        $element.off('select2:open').on('select2:open', Select.onOpen);
-
-        // We need this to avoid displaying the title attribute as tooltip
-        // This is a hack since there is no way to configure a different behaviour on Select2
-        let $selection = $element.next().find('.select2-selection__rendered');
-        $selection.off('mouseenter').on('mouseenter', Select.onMouseEnter);
+        let element = $element[0];
+        let virtualSelect = element.virtualSelect;
+        // Run the jQuery guard before VirtualSelect's keyboard handler.
+        virtualSelect.removeEvent(virtualSelect.$wrapper, 'keydown', 'onKeyDown');
+        $(virtualSelect.$wrapper).off('keydown.selectClear').on('keydown.selectClear', {element: element}, Select.onClearKeyDown);
+        virtualSelect.addEvent(virtualSelect.$wrapper, 'keydown', 'onKeyDown');
 
         Transition.triggerEvent($element, 'load');
+
+        let $navigationElements = $element.add(element.virtualSelect.$dropboxWrapper);
+        $navigationElements.off('keydown.select').on('keydown.select', {element: element}, Select.onKeyDown);
+
+        $element.find('.vscomp-value').off('click.select').on('click.select', Select.onValueClick);
+        $element.closest('.input-group').children('.component-link').off('keydown.select').on('keydown.select', Select.onActionKeyDown);
+        $element.closest('.input-group').children('.component-help').off('keydown.select').on('keydown.select', Select.onHelpKeyDown);
+        $element.closest('form').off('keydown.selectNavigation').on('keydown.selectNavigation', Select.onFormKeyDown);
+        $element.off('beforeOpen').on('beforeOpen', Select.onOpen);
+        $element.off('change').on('change', Select.onChange);
     }
 
-    static deactivate($element) {
-        Component.setDisplay($element, false);
-    }
+    static getDropboxPortal(element) {
+        let $modal = $(element).closest('.modal');
+        let portalId = $modal.length ? 'select-dropbox-portal-modal' : 'select-dropbox-portal';
+        let $portal = $('#' + portalId);
 
-    static isInitialized($element) {
-        return false;
-    }
+        if (!$portal.length) {
+            $portal = $('<div>', {id: portalId, class: 'control-select'});
+            $portal.appendTo($modal.length ? $modal : $('body'));
+        }
 
-    static onMouseEnter(event) {
-        let $element = $(event.currentTarget);
-        $element.removeAttr('title');
-        $element.closest('.input-group').find('[title]').each(function (key, item) {
-            $(item).removeAttr('title');
-        });
-    }
-
-    static onOpen(event) {
-        let selectId = event.currentTarget.id;
-        let $select = $(".select2-search__field[aria-controls='select2-" + selectId + "-results']");
-        $select.each(function (key, element){
-            element.focus();
-        })
+        return $portal[0];
     }
 
     static onChange(event) {
         let $element = $(event.currentTarget);
-        let select2Values = $element.select2('data');
-
-        // In case of user clear we align the control value
-        if (select2Values.length == 0) {
-            let valueMap = {
-                type: Type.TEXT,
-                value: null,
-            };
-            $element.data('21-value', valueMap);
-            $element.val(valueMap.value);
-            $element.trigger('change');
-        }
-
         Transition.triggerEvent($element, 'change');
     }
 
+    static onOpen(event) {
+        let $element = $(event.currentTarget);
+        let searchEvent = Component.getEvent($element, 'search');
+
+        if (searchEvent) {
+            Select.loadServerOptions($element, searchEvent);
+        }
+    }
+
+    static onClearKeyDown(event) {
+        if (event.key !== 'Backspace' && event.key !== 'Delete') return;
+
+        let element = event.data.element;
+        if (event.target !== element.virtualSelect.$wrapper) return;
+        if (Component.getProperties($(element)).allowClear) return;
+
+        // Prevent VirtualSelect from clearing the selection.
+        event.preventDefault();
+        event.stopImmediatePropagation();
+    }
+
+    static onValueClick(event) {
+        let $element = $(event.currentTarget);
+
+        if ($element.closest('.control-select').is('[disabled]')) {
+            event.stopPropagation();
+        }
+    }
+
+    /**
+     * Moves focus from a VirtualSelect control. VirtualSelect handles Tab
+     * internally, which can make navigation depend on its focusable children
+     * (for example, the clear button is only available for selected values).
+     */
+    static onKeyDown(event) {
+        if (event.key !== 'Tab') return;
+
+        let $element = $(event.data.element);
+        $element[0].close();
+        let $next;
+
+        if (event.shiftKey) {
+            $next = Select.getAdjacentControl($element, -1);
+            if ($next.length && $next.data('21-control') === 'Select') {
+                let $trailing = Select.getTrailingFocusable($next);
+                if ($trailing.length) {
+                    $next = $trailing.last();
+                }
+            }
+        } else {
+            let $trailing = Select.getTrailingFocusable($element);
+            $next = $trailing.length
+                ? $trailing.first()
+                : Select.getAdjacentControl($element, 1);
+        }
+
+        if (!$next.length) {
+            $next = Select.getAdjacentFocusable($element, event.shiftKey ? -1 : 1);
+        }
+
+        if (!$next.length) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        Component.setFocus($next, true);
+    }
+
+    static onActionKeyDown(event) {
+        if (event.key !== 'Tab' || !event.shiftKey) return;
+
+        let $action = $(event.currentTarget);
+        let $actions = $action.closest('.input-group')
+            .children('.component-link:not([disabled])')
+            .filter(':visible');
+
+        if (!$action.is($actions.first())) return;
+
+        let $select = $action.closest('.input-group')
+            .children('[data-21-control="Select"]:not([disabled])');
+
+        if (!$select.length) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        $select.trigger('focus');
+    }
+
+    /**
+     * Restores the reverse tab order from a field help button to its Select.
+     * The focusable element created by VirtualSelect is not a DOM sibling of
+     * the help button, so native Shift+Tab navigation is not reliable here.
+     */
+    static onHelpKeyDown(event) {
+        if (event.key !== 'Tab' || !event.shiftKey) return;
+
+        let $element = $(event.currentTarget);
+        let $group = $element.closest('.input-group');
+        let $actions = $group
+            .children('.component-link:not([disabled])')
+            .filter(':visible');
+
+        let $select = $group
+            .closest('.input-group')
+            .children('[data-21-control="Select"]:not([disabled])');
+
+        if (!$select.length) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        ($actions.length ? $actions.last() : $select).trigger('focus');
+    }
+
+    /**
+     * Handles reverse navigation when the previous enabled form control is a
+     * Select. This keeps Shift+Tab symmetric with onKeyDown when one or more
+     * disabled controls occur between the Select and the current control.
+     */
+    static onFormKeyDown(event) {
+        if (event.key !== 'Tab' || !event.shiftKey) return;
+
+        let $control = $(event.target).closest('[data-21-control]');
+
+        if (!$control.length || $control.data('21-control') === 'Select') return;
+
+        let $previous = Select.getAdjacentControl($control, -1);
+
+        if ($previous.data('21-control') !== 'Select') return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        let $trailing = Select.getTrailingFocusable($previous);
+        ($trailing.length ? $trailing.last() : $previous).trigger('focus');
+    }
+
     static setValue($element, valueMap, trigger = true) {
-        if (!trigger) $element.off('select2:select select2:unselect');
+        valueMap = TypedValue.require(valueMap);
 
         let searchEvent = Component.getEvent($element, 'search');
         let loadEvent = Component.getEvent($element, 'load');
-        let hasOptions = Select.hasOptions($element);
-        if (searchEvent && loadEvent && !hasOptions) {
-            Select.setOptions($element, [{id: valueMap.value}, {text: '...'}]);
-            if (trigger) {
-                Transition.submit(loadEvent);
-            }
+        if (searchEvent && loadEvent && !Select.hasOptions($element)) {
+            Select.setTemporaryOptions($element, valueMap);
+            if (trigger) Transition.submit(loadEvent);
         }
 
-        $element.data('21-value', valueMap);
-        $element.val(valueMap.value);
-        $element.trigger('change');
-
-        if (!trigger) $element.on('select2:select select2:unselect', Select.onChange);
+        $element[0].setValue(valueMap.value, true);
     }
 
     static getValue($element) {
         let properties = Component.getProperties($element);
-        let select2Values = $element.select2('data');
-        let loadEvent = Component.getEvent($element, 'load');
-        if (loadEvent && select2Values.length == 0) {
-            // If no value have been manually selected from the user
-            let controlValue = $element.data('21-value');
-            return controlValue;
-        }
+        let value = $element[0].value;
 
-        let ids = [];
-        for (let value of select2Values) {
-            ids.push(value['id']);
-        }
+        if (Select.isEmptyValue(value)) {
+            return TypedValue.empty(Select.getValueType($element));
 
-        let result = {};
-        if (ids.length == 0) {
-            result.type = Type.TEXT;
-            result.value = null;
-
-        } else if (ids.length == 1 && !properties['multiple']) {
-            result.type = Type.TEXT;
-            result.value = ids[0];
+        } else if (properties.multiple) {
+            return TypedValue.list(Array.isArray(value) ? value : [value]);
 
         } else {
-            result.type = Type.LIST;
-            result.value = ids;
+            return TypedValue.string(value);
         }
+    }
 
-        return result;
+    static getValueType($element) {
+        let properties = Component.getProperties($element);
+        return properties.multiple ? Type.LIST : Type.STRING;
+    }
+
+    static isEmptyValue(value) {
+        return value == null || value === '' || (Array.isArray(value) && value.length === 0)
     }
 
     static hasOptions($element) {
-        return $element.children('option').length;
+        return ($element[0].options?.length ?? 0) > 0;
+    }
+
+    static loadServerOptions($element, searchEvent, searchValue = '') {
+        let controlId = Component.getId($element);
+
+        searchEvent.params = {
+            [controlId]: searchValue,
+        };
+
+        $.ajax({
+            url: Transition.buildUrl(searchEvent),
+            data: Transition.build21Params(searchEvent),
+
+            success: function (data) {
+                let transition = Transition.fromHtml(data);
+                let command = transition.commands.findLast(it =>
+                    it.component == controlId && it.property == 'options'
+                );
+
+                let serverOptions = command?.value?.value ?? [];
+                Select.setSearchResultOptions($element, serverOptions);
+            },
+
+            error: function () {
+                Select.setSearchResultOptions($element, []);
+            },
+        });
+    }
+
+    static setSearchResultOptions($element, options) {
+        let virtualSelect = $element[0].virtualSelect;
+
+        virtualSelect.searchValue = '';
+        virtualSelect.setServerOptions(options);
     }
 
     static setOptions($element, options) {
-        let valueMap = Select.getValue($element);
+        let element = $element[0];
+        let valueMap = TypedValue.require(Select.getValue($element));
+        let selectedValues = Select.valueList(valueMap.value);
+        let newOptions = options ?? [];
+        let optionValues = newOptions.map(option => String(option.value));
+        let properties = Component.getProperties($element);
 
-        $element.empty();
-        if (!options || !options.length) {
-            valueMap.value = null;
-            Select.setValue($element, valueMap, false);
-            return;
+        // 1. Preserve the currently selected value(s) if they are still valid.
+        let validValues = selectedValues.filter(value =>
+            optionValues.includes(value)
+        );
+
+        // 2. If there is no valid current selection, restore the value provided
+        //    by the server, if it is still available among the new options.
+        if (!validValues.length) {
+            let serverValue = Control.getServerValue($element).value;
+
+            validValues = Select.valueList(serverValue).filter(value =>
+                optionValues.includes(value)
+            );
         }
 
-        let isValueInOptions = false;
-        for (let option of options) {
-            $element.append(new Option(option.text, option.id, false, false));
-            if (option.id == valueMap.value) {
-                isValueInOptions = true
-            }
+        // 3. If there is still no valid value, automatically select the only
+        //    available option when autoSelect is enabled and the field is required.
+        if (!validValues.length && properties.autoSelect && !properties.nullable && newOptions.length == 1) {
+            validValues = [String(newOptions[0].value)];
         }
 
-        if (isValueInOptions) {
-            let properties = Component.getProperties($element);
-            let optionsCount = $element.children('option').length;
-            if (!properties['autoSelect'] || optionsCount > 1 || properties['nullable']) {
-                // Select2 automatically selects the first item on ajax loading
-                // so we need to implement an inverse logic
-                Select.setValue($element, valueMap, false);
-            }
-        } else {
-            valueMap.value = null;
-            Select.setValue($element, valueMap, false);
-        }
+        element.setOptions(newOptions, false);
+        element.setValue(validValues, true);
     }
 
-    static getReadonly($element) {
-        return $element.prop('disabled');
+    static setTemporaryOptions($element, valueMap) {
+        let options = Select.valueList(valueMap.value).map(value => ({
+            value: value,
+            label: '...'
+        }));
+
+        $element[0].setOptions(options, false);
     }
 
     static setReadonly($element, value) {
         Component.setReadonly($element, value);
-        $element.prop('disabled', value);
+
+        if (value) {
+            $element[0].disable();
+        } else {
+            $element[0].enable();
+        }
 
         let $actions = $element.closest('.input-group').find('a');
         Component.setReadonly($actions, value);
+    }
+
+    static valueList(value) {
+        if (value == null) {
+            return [];
+        }
+
+        let values = Array.isArray(value)
+            ? value
+            : [value];
+
+        return values.map(value => String(value));
+    }
+
+    static getTrailingFocusable($element) {
+        return $element.closest('.input-group')
+            .children('.component-link:not([disabled]), .component-help:not(:disabled)')
+            .filter(':visible');
+    }
+
+    /**
+     * Returns the nearest native focus target outside the Select. This is the
+     * fallback for a Select at the boundary of a form, where there is no next
+     * control but the page still contains links or buttons.
+     */
+    static getAdjacentFocusable($element, direction) {
+        let $scope = $element.closest('[data-21-component="PageContent"]');
+
+        if (!$scope.length) {
+            $scope = $(document.body);
+        }
+
+        let element = $element[0];
+
+        let $focusable = $scope.find(
+            'a[href], button:not(:disabled), input:not([type="hidden"]):not(:disabled), ' +
+            'select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+        ).filter(':visible').filter(function () {
+            return this !== element && !element.contains(this);
+        });
+
+        let candidates = $focusable.get().filter(function (candidate) {
+            let position = element.compareDocumentPosition(candidate);
+
+            return direction > 0
+                ? position & Node.DOCUMENT_POSITION_FOLLOWING
+                : position & Node.DOCUMENT_POSITION_PRECEDING;
+        });
+
+        return $(direction > 0 ? candidates[0] : candidates.at(-1));
+    }
+
+    /**
+     * Returns the nearest visible, enabled form control in the requested
+     * direction, skipping readonly, disabled, and hidden controls.
+     */
+    static getAdjacentControl($element, direction) {
+        let $scope = $element.closest('[data-21-component="PageContent"]');
+
+        if (!$scope.length) {
+            $scope = $element.closest('form');
+        }
+
+        let $controls = $scope.find('[data-21-control]');
+        let index = $controls.index($element);
+
+        for (let i = index + direction; i >= 0 && i < $controls.length; i += direction) {
+            let $control = $controls.eq(i);
+            let control = Control.getByElement($control);
+            let isVisible = Elements.callMethod($control, control, 'getDisplay');
+            let isReadonly = Elements.callMethod($control, control, 'getReadonly');
+
+            if (isVisible && !isReadonly && $control.is(':visible')) {
+                return $control;
+            }
+        }
+
+        return $();
     }
 
 }

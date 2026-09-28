@@ -20,12 +20,14 @@ import groovy.transform.ToString
 import org.grails.datastore.gorm.GormEntity
 
 /**
+ * Renamed to 'user_role' to avoid conflicting with database keywords (DB2, H2 have problems with 'user' or 'role')
+ *
  * @author Gianluca Sartori
  */
 
 @GrailsCompileStatic
-@EqualsAndHashCode(includes='authority')
-@ToString(includes='authority', includeNames=true, includePackage=false)
+@EqualsAndHashCode(includes = 'authority')
+@ToString(includes = 'authority', includeNames = true, includePackage = false)
 class TRole implements GormEntity, Serializable {
 
     private static final long serialVersionUID = 1
@@ -39,6 +41,7 @@ class TRole implements GormEntity, Serializable {
     }
 
     static mapping = {
+        table 'sys_role'
         cache true
     }
 }

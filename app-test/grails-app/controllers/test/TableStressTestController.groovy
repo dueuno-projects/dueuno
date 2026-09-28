@@ -14,11 +14,11 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.Checkbox
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
-import dueuno.elements.ElementsController
 import dueuno.types.Money
 
 class TableStressTestController implements ElementsController {
@@ -28,10 +28,10 @@ class TableStressTestController implements ElementsController {
     private rowsQty = 100
     private colsQtyPerType = 50
     private colsType = [
-            'String',
-            'BigDecimal',
-            'Money',
-            'Boolean',
+        'String',
+        'BigDecimal',
+        'Money',
+        'Boolean',
     ]
 
     private List generateColumns() {
@@ -88,25 +88,25 @@ class TableStressTestController implements ElementsController {
 
                 filters.with {
                     addField(
-                            class: Checkbox,
-                            id: 'checkbox',
+                        class: Checkbox,
+                        id: 'checkbox',
                     )
                     addField(
-                            class: Select,
-                            id: 'user1',
-                            optionsFromRecordset: personService.list(),
-                            keys: ['id'],
+                        class: Select,
+                        id: 'user1',
+                        optionsFromRecordset: personService.list(),
+                        keys: ['id'],
                     )
                     addField(
-                            class: TextField,
-                            id: 'textfield',
+                        class: TextField,
+                        id: 'textfield',
                     )
                 }
 
                 actionbar.with {
                     addAction(
-                            action: 'index2',
-                            text: 'HTML Table',
+                        action: 'index2',
+                        text: 'HTML Table',
                     )
                 }
 

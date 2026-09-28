@@ -17,13 +17,13 @@
     opacity: .4;
     background: rgb(var(--elements-primary-bg));
     width: 150%;
-    height: 20px;
+    height: 1.428571rem;
 }
 
 .progress .progress-subline{
     position: absolute;
     background: rgb(var(--elements-primary-bg));
-    height: 20px;
+    height: 1.428571rem;
 }
 
 .progress .progress-inc{

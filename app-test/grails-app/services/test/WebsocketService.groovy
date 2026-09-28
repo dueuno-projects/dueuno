@@ -23,4 +23,5 @@ class WebsocketService implements WebSocket {
     void send(Map data) {
         convertAndSend "/queue/chat", data
     }
+
 }

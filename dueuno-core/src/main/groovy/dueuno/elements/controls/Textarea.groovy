@@ -19,10 +19,10 @@ import dueuno.types.Type
 import groovy.transform.CompileStatic
 
 /**
- * A multi-line text-input control backed by {@link dueuno.types.Type#TEXT}.
+ * A multi-line text-input control backed by {@link dueuno.types.Type#STRING}.
  * <p>
  * Extends {@link TextField} with multi-line rendering, optional newline acceptance, and
- * optional Base64 encoding of the submitted value. When {@link #encode} is {@code true},
+ * optional Base64 encoding of the submitted value. When {@code encode} is {@code true},
  * the submitted content is Base64-encoded before transmission and can be decoded server-side
  * via {@link #decodeText(String)}.
  * </p>
@@ -41,19 +41,19 @@ class Textarea extends TextField {
 
     /**
      * Creates a {@code Textarea} instance configured from the supplied argument map.
-     * Sets the value type to {@link dueuno.types.Type#TEXT}, disables auto-select by default,
+     * Sets the value type to {@link dueuno.types.Type#STRING}, disables auto-select by default,
      * and marks the container as multi-line.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code autoSelect} ({@link Boolean}, default {@code false}),
-     *             {@code acceptNewLine} ({@link Boolean}, default {@code true}),
-     *             {@code encode} ({@link Boolean}, default {@code false}),
+     * {@code autoSelect} ({@link Boolean}, default {@code false}),
+     * {@code acceptNewLine} ({@link Boolean}, default {@code true}),
+     * {@code encode} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link TextField#TextField(Map)}
      */
     Textarea(Map args) {
         super(args)
 
-        valueType = Type.TEXT
+        valueType = Type.STRING
         autoSelect = args.autoSelect == null ? false : args.autoSelect
         acceptNewLine = args.acceptNewLine == null ? true : args.acceptNewLine
         encode = args.encode == null ? false : args.encode
@@ -63,7 +63,7 @@ class Textarea extends TextField {
 
     /**
      * Serialises this control's properties to JSON, adding {@code autoSelect},
-     * {@link #acceptNewLine}, and {@link #encode}.
+     * {@code acceptNewLine}, and {@code encode}.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this control's properties
@@ -71,9 +71,9 @@ class Textarea extends TextField {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                autoSelect: autoSelect,
-                acceptNewLine: acceptNewLine,
-                encode: encode,
+            autoSelect   : autoSelect,
+            acceptNewLine: acceptNewLine,
+            encode       : encode,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
@@ -84,7 +84,7 @@ class Textarea extends TextField {
 
     /**
      * Decodes a Base64-encoded string previously submitted by a {@code Textarea} with
-     * {@link #encode} set to {@code true}.
+     * {@code encode} set to {@code true}.
      *
      * @param encodedString the Base64-encoded string to decode
      * @return the decoded plain-text string

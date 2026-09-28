@@ -14,10 +14,10 @@
  */
 package dueuno.types
 
-import dueuno.core.PrettyPrinter
-import dueuno.core.PrettyPrinterProperties
+import dueuno.elements.ElementsException
 import dueuno.elements.controls.MoneyField
-import dueuno.exceptions.ElementsException
+import dueuno.elements.core.PrettyPrinter
+import dueuno.elements.core.PrettyPrinterProperties
 import groovy.transform.CompileDynamic
 import org.grails.datastore.gorm.GormEntity
 
@@ -29,7 +29,7 @@ import org.grails.datastore.gorm.GormEntity
  * serialisation protocol, and extends {@link Number} so it can be used wherever a numeric
  * value is expected. Arithmetic operators ({@code +}, {@code -}, {@code *}, {@code /}) are
  * provided for both {@code Money × Money} and {@code Money × Number} operations; mixed-currency
- * arithmetic throws an {@link dueuno.exceptions.ElementsException}.
+ * arithmetic throws an {@link ElementsException}.
  * </p>
  * <p>
  * The associated UI control is {@link dueuno.elements.controls.MoneyField}.
@@ -41,18 +41,6 @@ import org.grails.datastore.gorm.GormEntity
 
 @CompileDynamic
 class Money extends Number implements CustomType, GormEntity {
-
-    /** The Elements type name used to identify this custom type in the serialisation protocol. */
-    static final TYPE_NAME = 'MONEY'
-
-    /** The UI control class used to render and edit {@code Money} values. */
-    static final TYPE_FIELD = MoneyField
-
-    /** The Java type of the primary value property ({@link #amount}). */
-    static final TYPE_VALUE_PROPERTY_TYPE = Number
-
-    /** The name of the primary value property. */
-    static final TYPE_VALUE_PROPERTY_NAME = 'amount'
 
     /** The monetary amount, stored with up to 6 decimal places. */
     BigDecimal amount
@@ -74,7 +62,7 @@ class Money extends Number implements CustomType, GormEntity {
      * Creates a {@code Money} instance from a {@link Number} amount, converting it to
      * {@link BigDecimal} via its {@code double} representation.
      *
-     * @param amount   the monetary amount
+     * @param amount the monetary amount
      * @param currency the ISO 4217 currency code; defaults to {@code "EUR"}
      */
     Money(Number amount, String currency = 'EUR') {
@@ -84,7 +72,7 @@ class Money extends Number implements CustomType, GormEntity {
     /**
      * Creates a {@code Money} instance from a {@link BigDecimal} amount.
      *
-     * @param amount   the monetary amount
+     * @param amount the monetary amount
      * @param currency the ISO 4217 currency code; defaults to {@code "EUR"}
      */
     Money(BigDecimal amount, String currency = 'EUR') {
@@ -93,22 +81,24 @@ class Money extends Number implements CustomType, GormEntity {
     }
 
     /**
-     * Returns the Elements type name for this custom type ({@link #TYPE_NAME}).
+     * Returns the Elements type name for this custom type.
      *
      * @return {@code "MONEY"}
      */
-    static String getCustomTypeName() {
-        return TYPE_NAME
-    }
+    String getTypeName() { 'MONEY' }
 
     /**
      * Returns the UI control class associated with this type ({@link dueuno.elements.controls.MoneyField}).
      *
      * @return the {@link dueuno.elements.controls.MoneyField} class
      */
-    static Class getCustomTypeField() {
+    Class getTypeField() {
         return MoneyField
     }
+
+    Class getValuePropertyType() { Number }
+
+    String getValuePropertyName() { 'amount' }
 
     /**
      * Serialises this instance to the typed-value map protocol expected by the Elements frontend.
@@ -118,11 +108,11 @@ class Money extends Number implements CustomType, GormEntity {
      */
     Map serialize() {
         return [
-                type : TYPE_NAME,
-                value: [
-                        amount: amount,
-                        currency: currency,
-                ]
+            type : typeName,
+            value: [
+                amount  : amount,
+                currency: currency,
+            ]
         ]
     }
 
@@ -141,8 +131,8 @@ class Money extends Number implements CustomType, GormEntity {
 
         currency = value.currency ?: 'EUR'
         amount = Types.deserializeBigDecimal(
-                value.amount as String,
-                value.decimals as Integer
+            value.amount as String,
+            value.decimals as Integer
         )
     }
 
@@ -150,7 +140,7 @@ class Money extends Number implements CustomType, GormEntity {
      * Returns a human-readable representation of this monetary value.
      * The currency token is placed before or after the formatted amount depending on
      * {@link PrettyPrinterProperties#prefixedUnit} (defaults to suffix).
-     * Returns an empty string when {@link #amount} is {@code null}.
+     * Returns an empty string when {@code amount} is {@code null}.
      *
      * @param properties formatting options (decimal format, locale, currency display mode, etc.)
      * @return the formatted monetary string (e.g. {@code "1.234,56 EUR"} or {@code "$ 1,234.56"})
@@ -164,8 +154,8 @@ class Money extends Number implements CustomType, GormEntity {
 
         Boolean prefixedUnit = properties.prefixedUnit == null ? false : properties.prefixedUnit
         return prefixedUnit
-                ? currency + ' ' + amount
-                : amount + ' ' + currency
+            ? currency + ' ' + amount
+            : amount + ' ' + currency
     }
 
     /**
@@ -174,7 +164,7 @@ class Money extends Number implements CustomType, GormEntity {
      * currency code is resolved through the i18n message source under the
      * {@code money.currency} prefix (e.g. {@code money.currency.EUR} → {@code "€"}).
      * Otherwise the raw ISO 4217 code is returned.
-     * Returns an empty string when {@link #currency} is {@code null}.
+     * Returns an empty string when {@code currency} is {@code null}.
      *
      * @param properties formatting options (locale, symbolic currency flag)
      * @return the formatted currency token (e.g. {@code "€"} or {@code "EUR"})
@@ -196,7 +186,7 @@ class Money extends Number implements CustomType, GormEntity {
     }
 
     /**
-     * Returns the string representation of the {@link #amount} (without currency).
+     * Returns the string representation of the {@code amount} (without currency).
      *
      * @return the amount as a string
      */
@@ -204,16 +194,16 @@ class Money extends Number implements CustomType, GormEntity {
         return amount
     }
 
-    /** @return the {@link #amount} as an {@code int} */
+    /** @return the {@code amount} as an {@code int} */
     int intValue() { return amount.intValue() }
 
-    /** @return the {@link #amount} as a {@code long} */
+    /** @return the {@code amount} as a {@code long} */
     long longValue() { return amount.longValue() }
 
-    /** @return the {@link #amount} as a {@code float} */
+    /** @return the {@code amount} as a {@code float} */
     float floatValue() { return amount.floatValue() }
 
-    /** @return the {@link #amount} as a {@code double} */
+    /** @return the {@code amount} as a {@code double} */
     double doubleValue() { return amount.doubleValue() }
 
 
@@ -229,7 +219,7 @@ class Money extends Number implements CustomType, GormEntity {
     }
 
     /**
-     * Throws {@link dueuno.exceptions.ElementsException} if {@code money}'s currency differs
+     * Throws {@link ElementsException} if {@code money}'s currency differs
      * from this instance's currency.
      */
     private void checkOperandsCompatibility(Money money) {
@@ -243,7 +233,7 @@ class Money extends Number implements CustomType, GormEntity {
      *
      * @param money the addend
      * @return the sum as a new {@code Money} instance
-     * @throws dueuno.exceptions.ElementsException if the currencies differ
+     * @throws ElementsException if the currencies differ
      */
     Money plus(Money money) {
         checkOperandsCompatibility(money)
@@ -256,7 +246,7 @@ class Money extends Number implements CustomType, GormEntity {
      *
      * @param money the subtrahend
      * @return the difference as a new {@code Money} instance
-     * @throws dueuno.exceptions.ElementsException if the currencies differ
+     * @throws ElementsException if the currencies differ
      */
     Money minus(Money money) {
         checkOperandsCompatibility(money)
@@ -269,7 +259,7 @@ class Money extends Number implements CustomType, GormEntity {
      *
      * @param money the multiplier
      * @return the product as a new {@code Money} instance
-     * @throws dueuno.exceptions.ElementsException if the currencies differ
+     * @throws ElementsException if the currencies differ
      */
     Money multiply(Money money) {
         checkOperandsCompatibility(money)
@@ -282,7 +272,7 @@ class Money extends Number implements CustomType, GormEntity {
      *
      * @param money the divisor
      * @return the quotient as a new {@code Money} instance
-     * @throws dueuno.exceptions.ElementsException if the currencies differ
+     * @throws ElementsException if the currencies differ
      */
     Money div(Money money) {
         checkOperandsCompatibility(money)
@@ -295,7 +285,7 @@ class Money extends Number implements CustomType, GormEntity {
     //
 
     /**
-     * Returns {@code true} if this instance's {@link #amount} equals the given number.
+     * Returns {@code true} if this instance's {@code amount} equals the given number.
      *
      * @param amount the number to compare with
      * @return {@code true} if the amounts are equal

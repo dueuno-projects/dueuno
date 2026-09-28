@@ -14,9 +14,9 @@
  */
 package test
 
+import dueuno.elements.ElementsController
 import dueuno.elements.components.Table
 import dueuno.elements.components.TableRow
-import dueuno.elements.ElementsController
 
 class StaticResourcesController implements ElementsController {
 
@@ -25,11 +25,11 @@ class StaticResourcesController implements ElementsController {
         def table = c.addComponent(Table)
         table.with {
             columns = [
-                    'image',
-                    'name',
+                'image',
+                'name',
             ]
             sortable = [
-                    name: 'asc',
+                name: 'asc',
             ]
             body.eachRow { TableRow row, Map values ->
                 def image = linkPublicResource("images/${values.image}")

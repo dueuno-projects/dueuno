@@ -16,7 +16,7 @@
 .component-header .component-header-title {
     font-size: 1.1rem;
     font-weight: bold;
-    margin-top: .1rem;
+    margin-top: var(--elements-1px);
     margin-left: -.15rem;
     padding: 0;
 }

@@ -14,7 +14,7 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.Component
+import dueuno.elements.core.Component
 import dueuno.elements.style.TextDefault
 import groovy.transform.CompileStatic
 
@@ -38,7 +38,7 @@ class Header extends Component {
     /** The i18n message key or literal title text displayed in the header. */
     String text
 
-    /** Interpolation arguments for the {@link #text} message key. */
+    /** Interpolation arguments for the {@code text} message key. */
     List textArgs
 
     /** Optional icon class (e.g. {@code "fa-home"}) displayed alongside the title. */
@@ -58,13 +58,13 @@ class Header extends Component {
 
     /**
      * Creates a {@code Header} instance configured from the supplied argument map.
-     * Initialises the {@link #nextButton} (primary) and {@link #backButton} controls
+     * Initialises the {@code nextButton} (primary) and {@code backButton} controls
      * without registering default actions.
      *
      * @param args initialisation arguments; recognised keys include:
-     *             {@code text} ({@link String}) — header title (defaults to {@code controller.action.id}),
-     *             {@code textArgs} ({@link List}),
-     *             {@code icon} ({@link String}),
+     * {@code text} ({@link String}) — header title (defaults to {@code controller.action.id}),
+     * {@code textArgs} ({@link List}),
+     * {@code icon} ({@link String}),
      *             plus all keys accepted by {@link Component#Component(Map)}
      */
     Header(Map args) {
@@ -79,13 +79,13 @@ class Header extends Component {
         hasNextButton = false
 
         backButton = createControl(
-                class: Button,
-                id: 'backButton',
+            class: Button,
+            id: 'backButton',
         )
         nextButton = createControl(
-                class: Button,
-                id: 'nextButton',
-                primary: true,
+            class: Button,
+            id: 'nextButton',
+            primary: true,
         )
     }
 
@@ -96,7 +96,7 @@ class Header extends Component {
      * Also makes the header sticky unless {@code sticky} was set explicitly.
      *
      * @param args button configuration; all keys are optional and override the defaults above
-     * @return the {@link #nextButton} instance
+     * @return the {@code nextButton} instance
      */
     Button addNextButton(Map args = [:]) {
         args.controller = args.controller ?: controllerName
@@ -119,7 +119,7 @@ class Header extends Component {
      * If no back button is present and {@code sticky} was not set explicitly,
      * the header becomes non-sticky.
      *
-     * @return the {@link #nextButton} instance (with its default action removed)
+     * @return the {@code nextButton} instance (with its default action removed)
      */
     Button removeNextButton() {
         if (sticky == null && !hasBackButton) isSticky = false
@@ -133,7 +133,7 @@ class Header extends Component {
      * icon {@code "fa-times"} with an empty label. Delegates to {@link #addBackButton(Map)}.
      *
      * @param args optional overrides forwarded to {@link #addBackButton(Map)}
-     * @return the {@link #backButton} instance
+     * @return the {@code backButton} instance
      */
     Button addCloseButton(Map args = [:]) {
         args.action = args.action ?: 'onClose'
@@ -147,7 +147,7 @@ class Header extends Component {
      * Delegates to {@link #addBackButton(Map)}.
      *
      * @param args optional overrides forwarded to {@link #addBackButton(Map)}
-     * @return the {@link #backButton} instance
+     * @return the {@code backButton} instance
      */
     Button addCancelButton(Map args = [:]) {
         args.text = args.text ?: TextDefault.CANCEL
@@ -161,7 +161,7 @@ class Header extends Component {
      * {@code "fa-angle-left"}. Also makes the header sticky unless {@code sticky} was set explicitly.
      *
      * @param args button configuration; all keys are optional and override the defaults above
-     * @return the {@link #backButton} instance
+     * @return the {@code backButton} instance
      */
     Button addBackButton(Map args = [:]) {
         if (!args.controller && !args.action && hasReturnPoint()) {
@@ -175,7 +175,7 @@ class Header extends Component {
             args.params = args.params ?: [:]
         }
 
-        args.text = (args.text == null) ? TextDefault.BACK: args.text
+        args.text = (args.text == null) ? TextDefault.BACK : args.text
         args.icon = (args.icon == null) ? 'fa-angle-left' : args.icon
         if (args.group) nextButton.group = args.group
 
@@ -192,7 +192,7 @@ class Header extends Component {
      * If no next button is present and {@code sticky} was not set explicitly,
      * the header becomes non-sticky.
      *
-     * @return the {@link #backButton} instance (with its default action removed)
+     * @return the {@code backButton} instance (with its default action removed)
      */
     Button removeBackButton() {
         if (sticky == null && !hasNextButton) isSticky = false
@@ -203,7 +203,7 @@ class Header extends Component {
 
     /**
      * Sets the header title by pretty-printing the given value through the
-     * {@link dueuno.core.PrettyPrinter}.
+     * {@link dueuno.elements.core.PrettyPrinter}.
      *
      * @param value the value to format and use as the header title
      */
@@ -214,7 +214,7 @@ class Header extends Component {
     /**
      * Serialises this header's properties to JSON, adding the resolved {@code sticky} state.
      * The sticky value is determined by the explicit {@code sticky} property if set, otherwise
-     * by the internal {@link #isSticky} flag.
+     * by the internal {@code isSticky} flag.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this header's properties
@@ -222,7 +222,7 @@ class Header extends Component {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-                sticky: sticky == null ? isSticky : sticky,
+            sticky: sticky == null ? isSticky : sticky,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

@@ -1,5 +1,9 @@
 class TextField extends Control {
 
+    static get valueType() {
+        return Type.STRING;
+    }
+
     static finalize($element, $root) {
         let autoSelect = Component.getProperty($element, 'autoSelect');
         if (autoSelect) {
@@ -68,6 +72,7 @@ class TextField extends Control {
     }
 
     static setValue($element, valueMap, trigger = true) {
+        valueMap = TypedValue.require(valueMap);
         if (!trigger) $element.off('input');
 
         let value = valueMap['value'];
@@ -82,9 +87,9 @@ class TextField extends Control {
     }
 
     static getValue($element) {
-        let value = Control.getServerValue($element);
-        value['value'] = $element.val();
-        return value;
+        let valueMap = Control.getServerValue($element);
+        valueMap['value'] = $element.val();
+        return TypedValue.require(valueMap);
     }
 
     static setPlaceholder($element, value) {
