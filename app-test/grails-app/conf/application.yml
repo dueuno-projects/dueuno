@@ -25,7 +25,7 @@ environments:
       port: 9443
       port-http: 9080
       servlet:
-        context-path: /test
+        context-path: /apptest
         session:
           persistent: true
           store-dir: app-test
