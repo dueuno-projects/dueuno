@@ -26,7 +26,6 @@ import dueuno.security.TUser
 import dueuno.security.TUserRoleGroup
 import dueuno.utils.ResourceUtils
 import grails.gorm.DetachedCriteria
-import grails.gorm.multitenancy.CurrentTenant
 import grails.gorm.multitenancy.Tenants
 import grails.gorm.transactions.Transactional
 import groovy.contracts.Requires

@@ -24,8 +24,6 @@ import dueuno.elements.core.Transformer
 import dueuno.tenant.TenantService
 import dueuno.utils.EnvUtils
 import grails.core.GrailsApplication
-import grails.gorm.multitenancy.CurrentTenant
-import grails.gorm.multitenancy.Tenants
 import grails.gorm.transactions.Transactional
 import grails.util.Holders
 import grails.web.servlet.mvc.GrailsHttpSession
@@ -657,7 +655,7 @@ class ApplicationService implements LinkGeneratorAware {
         }
 
         List<String> languages = languageFiles.collect { resource ->
-            def filename = resource.filename.toLowerCase()
+            def filename = resource.filename
             if (filename == 'messages.properties') {
                 filename = 'en'
             } else {
@@ -705,9 +703,7 @@ class ApplicationService implements LinkGeneratorAware {
             ja   : 'jp',
             nb   : 'no',
         ]
-        String langLowerCase = lang.toLowerCase()
-        String flagLang = localeToFlag[langLowerCase] ?: langLowerCase
-        // println "Locale: '${lang}' -> Flag: '${flagLang}'"
+        String flagLang = localeToFlag[lang] ?: lang
         return flagLang
     }
 }
