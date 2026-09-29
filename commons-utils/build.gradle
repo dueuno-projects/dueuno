@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-    testImplementation "org.spockframework:spock-core:2.3-groovy-4.0"
-    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.9.0"
+    testImplementation "org.spockframework:spock-core:2.4-groovy-5.0"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:6.1.3"
 
     // Hardware Info
     implementation "com.github.oshi:oshi-core:6.9.3"
