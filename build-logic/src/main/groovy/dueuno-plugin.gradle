@@ -53,7 +53,8 @@ dependencies {
     testImplementation "org.apache.grails:grails-testing-support-datamapping"
     testImplementation "org.apache.grails:grails-testing-support-web"
     testImplementation "org.mockito:mockito-core"
-    testImplementation "org.spockframework:spock-core"}
+    testImplementation "org.spockframework:spock-core"
+}
 
 java {
     toolchain {
