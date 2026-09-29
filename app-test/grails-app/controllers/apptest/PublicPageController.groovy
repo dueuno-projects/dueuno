@@ -19,13 +19,14 @@ import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
-import dueuno.elements.controls.TextField
+import dueuno.elements.controls.*
 import dueuno.elements.style.TextDefault
 import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['permitAll'])
 class PublicPageController implements ElementsController {
 
+    PersonService personService
 
     def index() {
 
@@ -114,98 +115,104 @@ class PublicPageController implements ElementsController {
         display content: c
     }
 
-    private buildForm(Map args = [:]) {
-        def c = args.create
-            ? createContent(ContentCreate)
-            : createContent(ContentEdit)
+    private buildForm(TPerson obj) {
+        def c = obj
+            ? createContent(ContentEdit)
+            : createContent(ContentCreate)
         c.form.with {
             validate = TPerson
             addField(
-                class: 'Select',
+                class: Select,
                 id: 'company',
                 optionsFromRecordset: TCompany.list(),
             )
             addField(
-                class: 'TextField',
+                class: TextField,
                 id: 'name',
             )
             addField(
-                class: 'TextField',
+                class: TextField,
                 id: 'address',
                 help: 'Runtime help message',
                 label: 'Indirizzo (runtime label)',
             )
             addField(
-                class: 'NumberField',
+                class: NumberField,
                 id: 'postcode',
             )
             addField(
-                class: 'MoneyField',
+                class: MoneyField,
                 id: 'salary',
             )
             addField(
-                class: 'QuantityField',
+                class: QuantityField,
                 id: 'distanceKm',
             )
             addField(
-                class: 'DateField',
+                class: DateField,
                 id: 'dateStart',
             )
             addField(
-                class: 'DateField',
+                class: DateField,
                 id: 'dateEnd',
             )
             addField(
-                class: 'Checkbox',
+                class: Checkbox,
                 id: 'active',
             )
             addField(
-                class: 'Upload',
+                class: Upload,
                 id: 'picture',
             )
         }
+
+        if (obj) {
+            c.form.values = obj
+        }
+
         return c
     }
 
     def create() {
-        def c = buildForm(create: true)
-        c.form['id'].readonly = true
-        c.form['id'].value = 'Test Name'
-
-        display content: c, modal: true, large: true
+        def c = buildForm()
+        display content: c, modal: true, focus: 'address'
     }
 
-    def onCreate(TPerson obj) {
-        obj.save(flush: true)
+    def edit() {
+        def obj = personService.get(params.id)
+        def c = buildForm(obj)
+        display content: c, modal: true, focus: 'address'
+    }
+
+    def onCreate() {
+        def obj = personService.create(params)
         if (obj.hasErrors()) {
             display errors: obj
-        } else {
-            display action: 'index'
+            return
         }
+
+        display action: 'index'
     }
 
-    def edit(TPerson obj) {
-        def c = buildForm(create: false)
-        c.form.values = obj
-        display content: c, modal: true, large: true
-    }
-
-    def onEdit(TPerson obj) {
-        obj.save(flush: true)
+    def onEdit() {
+        def obj = personService.update(params)
         if (obj.hasErrors()) {
             display errors: obj
-        } else {
-            display action: 'index'
+            return
         }
+
+        display action: 'index'
     }
 
-    def onDelete(TPerson obj) {
+    def onDelete() {
         try {
-            obj.delete(flush: true)
+            personService.delete(params.id)
             display action: 'index'
+
         } catch (e) {
             e.printStackTrace()
             display exception: e
         }
     }
+
 }
