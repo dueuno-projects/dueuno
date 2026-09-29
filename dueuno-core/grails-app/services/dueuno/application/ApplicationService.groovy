@@ -300,6 +300,7 @@ class ApplicationService implements LinkGeneratorAware {
         }
     }
 
+    @Transactional
     void executeOnPluginTenantInstall() {
         String tenantId = tenantService.currentTenantId
         if (hasBootEvents('onPluginTenantInstall')) {
@@ -311,6 +312,7 @@ class ApplicationService implements LinkGeneratorAware {
         }
     }
 
+    @Transactional
     void executeOnTenantInstall() {
         String tenantId = tenantService.currentTenantId
         if (hasBootEvents('onTenantInstall') || hasBootEvents('onDevInstall')) {
@@ -325,6 +327,7 @@ class ApplicationService implements LinkGeneratorAware {
         }
     }
 
+    @Transactional
     void executeOnUpdate() {
         String tenantId = tenantService.currentTenantId
         if (hasBootEvents('onUpdate')) {

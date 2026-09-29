@@ -15,34 +15,23 @@
 package dueuno.database
 
 import groovy.transform.CompileStatic
-import org.grails.orm.hibernate.cfg.PersistentEntityNamingStrategy
-import org.grails.orm.hibernate.cfg.domainbinding.hibernate.HibernatePersistentProperty
+import org.hibernate.cfg.ImprovedNamingStrategy
 
 /**
- * Table names start with "t_" to avoid conflicting with database keywords
+ * Remove "t" prefix from table names if the domain class name starts with "T"
  *
  * @author Gianluca Sartori
  */
 
 @CompileStatic
-class TNamingStrategy implements PersistentEntityNamingStrategy {
+class TNamingStrategy extends ImprovedNamingStrategy {
 
-    @Override
-    String resolveColumnName(String logicalName) {
-        return logicalName
-    }
+    String classToTableName(String className){
+        String tableName = className.startsWith('T')
+                ? className.drop(1)
+                : className
 
-    @Override
-    String resolveTableName(String logicalName) {
-        String tableName = logicalName.startsWith('T')
-                ? logicalName.drop(1)
-                : logicalName
-        return tableName
-    }
-
-    @Override
-    String resolveForeignKeyForPropertyDomainClass(HibernatePersistentProperty property) {
-        return property.name
+        return super.classToTableName(tableName)
     }
 
 }

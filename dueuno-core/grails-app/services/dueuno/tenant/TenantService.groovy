@@ -216,17 +216,20 @@ class TenantService {
         }
     }
 
+    @Transactional
     void provisionAllTenants() {
         eachTenant { String tenantId ->
             provisionTenant()
         }
     }
 
+    @Transactional
     private void provisionTenant() {
         applicationService.executeOnPluginTenantInstall()
         applicationService.executeOnTenantInstall()
     }
 
+    @Transactional
     void updateAllTenants() {
         eachTenant { String tenantId ->
             applicationService.executeOnUpdate()

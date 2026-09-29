@@ -12,7 +12,7 @@ dependencies {
     api "org.apache.grails:grails-spring-security:${grailsVersion}"
 
     // Quartz (to schedule jobs when no Scheduler solution is in use)
-    api "org.apache.grails:grails-quartz:4.0.1"
+    api "org.apache.grails:grails-quartz:${grailsVersion}"
 
     // Websockets
     api "io.github.zyro23:grails-spring-websocket:2.7.1"
@@ -21,11 +21,11 @@ dependencies {
     implementation "net.bull.javamelody:javamelody-spring-boot4-starter:2.7.0"
 
     // Database drivers
-    runtimeOnly "com.h2database:h2:2.4.240"
-    runtimeOnly "com.mysql:mysql-connector-j:9.6.0"
-    runtimeOnly "org.postgresql:postgresql:42.7.10"
-    runtimeOnly "com.microsoft.sqlserver:mssql-jdbc:13.2.1.jre11"
-    runtimeOnly "com.oracle.database.jdbc:ojdbc11:23.26.1.0.0"
-    runtimeOnly "com.ibm.db2:jcc:12.1.3.0"
-    runtimeOnly "com.sap.cloud.db.jdbc:ngdbc:2.27.7"
+    runtimeOnly "com.h2database:h2:2.5.252"
+    runtimeOnly "com.mysql:mysql-connector-j:26.7.0"
+    runtimeOnly "org.postgresql:postgresql:42.7.13"
+    runtimeOnly "com.microsoft.sqlserver:mssql-jdbc:13.6.0.jre11"
+    runtimeOnly "com.oracle.database.jdbc:ojdbc11:23.26.3.0.0"
+    runtimeOnly "com.ibm.db2:jcc:12.1.5.0"
+    runtimeOnly "com.sap.cloud.db.jdbc:ngdbc:2.30.11"
 }
