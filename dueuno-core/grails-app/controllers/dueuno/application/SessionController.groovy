@@ -21,7 +21,7 @@ import grails.plugin.springsecurity.annotation.Secured
 /**
  * @author Gianluca Sartori
  */
-@Secured(['isAuthenticated()'])
+@Secured(['permitAll'])
 class SessionController implements Controller, WebRequestAware {
 
     def set() {
