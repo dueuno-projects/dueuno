@@ -213,8 +213,8 @@ class CrudController implements ElementsController {
                     row.cells['company'].tooltip = 'Questa è una azienda'
                     row.cells['company'].url = 'https://google.com'
 
-                    TCompany company = companyService.get(values.company.id)
-                    values.employeeCount = company.employees.size()
+                    TCompany company = companyService.get(values.company?.id)
+                    values.employeeCount = company?.employees?.size()
 
                     if (values.salary) println prettyPrint(values.salary)
                     if (values.picture) row.cells.picture.icon = 'fa-file'
