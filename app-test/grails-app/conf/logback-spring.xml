@@ -33,7 +33,7 @@
 
     <logger name="org.springframework.boot.SpringApplication" level="INFO" />
     <logger name="dueuno" level="DEBUG" />
-    <logger name="test" level="DEBUG" />
+    <logger name="testapp" level="DEBUG" />
 
     <!-- DUEUNO -->
 <!--    <logger name="dueuno.commons.utils.SqlUtils" level="TRACE" />-->

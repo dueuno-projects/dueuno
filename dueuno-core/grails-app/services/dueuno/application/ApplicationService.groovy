@@ -24,6 +24,8 @@ import dueuno.elements.core.Transformer
 import dueuno.tenant.TenantService
 import dueuno.utils.EnvUtils
 import grails.core.GrailsApplication
+import grails.gorm.multitenancy.CurrentTenant
+import grails.gorm.multitenancy.Tenants
 import grails.gorm.transactions.Transactional
 import grails.util.Holders
 import grails.web.servlet.mvc.GrailsHttpSession
@@ -106,6 +108,7 @@ class ApplicationService implements LinkGeneratorAware {
         startApplication()
     }
 
+    @Transactional
     void performInstallation() {
         connectionSourceService.installOrConnect()
 
@@ -286,7 +289,7 @@ class ApplicationService implements LinkGeneratorAware {
             log.info "INSTALLING APPLICATION"
             log.info "-" * 78
 
-            executeInstall('onInstall')
+            executeInstall(tenantService.defaultTenantId, 'onInstall')
         }
     }
 
@@ -296,46 +299,43 @@ class ApplicationService implements LinkGeneratorAware {
             log.info "INSTALLING PLUGINS"
             log.info "-" * 78
 
-            executeInstall('onPluginInstall')
+            executeInstall(tenantService.defaultTenantId, 'onPluginInstall')
         }
     }
 
     @Transactional
-    void executeOnPluginTenantInstall() {
-        String tenantId = tenantService.currentTenantId
+    void executeOnPluginTenantInstall(String tenantId) {
         if (hasBootEvents('onPluginTenantInstall')) {
             log.info "-" * 78
-            log.info "${tenantId} Tenant - SETTING UP PLUGINS"
+            log.info "'${tenantId}' tenant - SETTING UP PLUGINS"
             log.info "-" * 78
 
-            executeInstall('onPluginTenantInstall', false, true)
+            executeInstall(tenantId, 'onPluginTenantInstall', false, true)
         }
     }
 
     @Transactional
-    void executeOnTenantInstall() {
-        String tenantId = tenantService.currentTenantId
+    void executeOnTenantInstall(String tenantId) {
         if (hasBootEvents('onTenantInstall') || hasBootEvents('onDevInstall')) {
             log.info "-" * 78
-            log.info "${tenantId} Tenant - SETTING UP APPLICATION"
+            log.info "'${tenantId}' tenant - SETTING UP APPLICATION"
             log.info "-" * 78
 
-            executeInstall('onTenantInstall')
+            executeInstall(tenantId, 'onTenantInstall')
             if (EnvUtils.isDevelopment()) {
-                executeInstall('onDevInstall', true)
+                executeInstall(tenantId, 'onDevInstall', true)
             }
         }
     }
 
     @Transactional
-    void executeOnUpdate() {
-        String tenantId = tenantService.currentTenantId
+    void executeOnUpdate(String tenantId) {
         if (hasBootEvents('onUpdate')) {
             log.info "-" * 78
-            log.info "${tenantId} Tenant - UPDATING APPLICATION"
+            log.info "'${tenantId}' tenant - UPDATING APPLICATION"
             log.info "-" * 78
 
-            executeInstall('onUpdate', false, true)
+            executeInstall(tenantId, 'onUpdate', false, true)
         }
     }
 
@@ -353,8 +353,7 @@ class ApplicationService implements LinkGeneratorAware {
 
     @Transactional
     @CompileDynamic
-    private void executeInstall(String listName, Boolean isDev = false, Boolean sort = false) {
-        String tenantId = tenantService.currentTenantId
+    private void executeInstall(String tenantId, String listName, Boolean isDev = false, Boolean sort = false) {
         Map<String, Closure> eventList = getBootEvents(listName)
         Map revisionList = sort ? eventList.sort() : eventList
 
@@ -369,12 +368,14 @@ class ApplicationService implements LinkGeneratorAware {
                 continue
             }
 
-            log.info "${tenantId} Tenant - Executing '${revisionName}'..."
+            log.info "'${tenantId}' tenant - Executing '${revisionName}'..."
 
-            if (closure.maximumNumberOfParameters == 1) {
-                closure.call(tenantId)
-            } else {
-                closure.call(tenantId, pluginName)
+            tenantService.withTenant(tenantId) {
+                if (closure.maximumNumberOfParameters == 1) {
+                    closure.call(tenantId)
+                } else {
+                    closure.call(tenantId, pluginName)
+                }
             }
 
             new TApplicationInstall(
@@ -394,49 +395,50 @@ class ApplicationService implements LinkGeneratorAware {
      *
      * @param listName Name of the list to execute
      */
-    void executeBootEvents(String listName, GrailsHttpSession session = null) {
-        String tenantId = tenantService.currentTenantId
+    void executeBootEvents(String tenantId, String listName, GrailsHttpSession session = null) {
         Map<String, Closure> eventList = getBootEvents(listName)
         for (revision in eventList) {
             String revisionName = revision.key
             Closure closure = revision.value
 
-            log.info "${tenantId} Tenant - Executing '${revisionName}'..."
-            if (closure.maximumNumberOfParameters == 1) {
-                closure.call(tenantId)
-            } else {
-                closure.call(tenantId, session)
+            log.info "'${tenantId}' tenant - Executing '${revisionName}'..."
+            tenantService.withTenant(tenantId) {
+                if (closure.maximumNumberOfParameters == 1) {
+                    closure.call(tenantId)
+                } else {
+                    closure.call(tenantId, session)
+                }
             }
         }
     }
 
     private void executeBeforeInit() {
-        executeBootEvents('beforeInit')
+        executeBootEvents(tenantService.defaultTenantId, 'beforeInit')
     }
 
     private void executeOnInit() {
-        executeBootEvents('onInit')
+        executeBootEvents(tenantService.defaultTenantId, 'onInit')
     }
 
     private void executeAfterInit() {
-        executeBootEvents('afterInit')
+        executeBootEvents(tenantService.defaultTenantId, 'afterInit')
     }
 
     private void executeBeforeTenantInit() {
         tenantService.eachTenant { String tenantId ->
-            executeBootEvents('beforeTenantInit')
+            executeBootEvents(tenantId, 'beforeTenantInit')
         }
     }
 
     private void executeOnTenantInit() {
         tenantService.eachTenant { String tenantId ->
-            executeBootEvents('onTenantInit')
+            executeBootEvents(tenantId, 'onTenantInit')
         }
     }
 
     private void executeAfterTenantInit() {
         tenantService.eachTenant { String tenantId ->
-            executeBootEvents('afterTenantInit')
+            executeBootEvents(tenantId, 'afterTenantInit')
         }
     }
 
@@ -693,12 +695,12 @@ class ApplicationService implements LinkGeneratorAware {
         // - Flags uses ISO 3166-1 Alpha 2 codes:  https://www.iso.org/obp/ui/
         Map localeToFlag = [
             en   : 'gb',    // defaults to UK (cause we're european ;-)
-            en_gb: 'gb',
-            en_us: 'us',
-            pt_pt: 'pt',
-            pt_br: 'br',
-            zh_cn: 'cn',
-            cs   : 'cs_cz',
+            en_GB: 'gb',
+            en_US: 'us',
+            pt_PT: 'pt',
+            pt_BR: 'br',
+            zh_CN: 'cn',
+            cs   : 'cs_CZ',
             da   : 'dk',
             ja   : 'jp',
             nb   : 'no',

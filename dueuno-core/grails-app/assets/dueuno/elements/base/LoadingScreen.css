@@ -20,8 +20,8 @@
     animation-delay: .5s;
 }
 
-#loading-screen-page .fa-beat-fade,
-#loading-screen-modal .fa-beat-fade {
+#loading-screen-page .fa-fade,
+#loading-screen-modal .fa-fade {
     --fa-animation-duration: 2.1s;
 }
 

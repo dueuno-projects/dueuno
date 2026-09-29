@@ -96,8 +96,10 @@ class ObjectUtils {
             return null
         }
 
-        if (object.hasProperty(propertyName) && isBasicType(object[propertyName])) {
-            return object[propertyName]
+        if (object.hasProperty(propertyName)) {
+            if (isBasicType(object[propertyName])) {
+                return object[propertyName]
+            }
         }
 
         String[] fieldNameList = propertyName.split('\\.')

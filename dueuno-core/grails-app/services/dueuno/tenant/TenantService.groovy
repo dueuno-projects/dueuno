@@ -26,6 +26,7 @@ import dueuno.security.TUser
 import dueuno.security.TUserRoleGroup
 import dueuno.utils.ResourceUtils
 import grails.gorm.DetachedCriteria
+import grails.gorm.multitenancy.CurrentTenant
 import grails.gorm.multitenancy.Tenants
 import grails.gorm.transactions.Transactional
 import groovy.contracts.Requires
@@ -79,7 +80,7 @@ class TenantService {
     void eachTenant(Closure closure) {
         List<TTenant> tenantList = list()
         for (tenant in tenantList) {
-            Tenants.withId(tenant.tenantId) {
+            withTenant(tenant.tenantId) {
                 closure.call(tenant.tenantId)
             }
         }
@@ -112,7 +113,7 @@ class TenantService {
      * Returns the name of the current tenantId
      * @return the name of the current tenantId
      */
-    String getCurrentTenantId() {
+    static String getCurrentTenantId() {
         return Tenants.currentId()
     }
 
@@ -202,7 +203,7 @@ class TenantService {
             )
 
             if (obj.tenantId != defaultTenantId) { // Default tenant gets its 'dataSource' from application.yml
-                log.info "${obj.tenantId} Tenant - Connecting to database..."
+                log.info "'${obj.tenantId}' tenant - Connecting to database..."
                 connectionSourceService.connect(obj.connectionSource)
             }
         }
@@ -210,29 +211,30 @@ class TenantService {
         return obj
     }
 
+    @Transactional
     void provision(String tenantId) {
         withTenant(tenantId) {
-            provisionTenant()
+            provisionTenant(tenantId)
         }
     }
 
     @Transactional
     void provisionAllTenants() {
         eachTenant { String tenantId ->
-            provisionTenant()
+            provisionTenant(tenantId)
         }
     }
 
     @Transactional
-    private void provisionTenant() {
-        applicationService.executeOnPluginTenantInstall()
-        applicationService.executeOnTenantInstall()
+    private void provisionTenant(String tenantId) {
+        applicationService.executeOnPluginTenantInstall(tenantId)
+        applicationService.executeOnTenantInstall(tenantId)
     }
 
     @Transactional
     void updateAllTenants() {
         eachTenant { String tenantId ->
-            applicationService.executeOnUpdate()
+            applicationService.executeOnUpdate(tenantId)
         }
     }
 

@@ -7,14 +7,14 @@
 <body>
 
 <h1>Backoffice Application</h1>
-<p><a href="/test/admin">LOGIN</a></p>
+<p><a href="/apptest/admin">LOGIN</a></p>
 
 <h1>Website</h1>
-<p><a href="/test/publicPage">PUBLIC PAGE</a></p>
+<p><a href="/apptest/publicPage">PUBLIC PAGE</a></p>
 <ol>
-    <li><a href="/test/login?landingPage=/">LOGIN</a></li>
-    <li><a href="/test/admin">ADMIN</a></li>
-    <li><a href="/test/logout?landingPage=/">LOGOUT</a></li>
+    <li><a href="/apptest/login?landingPage=/">LOGIN</a></li>
+    <li><a href="/apptest/admin">ADMIN</a></li>
+    <li><a href="/apptest/logout?landingPage=/">LOGOUT</a></li>
 </ol>
 
 </body>

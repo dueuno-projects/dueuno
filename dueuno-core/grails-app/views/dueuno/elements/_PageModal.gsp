@@ -9,7 +9,7 @@
 >
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content border-0 rounded-4 shadow">
-            <div id="loading-screen-modal"><div><i class="fa-solid fa-mug-hot fa-beat-fade"></i></div></div>
+            <div id="loading-screen-modal"><div><i class="fa-solid fa-mug-hot fa-fade"></i></div></div>
             <div id="page-modal-header"
                  class="modal-header"
             >
