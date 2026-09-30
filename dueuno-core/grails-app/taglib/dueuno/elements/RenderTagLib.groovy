@@ -35,7 +35,7 @@ class RenderTagLib implements WebRequestAware {
     /**
      * Renders a component. Use: <render:component instance="${c}" />
      */
-    def component = { Map attrs ->
+    def component(Map attrs) {
         Component component = attrs.remove('instance')
         Map properties = (Map) attrs.remove('properties')
 
@@ -61,7 +61,7 @@ class RenderTagLib implements WebRequestAware {
     /**
      * Renders the sub-components of a component. Use: <render:componentList instance="${c}" />
      */
-    def componentList = { attrs ->
+    def componentList(Map attrs) {
         List<Component> components = attrs.instance.components
         for (component in components) {
 
@@ -82,7 +82,7 @@ class RenderTagLib implements WebRequestAware {
     /**
      * Renders the components transported by a transition. Use: <render:transitionComponentList instance="${c}" />
      */
-    def transitionComponentList = { attrs ->
+    def transitionComponentList(Map attrs) {
         List<Component> components = attrs.instance.components
         for (component in components) {
             String componentView = '<div>' + render(template: component.getView(), model: component.getModel()) + '</div>'
@@ -93,7 +93,7 @@ class RenderTagLib implements WebRequestAware {
     /**
      * Renders a message using the PrettyPrinter engine. Attrs -> code, args
      */
-    def message = { attrs ->
+    def message(Map attrs) {
         out << PrettyPrinter.message(
             locale,
             attrs.code as String,
@@ -104,7 +104,7 @@ class RenderTagLib implements WebRequestAware {
     /**
      * Renders an icon
      */
-    def icon = { attrs ->
+    def icon(Map attrs) {
         String cssClass = attrs['class'] ?: ''
         String icon = attrs.icon
         String force = attrs.force ?: ''

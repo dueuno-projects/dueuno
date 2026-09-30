@@ -35,7 +35,7 @@ class ContentHomeTagLib implements WebRequestAware {
     /**
      * INTERNAL USE ONLY. Returns the 'home' menu item that holds all of the session menu items.
      */
-    def displayFavourites = { attrs ->
+    def displayFavourites(Map attrs) {
         Shell shell = shellService.shell
         Menu parent = attrs.parent ?: shell.home.favouriteMenu
         List<Menu> favourites = parent.items.findAll { !it.hasSubitems() }

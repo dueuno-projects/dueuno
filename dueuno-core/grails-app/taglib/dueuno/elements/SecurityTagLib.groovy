@@ -25,7 +25,7 @@ class SecurityTagLib {
 
     SecurityService securityService
 
-    def username = { Map attrs ->
+    def username(Map attrs) {
         out << securityService.currentUsername
     }
 

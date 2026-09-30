@@ -31,7 +31,7 @@ class PageTagLib {
     /**
      * Renders default elements header. Use: <page:header component="${c}" />
      */
-    def header = { Map attrs ->
+    def header(Map attrs) {
         Component component = attrs.component
         out << render(template: '/dueuno/elements/PageHeader', model: component.getModel())
     }
@@ -39,7 +39,7 @@ class PageTagLib {
     /**
      * Renders default color styles. Use: <page:colors component="${c}" />
      */
-    def colors = { Map attrs ->
+    def colors(Map attrs) {
         Component component = attrs.component
         out << render(template: '/dueuno/elements/PageColors', model: component.getModel())
     }
@@ -47,7 +47,7 @@ class PageTagLib {
     /**
      * Renders default elements footer. Use: <page:footer component="${c}" />
      */
-    def footer = { Map attrs ->
+    def footer(Map attrs) {
         Component component = attrs.component
         out << render(template: '/dueuno/elements/PageFooter', model: component.getModel())
     }
@@ -55,18 +55,18 @@ class PageTagLib {
     /**
      * Initializes JS. Use: <page:initialize />
      */
-    def initialize = { Map attrs ->
+    def initialize(Map attrs) {
         out << render(template: '/dueuno/elements/PageInitialize', model: null)
     }
 
     /**
      * Loading screen. Use: <page:loading />
      */
-    def loading = { Map attrs ->
+    def loading(Map attrs) {
         out << render(template: '/dueuno/elements/PageLoading', model: null)
     }
 
-    def contextPath = { Map attrs ->
+    def contextPath(Map attrs) {
         out << servletContext.contextPath
     }
 

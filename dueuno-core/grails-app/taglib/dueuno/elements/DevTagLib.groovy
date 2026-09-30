@@ -26,34 +26,34 @@ class DevTagLib implements WebRequestAware {
 
     TenantPropertyService tenantPropertyService
 
-    def ifDevelopment = { attrs, body ->
+    def ifDevelopment(Map attrs, Closure body) {
         if (EnvUtils.isDevelopment()) {
             out << body()
         }
     }
 
-    def ifDisplayHints = { attrs, body ->
+    def ifDisplayHints(Map attrs, Closure body) {
         if (devDisplayHints) {
             out << body()
         }
     }
 
-    def displayHints = { args ->
+    def displayHints(Map attrs) {
         String result = devDisplayHints ? 'true' : 'false'
         out << result
     }
 
-    def logError = { args ->
+    def logError(Map attrs) {
         String result = tenantPropertyService.getBoolean('LOG_ERROR') ? 'true' : 'false'
         out << result
     }
 
-    def logDebug = { args ->
+    def logDebug(Map attrs) {
         String result = tenantPropertyService.getBoolean('LOG_DEBUG') ? 'true' : 'false'
         out << result
     }
 
-    def logTrace = { args ->
+    def logTrace(Map attrs) {
         String result = tenantPropertyService.getBoolean('LOG_TRACE') ? 'true' : 'false'
         out << result
     }

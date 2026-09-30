@@ -25,7 +25,7 @@ class TenantTagLib {
 
     TenantService tenantService
 
-    def current = { Map attrs ->
+    def current(Map attrs) {
         out << tenantService.currentTenantId
     }
 
