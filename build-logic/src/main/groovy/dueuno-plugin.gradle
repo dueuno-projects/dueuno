@@ -58,16 +58,6 @@ dependencies {
     testImplementation testFixtures("org.apache.grails.web:grails-web-common")
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(javaVersion)
-    }
-}
-
-tasks.withType(GroovyCompile).configureEach {
-    groovyOptions.optimizationOptions.indy = false
-}
-
 tasks.withType(Test) {
     useJUnitPlatform()
 }

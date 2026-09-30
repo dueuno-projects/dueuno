@@ -55,16 +55,6 @@ dependencies {
     testImplementation "org.spockframework:spock-core"
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(javaVersion)
-    }
-}
-
-tasks.withType(GroovyCompile).configureEach {
-    groovyOptions.optimizationOptions.indy = false
-}
-
 tasks.withType(Test) {
     useJUnitPlatform()
 }
