@@ -32,15 +32,16 @@ class TUser implements GormEntity, Serializable {
     Long id
 
     TTenant tenant
-    String apiKey
-
     String username
     String password
+
+    Boolean enabled
+    Boolean accountExpired
+    Boolean accountLocked
+    Boolean passwordExpired
+
+    String apiKey
     String physicalId
-    boolean enabled
-    boolean accountExpired
-    boolean accountLocked
-    boolean passwordExpired
 
     // System fields
     Boolean deletable
@@ -73,16 +74,19 @@ class TUser implements GormEntity, Serializable {
     Boolean animations
 
     static constraints = {
-        defaultGroup nullable: true
-        password blank: false, password: true
-        username blank: false, unique: true
-        apiKey nullable: true, unique: true
-        physicalId nullable: true, unique: true
-        firstname nullable: true
-        lastname nullable: true
-        email nullable: true, email: true
-        telephone nullable: true
-        note nullable: true, maxSize: 2000
+        tenant nullable: false
+        username nullable: false, blank: false, unique: true
+        password nullable: false, blank: false, password: true
+        apiKey unique: true
+        physicalId unique: true
+        email email: true
+        note maxSize: 1000
+
+        sessionDuration nullable: false
+        rememberMeDuration nullable: false
+
+        fontSize nullable: false
+        guiStyle nullable: false
     }
 
     static mapping = {

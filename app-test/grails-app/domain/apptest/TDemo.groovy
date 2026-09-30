@@ -45,10 +45,8 @@ class TDemo implements GormEntity, MultiTenant<TDemo> {
     ]
 
     static constraints = {
-        quantityfield nullable: true
-        datefield nullable: true
-        timefield nullable: true
-        filename nullable: true
+        textfield nullable: false
+        numberfield nullable: false
     }
 
 }

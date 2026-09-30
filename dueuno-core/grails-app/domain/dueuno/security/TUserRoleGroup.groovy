@@ -33,6 +33,11 @@ class TUserRoleGroup implements GormEntity, Serializable {
     TUser user
     TRoleGroup roleGroup
 
+    static constraints = {
+        user nullable: false
+        roleGroup nullable: false
+    }
+
     static mapping = {
         table 'sys_user_role_group'
         id composite: ['roleGroup', 'user']

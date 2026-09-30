@@ -35,7 +35,7 @@ class TRoleHierarchyEntry implements GormEntity, Serializable {
     String entry
 
     static constraints = {
-        entry blank: false, unique: true
+        entry nullable: false, blank: false, unique: true
     }
 
     static mapping = {

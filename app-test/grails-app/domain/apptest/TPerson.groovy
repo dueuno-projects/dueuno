@@ -49,6 +49,7 @@ class TPerson implements GormEntity, MultiTenant<TPerson> {
     ]
 
     static constraints = {
+        company nullable: false
         name nullable: false
         address nullable: false
         postcode nullable: false

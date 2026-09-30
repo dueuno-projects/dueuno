@@ -30,8 +30,8 @@ class TTenant implements GormEntity, Serializable {
     private static final long serialVersionUID = 1
 
     Long id
-
     LocalDateTime dateCreated
+
     String tenantId
     String description
     String host
@@ -40,9 +40,9 @@ class TTenant implements GormEntity, Serializable {
     TConnectionSource connectionSource
 
     static constraints = {
-        tenantId unique: true
-        description nullable: true
-        host nullable: true, unique: true
+        tenantId nullable: false, unique: true
+        host unique: true
+        connectionSource nullable: false, unique: true
     }
 
     static mapping = {

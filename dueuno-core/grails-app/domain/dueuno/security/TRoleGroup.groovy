@@ -37,12 +37,12 @@ class TRoleGroup implements GormEntity, Serializable {
     TTenant tenant
 
     String name
-    Boolean deletable = false
+    Boolean deletable
     String landingPage
 
     static constraints = {
-        name blank: false, unique: ['tenant']
-        landingPage nullable: true
+        tenant nullable: false
+        name nullable: false, blank: false, unique: ['tenant']
     }
 
     static mapping = {

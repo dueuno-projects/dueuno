@@ -37,7 +37,7 @@ class TRole implements GormEntity, Serializable {
     String authority
 
     static constraints = {
-        authority blank: false, unique: true
+        authority nullable: false, blank: false, unique: true
     }
 
     static mapping = {

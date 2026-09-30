@@ -105,7 +105,6 @@ class TenantController implements ElementsController {
             addField(
                 class: TextField,
                 id: 'host',
-                readonly: false,
                 cols: 6,
             )
             addField(
@@ -150,6 +149,7 @@ class TenantController implements ElementsController {
             c.form.values = obj
             if (isReadonly) {
                 c.form.readonly = true
+                c.form.controls.host.readonly = false
             }
         }
 

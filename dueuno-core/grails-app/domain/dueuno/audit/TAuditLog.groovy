@@ -31,7 +31,6 @@ class TAuditLog implements GormEntity, MultiTenant<TAuditLog> {
     static final Integer LOG_MESSAGE_MAX_SIZE = 4000
 
     Long id
-
     LocalDateTime dateCreated
 
     String ip
@@ -49,15 +48,11 @@ class TAuditLog implements GormEntity, MultiTenant<TAuditLog> {
     String digest
 
     static constraints = {
-        ip nullable: true
-        port nullable: true
-        requestInfo nullable: true
-        userAgent nullable: true
-        message nullable: true, maxSize: TAuditLog.LOG_MESSAGE_MAX_SIZE
-        objectName nullable: true
-        stateBefore nullable: true, maxSize: TAuditLog.LOG_MESSAGE_MAX_SIZE
-        stateAfter nullable: true, maxSize: TAuditLog.LOG_MESSAGE_MAX_SIZE
-        digest nullable: true
+        username nullable: false
+        operation nullable: false
+        message maxSize: TAuditLog.LOG_MESSAGE_MAX_SIZE
+        stateBefore maxSize: TAuditLog.LOG_MESSAGE_MAX_SIZE
+        stateAfter maxSize: TAuditLog.LOG_MESSAGE_MAX_SIZE
     }
 
     static mapping = {

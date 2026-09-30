@@ -25,6 +25,8 @@ class TFruit implements GormEntity, MultiTenant<TFruit> {
     String image
 
     static constraints = {
+        name nullable: false
+        image nullable: false
     }
 
 }

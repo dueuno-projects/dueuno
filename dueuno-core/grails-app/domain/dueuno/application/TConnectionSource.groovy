@@ -40,10 +40,10 @@ class TConnectionSource implements GormEntity, Serializable {
     String password
 
     static constraints = {
-        name unique: true
-        dialect nullable: true
-        url unique: true
-        password nullable: true
+        name nullable: false, unique: true
+        driverClassName nullable: false
+        dbCreate nullable: false
+        username nullable: false
     }
 
     static mapping = {

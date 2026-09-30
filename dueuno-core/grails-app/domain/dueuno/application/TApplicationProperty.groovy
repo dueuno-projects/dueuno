@@ -60,31 +60,17 @@ class TApplicationProperty implements GormEntity {
     String password
 
     static constraints = {
-        name unique: true
-        validation nullable: true
+        name nullable: false, unique: true
+        type nullable: false
 
-        bool nullable: true
-        boolDefault nullable: true
-        number nullable: true
-        numberDefault nullable: true
-
-        datetime nullable: true
-        datetimeDefault nullable: true
-        date nullable: true
-        dateDefault nullable: true
-        time nullable: true
-        timeDefault nullable: true
-
-        string nullable: true, maxSize: 500
-        stringDefault nullable: true, maxSize: 500
-        filename nullable: true, maxSize: 500
-        filenameDefault nullable: true, maxSize: 500
-        directory nullable: true, maxSize: 500
-        directoryDefault nullable: true, maxSize: 500
-        url nullable: true, maxSize: 500
-        urlDefault nullable: true, maxSize: 500
-
-        password nullable: true
+        string maxSize: 1000
+        stringDefault maxSize: 1000
+        filename maxSize: 1000
+        filenameDefault maxSize: 1000
+        directory maxSize: 1000
+        directoryDefault maxSize: 1000
+        url maxSize: 1000
+        urlDefault maxSize: 1000
     }
 
     static mapping = {

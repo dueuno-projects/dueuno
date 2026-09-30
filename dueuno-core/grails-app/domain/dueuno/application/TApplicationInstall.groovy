@@ -27,7 +27,6 @@ import java.time.LocalDateTime
 class TApplicationInstall implements GormEntity {
 
     Long id
-
     LocalDateTime dateCreated
 
     String plugin
@@ -36,8 +35,9 @@ class TApplicationInstall implements GormEntity {
     Boolean dev
 
     static constraints = {
-        plugin unique: ['revision', 'tenantId', 'dev']
-        revision blank: true
+        plugin nullable: false, unique: ['revision', 'tenantId', 'dev']
+        revision nullable: false, blank: true
+        tenantId nullable: false
     }
 
     static mapping = {

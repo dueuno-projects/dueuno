@@ -34,6 +34,11 @@ class TRoleGroupRole implements GormEntity, Serializable {
     TRoleGroup roleGroup
     TRole role
 
+    static constraints = {
+        roleGroup nullable: false
+        role nullable: false
+    }
+
     static mapping = {
         table 'sys_role_group_role'
         id composite: ['roleGroup', 'role']
