@@ -12,9 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.audit
+package dueuno.tenant
 
-import dueuno.tenant.AuditOperation
 import grails.compiler.GrailsCompileStatic
 import grails.gorm.MultiTenant
 import org.grails.datastore.gorm.GormEntity

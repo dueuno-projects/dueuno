@@ -14,7 +14,6 @@
  */
 package dueuno.tenant
 
-import dueuno.audit.TAuditLog
 import dueuno.commons.utils.DateUtils
 import dueuno.elements.WebRequestAware
 import dueuno.elements.core.Elements

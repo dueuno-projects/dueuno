@@ -15,7 +15,6 @@
  */
 package dueuno.tenant
 
-import dueuno.audit.TAuditLog
 import dueuno.security.CryptoService
 import dueuno.security.SecurityService
 import grails.testing.gorm.DataTest
