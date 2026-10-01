@@ -15,7 +15,6 @@
 package dueuno.database
 
 import dueuno.application.ConnectionSourceService
-import dueuno.commons.utils.SqlUtils
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Button
 import dueuno.elements.components.Form
@@ -29,12 +28,8 @@ import dueuno.elements.core.Elements
 import dueuno.elements.style.TextDefault
 import dueuno.security.SecurityService
 import dueuno.tenant.TenantService
-import dueuno.types.CustomType
 import dueuno.types.Types
-import grails.gorm.DetachedCriteria
-import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.annotation.Secured
-import jakarta.annotation.PostConstruct
 
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -46,41 +41,7 @@ class GormExplorerController implements ElementsController {
     SecurityService securityService
     TenantService tenantService
     ConnectionSourceService connectionSourceService
-
-    @PostConstruct
-    void init() {
-        // Executes only once when the application starts
-    }
-
-    private List<Class> getDomainProperties(Class domainClass) {
-        List<Class> results = []
-        domainClass.constrainedProperties.each {
-            if (it.value.property.propertyType !in Set) {
-                results << it
-            }
-        }
-        return results
-    }
-
-    private List<String> getDomainColumns(Class domainClass) {
-        List<String> results = ['id']
-        domainClass.constrainedProperties.each {
-            if (it.value.property.propertyType !in Set) {
-                results << it.key.toString()
-            }
-        }
-        return results
-    }
-
-    private Map<String, String> getDomainFieldNames(Class domainClass) {
-        Map<String, String> results = [id: 'id']
-        domainClass.constrainedProperties.each {
-            if (it.value.property.propertyType !in Set) {
-                results << [(it.key): it.key.toString()]
-            }
-        }
-        return results
-    }
+    GormExplorerService gormExplorerService
 
     def index() {
         def c = createContent()
@@ -113,7 +74,7 @@ class GormExplorerController implements ElementsController {
                     optionsFromRecordset: tenantService.list(),
                     keys: ['tenantId'],
                     allowClear: false,
-                    defaultValue: tenantService.defaultTenantId,
+                    defaultValue: tenantId,
                     onChange: 'index',
                     submit: 'form',
                     cols: 3,
@@ -170,66 +131,17 @@ class GormExplorerController implements ElementsController {
                     )
                 }
 
-                columns = getDomainColumns(domainClass)
-                labels = getDomainFieldNames(domainClass)
+                columns = gormExplorerService.getDomainColumns(domainClass)
+                labels = gormExplorerService.getDomainFieldNames(domainClass)
                 sortable = [id: 'desc']
 
                 body.eachRow { TableRow row, Map values ->
                 }
             }
 
-            tenantService.withTenant(tenantId) {
-                Number searchId = table.filterParams.id as Number
-                String searchText = table.filterParams.find
-                Number searchNumber
-                try {
-                    searchNumber = table.filterParams.find as Long
-                } catch (Exception ignore) {
-                    searchNumber = null
-                }
-
-                def query = new DetachedCriteria(domainClass).build {
-
-                    // Dynamic associations fetch
-                    for (property in getDomainProperties(domainClass)) {
-                        Class propertyClass = property.value.property.propertyType
-                        String propertyName = property.key
-
-                        if (Elements.isDomainClass(propertyClass)) {
-                            join propertyName
-                        }
-                    }
-
-                    if (searchId) {
-                        eq 'id', searchId
-                    }
-
-                    if (searchText) {
-                        or {
-                            for (property in getDomainProperties(domainClass)) {
-                                Class propertyClass = property.value.property.propertyType
-                                String propertyName = property.key
-
-                                if (searchText && propertyClass in String) {
-                                    ilike propertyName, "%${searchText}%"
-
-                                } else if (searchText && propertyClass in CustomType && Types.getValuePropertyType(propertyClass) == String) {
-                                    ilike propertyName + '.' + Types.getValuePropertyName(propertyClass), "%${searchText}%"
-
-                                } else if (searchNumber && propertyClass in CustomType && Types.getValuePropertyType(propertyClass) == Number) {
-                                    eq propertyName + '.' + Types.getValuePropertyName(propertyClass), searchNumber
-
-                                } else if (searchNumber && propertyClass in Number) {
-                                    eq propertyName, searchNumber
-                                }
-                            }
-                        }
-                    }
-                }
-
-                table.body = query.list(table.fetchParams)
-                table.paginate = query.count()
-            }
+            Map records = gormExplorerService.listRecords(tenantId, domainClass, table.filterParams, table.fetchParams)
+            table.body = records.records
+            table.paginate = records.count
         }
 
         display content: c
@@ -252,7 +164,7 @@ class GormExplorerController implements ElementsController {
                 readonly: true,
             )
 
-            for (property in getDomainProperties(domainClass)) {
+            for (property in gormExplorerService.getDomainProperties(domainClass)) {
                 Class propertyClass = property.value.property.propertyType
                 String propertyName = property.key
 
@@ -335,68 +247,51 @@ class GormExplorerController implements ElementsController {
         display content: c, modal: true
     }
 
-    @Transactional
     def onCreate() {
         String tenantId = controllerSession['tenantId']
         Class domainClass = controllerSession['domainClass']
 
-        tenantService.withTenant(tenantId) {
-            def obj = domainClass.newInstance(params)
-            obj.save(flush: true)
-
-            if (obj.hasErrors()) {
-                display errors: obj
-                return
-            }
-
-            display action: 'index'
+        def obj = gormExplorerService.createRecord(tenantId, domainClass, params)
+        if (obj.hasErrors()) {
+            display errors: obj
+            return
         }
+
+        display action: 'index'
     }
 
     def edit() {
         String tenantId = controllerSession['tenantId']
         Class domainClass = controllerSession['domainClass']
 
-        tenantService.withTenant(tenantId) {
-            def obj = domainClass.get(params.id)
-            def c = buildForm(tenantId, domainClass, obj)
-            display content: c, modal: true
-        }
+        def obj = gormExplorerService.getRecord(tenantId, domainClass, params.id as Serializable)
+        def c = buildForm(tenantId, domainClass, obj)
+        display content: c, modal: true
     }
 
-    @Transactional
     def onEdit() {
         String tenantId = controllerSession['tenantId']
         Class domainClass = controllerSession['domainClass']
 
-        tenantService.withTenant(tenantId) {
-            def obj = domainClass.get(params.id)
-            obj.properties = params
-            obj.save(flush: true)
-
-            if (obj.hasErrors()) {
-                display errors: obj
-                return
-            }
-
-            display action: 'index'
+        def obj = gormExplorerService.updateRecord(tenantId, domainClass, params.id as Serializable, params)
+        if (obj.hasErrors()) {
+            display errors: obj
+            return
         }
+
+        display action: 'index'
     }
 
-    @Transactional
     def onDelete() {
         String tenantId = controllerSession['tenantId']
         Class domainClass = controllerSession['domainClass']
 
-        tenantService.withTenant(tenantId) {
-            try {
-                def obj = domainClass.get(params.id)
-                obj.delete(flush: true)
-                display action: 'index'
+        try {
+            gormExplorerService.deleteRecord(tenantId, domainClass, params.id as Serializable)
+            display action: 'index'
 
-            } catch (e) {
-                display exception: e
-            }
+        } catch (e) {
+            display exception: e
         }
     }
 
@@ -426,13 +321,9 @@ class GormExplorerController implements ElementsController {
         display content: c, modal: true, large: true
     }
 
-    @Transactional
     def onExecuteSql() {
-        def dataSource = connectionSourceService.getDataSource(params.connectionSource)
-        def sql = params.sql
-
         try {
-            SqlUtils.execute(dataSource, sql)
+            gormExplorerService.executeSql(params.connectionSource, params.sql)
             display message: 'gormExplorer.sql.console.execution.success'
 
         } catch (Exception e) {

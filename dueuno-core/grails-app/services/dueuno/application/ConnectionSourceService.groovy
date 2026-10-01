@@ -41,7 +41,7 @@ class ConnectionSourceService {
     ApplicationService applicationService
 
     void installOrConnect() {
-        applicationService.registerPrettyPrinter(TConnectionSource, '${it.name}${it.tenant ? " Tenant" : ""} (${it.driverClassName})')
+        applicationService.registerPrettyPrinter(TConnectionSource, '${it.tenant ? "TENANT " : "DATASOURCE "}"${it.name}" (${it.driverClassName})')
 
         if (!connectionSourceAlreadyInstalled()) {
             for (connectionSource in listDatastoreConnectionSource()) {
@@ -133,6 +133,7 @@ class ConnectionSourceService {
         if (filters.containsKey('id')) query = query.where { id == filters.id }
         if (filters.containsKey('name')) query = query.where { name == filters.name }
         if (filters.containsKey('tenantId')) query = query.where { tenant == true && name == filters.tenantId }
+        if (filters.containsKey('tenant')) query = query.where { tenant == filters.tenant }
         if (filters.containsKey('embedded')) query = query.where { embedded == filters.embedded }
 
         return query
@@ -151,7 +152,7 @@ class ConnectionSourceService {
     }
 
     List<TConnectionSource> list(Map filterParams = [:], Map fetchParams = [:]) {
-        if (!fetchParams.sort) fetchParams.sort = [name: 'asc']
+        if (!fetchParams.sort) fetchParams.sort = [tenant: 'desc', embedded: 'desc', name: 'asc']
         def query = buildQuery(filterParams)
         return query.list(fetchParams)
     }

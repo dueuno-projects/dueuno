@@ -24,7 +24,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 @Slf4j
 @EnableScheduling
-class ElementsExtraGrailsPlugin extends Plugin {
+class DueunoExtraGrailsPlugin extends Plugin {
 
     static final String NAME = 'dueuno-extra'
     def loadAfter = [
