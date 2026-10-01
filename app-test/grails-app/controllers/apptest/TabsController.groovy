@@ -45,12 +45,12 @@ class TabsController implements ElementsController {
                 id: 'tabs',
                 displayLabel: false,
                 action: 'onHide',
-                animate: 'back',
+                animate: 'fade',
                 text: 'Back',
                 stretch: true,
                 group: true,
                 loading: false,
-            ).component.addAction(action: 'onShow', text: 'Next', animate: 'next')
+            ).component.addAction(action: 'onShow', text: 'Next', animate: 'fade')
         }
 
         Form f1 = c.addComponent(Form, 'f1')

@@ -3,7 +3,7 @@
 }
 
 @keyframes fade-in {
-    from { opacity: .15 }
+    from { opacity: .7 }
     to   { opacity: 1 }
 }
 
@@ -17,8 +17,8 @@
 
 @keyframes page-slide-in-from-left {
     from {
-        transform: translateX(-3%);
-        opacity: .15;
+        transform: translateX(-.7%);
+        opacity: .7;
     }
     to {
         transform: translateX(0);
@@ -28,8 +28,8 @@
 
 @keyframes page-slide-in-from-right {
     from {
-        transform: translateX(3%);
-        opacity: .15;
+        transform: translateX(.7%);
+        opacity: .7;
     }
     to {
         transform: translateX(0);

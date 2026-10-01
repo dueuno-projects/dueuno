@@ -139,6 +139,7 @@ class Header extends Component {
         args.action = args.action ?: 'onClose'
         args.icon = args.icon ?: 'fa-times'
         args.text = args.text ?: ''
+        args.animate = 'none'
         return addBackButton(args)
     }
 
@@ -177,6 +178,7 @@ class Header extends Component {
 
         args.text = (args.text == null) ? TextDefault.BACK : args.text
         args.icon = (args.icon == null) ? 'fa-angle-left' : args.icon
+        args.animate = (args.animate == null) ? 'back' : args.animate
         if (args.group) nextButton.group = args.group
 
         backButton.removeDefaultAction()

@@ -52,7 +52,11 @@ class TransitionCommand {
 
         let rendered;
         if (componentEvent.renderProperties['modal']) {
+            let animateModalContent = PageModal.isActive && PageModal.isReady;
             rendered = PageModal.open($content, componentEvent);
+            if (animateModalContent && _21_.user.animations) {
+                rendered = rendered.then(() => TransitionCommand.animateModal(componentEvent));
+            }
 
         } else {
             PageModal.close();
@@ -238,7 +242,7 @@ class TransitionCommand {
             Elements.callMethod($element, component, 'setValue', value, trigger);
             if (trigger) Transition.triggerEvent($element, 'change');
 
-        } else if (methodName == 'setDisplay' && (animation == 'back' || animation == 'next') && _21_.user.animations) {
+        } else if (methodName == 'setDisplay' && animation && _21_.user.animations) {
             TransitionCommand.setDisplay($element, component, methodName, value.value, animation);
 
         } else {
@@ -249,12 +253,13 @@ class TransitionCommand {
     static setDisplay($element, component, methodName, value, animation) {
         let shouldDisplay = value == null || value == true;
         let isDisplayed = Component.getDisplay($element);
-        let direction = animation == 'back' ? 'right' : 'left';
 
         if (shouldDisplay && !isDisplayed) {
             Elements.callMethod($element, component, methodName, value);
-            let inClass = direction == 'right' ? 'page-slide-in-from-left' : 'page-slide-in-from-right';
-            TransitionCommand.animateIn($element, inClass);
+            let animationClass = TransitionCommand.getIncomingAnimationClass(animation);
+            if (animationClass) {
+                TransitionCommand.animateIn($element, animationClass);
+            }
             return;
         }
 
@@ -299,34 +304,37 @@ class TransitionCommand {
 
     static animate(componentEvent, $nextElement, render) {
         let animation = componentEvent.renderProperties['animate'];
+        let animationClass = TransitionCommand.getIncomingAnimationClass(animation);
 
-        if (!_21_.user.animations || !animation) {
+        if (!_21_.user.animations || !animationClass) {
             render();
             return;
         }
 
-        switch (animation) {
-            case 'fade':
-                TransitionCommand.animateIn($nextElement, 'fade-in');
-                render();
-                break;
+        TransitionCommand.animateIn($nextElement, animationClass);
+        render();
+    }
 
-            case 'back':
-                TransitionCommand.slide($nextElement, render, 'right');
-                break;
-
-            case 'next':
-                TransitionCommand.slide($nextElement, render, 'left');
-                break;
-
-            default:
-                render();
+    static animateModal(componentEvent) {
+        let animationClass = TransitionCommand.getIncomingAnimationClass(componentEvent.renderProperties['animate']);
+        if (animationClass) {
+            TransitionCommand.animateIn(PageModal.$body.find('.simplebar-content'), animationClass);
         }
     }
 
-    static slide($nextElement, render, direction) {
-        let inClass = direction == 'right' ? 'page-slide-in-from-left' : 'page-slide-in-from-right';
-        TransitionCommand.animateIn($nextElement, inClass);
-        render();
+    static getIncomingAnimationClass(animation) {
+        switch (animation) {
+            case 'fade':
+                return 'fade-in';
+
+            case 'back':
+                return 'page-slide-in-from-left';
+
+            case 'next':
+                return 'page-slide-in-from-right';
+
+            default:
+                return null;
+        }
     }
 }
