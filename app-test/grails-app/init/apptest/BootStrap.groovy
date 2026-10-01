@@ -16,7 +16,7 @@ package apptest
 
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
-import dueuno.application.ConnectionSourceService
+import dueuno.database.ConnectionSourceService
 import dueuno.commons.utils.FileUtils
 import dueuno.elements.TransitionService
 import dueuno.elements.pages.ShellService

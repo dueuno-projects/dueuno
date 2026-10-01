@@ -12,8 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.application
+package dueuno.database
 
+import dueuno.application.ApplicationService
+import dueuno.application.TConnectionSource
 import grails.gorm.DetachedCriteria
 import grails.gorm.transactions.Transactional
 import groovy.contracts.Requires

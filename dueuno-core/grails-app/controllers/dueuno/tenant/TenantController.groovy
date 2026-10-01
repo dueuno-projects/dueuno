@@ -14,7 +14,7 @@
  */
 package dueuno.tenant
 
-import dueuno.application.ConnectionSourceService
+import dueuno.database.ConnectionSourceService
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Label
 import dueuno.elements.components.Separator

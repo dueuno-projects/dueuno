@@ -17,7 +17,7 @@ package dueuno.tenant
 import dueuno.DueunoGrailsPlugin
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
-import dueuno.application.ConnectionSourceService
+import dueuno.database.ConnectionSourceService
 import dueuno.application.TApplicationInstall
 import dueuno.commons.utils.FileUtils
 import dueuno.security.TRoleGroup
