@@ -38,6 +38,10 @@
     width: .60rem;
 }
 
+#shell-user-menu .offcanvas-body .simplebar-content-wrapper {
+    overscroll-behavior-y: contain;
+}
+
 #shell-user-menu .offcanvas-body .simplebar-track.simplebar-vertical {
     padding: 0 .5rem 0 .5rem;
 }
