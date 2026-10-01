@@ -130,7 +130,7 @@ class FormController implements ElementsController {
         c.header.with {
             addBackButton(
                 action: 'index',
-                animate: (animate ? 'back' : null)
+                animate: animate
             )
 
             nextButton.with {

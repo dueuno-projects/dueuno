@@ -44,12 +44,13 @@ class TabsController implements ElementsController {
                 class: Button,
                 id: 'tabs',
                 displayLabel: false,
-                action: 'onShow',
-                text: "Show!",
+                action: 'onHide',
+                animate: 'back',
+                text: 'Back',
                 stretch: true,
                 group: true,
                 loading: false,
-            ).component.addAction(action: 'onHide', text: "Hide!")
+            ).component.addAction(action: 'onShow', text: 'Next', animate: 'next')
         }
 
         Form f1 = c.addComponent(Form, 'f1')

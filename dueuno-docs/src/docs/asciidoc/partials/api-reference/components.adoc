@@ -990,7 +990,7 @@ c.form.with {
 |`animate`
 |`String`
 |
-|Can be set to `fade`, `next` and `back`. At the moment only `fade` is implemented as a graphical transition when changing content.
+|Can be set to `fade`, `back` and `next` when rendering content or changing a component's visibility. `back` brings destination content in from the left; `next` brings it in from the right.
 |`scroll`
 |`String`
 |

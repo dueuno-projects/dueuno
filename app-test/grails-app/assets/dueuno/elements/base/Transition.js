@@ -120,7 +120,10 @@ class Transition {
                 break;
 
             case TransitionCommand.SET:
-                TransitionCommand.set($element, componentId, component, property, valueMap, trigger);
+                let animation = componentEvent && componentEvent.renderProperties
+                    ? componentEvent.renderProperties['animate']
+                    : null;
+                TransitionCommand.set($element, componentId, component, property, valueMap, trigger, animation);
                 break;
 
             default:

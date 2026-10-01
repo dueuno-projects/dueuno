@@ -67,17 +67,20 @@ class TransitionCommand {
     }
 
     static render($component, $newComponent, componentEvent) {
-        TransitionCommand.animate(componentEvent, $component, $newComponent)
         let focusPath = TransitionCommand.getFocusPath();
 
-        Page.deactivateComponents();
-        $component.replaceWith($newComponent);
-        Page.reinitializeContent($newComponent);
+        let render = () => {
+            Page.deactivateComponents();
+            $component.replaceWith($newComponent);
+            Page.reinitializeContent($newComponent);
 
-        TransitionCommand.restoreFocus(focusPath);
-        let scroll = componentEvent.renderProperties['scroll'];
-        TransitionCommand.scrollTo(scroll);
-        TransitionCommand.setBrowserUrl(componentEvent);
+            TransitionCommand.restoreFocus(focusPath);
+            let scroll = componentEvent.renderProperties['scroll'];
+            TransitionCommand.scrollTo(scroll);
+            TransitionCommand.setBrowserUrl(componentEvent);
+        }
+
+        TransitionCommand.animate(componentEvent, $newComponent, render);
     }
 
     static scrollTo(path) {
@@ -224,7 +227,7 @@ class TransitionCommand {
         }
     }
 
-    static set($element, componentId, component, property, value, trigger) {
+    static set($element, componentId, component, property, value, trigger, animation) {
         let methodName = 'set' + capitalize(property);
         if (!Elements.hasMethod(component, methodName)) {
             log.error('Cannot find method "' + componentId + '.' + methodName + '()"');
@@ -235,9 +238,34 @@ class TransitionCommand {
             Elements.callMethod($element, component, 'setValue', value, trigger);
             if (trigger) Transition.triggerEvent($element, 'change');
 
+        } else if (methodName == 'setDisplay' && (animation == 'back' || animation == 'next') && _21_.user.animations) {
+            TransitionCommand.setDisplay($element, component, methodName, value.value, animation);
+
         } else {
             Elements.callMethod($element, component, methodName, value.value);
         }
+    }
+
+    static setDisplay($element, component, methodName, value, animation) {
+        let shouldDisplay = value == null || value == true;
+        let isDisplayed = Component.getDisplay($element);
+        let direction = animation == 'back' ? 'right' : 'left';
+
+        if (shouldDisplay && !isDisplayed) {
+            Elements.callMethod($element, component, methodName, value);
+            let inClass = direction == 'right' ? 'page-slide-in-from-left' : 'page-slide-in-from-right';
+            TransitionCommand.animateIn($element, inClass);
+            return;
+        }
+
+        Elements.callMethod($element, component, methodName, value);
+    }
+
+    static animateIn($element, animationClass) {
+        $element.addClass(animationClass);
+        $element.one('animationend', function() {
+            $(this).removeClass(animationClass);
+        });
     }
 
     static mergeRenderProperties(eventRenderProperties, contentRenderProperties) {
@@ -269,24 +297,36 @@ class TransitionCommand {
         }
     }
 
-    static animate(componentEvent, $prevElement, $nextElement) {
+    static animate(componentEvent, $nextElement, render) {
         let animation = componentEvent.renderProperties['animate'];
 
         if (!_21_.user.animations || !animation) {
+            render();
             return;
         }
 
         switch (animation) {
             case 'fade':
-                $prevElement.addClass('fade-out');
-                $nextElement.addClass('fade-in');
+                TransitionCommand.animateIn($nextElement, 'fade-in');
+                render();
                 break;
 
             case 'back':
+                TransitionCommand.slide($nextElement, render, 'right');
                 break;
 
             case 'next':
+                TransitionCommand.slide($nextElement, render, 'left');
                 break;
+
+            default:
+                render();
         }
+    }
+
+    static slide($nextElement, render, direction) {
+        let inClass = direction == 'right' ? 'page-slide-in-from-left' : 'page-slide-in-from-right';
+        TransitionCommand.animateIn($nextElement, inClass);
+        render();
     }
 }

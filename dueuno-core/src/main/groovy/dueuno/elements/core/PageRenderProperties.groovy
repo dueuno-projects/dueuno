@@ -53,8 +53,8 @@ class PageRenderProperties implements Serializable {
     Boolean updateUrl
 
     /**
-     * The name of the CSS animation to apply when the content enters the view
-     * (e.g. {@code "fade"}, {@code "slide"}).
+     * The name of the animation to apply when rendering content or changing component
+     * visibility. Supported values are {@code "fade"}, {@code "back"}, and {@code "next"}.
      */
     String animate
 

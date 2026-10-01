@@ -1,5 +1,5 @@
 .fade-in {
-   animation: fade-in .5s;
+    animation: fade-in .5s;
 }
 
 @keyframes fade-in {
@@ -7,11 +7,32 @@
     to   { opacity: 1 }
 }
 
-.fade-out {
-   animation: fade-out .25s;
+.page-slide-in-from-left {
+    animation: page-slide-in-from-left .5s both;
 }
 
-@keyframes fade-out {
-    from { opacity: 1 }
-    to   { opacity: .5 }
+.page-slide-in-from-right {
+    animation: page-slide-in-from-right .5s both;
+}
+
+@keyframes page-slide-in-from-left {
+    from {
+        transform: translateX(-3%);
+        opacity: .15;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes page-slide-in-from-right {
+    from {
+        transform: translateX(3%);
+        opacity: .15;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }

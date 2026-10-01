@@ -16,11 +16,11 @@ class Transition {
         Transition.wsSubscribe(wsClient, "/queue/username/" + username);
 
         $.ajax({url: _21_.app.url + "transition/channels"})
-            .done(function(channels) {
-                for (let channel of channels) {
-                    Transition.wsSubscribe(wsClient, "/queue/channel/" + channel);
-                }
-            });
+        .done(function(channels) {
+            for (let channel of channels) {
+                Transition.wsSubscribe(wsClient, "/queue/channel/" + channel);
+            }
+        });
     }
 
     static wsOnError(frame) {
@@ -120,7 +120,10 @@ class Transition {
                 break;
 
             case TransitionCommand.SET:
-                TransitionCommand.set($element, componentId, component, property, valueMap, trigger);
+                let animation = componentEvent && componentEvent.renderProperties
+                    ? componentEvent.renderProperties['animate']
+                    : null;
+                TransitionCommand.set($element, componentId, component, property, valueMap, trigger, animation);
                 break;
 
             default:
