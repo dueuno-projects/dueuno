@@ -27,6 +27,7 @@ import dueuno.security.TUserRoleGroup
 import dueuno.utils.ResourceUtils
 import grails.gorm.DetachedCriteria
 import grails.gorm.multitenancy.Tenants
+import grails.gorm.multitenancy.WithoutTenant
 import grails.gorm.transactions.Transactional
 import groovy.contracts.Requires
 import groovy.transform.CompileDynamic
@@ -164,6 +165,7 @@ class TenantService {
         return query.count()
     }
 
+    @WithoutTenant
     @Transactional
     TTenant create(Map args) {
         if (args.deletable == null) args.deletable = true
@@ -237,6 +239,7 @@ class TenantService {
         }
     }
 
+    @WithoutTenant
     @Transactional
     @CompileDynamic
     @Requires({ args.id })
@@ -249,6 +252,7 @@ class TenantService {
         return obj
     }
 
+    @WithoutTenant
     @Transactional
     @CompileDynamic
     void delete(Serializable id) {
@@ -261,6 +265,7 @@ class TenantService {
         applicationInstall.deleteAll()
     }
 
+    @WithoutTenant
     @Transactional
     @CompileDynamic
     private void deleteTenantUsersAndGroups(TTenant tenant) {
@@ -284,4 +289,5 @@ class TenantService {
             roleGroup.delete(flush: true)
         }
     }
+
 }
