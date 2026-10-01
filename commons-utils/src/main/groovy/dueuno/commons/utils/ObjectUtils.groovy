@@ -134,19 +134,22 @@ class ObjectUtils {
      */
     private static Object getValueOrThrowException(Object object, String fieldName) {
         try {
+            if (object !in Map && !object.hasProperty(fieldName)) {
+                return null
+            }
+
             Object value = object[fieldName]
             return value
 
-        } catch (MissingPropertyException ignore) {
-            return null
-
         } catch (Exception e) {
-            throw new Exception(
-                "Cannot read property '${fieldName}' from object '${object.getClass().getName()}'. " +
-                    "If this is a domain object please make sure to set eager fetching" +
-                    "for each field that you want to access whose type is a domain class " +
-                    "(eg. DomainClass.list(fetch: [fieldName: 'join']): " +
-                    e)
+            throw new Exception("""
+                Exception: ${e}
+
+                Cannot read property '${fieldName}' from object '${object.getClass().getName()}'.
+                If this is a domain object please make sure to set eager fetching
+                for each field that you want to access whose type is a domain class
+                (eg. DomainClass.list(fetch: [fieldName: 'join']).
+                """)
         }
     }
 
