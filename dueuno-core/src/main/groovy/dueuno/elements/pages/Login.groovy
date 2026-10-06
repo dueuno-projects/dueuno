@@ -38,6 +38,7 @@ class Login extends Page {
     String copy
     String registerUrl
     String passwordRecoveryUrl
+    String googleLoginUrl
 
     String backgroundImage
     String logoImage
@@ -56,6 +57,7 @@ class Login extends Page {
         copy = args.copy
         registerUrl = args.registerUrl
         passwordRecoveryUrl = args.passwordRecoveryUrl
+        googleLoginUrl = args.googleLoginUrl
 
         logoImage = args.logoImage
         backgroundImage = args.backgroundImage
@@ -84,6 +86,17 @@ class Login extends Page {
                 stretch: true,
                 primary: true,
             )
+            if (googleLoginUrl) {
+                addField(
+                    class: Button,
+                    id: 'googleLogin',
+                    url: googleLoginUrl,
+                    direct: true,
+                    label: 'authentication.google.login',
+                    displayLabel: false,
+                    stretch: true,
+                )
+            }
             if (passwordRecoveryUrl) {
                 addField(
                     class: Link,

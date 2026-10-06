@@ -461,7 +461,7 @@ class ImageUtils {
      * List&lt;File&gt; pages = ImageUtils.renderPdf(pdfFile, RenderQuality.MEDIUM)
      *
      * // pages now contains PNG files for each page of the PDF
-     * pages.each { println it.path }
+     * for (page in pages) { println page.path }
      * </pre>
      *
      * @param document the document file to render

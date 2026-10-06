@@ -18,6 +18,7 @@ import dueuno.elements.ElementsController
 import dueuno.elements.pages.Login
 import dueuno.tenant.TenantPropertyService
 import dueuno.tenant.TenantService
+import dueuno.application.AuthenticationProviderService
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -33,6 +34,7 @@ class AuthenticationController implements ElementsController {
     SecurityService securityService
     TenantService tenantService
     TenantPropertyService tenantPropertyService
+    AuthenticationProviderService authenticationProviderService
 
     def login() {
         if (securityService.isLoggedIn()) {
@@ -42,6 +44,7 @@ class AuthenticationController implements ElementsController {
 
         def hostTenant = tenantService.getByHost(request.getHeader('host'))
         def tenantId = hostTenant?.tenantId ?: tenantService.defaultTenantId
+        String googleUrl = googleLoginUrl()
 
         tenantService.withTenant(tenantId) {
             def loginArgs = [
@@ -51,9 +54,16 @@ class AuthenticationController implements ElementsController {
                 copy               : tenantPropertyService.getString('LOGIN_COPY', true),
                 registerUrl        : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
                 passwordRecoveryUrl: tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
+                googleLoginUrl     : googleUrl,
             ]
             display page: createPage(Login, loginArgs)
         }
+    }
+
+    private String googleLoginUrl() {
+        def provider = authenticationProviderService.getByProviderKey('google')
+        if (!provider?.enabled || !provider.clientId || !provider.clientSecret || !provider.redirectUri) return null
+        return createLink(controller: 'googleAuthentication', action: 'start', absolute: false)
     }
 
     @Secured(['ROLE_USER'])

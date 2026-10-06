@@ -66,59 +66,6 @@ grails.plugin.springsecurity.filterChain.chainMap = [
         [pattern: '/**', filters: 'JOINED_FILTERS,-physicalIdAuthenticationFilter']
 ]
 
-///////////////////////////////////////////////////////////////////////////////
-//                                                                           //
-// LDAP CONFIGURATION                                                        //
-//                                                                           //
-///////////////////////////////////////////////////////////////////////////////
-
 grails.plugin.springsecurity.providerNames = [
-        // Must be the first one
-        'daoAuthenticationProvider',
-
-        // All other providers
-        'physicalIdAuthenticationProvider',
-
-        // Must be the last one
-        'rememberMeAuthenticationProvider',
+        'runtimeAuthenticationProvider',
 ]
-
-// Configure the server connection using the variables you find below
-// Test the conneciton logging in with the managerDn credentials
-
-// CONFIGURATION
-//
-//grails.plugin.springsecurity.ldap.context.managerDn = 'testuser'
-//grails.plugin.springsecurity.ldap.context.managerPassword = 'testpass'
-//grails.plugin.springsecurity.ldap.context.server = 'ldap://0.0.0.0:389/'
-//grails.plugin.springsecurity.ldap.search.base = 'DC=COMPANY,DC=LOCAL'
-
-//
-// Do not modify the lines below unless you know what you are doing
-//
-grails.plugin.springsecurity.ldap.auth.hideUserNotFoundExceptions = false
-
-// You need this for Active Directory
-grails.plugin.springsecurity.ldap.search.filter = 'sAMAccountName={0}'
-grails.plugin.springsecurity.ldap.search.searchSubtree = true
-grails.plugin.springsecurity.ldap.authorities.ignorePartialResultException = true
-
-// extra attributes you want returned
-grails.plugin.springsecurity.ldap.search.attributesToReturn = ['mail', 'displayName']
-
-// role-specific LDAP config
-grails.plugin.springsecurity.ldap.authorities.retrieveGroupRoles = true
-grails.plugin.springsecurity.ldap.authorities.defaultRole = 'ROLE_USER'
-//grails.plugin.springsecurity.ldap.authorities.groupSearchBase = 'dc=company,dc=group'
-//grails.plugin.springsecurity.ldap.authorities.groupSearchFilter = 'member={0}'
-grails.plugin.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
-
-
-grails.plugin.springsecurity.ldap.useRememberMe = false
-//grails.plugin.springsecurity.ldap.rememberMe.detailsManager.groupMemberAttributeName = 'member'
-//grails.plugin.springsecurity.ldap.rememberMe.detailsManager.groupRoleAttribute = 'CN'
-//grails.plugin.springsecurity.ldap.rememberMe.detailsManager.groupSearchBase = 'DC=COMPANY,DC=NET'
-//grails.plugin.springsecurity.ldap.rememberMe.detailsManager.passwordAttributeName = 'userPassword'
-//grails.plugin.springsecurity.ldap.rememberMe.usernameMapper.userDnBase = 'DC=COMPANY,DC=NET'
-//grails.plugin.springsecurity.ldap.rememberMe.usernameMapper.usernameAttribute = 'CN'
-//grails.plugin.springsecurity.ldap.rememberMe.detailsManager.attributesToRetrieve = null

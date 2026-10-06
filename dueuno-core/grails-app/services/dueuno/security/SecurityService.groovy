@@ -175,10 +175,10 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             controller: 'connectionSource',
             icon: 'fa-plug',
         )
-//        applicationService.registerSuperadminFeature(
-//                controller: 'authenticationProvider',
-//                icon: 'fa-at',
-//        )
+        applicationService.registerSuperadminFeature(
+            controller: 'authenticationProvider',
+            icon: 'fa-shield-halved',
+        )
         applicationService.registerSuperadminFeature(
             controller: 'applicationProperty',
             icon: 'fa-tools',
@@ -468,7 +468,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         String tenantId = tenantService.currentTenantId
         applicationService.executeBootEvents(tenantId, 'afterLogin', session)
 
-        log.info "'${tenantId}' tenant - Login '${currentUsername}', language '${currentLanguage}', authorised for ${currentUserAuthorities}"
+        log.info "'${tenantId.toUpperCase()}' TENANT - Login '${currentUsername}', language '${currentLanguage}', authorised for ${currentUserAuthorities}"
         auditService.log(AuditOperation.LOGIN, currentUserAuthorities.join(', '))
     }
 
@@ -751,11 +751,11 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             ?: tenantService.getByTenantId(args.tenantId as String)
             ?: tenantService.currentTenant
 
-        log.info "'${tenant.tenantId}' tenant - Creating user '${args.username}' in groups ${groups} (default '${defaultGroup}')"
+        log.info "'${tenant.tenantId.toUpperCase()}' TENANT - Creating user '${args.username}' in groups ${groups} (default '${defaultGroup}')"
 
         TUser user = TUser.findByUsername(args.username as String)
         if (user) {
-            log.warn "'${tenant.tenantId}' tenant - User '${args.username}' already exists, skipping user creation."
+            log.warn "'${tenant.tenantId.toUpperCase()}' TENANT - User '${args.username}' already exists, skipping user creation."
             user.errors.rejectValue('username', 'user.username.already.exists', [args.username] as Object[], 'user.username.already.exists')
             return user
         }
@@ -791,7 +791,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         user.save(flush: true, failOnError: args.failOnError)
 
         if (user.hasErrors()) {
-            log.error "'${tenant.tenantId}' tenant - Error creating user '${args.username}' initialised as: ${args}"
+            log.error "'${tenant.tenantId.toUpperCase()}' TENANT - Error creating user '${args.username}' initialised as: ${args}"
             log.error user.errors.toString()
             return user
         }
@@ -802,7 +802,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             if (roleGroup) {
                 TUserRoleGroup.create(user, roleGroup)
             } else {
-                log.error "'${tenant.tenantId}' tenant - Error assigning group '${groupName}' to user '${args.username}', group not found!"
+                log.error "'${tenant.tenantId.toUpperCase()}' TENANT - Error assigning group '${groupName}' to user '${args.username}', group not found!"
             }
         }
 
@@ -1029,7 +1029,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
         TRoleGroup roleGroup = TRoleGroup.findByNameAndTenant(groupName, tenant)
         if (!roleGroup) {
-            log.info "'${tenant.tenantId}' tenant - Creating group '${groupName}' with authorities: ${authorities}"
+            log.info "'${tenant.tenantId.toUpperCase()}' TENANT - Creating group '${groupName}' with authorities: ${authorities}"
             roleGroup = new TRoleGroup(
                 tenant: tenant,
                 name: groupName,

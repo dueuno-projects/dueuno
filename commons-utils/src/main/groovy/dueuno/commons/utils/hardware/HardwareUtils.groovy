@@ -40,7 +40,7 @@ import oshi.hardware.HardwareAbstractionLayer
  *
  * println "RAM Total (bytes): ${info.ram}"
  *
- * info.gpus.each { gpu ->
+ * for (gpu in info.gpus) {
  *     println "GPU #${gpu.index} Model: ${gpu.model}"
  *     println "GPU Vendor: ${gpu.vendor}"
  *     println "GPU VRAM: ${gpu.vram} bytes"
@@ -69,7 +69,7 @@ class HardwareUtils {
      * HardwareInfo info = HardwareUtils.getInfo()
      * println "CPU Model: ${info.cpu.model}"
      * println "RAM Total: ${info.ram} bytes"
-     * info.gpus.each { gpu ->
+     * for (gpu in info.gpus) {
      *     println "GPU Model: ${gpu.model}, Vendor: ${gpu.vendor}"
      * }
      *}</pre>

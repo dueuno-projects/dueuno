@@ -15,7 +15,7 @@ import groovy.transform.CompileStatic
  * Integer dpi = quality.dpi;  // 200
  *
  * // Iterate through all qualities
- * RenderQuality.values().each { q ->
+ * for (q in RenderQuality.values()) {
  *     println("${q.name()} -> ${q.width}x${q.height} @ ${q.dpi} DPI")
  * }
  *}</pre>

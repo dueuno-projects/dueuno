@@ -48,6 +48,7 @@ class ApplicationService implements LinkGeneratorAware {
     GrailsApplication grailsApplication
     ServletContext servletContext
     ConnectionSourceService connectionSourceService
+    AuthenticationProviderService authenticationProviderService
     TenantService tenantService
     ApplicationPropertyService applicationPropertyService
 
@@ -110,6 +111,7 @@ class ApplicationService implements LinkGeneratorAware {
     @Transactional
     void performInstallation() {
         connectionSourceService.installOrConnect()
+        authenticationProviderService.install()
 
         if (!applicationInstalled) {
             executeOnPluginInstall()
@@ -306,7 +308,7 @@ class ApplicationService implements LinkGeneratorAware {
     void executeOnPluginTenantInstall(String tenantId) {
         if (hasBootEvents('onPluginTenantInstall')) {
             log.info "-" * 78
-            log.info "'${tenantId}' tenant - SETTING UP PLUGINS"
+            log.info "'${tenantId.toUpperCase()}' TENANT > PLUGINS"
             log.info "-" * 78
 
             executeInstall(tenantId, 'onPluginTenantInstall', false, true)
@@ -317,7 +319,7 @@ class ApplicationService implements LinkGeneratorAware {
     void executeOnTenantInstall(String tenantId) {
         if (hasBootEvents('onTenantInstall') || hasBootEvents('onDevInstall')) {
             log.info "-" * 78
-            log.info "'${tenantId}' tenant - SETTING UP APPLICATION"
+            log.info "'${tenantId.toUpperCase()}' TENANT > APPLICATION"
             log.info "-" * 78
 
             executeInstall(tenantId, 'onTenantInstall')
@@ -331,7 +333,7 @@ class ApplicationService implements LinkGeneratorAware {
     void executeOnUpdate(String tenantId) {
         if (hasBootEvents('onUpdate')) {
             log.info "-" * 78
-            log.info "'${tenantId}' tenant - UPDATING APPLICATION"
+            log.info "'${tenantId.toUpperCase()}' TENANT > UPDATING"
             log.info "-" * 78
 
             executeInstall(tenantId, 'onUpdate', false, true)
@@ -367,7 +369,7 @@ class ApplicationService implements LinkGeneratorAware {
                 continue
             }
 
-            log.info "'${tenantId}' tenant - Executing '${revisionName}'..."
+            log.info "'${tenantId.toUpperCase()}' TENANT - Executing '${revisionName}'..."
 
             tenantService.withTenant(tenantId) {
                 if (closure.maximumNumberOfParameters == 1) {
@@ -400,7 +402,7 @@ class ApplicationService implements LinkGeneratorAware {
             String revisionName = revision.key
             Closure closure = revision.value
 
-            log.info "'${tenantId}' tenant - Executing '${revisionName}'..."
+            log.info "'${tenantId.toUpperCase()}' TENANT - Executing '${revisionName}'..."
             tenantService.withTenant(tenantId) {
                 if (closure.maximumNumberOfParameters == 1) {
                     closure.call(tenantId)
