@@ -33,7 +33,7 @@ class AuthenticationProviderManager implements AuthenticationManager, Authentica
 
     private static final Set<String> EXCLUDED_PROVIDER_IDENTIFIERS = [
         'daoAuthorizationProvider', 'daoAuthenticationProvider', 'EMBEDDED',
-        'physicalIdAuthorizationProvider', 'physicalIdAuthenticationProvider', 'PHYSICAL',
+        'physicalAuthorizationProvider', 'physicalAuthenticationProvider', 'PHYSICAL',
         'rememberMeProvider', 'rememberMeAuthenticationProvider', 'REMEMBERME',
     ] as Set<String>
 

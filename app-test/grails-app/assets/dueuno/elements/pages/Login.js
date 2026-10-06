@@ -6,7 +6,7 @@ class Login extends Page {
 
         $(document).off('keydown.login').on('keydown.login', Login.onKeyPress);
         $(document).off('focusin.login').on('focusin.login', '[data-21-id="username"], [data-21-id="password"]', function () {
-            Login.resetPhysicalIdBuffer($('[data-21-id="loginKeyPress"]'));
+            Login.resetPhysicalBuffer($('[data-21-id="loginKeyPress"]'));
         });
     }
 
@@ -27,14 +27,14 @@ class Login extends Page {
         let targetValues = Component.getProperty($element, 'targetValues') || [];
 
         if (buffer.length > 0 && bufferTimeout > 0 && lastCharacterAt && now - lastCharacterAt > bufferTimeout) {
-            Login.resetPhysicalIdBuffer($element);
+            Login.resetPhysicalBuffer($element);
             buffer = '';
             firstCharacterAt = null;
             targetValues = [];
         }
 
         if (['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) {
-            Login.resetPhysicalIdBuffer($element);
+            Login.resetPhysicalBuffer($element);
             buffer = '';
             firstCharacterAt = null;
             targetValues = [];
@@ -59,19 +59,19 @@ class Login extends Page {
             let duration = buffer.length > 1 ? lastCharacterAt - firstCharacterAt : Infinity;
             let averageCharacterInterval = duration / (buffer.length - 1);
             // At least two characters are needed to estimate an inter-character interval.
-            let isPhysicalId = buffer.length >= 2 &&
+            let isPhysicalToken = buffer.length >= 2 &&
                 (readingSpeed == 0 || averageCharacterInterval < readingSpeed);
 
-            if (isPhysicalId) {
+            if (isPhysicalToken) {
                 event.preventDefault();
                 Login.restoreLoginFieldValues(targetValues);
-                Login.resetPhysicalIdBuffer($element);
+                Login.resetPhysicalBuffer($element);
                 Login.onLogin(null, {
                     processUrl: 'api/auth/physical',
                     physicalId: buffer,
                 });
             } else {
-                Login.resetPhysicalIdBuffer($element);
+                Login.resetPhysicalBuffer($element);
                 if (event.target.tagName == 'INPUT') {
                     event.preventDefault();
                     Login.onClick(event);
@@ -106,7 +106,7 @@ class Login extends Page {
         });
     }
 
-    static resetPhysicalIdBuffer($element) {
+    static resetPhysicalBuffer($element) {
         $element.find('input').val('');
         Component.setProperty($element, 'firstCharacterAt', null);
         Component.setProperty($element, 'lastCharacterAt', null);
@@ -116,7 +116,7 @@ class Login extends Page {
     static onClick(event) {
         event.preventDefault();
 
-        Login.resetPhysicalIdBuffer($('[data-21-id="loginKeyPress"]'));
+        Login.resetPhysicalBuffer($('[data-21-id="loginKeyPress"]'));
 
         let $username = $('[data-21-id="username"]');
         let $password = $('[data-21-id="password"]');

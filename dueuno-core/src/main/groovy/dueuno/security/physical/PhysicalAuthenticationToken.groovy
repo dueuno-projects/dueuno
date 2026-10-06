@@ -6,17 +6,17 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.util.Assert
 
 @CompileStatic
-class PhysicalIdAuthenticationToken extends AbstractAuthenticationToken {
+class PhysicalAuthenticationToken extends AbstractAuthenticationToken {
 
     private final Object principal
 
-    PhysicalIdAuthenticationToken(Object principal) {
+    PhysicalAuthenticationToken(Object principal) {
         super([])
         this.principal = principal
         setAuthenticated(false)
     }
 
-    PhysicalIdAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
+    PhysicalAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities)
         this.principal = principal
         super.setAuthenticated(true) // must use super, as we override
@@ -24,18 +24,18 @@ class PhysicalIdAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public String getName() {
-        if (this.getPrincipal() instanceof PhysicalIdGrailsUser) {
-            return ((PhysicalIdGrailsUser) this.getPrincipal()).getPhysicalId()
+        if (this.getPrincipal() instanceof PhysicalGrailsUser) {
+            return ((PhysicalGrailsUser) this.getPrincipal()).getPhysicalId()
         }
         return super.getName()
     }
 
-    public static PhysicalIdAuthenticationToken unauthenticated(Object principal) {
-        return new PhysicalIdAuthenticationToken(principal)
+    public static PhysicalAuthenticationToken unauthenticated(Object principal) {
+        return new PhysicalAuthenticationToken(principal)
     }
 
-    public static PhysicalIdAuthenticationToken authenticated(Object principal, Collection<? extends GrantedAuthority> authorities) {
-        return new PhysicalIdAuthenticationToken(principal, authorities)
+    public static PhysicalAuthenticationToken authenticated(Object principal, Collection<? extends GrantedAuthority> authorities) {
+        return new PhysicalAuthenticationToken(principal, authorities)
     }
 
     @Override

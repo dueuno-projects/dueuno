@@ -62,8 +62,8 @@ grails.plugin.springsecurity.filterChain.chainMap = [
         [pattern: '/**/images/**', filters: 'none'],
         [pattern: '/**/favicon.png', filters: 'none'],
         [pattern: '/**/appicon.png', filters: 'none'],
-        [pattern: grails.plugin.springsecurity.physicalId.filterProcessesUrl, filters: 'physicalIdAuthenticationFilter'],
-        [pattern: '/**', filters: 'JOINED_FILTERS,-physicalIdAuthenticationFilter']
+        [pattern: grails.plugin.springsecurity.physicalId.filterProcessesUrl, filters: 'physicalAuthenticationFilter'],
+        [pattern: '/**', filters: 'JOINED_FILTERS,-physicalAuthenticationFilter']
 ]
 
 grails.plugin.springsecurity.providerNames = [

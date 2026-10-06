@@ -21,7 +21,7 @@ package dueuno.security
  */
 enum AuthenticationProviderType {
     EMBEDDED('daoAuthenticationProvider'),
-    PHYSICAL('physicalIdAuthenticationProvider'),
+    PHYSICAL('physicalAuthenticationProvider'),
     LDAP('ldapAuthenticationProvider'),
     GOOGLE('oidc'),
     ENTRA('oidc'),

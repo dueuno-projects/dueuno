@@ -39,7 +39,7 @@ import java.time.Instant
  * OpenID Connect login shared by all configured OIDC providers.
  */
 @Slf4j
-class AuthenticationOidcController {
+class OidcAuthenticationController {
 
     AuthenticationProviderService authenticationProviderService
     AuthenticationUserProvisioningService authenticationUserProvisioningService

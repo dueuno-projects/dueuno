@@ -15,11 +15,11 @@
 package dueuno
 
 import dueuno.application.SessionInitializer
-import dueuno.security.physical.PhysicalIdUserDetailsService
-import dueuno.security.physical.PhysicalIdAuthenticationFilter
-import dueuno.security.physical.PhysicalIdAuthenticationProvider
+import dueuno.security.physical.PhysicalUserDetailsService
+import dueuno.security.physical.PhysicalAuthenticationFilter
+import dueuno.security.physical.PhysicalAuthenticationProvider
 import dueuno.security.AuthenticationProviderManager
-import dueuno.security.AuthenticationProviderLdap
+import dueuno.security.LdapAuthenticationProvider
 import dueuno.tenant.TenantForCurrentUserResolver
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugins.Plugin
@@ -86,20 +86,20 @@ class DueunoGrailsPlugin extends Plugin {
                 grailsApplication = ref('grailsApplication')
             }
 
-            ldapAuthenticationProvider(AuthenticationProviderLdap) {
+            ldapAuthenticationProvider(LdapAuthenticationProvider) {
                 authenticationUserProvisioningService = ref('authenticationUserProvisioningService')
             }
 
-            physicalIdUserDetailsService(PhysicalIdUserDetailsService) {
+            physicalUserDetailsService(PhysicalUserDetailsService) {
                 grailsApplication = ref('grailsApplication')
             }
 
-            physicalIdAuthenticationProvider(PhysicalIdAuthenticationProvider) {
-                physicalIdUserDetailsService = ref('physicalIdUserDetailsService')
+            physicalAuthenticationProvider(PhysicalAuthenticationProvider) {
+                physicalUserDetailsService = ref('physicalUserDetailsService')
             }
 
             ConfigObject conf = SpringSecurityUtils.securityConfig
-            physicalIdAuthenticationFilter(PhysicalIdAuthenticationFilter, conf.physicalId.filterProcessesUrl) {
+            physicalAuthenticationFilter(PhysicalAuthenticationFilter, conf.physicalId.filterProcessesUrl) {
                 authenticationManager = ref('authenticationManager')
                 authenticationSuccessHandler = ref('authenticationSuccessHandler')
                 authenticationFailureHandler = ref('authenticationFailureHandler')

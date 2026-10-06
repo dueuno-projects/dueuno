@@ -9,9 +9,9 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
 
 @CompileStatic
-class PhysicalIdAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+class PhysicalAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    PhysicalIdAuthenticationFilter(String defaultFilterProcessesUrl) {
+    PhysicalAuthenticationFilter(String defaultFilterProcessesUrl) {
         super(defaultFilterProcessesUrl)
     }
 
@@ -24,7 +24,7 @@ class PhysicalIdAuthenticationFilter extends AbstractAuthenticationProcessingFil
         String physicalId = request.getParameter('physicalId')
         physicalId = (physicalId != null) ? physicalId.trim() : ""
 
-        PhysicalIdAuthenticationToken authRequest = PhysicalIdAuthenticationToken.unauthenticated(physicalId)
+        PhysicalAuthenticationToken authRequest = PhysicalAuthenticationToken.unauthenticated(physicalId)
         authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request))
         return this.authenticationManager.authenticate(authRequest)
     }

@@ -45,7 +45,7 @@ import javax.naming.directory.SearchResult
  * LDAP authentication whose settings are loaded from the system database for each login.
  */
 @CompileStatic
-class AuthenticationProviderLdap implements AuthenticationProvider {
+class LdapAuthenticationProvider implements AuthenticationProvider {
 
     AuthenticationUserProvisioningService authenticationUserProvisioningService
 
