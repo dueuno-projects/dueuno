@@ -26,7 +26,7 @@
 .control-upload .filepond--drop-label label {
     padding: .5rem .75rem;
     font-size: 1.1rem;
-    font-weight: bold;
+    font-weight: 600;
     cursor: pointer;
     color: rgb(var(--elements-primary-bg));
 }
