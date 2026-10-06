@@ -16,7 +16,6 @@
  */
 package dueuno.security
 
-
 import grails.compiler.GrailsCompileStatic
 import org.grails.datastore.gorm.GormEntity
 

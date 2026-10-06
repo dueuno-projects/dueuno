@@ -1,4 +1,4 @@
-package dueuno.security
+package dueuno.security.physical
 
 import grails.plugin.springsecurity.userdetails.GrailsUser
 import groovy.transform.CompileStatic

@@ -15,9 +15,9 @@
 package dueuno
 
 import dueuno.application.SessionInitializer
-import dueuno.security.PhysicalIdUserDetailsService
-import dueuno.security.PhysicalIdAuthenticationFilter
-import dueuno.security.PhysicalIdAuthenticationProvider
+import dueuno.security.physical.PhysicalIdUserDetailsService
+import dueuno.security.physical.PhysicalIdAuthenticationFilter
+import dueuno.security.physical.PhysicalIdAuthenticationProvider
 import dueuno.security.AuthenticationProviderManager
 import dueuno.security.AuthenticationProviderLdap
 import dueuno.tenant.TenantForCurrentUserResolver

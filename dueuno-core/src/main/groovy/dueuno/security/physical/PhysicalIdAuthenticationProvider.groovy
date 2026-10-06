@@ -1,4 +1,4 @@
-package dueuno.security
+package dueuno.security.physical
 
 import groovy.transform.CompileStatic
 import org.apache.commons.logging.Log
