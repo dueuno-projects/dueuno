@@ -140,5 +140,3 @@ class UserRegistrationController implements ElementsController {
         display page: p, content: c, modal: true
     }
 }
-
-

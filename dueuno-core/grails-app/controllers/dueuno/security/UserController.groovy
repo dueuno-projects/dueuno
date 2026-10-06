@@ -52,7 +52,8 @@ class UserController implements ElementsController {
         cols += [
             'adminIcon',
             'username',
-            'fullname',
+            'firstname',
+            'lastname',
             'defaultGroup',
             'apiKey',
             'physicalId',

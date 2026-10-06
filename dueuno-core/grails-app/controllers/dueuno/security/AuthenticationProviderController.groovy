@@ -12,14 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.application
+package dueuno.security
 
+import dueuno.application.AuthenticationProviderService
 import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.Checkbox
 import dueuno.elements.controls.PasswordField
+import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -37,8 +39,12 @@ class AuthenticationProviderController implements ElementsController {
         c.table.with {
             columns = [
                 'sequence',
-                'name',
+                'providerType',
                 'enabled',
+            ]
+            labels = [providerType: 'authenticationProvider.providerType']
+            prettyPrinterProperties = [
+                providerType: [textPrefix: 'authenticationProvider.providerType'],
             ]
             body.eachRow { TableRow row, Map values ->
                 row.actions.removeTailAction()
@@ -53,55 +59,60 @@ class AuthenticationProviderController implements ElementsController {
         c.form.with {
             validate = TAuthenticationProvider
             addField(
-                class: TextField,
-                id: 'name',
+                class: Select,
+                id: 'providerType',
+                optionsFromEnum: AuthenticationProviderType,
+                textPrefix: 'authenticationProvider.providerType',
                 readonly: true,
-                cols: 8,
+                cols: 9,
             )
             addField(
                 class: TextField,
                 id: 'sequence',
                 readonly: true,
-                cols: 4,
+                cols: 3,
             )
             addField(
                 class: Checkbox,
                 id: 'enabled',
-                readonly: obj.providerKey == 'embedded',
+                readonly: obj.providerType == AuthenticationProviderType.EMBEDDED,
                 cols: 12,
             )
 
-            if (obj.providerKey == 'ldap') {
+            if (obj.providerType == AuthenticationProviderType.LDAP) {
                 addField(class: TextField, id: 'server', cols: 12)
                 addField(class: TextField, id: 'managerDn', cols: 6)
                 addField(class: PasswordField, id: 'managerPassword', cols: 6)
                 addField(class: TextField, id: 'searchBase', cols: 12)
-                addField(class: TextField, id: 'searchFilter', cols: 8)
-                addField(class: Checkbox, id: 'searchSubtree', cols: 4)
-                addField(class: Checkbox, id: 'retrieveGroupRoles', cols: 4)
-                addField(class: TextField, id: 'groupSearchBase', cols: 8)
-                addField(class: TextField, id: 'groupSearchFilter', cols: 6)
-                addField(class: TextField, id: 'groupRoleAttribute', cols: 6)
+                addField(class: TextField, id: 'searchFilter', cols: 12)
+                addField(class: Checkbox, id: 'searchSubtree', cols: 6)
+                addField(class: Checkbox, id: 'retrieveGroupRoles', cols: 6)
+                addField(class: TextField, id: 'groupSearchBase', cols: 4)
+                addField(class: TextField, id: 'groupSearchFilter', cols: 4)
+                addField(class: TextField, id: 'groupRoleAttribute', cols: 4)
                 addField(class: Checkbox, id: 'retrieveDatabaseRoles', cols: 6)
                 addField(class: TextField, id: 'defaultRole', cols: 6)
             }
 
-            if (!(obj.providerKey in ['embedded', 'physical', 'ldap', 'rememberMe'])) {
+            if (obj.providerType.isOidcProvider()) {
                 addField(class: TextField, id: 'clientId', cols: 6)
                 addField(class: PasswordField, id: 'clientSecret', cols: 6)
+                addField(class: Select, id: 'clientAuthenticationMethod', cols: 12, options: [
+                    client_secret_basic: 'authenticationProvider.clientAuthenticationMethod.basic',
+                    client_secret_post : 'authenticationProvider.clientAuthenticationMethod.post',
+                ])
+                addField(class: TextField, id: 'discoveryUri', cols: 12, help: 'authenticationProvider.discoveryUri.help')
                 addField(class: TextField, id: 'issuerUri', cols: 12)
                 addField(class: TextField, id: 'authorizationUri', cols: 12)
                 addField(class: TextField, id: 'tokenUri', cols: 12)
+                addField(class: TextField, id: 'jwksUri', cols: 12)
                 addField(class: TextField, id: 'userInfoUri', cols: 12)
-                addField(class: TextField, id: 'redirectUri', cols: 12)
+                addField(class: TextField, id: 'redirectUri', cols: 12, help: 'authenticationProvider.redirectUri.help')
                 addField(class: TextField, id: 'scopes', cols: 12)
             }
         }
 
-        Map values = obj.properties as Map
-        values.managerPassword = ''
-        values.clientSecret = ''
-        c.form.values = values
+        c.form.values = obj
         return c
     }
 

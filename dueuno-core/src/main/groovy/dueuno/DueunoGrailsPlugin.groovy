@@ -19,7 +19,7 @@ import dueuno.security.PhysicalUserDetailsService
 import dueuno.security.PhysicalIdAuthenticationFilter
 import dueuno.security.PhysicalIdAuthenticationProvider
 import dueuno.security.AuthenticationProviderManager
-import dueuno.security.LdapAuthenticationProvider
+import dueuno.security.AuthenticationProviderLdap
 import dueuno.tenant.TenantForCurrentUserResolver
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugins.Plugin
@@ -86,7 +86,7 @@ class DueunoGrailsPlugin extends Plugin {
                 grailsApplication = ref('grailsApplication')
             }
 
-            ldapAuthenticationProvider(LdapAuthenticationProvider) {
+            ldapAuthenticationProvider(AuthenticationProviderLdap) {
                 authenticationUserProvisioningService = ref('authenticationUserProvisioningService')
             }
 

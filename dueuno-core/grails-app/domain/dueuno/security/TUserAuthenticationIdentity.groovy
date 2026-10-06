@@ -1,0 +1,49 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package dueuno.security
+
+
+import grails.compiler.GrailsCompileStatic
+import org.grails.datastore.gorm.GormEntity
+
+/**
+ * Links an external OpenID Connect subject to a local user.
+ */
+@GrailsCompileStatic
+class TUserAuthenticationIdentity implements GormEntity, Serializable {
+
+    private static final long serialVersionUID = 1
+
+    Long id
+    TUser user
+    AuthenticationProviderType providerType
+    String issuer
+    String subject
+
+    static belongsTo = [user: TUser]
+
+    static constraints = {
+        user nullable: false
+        providerType nullable: false, validator: { AuthenticationProviderType.isOidcProviderType(it) }
+        issuer nullable: false, blank: false, maxSize: 255, unique: ['subject']
+        subject nullable: false, blank: false, maxSize: 255
+    }
+
+    static mapping = {
+        table 'sys_user_authentication_identity'
+    }
+}

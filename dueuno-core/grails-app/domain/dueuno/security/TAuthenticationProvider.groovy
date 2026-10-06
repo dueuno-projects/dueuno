@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.application
+package dueuno.security
 
 import grails.compiler.GrailsCompileStatic
 import org.grails.datastore.gorm.GormEntity
@@ -26,9 +26,7 @@ class TAuthenticationProvider implements GormEntity, Serializable {
     private static final long serialVersionUID = 1
 
     Long id
-    String providerKey
-    String providerName
-    String name
+    AuthenticationProviderType providerType
     Integer sequence
     Boolean enabled
 
@@ -47,17 +45,18 @@ class TAuthenticationProvider implements GormEntity, Serializable {
 
     String clientId
     String clientSecret
+    String clientAuthenticationMethod
+    String discoveryUri
     String issuerUri
     String authorizationUri
     String tokenUri
+    String jwksUri
     String userInfoUri
     String redirectUri
     String scopes
 
     static constraints = {
-        providerKey nullable: false, unique: true
-        providerName nullable: false
-        name nullable: false
+        providerType nullable: false, unique: true
         sequence nullable: false
         enabled nullable: false
         managerDn nullable: true, blank: true
@@ -74,9 +73,12 @@ class TAuthenticationProvider implements GormEntity, Serializable {
         defaultRole nullable: true, blank: true
         clientId nullable: true, blank: true
         clientSecret nullable: true, blank: true
+        clientAuthenticationMethod nullable: true, blank: true, inList: ['client_secret_basic', 'client_secret_post']
+        discoveryUri nullable: true, blank: true
         issuerUri nullable: true, blank: true
         authorizationUri nullable: true, blank: true
         tokenUri nullable: true, blank: true
+        jwksUri nullable: true, blank: true
         userInfoUri nullable: true, blank: true
         redirectUri nullable: true, blank: true
         scopes nullable: true, blank: true

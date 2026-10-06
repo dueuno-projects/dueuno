@@ -14,11 +14,11 @@
  */
 package dueuno.security
 
+import dueuno.application.AuthenticationProviderService
 import dueuno.elements.ElementsController
 import dueuno.elements.pages.Login
 import dueuno.tenant.TenantPropertyService
 import dueuno.tenant.TenantService
-import dueuno.application.AuthenticationProviderService
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -44,7 +44,15 @@ class AuthenticationController implements ElementsController {
 
         def hostTenant = tenantService.getByHost(request.getHeader('host'))
         def tenantId = hostTenant?.tenantId ?: tenantService.defaultTenantId
-        String googleUrl = googleLoginUrl()
+        List<Map> oidcProviders = authenticationProviderService.list()
+            .findAll { it.enabled && it.providerType.isOidcProvider() }
+            .collect { provider ->
+                [
+                    providerType: provider.providerType.name(),
+                    name: message(code: "authenticationProvider.providerType.${provider.providerType.name()}"),
+                    url: createLink(uri: "/authentication/oidc/${provider.providerType}/start", absolute: false),
+                ]
+            } as List<Map>
 
         tenantService.withTenant(tenantId) {
             def loginArgs = [
@@ -54,16 +62,10 @@ class AuthenticationController implements ElementsController {
                 copy               : tenantPropertyService.getString('LOGIN_COPY', true),
                 registerUrl        : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
                 passwordRecoveryUrl: tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
-                googleLoginUrl     : googleUrl,
+                oidcProviders      : oidcProviders,
             ]
             display page: createPage(Login, loginArgs)
         }
-    }
-
-    private String googleLoginUrl() {
-        def provider = authenticationProviderService.getByProviderKey('google')
-        if (!provider?.enabled || !provider.clientId || !provider.clientSecret || !provider.redirectUri) return null
-        return createLink(controller: 'googleAuthentication', action: 'start', absolute: false)
     }
 
     @Secured(['ROLE_USER'])

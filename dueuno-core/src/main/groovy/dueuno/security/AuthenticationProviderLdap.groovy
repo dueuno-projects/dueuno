@@ -14,7 +14,7 @@
  */
 package dueuno.security
 
-import dueuno.application.TAuthenticationProvider
+
 import grails.gorm.transactions.Transactional
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -46,7 +46,7 @@ import javax.naming.directory.SearchResult
  * LDAP authentication whose settings are loaded from the system database for each login.
  */
 @CompileStatic
-class LdapAuthenticationProvider implements AuthenticationProvider {
+class AuthenticationProviderLdap implements AuthenticationProvider {
 
     AuthenticationUserProvisioningService authenticationUserProvisioningService
 
@@ -71,6 +71,9 @@ class LdapAuthenticationProvider implements AuthenticationProvider {
             String userDn = userResult.nameInNamespace
             String firstname = attributeValue(userResult.attributes, 'givenName')
             String lastname = attributeValue(userResult.attributes, 'sn')
+            String email = firstAttributeValue(userResult.attributes, 'mail', 'email', 'userPrincipalName')
+            String telephone = firstAttributeValue(userResult.attributes, 'telephoneNumber', 'mobile')
+            String note = firstAttributeValue(userResult.attributes, 'info', 'description', 'notes')
 
             try {
                 DirContext userContext = new InitialDirContext(buildEnvironment(provider, userDn, password))
@@ -79,7 +82,7 @@ class LdapAuthenticationProvider implements AuthenticationProvider {
                 throw new BadCredentialsException('Invalid credentials')
             }
 
-            UserDetails provisionedDetails = loadUserDetails(username, firstname, lastname)
+            UserDetails provisionedDetails = loadUserDetails(username, firstname, lastname, email, telephone, note)
             UserDetails details = provider.retrieveDatabaseRoles
                 ? provisionedDetails
                 : new User(username, '', true, true, true, true, [] as Collection<GrantedAuthority>)
@@ -108,19 +111,32 @@ class LdapAuthenticationProvider implements AuthenticationProvider {
     @Transactional(readOnly = true)
     @CompileDynamic
     private TAuthenticationProvider findLdapProvider() {
-        return TAuthenticationProvider.findByProviderKey('ldap')
+        return TAuthenticationProvider.findByProviderType(AuthenticationProviderType.LDAP)
     }
 
     @Transactional
     @CompileDynamic
     private UserDetails loadUserDetails(String username) {
-        return loadUserDetails(username, null, null)
+        return loadUserDetails(username, null, null, null, null, null)
     }
 
     @Transactional
     @CompileDynamic
-    private UserDetails loadUserDetails(String username, String firstname, String lastname) {
-        return authenticationUserProvisioningService.ensureUser(username, [firstname: firstname, lastname: lastname])
+    private UserDetails loadUserDetails(
+        String username,
+        String firstname,
+        String lastname,
+        String email,
+        String telephone,
+        String note
+    ) {
+        return authenticationUserProvisioningService.ensureUser(username, [
+            firstname: firstname,
+            lastname : lastname,
+            email     : email,
+            telephone : telephone,
+            note      : note,
+        ])
     }
 
     private Hashtable<String, Object> buildEnvironment(TAuthenticationProvider provider, String principal, String password) {
@@ -141,7 +157,10 @@ class LdapAuthenticationProvider implements AuthenticationProvider {
     private SearchResult findUser(DirContext context, TAuthenticationProvider provider, String username) {
         SearchControls controls = new SearchControls()
         controls.searchScope = provider.searchSubtree ? SearchControls.SUBTREE_SCOPE : SearchControls.ONELEVEL_SCOPE
-        controls.returningAttributes = ['givenName', 'sn'] as String[]
+        controls.returningAttributes = [
+            'givenName', 'sn', 'mail', 'email', 'userPrincipalName',
+            'telephoneNumber', 'mobile', 'info', 'description', 'notes',
+        ] as String[]
         NamingEnumeration<SearchResult> results = context.search(
             provider.searchBase,
             normalizeFilter(provider.searchFilter ?: '(uid={0})').replace('{0}', escapeFilter(username)),
@@ -162,6 +181,14 @@ class LdapAuthenticationProvider implements AuthenticationProvider {
         if (rawValue == null) return null
         String value = rawValue.toString().trim()
         return value ? value : null
+    }
+
+    private String firstAttributeValue(Attributes attributes, String... names) {
+        for (String name in names) {
+            String value = attributeValue(attributes, name)
+            if (value) return value
+        }
+        return null
     }
 
     private Collection<GrantedAuthority> resolveAuthorities(DirContext context, TAuthenticationProvider provider, String userDn, UserDetails details) {

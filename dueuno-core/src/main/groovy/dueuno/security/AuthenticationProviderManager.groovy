@@ -15,7 +15,6 @@
 package dueuno.security
 
 import dueuno.application.AuthenticationProviderService
-import dueuno.application.TAuthenticationProvider
 import groovy.transform.CompileStatic
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.ProviderManager
@@ -33,9 +32,9 @@ import java.util.concurrent.atomic.AtomicReference
 class AuthenticationProviderManager implements AuthenticationManager, AuthenticationProvider {
 
     private static final Set<String> EXCLUDED_PROVIDER_IDENTIFIERS = [
-        'daoAuthorizationProvider', 'daoAuthenticationProvider', 'embedded',
-        'physicalIdAuthorizationProvider', 'physicalIdAuthenticationProvider', 'physical',
-        'rememberMeProvider', 'rememberMeAuthenticationProvider', 'rememberMe',
+        'daoAuthorizationProvider', 'daoAuthenticationProvider', 'EMBEDDED',
+        'physicalIdAuthorizationProvider', 'physicalIdAuthenticationProvider', 'PHYSICAL',
+        'rememberMeProvider', 'rememberMeAuthenticationProvider', 'REMEMBERME',
     ] as Set<String>
 
     AuthenticationProviderService authenticationProviderService
@@ -47,10 +46,11 @@ class AuthenticationProviderManager implements AuthenticationManager, Authentica
         AtomicReference<TAuthenticationProvider> successfulProvider = new AtomicReference<>()
         Map<String, AuthenticationProvider> beans = [:]
         for (TAuthenticationProvider provider in authenticationProviderService.list()) {
-            if (!provider.enabled || !grailsApplication.mainContext.containsBean(provider.providerName)) continue
-            Object bean = grailsApplication.mainContext.getBean(provider.providerName)
+            String beanName = provider.providerType.authenticationProviderBeanName
+            if (!provider.enabled || !grailsApplication.mainContext.containsBean(beanName)) continue
+            Object bean = grailsApplication.mainContext.getBean(beanName)
             if (bean instanceof AuthenticationProvider) {
-                beans[provider.providerName] = new TrackingAuthenticationProvider(
+                beans[beanName] = new TrackingAuthenticationProvider(
                     (AuthenticationProvider) bean,
                     provider,
                     successfulProvider,
@@ -67,8 +67,8 @@ class AuthenticationProviderManager implements AuthenticationManager, Authentica
     }
 
     private boolean isExcluded(TAuthenticationProvider provider) {
-        return EXCLUDED_PROVIDER_IDENTIFIERS.contains(provider.providerName) ||
-            EXCLUDED_PROVIDER_IDENTIFIERS.contains(provider.providerKey)
+        return EXCLUDED_PROVIDER_IDENTIFIERS.contains(provider.providerType.authenticationProviderBeanName) ||
+            EXCLUDED_PROVIDER_IDENTIFIERS.contains(provider.providerType.name())
     }
 
     @Override

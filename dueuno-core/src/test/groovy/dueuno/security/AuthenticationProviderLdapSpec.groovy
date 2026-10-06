@@ -24,11 +24,11 @@ import spock.lang.Specification
 
 import java.lang.reflect.Method
 
-class LdapAuthenticationProviderSpec extends Specification {
+class AuthenticationProviderLdapSpec extends Specification {
 
     void 'delegates LDAP user provisioning to the shared service'() {
         given:
-        LdapAuthenticationProvider provider = new LdapAuthenticationProvider()
+        AuthenticationProviderLdap provider = new AuthenticationProviderLdap()
         AuthenticationUserProvisioningService authenticationUserProvisioningService = Mock(AuthenticationUserProvisioningService)
         provider.authenticationUserProvisioningService = authenticationUserProvisioningService
         UserDetails createdUserDetails = new User(
@@ -42,7 +42,7 @@ class LdapAuthenticationProviderSpec extends Specification {
         )
 
         when:
-        Method method = LdapAuthenticationProvider.getDeclaredMethod('$tt__loadUserDetails', String, TransactionStatus)
+        Method method = AuthenticationProviderLdap.getDeclaredMethod('$tt__loadUserDetails', String, TransactionStatus)
         method.accessible = true
         UserDetails details = (UserDetails) method.invoke(provider, 'sartogia', null)
 

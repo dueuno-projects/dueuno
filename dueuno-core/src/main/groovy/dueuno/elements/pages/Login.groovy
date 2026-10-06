@@ -39,6 +39,7 @@ class Login extends Page {
     String registerUrl
     String passwordRecoveryUrl
     String googleLoginUrl
+    List<Map> oidcProviders = []
 
     String backgroundImage
     String logoImage
@@ -58,6 +59,7 @@ class Login extends Page {
         registerUrl = args.registerUrl
         passwordRecoveryUrl = args.passwordRecoveryUrl
         googleLoginUrl = args.googleLoginUrl
+        oidcProviders = (args.oidcProviders ?: []) as List<Map>
 
         logoImage = args.logoImage
         backgroundImage = args.backgroundImage
@@ -93,6 +95,17 @@ class Login extends Page {
                     url: googleLoginUrl,
                     direct: true,
                     label: 'authentication.google.login',
+                    displayLabel: false,
+                    stretch: true,
+                )
+            }
+            for (Map provider in oidcProviders) {
+                addField(
+                    class: Button,
+                    id: "oidcLogin${(provider.providerType as String).capitalize()}",
+                    url: provider.url as String,
+                    direct: true,
+                    text: provider.name as String,
                     displayLabel: false,
                     stretch: true,
                 )
