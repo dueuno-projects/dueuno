@@ -93,6 +93,10 @@
     box-shadow: 0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)) !important;
 }
 
+.input-group.control-focus-group:has(> .control-select[disabled]):focus-within {
+    box-shadow: none !important;
+}
+
 .input-group.control-focus-group > .control-select .vscomp-toggle-button {
     box-shadow: none !important;
 }
