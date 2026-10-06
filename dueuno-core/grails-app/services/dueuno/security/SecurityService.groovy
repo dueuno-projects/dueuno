@@ -168,16 +168,16 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
     private void registerSuperadminFeatures() {
         applicationService.registerSuperadminFeature(
+            controller: 'authenticationProvider',
+            icon: 'fa-shield-halved',
+        )
+        applicationService.registerSuperadminFeature(
             controller: 'tenant',
             icon: 'fa-house-user',
         )
         applicationService.registerSuperadminFeature(
             controller: 'connectionSource',
             icon: 'fa-plug',
-        )
-        applicationService.registerSuperadminFeature(
-            controller: 'authenticationProvider',
-            icon: 'fa-shield-halved',
         )
         applicationService.registerSuperadminFeature(
             controller: 'applicationProperty',
