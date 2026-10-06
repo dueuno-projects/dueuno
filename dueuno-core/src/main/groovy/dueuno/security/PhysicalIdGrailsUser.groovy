@@ -5,11 +5,11 @@ import groovy.transform.CompileStatic
 import org.springframework.security.core.GrantedAuthority
 
 @CompileStatic
-class PhysicalGrailsUser extends GrailsUser {
+class PhysicalIdGrailsUser extends GrailsUser {
 
     final String physicalId
 
-    PhysicalGrailsUser(String username, String password, boolean enabled, boolean accountNonExpired,
+    PhysicalIdGrailsUser(String username, String password, boolean enabled, boolean accountNonExpired,
                        boolean credentialsNonExpired, boolean accountNonLocked,
                        Collection<? extends GrantedAuthority> authorities, Long id, String physicalId) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities, id)

@@ -24,8 +24,8 @@ class PhysicalIdAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public String getName() {
-        if (this.getPrincipal() instanceof PhysicalGrailsUser) {
-            return ((PhysicalGrailsUser) this.getPrincipal()).getPhysicalId()
+        if (this.getPrincipal() instanceof PhysicalIdGrailsUser) {
+            return ((PhysicalIdGrailsUser) this.getPrincipal()).getPhysicalId()
         }
         return super.getName()
     }

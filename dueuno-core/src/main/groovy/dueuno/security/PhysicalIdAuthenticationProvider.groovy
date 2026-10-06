@@ -30,7 +30,7 @@ class PhysicalIdAuthenticationProvider implements AuthenticationProvider {
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper()
 
-    PhysicalUserDetailsService physicalUserDetailsService
+    PhysicalIdUserDetailsService physicalIdUserDetailsService
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -73,7 +73,7 @@ class PhysicalIdAuthenticationProvider implements AuthenticationProvider {
     protected final UserDetails retrieveUser(String physicalId)
         throws AuthenticationException {
         try {
-            UserDetails loadedUser = this.getPhysicalUserDetailsService().loadUserByPhysicalId(physicalId)
+            UserDetails loadedUser = this.getPhysicalIdUserDetailsService().loadUserByPhysicalId(physicalId)
             if (loadedUser == null) {
                 throw new InternalAuthenticationServiceException(
                     "UserDetailsService returned null, which is an interface contract violation")
@@ -91,12 +91,12 @@ class PhysicalIdAuthenticationProvider implements AuthenticationProvider {
         }
     }
 
-    public void setPhysicalUserDetailsService(PhysicalUserDetailsService physicalUserDetailsService) {
-        this.physicalUserDetailsService = physicalUserDetailsService
+    public void setPhysicalIdUserDetailsService(PhysicalIdUserDetailsService physicalIdUserDetailsService) {
+        this.physicalIdUserDetailsService = physicalIdUserDetailsService
     }
 
-    protected PhysicalUserDetailsService getPhysicalUserDetailsService() {
-        return this.physicalUserDetailsService
+    protected PhysicalIdUserDetailsService getPhysicalIdUserDetailsService() {
+        return this.physicalIdUserDetailsService
     }
 
     private class DefaultPreAuthenticationChecks implements UserDetailsChecker {

@@ -15,7 +15,7 @@
 package dueuno
 
 import dueuno.application.SessionInitializer
-import dueuno.security.PhysicalUserDetailsService
+import dueuno.security.PhysicalIdUserDetailsService
 import dueuno.security.PhysicalIdAuthenticationFilter
 import dueuno.security.PhysicalIdAuthenticationProvider
 import dueuno.security.AuthenticationProviderManager
@@ -90,12 +90,12 @@ class DueunoGrailsPlugin extends Plugin {
                 authenticationUserProvisioningService = ref('authenticationUserProvisioningService')
             }
 
-            physicalUserDetailsService(PhysicalUserDetailsService) {
+            physicalIdUserDetailsService(PhysicalIdUserDetailsService) {
                 grailsApplication = ref('grailsApplication')
             }
 
             physicalIdAuthenticationProvider(PhysicalIdAuthenticationProvider) {
-                physicalUserDetailsService = ref('physicalUserDetailsService')
+                physicalIdUserDetailsService = ref('physicalIdUserDetailsService')
             }
 
             ConfigObject conf = SpringSecurityUtils.securityConfig
