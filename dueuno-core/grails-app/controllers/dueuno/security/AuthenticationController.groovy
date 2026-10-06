@@ -48,8 +48,8 @@ class AuthenticationController implements ElementsController {
             .findAll { it.enabled && it.providerType.isOidcProvider() }
             .collect { provider ->
                 [
-                    providerType: provider.providerType.name(),
-                    name: message(code: "authenticationProvider.providerType.${provider.providerType.name()}"),
+                    providerType: provider.providerType,
+                    name: message(code: "authenticationProvider.loginWith.${provider.providerType.name()}"),
                     url: createLink(uri: "/authentication/oidc/${provider.providerType}/start", absolute: false),
                 ]
             } as List<Map>
