@@ -44,7 +44,8 @@ class AuthenticationController implements ElementsController {
 
         def hostTenant = tenantService.getByHost(request.getHeader('host'))
         def tenantId = hostTenant?.tenantId ?: tenantService.defaultTenantId
-        List<Map> oidcProviders = authenticationProviderService.list()
+        List<TAuthenticationProvider> authenticationProviders = authenticationProviderService.list()
+        List<Map> oidcProviders = authenticationProviders
             .findAll { it.enabled && it.providerType.isOidcProvider() }
             .collect { provider ->
                 [
@@ -53,6 +54,10 @@ class AuthenticationController implements ElementsController {
                     url: createLink(uri: "/authentication/oidc/${provider.providerType}/start", absolute: false),
                 ]
             } as List<Map>
+
+        def physicalAuthenticationEnabled = authenticationProviders.find {
+            it.providerType == AuthenticationProviderType.PHYSICAL
+        }?.enabled ?: false
 
         tenantService.withTenant(tenantId) {
             def loginArgs = [
@@ -63,6 +68,7 @@ class AuthenticationController implements ElementsController {
                 registerUrl        : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
                 passwordRecoveryUrl: tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
                 oidcProviders      : oidcProviders,
+                physicalAuthenticationEnabled: physicalAuthenticationEnabled,
             ]
             display page: createPage(Login, loginArgs)
         }

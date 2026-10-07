@@ -12,11 +12,19 @@ class Login extends Page {
 
     static onKeyPress(event) {
         let $element = $('[data-21-id="loginKeyPress"]');
-        let $search = $element.find('input');
-
         event.stopPropagation();
 
         let triggerKey = Component.getProperty($element, 'triggerKey');
+        if (!Component.getProperty($element, 'enabled')) {
+            let fieldId = $(event.target).data('21-id');
+            if (event.key == triggerKey && ['username', 'password'].includes(fieldId)) {
+                event.preventDefault();
+                Login.onClick(event);
+            }
+            return;
+        }
+
+        let $search = $element.find('input');
         let readingSpeed = Component.getProperty($element, 'readingSpeed');
         let bufferTimeout = Component.getProperty($element, 'bufferTimeout');
         let now = performance.now();

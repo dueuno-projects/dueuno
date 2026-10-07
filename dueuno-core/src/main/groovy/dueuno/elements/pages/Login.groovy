@@ -52,7 +52,10 @@ class Login extends Page {
         super(args)
 
         keyPress.enabled = false
-        loginKeyPress = createComponent(KeyPress, 'loginKeyPress')
+        Boolean physicalAuthenticationEnabled = args.physicalAuthenticationEnabled != null
+            ? args.physicalAuthenticationEnabled
+            : false
+        loginKeyPress = createComponent(KeyPress, 'loginKeyPress', [enabled: physicalAuthenticationEnabled])
 
         autocomplete = (args.autocomplete == null) ? false : args.autocomplete
 
