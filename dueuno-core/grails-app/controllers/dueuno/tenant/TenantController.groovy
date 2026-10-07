@@ -95,7 +95,6 @@ class TenantController implements ElementsController {
             addField(
                 class: TextField,
                 id: 'tenantId',
-                textTransform: TextTransform.UPPERCASE,
                 invalidChars: ' ',
                 cols: 6,
             )
@@ -144,10 +143,8 @@ class TenantController implements ElementsController {
 
         if (obj) {
             c.form.values = obj
-            if (isReadonly) {
-                c.form.readonly = true
-                c.form.controls.host.readonly = false
-            }
+            c.form.readonly = isReadonly
+            c.form.controls.host.readonly = false
         }
 
         return c

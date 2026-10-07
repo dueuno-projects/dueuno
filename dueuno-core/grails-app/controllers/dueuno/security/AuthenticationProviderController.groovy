@@ -60,7 +60,6 @@ class AuthenticationProviderController implements ElementsController {
             }
             columns = tableColumns
             labels = [
-                'tenant.tenantId': 'tenant.tenantId',
                 providerType: 'authenticationProvider.providerType',
             ]
             prettyPrinterProperties = [
@@ -82,6 +81,12 @@ class AuthenticationProviderController implements ElementsController {
 
     private buildForm(TAuthenticationProvider obj) {
         def c = createContent(ContentEdit)
+
+        def readonly = obj.providerType == AuthenticationProviderType.EMBEDDED
+        if (readonly) {
+            c.header.removeNextButton()
+        }
+
         c.form.with {
             validate = TAuthenticationProvider
             addField(
@@ -108,7 +113,7 @@ class AuthenticationProviderController implements ElementsController {
             addField(
                 class: Checkbox,
                 id: 'enabled',
-                readonly: obj.providerType == AuthenticationProviderType.EMBEDDED,
+                readonly: readonly,
                 cols: 12,
             )
 

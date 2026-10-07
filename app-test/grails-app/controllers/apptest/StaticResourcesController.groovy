@@ -17,7 +17,9 @@ package apptest
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Table
 import dueuno.elements.components.TableRow
+import grails.gorm.multitenancy.CurrentTenant
 
+@CurrentTenant
 class StaticResourcesController implements ElementsController {
 
     def index() {
