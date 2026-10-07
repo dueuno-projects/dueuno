@@ -24,8 +24,8 @@ enum AuthenticationProviderType {
     PHYSICAL('physicalAuthenticationProvider'),
     LDAP('ldapAuthenticationProvider'),
     GOOGLE('oidc'),
-    ENTRA('oidc'),
-    SAP('oidc'),
+    MS_ENTRA('oidc'),
+    SAP_IAS('oidc'),
     OIDC('oidc'),
     REMEMBERME('rememberMeAuthenticationProvider');
 
@@ -36,7 +36,7 @@ enum AuthenticationProviderType {
     }
 
     boolean isOidcProvider() {
-        return this in [GOOGLE, ENTRA, SAP, OIDC]
+        return this in [GOOGLE, MS_ENTRA, SAP_IAS, OIDC]
     }
 
     static boolean isOidcProviderType(Object providerType) {

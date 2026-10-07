@@ -153,8 +153,8 @@ class Login extends Page {
     private static String oidcProviderIcon(AuthenticationProviderType providerType) {
         switch (providerType) {
             case AuthenticationProviderType.GOOGLE: return 'fa-brands fa-google'
-            case AuthenticationProviderType.ENTRA: return 'fa-brands fa-microsoft'
-            case AuthenticationProviderType.SAP: return ''
+            case AuthenticationProviderType.MS_ENTRA: return 'fa-brands fa-microsoft'
+            case AuthenticationProviderType.SAP_IAS: return ''
             default: return 'fa-brands fa-openid'
         }
     }
@@ -162,8 +162,8 @@ class Login extends Page {
     private static String oidcProviderBackgroundColor(AuthenticationProviderType providerType) {
         switch (providerType) {
             case AuthenticationProviderType.GOOGLE: return '#1a73e8'
-            case AuthenticationProviderType.ENTRA: return '#6f42c1'
-            case AuthenticationProviderType.SAP: return '#c2410c'
+            case AuthenticationProviderType.MS_ENTRA: return '#6f42c1'
+            case AuthenticationProviderType.SAP_IAS: return '#c2410c'
             default: return '#334155'
         }
     }
