@@ -33,6 +33,7 @@ grails.plugin.springsecurity.useSessionFixationPrevention = true
 
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
         [pattern: '/**/authentication/login', access: ['permitAll']],
+        [pattern: '/**/authentication/oidc/**', access: ['permitAll']],
         [pattern: '/**/login', access: ['permitAll']],
         [pattern: '/**/authentication/logout', access: ['permitAll']],
         [pattern: '/**/logout', access: ['permitAll']],

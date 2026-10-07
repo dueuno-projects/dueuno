@@ -50,7 +50,7 @@ class TenantController implements ElementsController {
                 'tenantId',
                 'description',
                 'host',
-                'connectionSource.url',
+                'connectionSource.driverClassName',
             ]
             labels = [
                 'connectionSource.url': 'tenant.connection.info',

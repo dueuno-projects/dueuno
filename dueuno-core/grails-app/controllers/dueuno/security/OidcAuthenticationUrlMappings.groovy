@@ -22,7 +22,7 @@ package dueuno.security
 class OidcAuthenticationUrlMappings {
 
     static mappings = {
-        "/authentication/oidc/$providerType/start"(controller: 'oidcAuthentication', action: 'start')
-        "/authentication/oidc/$providerType/callback"(controller: 'oidcAuthentication', action: 'callback')
+        "/authentication/oidc/${providerType}/start"(controller: 'oidcAuthentication', action: 'start')
+        "/authentication/oidc/${providerType}/callback"(controller: 'oidcAuthentication', action: 'callback')
     }
 }

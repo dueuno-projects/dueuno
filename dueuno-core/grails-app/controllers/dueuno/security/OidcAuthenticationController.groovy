@@ -39,6 +39,7 @@ import java.time.Instant
  * OpenID Connect login shared by all configured OIDC providers.
  */
 @Slf4j
+@Secured(['permitAll'])
 class OidcAuthenticationController {
 
     AuthenticationProviderService authenticationProviderService
@@ -48,7 +49,6 @@ class OidcAuthenticationController {
 
     private static final String FLOW_SESSION_KEY = 'dueuno.oidc.flows'
 
-    @Secured(['permitAll'])
     def start() {
         AuthenticationProviderType providerType = AuthenticationProviderType.fromName(params.providerType as String)
         if (!providerType?.isOidcProvider()) {
@@ -96,7 +96,6 @@ class OidcAuthenticationController {
         }
     }
 
-    @Secured(['permitAll'])
     def callback() {
         String state = params.state as String
         Map flows = new LinkedHashMap((session[FLOW_SESSION_KEY] as Map) ?: [:])
