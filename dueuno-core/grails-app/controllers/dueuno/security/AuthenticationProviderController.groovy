@@ -23,33 +23,59 @@ import dueuno.elements.controls.Checkbox
 import dueuno.elements.controls.PasswordField
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
+import dueuno.tenant.TenantService
 import grails.plugin.springsecurity.annotation.Secured
 
 /**
  * Application Management for authentication provider configuration.
  */
-@Secured(['ROLE_SUPERADMIN'])
+@Secured(['ROLE_ADMIN', 'ROLE_SUPERADMIN'])
 class AuthenticationProviderController implements ElementsController {
 
     AuthenticationProviderService authenticationProviderService
+    SecurityService securityService
+    TenantService tenantService
 
     def index() {
+        Boolean isSuperAdmin = securityService.isSuperAdmin()
         def c = createContent(ContentTable)
         c.header.removeNextButton()
+        List tableColumns = []
+        if (isSuperAdmin) tableColumns += ['tenant.tenantId']
+        tableColumns += ['sequence', 'providerType', 'enabled']
+
         c.table.with {
-            columns = [
-                'sequence',
-                'providerType',
-                'enabled',
+            filters.with {
+                fold = false
+                if (isSuperAdmin) {
+                    addField(
+                        class: Select,
+                        id: 'tenant',
+                        optionsFromRecordset: tenantService.list(),
+                        noSelection: true,
+                        search: false,
+                        cols: 3,
+                    )
+                }
+            }
+            columns = tableColumns
+            labels = [
+                'tenant.tenantId': 'tenant.tenantId',
+                providerType: 'authenticationProvider.providerType',
             ]
-            labels = [providerType: 'authenticationProvider.providerType']
             prettyPrinterProperties = [
                 providerType: [textPrefix: 'authenticationProvider.providerType'],
+            ]
+            sortable = [
+                'tenant.tenantId': 'asc',
+                sequence: 'asc',
             ]
             body.eachRow { TableRow row, Map values ->
                 row.actions.removeTailAction()
             }
-            body = authenticationProviderService.list()
+            body = isSuperAdmin
+                ? authenticationProviderService.listAll(filterParams)
+                : authenticationProviderService.list()
         }
         display content: c
     }
@@ -58,6 +84,13 @@ class AuthenticationProviderController implements ElementsController {
         def c = createContent(ContentEdit)
         c.form.with {
             validate = TAuthenticationProvider
+            addField(
+                class: Select,
+                id: 'tenant',
+                optionsFromRecordset: securityService.isSuperAdmin() ? tenantService.list() : [obj.tenant],
+                readonly: true,
+                cols: 12,
+            )
             addField(
                 class: Select,
                 id: 'providerType',
@@ -117,7 +150,9 @@ class AuthenticationProviderController implements ElementsController {
     }
 
     def edit() {
-        TAuthenticationProvider obj = authenticationProviderService.get(params.id as Serializable)
+        TAuthenticationProvider obj = securityService.isSuperAdmin()
+            ? authenticationProviderService.get(params.id as Serializable)
+            : authenticationProviderService.getForCurrentTenant(params.id as Serializable)
         if (!obj) {
             display action: 'index'
             return
@@ -126,7 +161,7 @@ class AuthenticationProviderController implements ElementsController {
     }
 
     def onEdit() {
-        TAuthenticationProvider obj = authenticationProviderService.update(params)
+        TAuthenticationProvider obj = authenticationProviderService.update(params, securityService.isSuperAdmin())
         if (!obj || obj.hasErrors()) {
             display errors: obj
         } else {

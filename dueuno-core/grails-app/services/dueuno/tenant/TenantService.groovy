@@ -133,11 +133,13 @@ class TenantService {
     }
 
     @CompileDynamic
+    @WithoutTenant
     TTenant getByTenantId(String tenantId) {
         return TTenant.findByTenantId(tenantId)
     }
 
     @CompileDynamic
+    @WithoutTenant
     TTenant getByHost(String host) {
         return TTenant.findByHost(host)
     }

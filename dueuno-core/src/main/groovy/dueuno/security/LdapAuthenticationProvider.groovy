@@ -14,6 +14,8 @@
  */
 package dueuno.security
 
+import dueuno.application.AuthenticationProviderService
+
 import grails.gorm.transactions.Transactional
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -42,11 +44,12 @@ import javax.naming.directory.SearchControls
 import javax.naming.directory.SearchResult
 
 /**
- * LDAP authentication whose settings are loaded from the system database for each login.
+ * LDAP authentication whose settings are loaded for the current tenant on each login.
  */
 @CompileStatic
 class LdapAuthenticationProvider implements AuthenticationProvider {
 
+    AuthenticationProviderService authenticationProviderService
     AuthenticationUserProvisioningService authenticationUserProvisioningService
 
     @Override
@@ -110,7 +113,7 @@ class LdapAuthenticationProvider implements AuthenticationProvider {
     @Transactional(readOnly = true)
     @CompileDynamic
     private TAuthenticationProvider findLdapProvider() {
-        return TAuthenticationProvider.findByProviderType(AuthenticationProviderType.LDAP)
+        return authenticationProviderService.getByProviderType(AuthenticationProviderType.LDAP)
     }
 
     @Transactional

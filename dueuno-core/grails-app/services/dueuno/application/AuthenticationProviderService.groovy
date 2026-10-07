@@ -14,22 +14,34 @@
  */
 package dueuno.application
 
+import dueuno.elements.WebRequestAware
 import dueuno.security.AuthenticationProviderType
 import dueuno.security.TAuthenticationProvider
+import dueuno.tenant.TTenant
+import dueuno.tenant.TenantService
 import grails.gorm.transactions.Transactional
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.springframework.security.authentication.AuthenticationProvider
 
 /**
- * Manages application-wide authentication providers and their runtime order.
+ * Manages tenant-specific authentication providers and their runtime order.
  */
 @Transactional
 @CompileStatic
-class AuthenticationProviderService {
+class AuthenticationProviderService implements WebRequestAware {
+
+    TenantService tenantService
 
     @CompileDynamic
-    void install() {
+    void tenantInstall(String tenantId) {
+        TTenant tenant = TTenant.findByTenantId(tenantId)
+        if (!tenant) throw new IllegalArgumentException("Tenant '${tenantId}' does not exist")
+        installDefaults(tenant)
+    }
+
+    @CompileDynamic
+    private void installDefaults(TTenant tenant) {
         List<Map> defaults = [
             [providerType: AuthenticationProviderType.EMBEDDED, sequence: 1, enabled: true],
             [providerType: AuthenticationProviderType.PHYSICAL, sequence: 2, enabled: true],
@@ -56,9 +68,9 @@ class AuthenticationProviderService {
 
         for (Map values in defaults) {
             AuthenticationProviderType providerType = values.providerType as AuthenticationProviderType
-            TAuthenticationProvider provider = TAuthenticationProvider.findByProviderType(providerType)
+            TAuthenticationProvider provider = TAuthenticationProvider.findByTenantAndProviderType(tenant, providerType)
             if (!provider) {
-                provider = new TAuthenticationProvider(values)
+                provider = new TAuthenticationProvider(values + [tenant: tenant])
             } else {
                 provider.sequence = values.sequence as Integer
                 if (!provider.discoveryUri && values.discoveryUri) {
@@ -72,17 +84,40 @@ class AuthenticationProviderService {
         }
     }
 
+    @CompileDynamic
     List<TAuthenticationProvider> list() {
-        return TAuthenticationProvider.list(sort: 'sequence', order: 'asc')
+        TTenant tenant = getRequestTenant()
+        if (!tenant) return []
+        return TAuthenticationProvider.findAllByTenant(tenant, [sort: 'sequence', order: 'asc'])
     }
 
+    @CompileDynamic
+    List<TAuthenticationProvider> listAll(Map filters = [:]) {
+        if (filters.tenant) {
+            TTenant tenant = tenantService.get(filters.tenant as Serializable)
+            if (!tenant) return []
+            return TAuthenticationProvider.findAllByTenant(tenant, [sort: 'id', order: 'asc'])
+        }
+        return TAuthenticationProvider.list(sort: 'id', order: 'asc')
+    }
+
+    @CompileDynamic
     TAuthenticationProvider get(Serializable id) {
         return TAuthenticationProvider.get(id) as TAuthenticationProvider
     }
 
     @CompileDynamic
+    TAuthenticationProvider getForCurrentTenant(Serializable id) {
+        TTenant tenant = getRequestTenant()
+        if (!tenant) return null
+        return TAuthenticationProvider.findByIdAndTenant(id, tenant)
+    }
+
+    @CompileDynamic
     TAuthenticationProvider getByProviderType(AuthenticationProviderType providerType) {
-        return TAuthenticationProvider.findByProviderType(providerType)
+        TTenant tenant = getRequestTenant()
+        if (!tenant) return null
+        return TAuthenticationProvider.findByTenantAndProviderType(tenant, providerType)
     }
 
     List<AuthenticationProvider> getEnabledProviders(Map<String, ?> beans) {
@@ -99,8 +134,10 @@ class AuthenticationProviderService {
     }
 
     @CompileDynamic
-    TAuthenticationProvider update(Map args) {
-        TAuthenticationProvider provider = get(args.id as Serializable)
+    TAuthenticationProvider update(Map args, boolean superAdmin) {
+        TAuthenticationProvider provider = superAdmin
+            ? get(args.id as Serializable)
+            : getForCurrentTenant(args.id as Serializable)
         if (!provider) return null
 
         List<String> fields = [
@@ -122,6 +159,17 @@ class AuthenticationProviderService {
         provider.validate()
         provider.save(flush: true)
         return provider
+    }
+
+    @CompileDynamic
+    private TTenant getRequestTenant() {
+        if (hasRequest()) {
+            String host = request.getHeader('host')
+            TTenant tenant = tenantService.getByHost(host)
+            if (tenant) return tenant
+        }
+        String tenantId = tenantService.currentTenantId ?: tenantService.defaultTenantId
+        return tenantService.getByTenantId(tenantId)
     }
 
 }

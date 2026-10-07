@@ -48,7 +48,6 @@ class ApplicationService implements LinkGeneratorAware {
     GrailsApplication grailsApplication
     ServletContext servletContext
     ConnectionSourceService connectionSourceService
-    AuthenticationProviderService authenticationProviderService
     TenantService tenantService
     ApplicationPropertyService applicationPropertyService
 
@@ -111,7 +110,6 @@ class ApplicationService implements LinkGeneratorAware {
     @Transactional
     void performInstallation() {
         connectionSourceService.installOrConnect()
-        authenticationProviderService.install()
 
         if (!applicationInstalled) {
             executeOnPluginInstall()

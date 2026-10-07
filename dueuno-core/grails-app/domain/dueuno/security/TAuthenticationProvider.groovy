@@ -14,11 +14,12 @@
  */
 package dueuno.security
 
+import dueuno.tenant.TTenant
 import grails.compiler.GrailsCompileStatic
 import org.grails.datastore.gorm.GormEntity
 
 /**
- * Application-wide authentication provider configuration.
+ * Authentication provider configuration for a tenant.
  */
 @GrailsCompileStatic
 class TAuthenticationProvider implements GormEntity, Serializable {
@@ -26,6 +27,7 @@ class TAuthenticationProvider implements GormEntity, Serializable {
     private static final long serialVersionUID = 1
 
     Long id
+    TTenant tenant
     AuthenticationProviderType providerType
     Integer sequence
     Boolean enabled
@@ -56,7 +58,8 @@ class TAuthenticationProvider implements GormEntity, Serializable {
     String scopes
 
     static constraints = {
-        providerType nullable: false, unique: true
+        tenant nullable: false
+        providerType nullable: false, unique: ['tenant']
         sequence nullable: false
         enabled nullable: false
         managerDn nullable: true, blank: true

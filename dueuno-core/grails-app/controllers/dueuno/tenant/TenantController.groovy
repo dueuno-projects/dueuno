@@ -78,9 +78,6 @@ class TenantController implements ElementsController {
             : createContent(ContentCreate)
 
         def isReadonly = obj?.tenantId == tenantService.defaultTenantId
-        if (isReadonly) {
-            c.header.removeNextButton()
-        }
 
         c.form.with {
             validate = TTenant
