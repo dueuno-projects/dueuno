@@ -34,6 +34,7 @@ class BootStrap {
 //    GroovyPagesTemplateEngine groovyPagesTemplateEngine
     ApplicationService applicationService
     SecurityService securityService
+    AuthenticationProviderService authenticationProviderService
     CryptoService cryptoService
     TenantPropertyService tenantPropertyService
     PageService pageService
@@ -48,6 +49,7 @@ class BootStrap {
         }
 
         applicationService.onPluginTenantInstall { String tenantId ->
+            authenticationProviderService.tenantInstall(tenantId)
             securityService.tenantInstall()
             cryptoService.tenantInstall()
             tenantPropertyService.tenantInstall()

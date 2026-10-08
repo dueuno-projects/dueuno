@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <conversionRule conversionWord="highlightLogLevel" class="dueuno.commons.logs.HighlightLogLevel"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${CONSOLE_LOG_THRESHOLD}</level>
+        </filter>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %highlightLogLevel(%-5level) [%thread] %-40.40logger{36} : %highlightLogLevel(%msg%n)</pattern>
+            <charset>${CONSOLE_LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <springProperty scope="local" name="appName" source="info.app.name"/>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${appName}/logs/${appName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${appName}/logs/archive/${appName}.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <maxHistory>10</maxHistory>
+            <maxFileSize>10MB</maxFileSize>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %-40.40logger{36} : %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <!-- DEVELOPMENT -->
+    <springProfile name="development">
+        <logger name="dueuno" level="INFO"/>
+        <logger name="dueunoapp" level="DEBUG"/>
+
+        <!-- DUEUNO -->
+        <!--    <logger name="dueuno.commons.utils.SqlUtils" level="TRACE" />-->
+        <!--    <logger name="dueuno.ImportUtils" level="TRACE" />-->
+
+        <!-- GORM -->
+        <!--    <logger name="org.grails.datastore" level="DEBUG" />-->
+        <!--    <logger name="org.hibernate.SQL" level="DEBUG" />-->
+        <!--    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" />-->
+
+        <!-- SPRING SECURITY-->
+        <!--    <logger name="org.springframework.security" level="DEBUG" />-->
+        <!--    <logger name="grails.plugin.springsecurity.web.filter.DebugFilter" level="INFO" />-->
+
+        <!-- HTTP REST-->
+        <!--    <logger name="sun.net.www.protocol.http.HttpURLConnection" level="ALL" />-->
+    </springProfile>
+
+    <!-- PRODUCTION -->
+    <springProfile name="production">
+        <logger name="dueuno" level="INFO"/>
+        <logger name="dueunoapp" level="DEBUG"/>
+    </springProfile>
+
+</configuration>

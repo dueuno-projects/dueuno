@@ -52,12 +52,6 @@ class UserProfileController implements ElementsController {
             addField(
                 class: EmailField,
                 id: 'email',
-                cols: 6,
-            )
-            addField(
-                class: TelephoneField,
-                id: 'telephone',
-                cols: 6,
             )
         }
     }

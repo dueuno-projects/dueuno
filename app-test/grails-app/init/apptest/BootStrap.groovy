@@ -48,19 +48,19 @@ class BootStrap {
     def init = {
 
         applicationService.onUpdate('2021-10-03') { String tenantId ->
-            println "'${tenantId}' tenant - UPDATE N.2"
+            println "'${tenantId}' UPDATE N.2"
         }
 
         applicationService.onUpdate('2021-10-02') { String tenantId ->
-            println "'${tenantId}' tenant - UPDATE N.1"
+            println "'${tenantId}' UPDATE N.1"
         }
 
         applicationService.onUpdate('2021-10-05') { String tenantId ->
-            println "'${tenantId}' tenant - UPDATE N.4"
+            println "'${tenantId}' UPDATE N.4"
         }
 
         applicationService.onUpdate('2021-10-04') { String tenantId ->
-            println "'${tenantId}' tenant - UPDATE N.3"
+            println "'${tenantId}' UPDATE N.3"
         }
 
         applicationService.onInstall {
@@ -150,7 +150,7 @@ class BootStrap {
         }
 
         applicationService.onDevInstall { String tenantId ->
-            println "'${tenantId}' tenant - INSTALLING STUFF ONLY WHEN IN DEVELOPMENT ENVIRONMENT"
+            println "'${tenantId}' INSTALLING STUFF ONLY WHEN IN DEVELOPMENT ENVIRONMENT"
 
             applicationPropertyService.setBoolean('TEST_DENY_LOGIN', false)
 

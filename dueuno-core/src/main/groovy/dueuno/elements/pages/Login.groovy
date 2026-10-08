@@ -23,6 +23,7 @@ import dueuno.elements.controls.TextField
 import dueuno.elements.core.KeyPress
 import dueuno.elements.core.Page
 import dueuno.elements.style.TextAlign
+import dueuno.security.AuthenticationProviderType
 import groovy.transform.CompileStatic
 
 /**
@@ -38,6 +39,8 @@ class Login extends Page {
     String copy
     String registerUrl
     String passwordRecoveryUrl
+    String googleLoginUrl
+    List<Map> oidcProviders = []
 
     String backgroundImage
     String logoImage
@@ -49,13 +52,18 @@ class Login extends Page {
         super(args)
 
         keyPress.enabled = false
-        loginKeyPress = createComponent(KeyPress, 'loginKeyPress')
+        Boolean physicalAuthenticationEnabled = args.physicalAuthenticationEnabled != null
+            ? args.physicalAuthenticationEnabled
+            : false
+        loginKeyPress = createComponent(KeyPress, 'loginKeyPress', [enabled: physicalAuthenticationEnabled])
 
         autocomplete = (args.autocomplete == null) ? false : args.autocomplete
 
         copy = args.copy
         registerUrl = args.registerUrl
         passwordRecoveryUrl = args.passwordRecoveryUrl
+        googleLoginUrl = args.googleLoginUrl
+        oidcProviders = (args.oidcProviders ?: []) as List<Map>
 
         logoImage = args.logoImage
         backgroundImage = args.backgroundImage
@@ -84,6 +92,17 @@ class Login extends Page {
                 stretch: true,
                 primary: true,
             )
+            if (googleLoginUrl) {
+                addField(
+                    class: Button,
+                    id: 'googleLogin',
+                    url: googleLoginUrl,
+                    direct: true,
+                    label: 'authentication.google.login',
+                    displayLabel: false,
+                    stretch: true,
+                )
+            }
             if (passwordRecoveryUrl) {
                 addField(
                     class: Link,
@@ -113,6 +132,39 @@ class Login extends Page {
                     displayLabel: false,
                 )
             }
+            for (Map provider in oidcProviders) {
+                AuthenticationProviderType providerType = provider.providerType as AuthenticationProviderType
+                addField(
+                    class: Button,
+                    id: "oidcLogin${providerType.name().capitalize()}",
+                    url: provider.url as String,
+                    direct: true,
+                    text: provider.name as String,
+                    icon: oidcProviderIcon(providerType),
+                    backgroundColor: oidcProviderBackgroundColor(providerType),
+                    textColor: '#ffffff',
+                    displayLabel: false,
+                    stretch: true,
+                )
+            }
+        }
+    }
+
+    private static String oidcProviderIcon(AuthenticationProviderType providerType) {
+        switch (providerType) {
+            case AuthenticationProviderType.GOOGLE: return 'fa-brands fa-google'
+            case AuthenticationProviderType.MS_ENTRA: return 'fa-brands fa-microsoft'
+            case AuthenticationProviderType.SAP_IAS: return ''
+            default: return 'fa-brands fa-openid'
+        }
+    }
+
+    private static String oidcProviderBackgroundColor(AuthenticationProviderType providerType) {
+        switch (providerType) {
+            case AuthenticationProviderType.GOOGLE: return '#1a73e8'
+            case AuthenticationProviderType.MS_ENTRA: return '#6f42c1'
+            case AuthenticationProviderType.SAP_IAS: return '#c2410c'
+            default: return '#334155'
         }
     }
 }

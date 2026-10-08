@@ -1,4 +1,4 @@
-package dueuno.security
+package dueuno.security.physical
 
 import groovy.transform.CompileStatic
 import org.apache.commons.logging.Log
@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.util.Assert
 
 @CompileStatic
-class PhysicalIdAuthenticationProvider implements AuthenticationProvider {
+class PhysicalAuthenticationProvider implements AuthenticationProvider {
 
     protected final Log logger = LogFactory.getLog(getClass())
 
@@ -34,9 +34,9 @@ class PhysicalIdAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Assert.isInstanceOf(PhysicalIdAuthenticationToken.class, authentication,
+        Assert.isInstanceOf(PhysicalAuthenticationToken.class, authentication,
             () -> this.messages.getMessage("AbstractUserDetailsAuthenticationProvider.onlySupports",
-                "Only PhysicalIdAuthenticationToken is supported"))
+                "Only PhysicalAuthenticationToken is supported"))
         String physicalId = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName()
         UserDetails user
         try {
@@ -59,11 +59,11 @@ class PhysicalIdAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     boolean supports(Class<?> authentication) {
-        return PhysicalIdAuthenticationToken.isAssignableFrom(authentication)
+        return PhysicalAuthenticationToken.isAssignableFrom(authentication)
     }
 
     protected Authentication createSuccessAuthentication(UserDetails user, Authentication authentication) {
-        PhysicalIdAuthenticationToken result = PhysicalIdAuthenticationToken.authenticated(user,
+        PhysicalAuthenticationToken result = PhysicalAuthenticationToken.authenticated(user,
             this.authoritiesMapper.mapAuthorities(user.getAuthorities()))
         result.setDetails(authentication.getDetails())
         this.logger.debug("Authenticated user")
@@ -104,21 +104,21 @@ class PhysicalIdAuthenticationProvider implements AuthenticationProvider {
         @Override
         public void check(UserDetails user) {
             if (!user.isAccountNonLocked()) {
-                PhysicalIdAuthenticationProvider.this.logger
+                PhysicalAuthenticationProvider.this.logger
                     .debug("Failed to authenticate since user account is locked")
-                throw new LockedException(PhysicalIdAuthenticationProvider.this.messages
+                throw new LockedException(PhysicalAuthenticationProvider.this.messages
                     .getMessage("AbstractUserDetailsAuthenticationProvider.locked", "User account is locked"))
             }
             if (!user.isEnabled()) {
-                PhysicalIdAuthenticationProvider.this.logger
+                PhysicalAuthenticationProvider.this.logger
                     .debug("Failed to authenticate since user account is disabled")
-                throw new DisabledException(PhysicalIdAuthenticationProvider.this.messages
+                throw new DisabledException(PhysicalAuthenticationProvider.this.messages
                     .getMessage("AbstractUserDetailsAuthenticationProvider.disabled", "User is disabled"))
             }
             if (!user.isAccountNonExpired()) {
-                PhysicalIdAuthenticationProvider.this.logger
+                PhysicalAuthenticationProvider.this.logger
                     .debug("Failed to authenticate since user account has expired")
-                throw new AccountExpiredException(PhysicalIdAuthenticationProvider.this.messages
+                throw new AccountExpiredException(PhysicalAuthenticationProvider.this.messages
                     .getMessage("AbstractUserDetailsAuthenticationProvider.expired", "User account has expired"))
             }
         }
@@ -130,9 +130,9 @@ class PhysicalIdAuthenticationProvider implements AuthenticationProvider {
         @Override
         public void check(UserDetails user) {
             if (!user.isCredentialsNonExpired()) {
-                PhysicalIdAuthenticationProvider.this.logger
+                PhysicalAuthenticationProvider.this.logger
                     .debug("Failed to authenticate since user account credentials have expired")
-                throw new CredentialsExpiredException(PhysicalIdAuthenticationProvider.this.messages
+                throw new CredentialsExpiredException(PhysicalAuthenticationProvider.this.messages
                     .getMessage("AbstractUserDetailsAuthenticationProvider.credentialsExpired",
                         "User credentials have expired"))
             }

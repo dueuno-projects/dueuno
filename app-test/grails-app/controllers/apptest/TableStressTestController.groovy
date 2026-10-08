@@ -40,8 +40,8 @@ class TableStressTestController implements ElementsController {
 
         def cols = []
         for (type in colsType) {
-            (1..colsQtyPerType).each {
-                cols.add("$type-$it")
+            for (int colIndex in 1..colsQtyPerType) {
+                cols.add("$type-$colIndex")
             }
         }
 
@@ -53,21 +53,21 @@ class TableStressTestController implements ElementsController {
 
         def cols = generateColumns()
         def rows = []
-        (1..rowsQty).each {
+        for (int rowIndex in 1..rowsQty) {
             def row = [:]
-            cols.each {
-                switch (it.split('-')[0]) {
+            for (column in cols) {
+                switch (column.split('-')[0]) {
                     case 'String':
-                        row[it] = "Test String"
+                        row[column] = "Test String"
                         break
                     case 'BigDecimal':
-                        row[it] = new BigDecimal("123456789.12345")
+                        row[column] = new BigDecimal("123456789.12345")
                         break
                     case 'Money':
-                        row[it] = new Money(123456789.12345, 'USD')
+                        row[column] = new Money(123456789.12345, 'USD')
                         break
                     case 'Boolean':
-                        row[it] = true
+                        row[column] = true
                         break
                 }
             }

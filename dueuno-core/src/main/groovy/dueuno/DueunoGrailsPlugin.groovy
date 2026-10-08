@@ -15,9 +15,11 @@
 package dueuno
 
 import dueuno.application.SessionInitializer
-import dueuno.security.PhysicalUserDetailsService
-import dueuno.security.PhysicalIdAuthenticationFilter
-import dueuno.security.PhysicalIdAuthenticationProvider
+import dueuno.security.physical.PhysicalUserDetailsService
+import dueuno.security.physical.PhysicalAuthenticationFilter
+import dueuno.security.physical.PhysicalAuthenticationProvider
+import dueuno.security.AuthenticationProviderManager
+import dueuno.security.LdapAuthenticationProvider
 import dueuno.tenant.TenantForCurrentUserResolver
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugins.Plugin
@@ -78,16 +80,27 @@ class DueunoGrailsPlugin extends Plugin {
             tenantForCurrentUserResolver(TenantForCurrentUserResolver)
             sessionInitializer(SessionInitializer)
 
+            runtimeAuthenticationProvider(AuthenticationProviderManager) {
+                authenticationProviderService = ref('authenticationProviderService')
+                authenticationUserProvisioningService = ref('authenticationUserProvisioningService')
+                grailsApplication = ref('grailsApplication')
+            }
+
+            ldapAuthenticationProvider(LdapAuthenticationProvider) {
+                authenticationProviderService = ref('authenticationProviderService')
+                authenticationUserProvisioningService = ref('authenticationUserProvisioningService')
+            }
+
             physicalUserDetailsService(PhysicalUserDetailsService) {
                 grailsApplication = ref('grailsApplication')
             }
 
-            physicalIdAuthenticationProvider(PhysicalIdAuthenticationProvider) {
+            physicalAuthenticationProvider(PhysicalAuthenticationProvider) {
                 physicalUserDetailsService = ref('physicalUserDetailsService')
             }
 
             ConfigObject conf = SpringSecurityUtils.securityConfig
-            physicalIdAuthenticationFilter(PhysicalIdAuthenticationFilter, conf.physicalId.filterProcessesUrl) {
+            physicalAuthenticationFilter(PhysicalAuthenticationFilter, conf.physicalId.filterProcessesUrl) {
                 authenticationManager = ref('authenticationManager')
                 authenticationSuccessHandler = ref('authenticationSuccessHandler')
                 authenticationFailureHandler = ref('authenticationFailureHandler')

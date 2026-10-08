@@ -133,11 +133,13 @@ class TenantService {
     }
 
     @CompileDynamic
+    @WithoutTenant
     TTenant getByTenantId(String tenantId) {
         return TTenant.findByTenantId(tenantId)
     }
 
     @CompileDynamic
+    @WithoutTenant
     TTenant getByHost(String host) {
         return TTenant.findByHost(host)
     }
@@ -204,7 +206,7 @@ class TenantService {
             )
 
             if (obj.tenantId != defaultTenantId) { // Default tenant gets its 'dataSource' from application.yml
-                log.info "'${obj.tenantId}' tenant - Connecting to database..."
+                log.info "'${obj.tenantId.toUpperCase()}' TENANT - Connecting to database..."
                 connectionSourceService.connect(obj.connectionSource)
             }
         }

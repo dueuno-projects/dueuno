@@ -41,6 +41,7 @@ class UserController implements ElementsController {
 
     ApplicationService applicationService
     SecurityService securityService
+    AuthenticationIdentityService authenticationIdentityService
     TenantService tenantService
     ApplicationPropertyService applicationPropertyService
     TenantPropertyService tenantPropertyService
@@ -52,7 +53,8 @@ class UserController implements ElementsController {
         cols += [
             'adminIcon',
             'username',
-            'fullname',
+            'firstname',
+            'lastname',
             'defaultGroup',
             'apiKey',
             'physicalId',
@@ -184,10 +186,28 @@ class UserController implements ElementsController {
                 cols: 6,
             ).component
             password.addAction(action: 'onGeneratePassword', submit: ['form'], tooltip: 'user.generatePassword', text: '', icon: 'fa-key')
-
+            addField(
+                class: TextField,
+                id: 'firstname',
+                cols: 6,
+            )
+            addField(
+                class: TextField,
+                id: 'lastname',
+                cols: 6,
+            )
+            addField(
+                class: EmailField,
+                id: 'email',
+                readonly: authenticationIdentityService.hasIdentity(obj),
+            )
+            addField(
+                class: Textarea,
+                id: 'note',
+                maxSize: 2000,
+                rows: 2,
+            )
         }
-
-        buildSensitiveDataForm(c)
 
         if (isCreatingNewUser || isEditingUserButNotSuperAdmin) {
             c.form.with {
@@ -262,37 +282,6 @@ class UserController implements ElementsController {
         c.form['language'].defaultValue = applicationPropertyService.getString('DEFAULT_LANGUAGE')
 
         return c
-    }
-
-    private buildSensitiveDataForm(ContentForm c) {
-        c.form.with {
-            addField(
-                class: TextField,
-                id: 'firstname',
-                cols: 6,
-            )
-            addField(
-                class: TextField,
-                id: 'lastname',
-                cols: 6,
-            )
-            addField(
-                class: EmailField,
-                id: 'email',
-                cols: 6,
-            )
-            addField(
-                class: TelephoneField,
-                id: 'telephone',
-                cols: 6,
-            )
-            addField(
-                class: Textarea,
-                id: 'note',
-                maxSize: 2000,
-                rows: 2,
-            )
-        }
     }
 
     private buildPreferencesForm(ContentForm c) {
@@ -531,6 +520,10 @@ class UserController implements ElementsController {
 
     def onEdit() {
         normalizeInput(params)
+        TUser user = securityService.getUserByUsername(params.username)
+        if (authenticationIdentityService.hasIdentity(user)) {
+            params.remove('email')
+        }
         def obj = securityService.updateUserAndGroups(params)
 
         if (obj.hasErrors()) {

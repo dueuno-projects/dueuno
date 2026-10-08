@@ -14,23 +14,94 @@
  */
 package dueuno.security
 
+import dueuno.application.AuthenticationProviderService
 import groovy.transform.CompileStatic
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.ProviderManager
+import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.core.Authentication
+import grails.core.GrailsApplication
+
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * @author Gianluca Sartori
  */
 
 @CompileStatic
-class AuthenticationProviderManager implements AuthenticationManager {
+class AuthenticationProviderManager implements AuthenticationManager, AuthenticationProvider {
 
-//    AuthenticationProviderService authenticationProviderService
+    private static final Set<String> EXCLUDED_PROVIDER_IDENTIFIERS = [
+        'daoAuthorizationProvider', 'daoAuthenticationProvider', 'EMBEDDED',
+        'physicalAuthorizationProvider', 'physicalAuthenticationProvider', 'PHYSICAL',
+        'rememberMeProvider', 'rememberMeAuthenticationProvider', 'REMEMBERME',
+    ] as Set<String>
+
+    AuthenticationProviderService authenticationProviderService
+    AuthenticationUserProvisioningService authenticationUserProvisioningService
+    GrailsApplication grailsApplication
 
     @Override
     Authentication authenticate(Authentication authentication) {
-//        List<AuthenticationProvider> providers = authenticationProviderService.providers
-//        ProviderManager manager = new ProviderManager(providers)
-//        return manager.authenticate(authentication)
+        AtomicReference<TAuthenticationProvider> successfulProvider = new AtomicReference<>()
+        Map<String, AuthenticationProvider> beans = [:]
+        for (TAuthenticationProvider provider in authenticationProviderService.list()) {
+            String beanName = provider.providerType.authenticationProviderBeanName
+            if (!provider.enabled || !grailsApplication.mainContext.containsBean(beanName)) continue
+            Object bean = grailsApplication.mainContext.getBean(beanName)
+            if (bean instanceof AuthenticationProvider) {
+                beans[beanName] = new TrackingAuthenticationProvider(
+                    (AuthenticationProvider) bean,
+                    provider,
+                    successfulProvider,
+                )
+            }
+        }
+        List<AuthenticationProvider> providers = authenticationProviderService.getEnabledProviders(beans)
+        Authentication result = new ProviderManager(providers).authenticate(authentication)
+        TAuthenticationProvider provider = successfulProvider.get()
+        if (provider != null && !isExcluded(provider)) {
+            authenticationUserProvisioningService.ensureUser(result.name)
+        }
+        return result
+    }
+
+    private boolean isExcluded(TAuthenticationProvider provider) {
+        return EXCLUDED_PROVIDER_IDENTIFIERS.contains(provider.providerType.authenticationProviderBeanName) ||
+            EXCLUDED_PROVIDER_IDENTIFIERS.contains(provider.providerType.name())
+    }
+
+    @Override
+    boolean supports(Class<?> authentication) {
+        return true
+    }
+
+    private static class TrackingAuthenticationProvider implements AuthenticationProvider {
+
+        private final AuthenticationProvider delegate
+        private final TAuthenticationProvider provider
+        private final AtomicReference<TAuthenticationProvider> successfulProvider
+
+        TrackingAuthenticationProvider(
+            AuthenticationProvider delegate,
+            TAuthenticationProvider provider,
+            AtomicReference<TAuthenticationProvider> successfulProvider
+        ) {
+            this.delegate = delegate
+            this.provider = provider
+            this.successfulProvider = successfulProvider
+        }
+
+        @Override
+        Authentication authenticate(Authentication authentication) {
+            Authentication result = delegate.authenticate(authentication)
+            if (result != null && result.authenticated) successfulProvider.set(provider)
+            return result
+        }
+
+        @Override
+        boolean supports(Class<?> authentication) {
+            return delegate.supports(authentication)
+        }
     }
 }

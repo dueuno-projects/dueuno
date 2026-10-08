@@ -14,6 +14,7 @@
  */
 package dueuno.security
 
+import dueuno.application.AuthenticationProviderService
 import dueuno.elements.ElementsController
 import dueuno.elements.pages.Login
 import dueuno.tenant.TenantPropertyService
@@ -33,6 +34,7 @@ class AuthenticationController implements ElementsController {
     SecurityService securityService
     TenantService tenantService
     TenantPropertyService tenantPropertyService
+    AuthenticationProviderService authenticationProviderService
 
     def login() {
         if (securityService.isLoggedIn()) {
@@ -42,6 +44,20 @@ class AuthenticationController implements ElementsController {
 
         def hostTenant = tenantService.getByHost(request.getHeader('host'))
         def tenantId = hostTenant?.tenantId ?: tenantService.defaultTenantId
+        List<TAuthenticationProvider> authenticationProviders = authenticationProviderService.list()
+        List<Map> oidcProviders = authenticationProviders
+            .findAll { it.enabled && it.providerType.isOidcProvider() }
+            .collect { provider ->
+                [
+                    providerType: provider.providerType,
+                    name: message(code: "authenticationProvider.loginWith.${provider.providerType.name()}"),
+                    url: createLink(uri: "/authentication/oidc/${provider.providerType}/start", absolute: false),
+                ]
+            } as List<Map>
+
+        def physicalAuthenticationEnabled = authenticationProviders.find {
+            it.providerType == AuthenticationProviderType.PHYSICAL
+        }?.enabled ?: false
 
         tenantService.withTenant(tenantId) {
             def loginArgs = [
@@ -51,6 +67,8 @@ class AuthenticationController implements ElementsController {
                 copy               : tenantPropertyService.getString('LOGIN_COPY', true),
                 registerUrl        : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
                 passwordRecoveryUrl: tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
+                oidcProviders      : oidcProviders,
+                physicalAuthenticationEnabled: physicalAuthenticationEnabled,
             ]
             display page: createPage(Login, loginArgs)
         }

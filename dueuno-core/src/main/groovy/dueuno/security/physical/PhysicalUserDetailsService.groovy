@@ -1,4 +1,4 @@
-package dueuno.security
+package dueuno.security.physical
 
 import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SpringSecurityUtils
