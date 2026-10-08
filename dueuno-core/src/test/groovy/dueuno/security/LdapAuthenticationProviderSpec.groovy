@@ -42,12 +42,20 @@ class LdapAuthenticationProviderSpec extends Specification {
         )
 
         when:
-        Method method = LdapAuthenticationProvider.getDeclaredMethod('$tt__loadUserDetails', String, TransactionStatus)
+        Method method = LdapAuthenticationProvider.getDeclaredMethod(
+            '$tt__loadUserDetails', String, String, String, String, String, String, TransactionStatus,
+        )
         method.accessible = true
-        UserDetails details = (UserDetails) method.invoke(provider, 'sartogia', null)
+        UserDetails details = (UserDetails) method.invoke(provider, 'sartogia', null, null, 'sartogia@example.org', null, null, null)
 
         then:
-        1 * authenticationUserProvisioningService.ensureUser('sartogia', [firstname: null, lastname: null]) >> createdUserDetails
+        1 * authenticationUserProvisioningService.ensureUser('sartogia', [
+            firstname: null,
+            lastname : null,
+            email     : 'sartogia@example.org',
+            telephone : null,
+            note      : null,
+        ]) >> createdUserDetails
         details.username == 'sartogia'
         details.authorities*.authority == ['ROLE_USER']
     }

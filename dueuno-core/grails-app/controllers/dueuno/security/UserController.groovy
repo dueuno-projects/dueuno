@@ -41,6 +41,7 @@ class UserController implements ElementsController {
 
     ApplicationService applicationService
     SecurityService securityService
+    AuthenticationIdentityService authenticationIdentityService
     TenantService tenantService
     ApplicationPropertyService applicationPropertyService
     TenantPropertyService tenantPropertyService
@@ -198,6 +199,7 @@ class UserController implements ElementsController {
             addField(
                 class: EmailField,
                 id: 'email',
+                readonly: authenticationIdentityService.hasIdentity(obj),
             )
             addField(
                 class: Textarea,
@@ -518,6 +520,10 @@ class UserController implements ElementsController {
 
     def onEdit() {
         normalizeInput(params)
+        TUser user = securityService.getUserByUsername(params.username)
+        if (authenticationIdentityService.hasIdentity(user)) {
+            params.remove('email')
+        }
         def obj = securityService.updateUserAndGroups(params)
 
         if (obj.hasErrors()) {

@@ -25,9 +25,6 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
-
 /**
  * Loads or creates the local user associated with an authenticated identity.
  */
@@ -45,31 +42,46 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
             throw new UsernameNotFoundException('Authenticated identity has no username')
         }
 
+        String email = requiredEmail(profile.email)
+
         String firstname = (profile.firstname as String)?.trim()
         String lastname = (profile.lastname as String)?.trim()
-        if (!firstname) { firstname = null }
-        if (!lastname) { lastname = null }
+        if (!firstname) {
+            firstname = null
+        }
+        if (!lastname) {
+            lastname = null
+        }
 
         String host = hasRequest() ? request.getHeader('host') : null
         String tenantId = tenantService.getByHost(host)?.tenantId ?: tenantService.defaultTenantId
         UserDetails details
         tenantService.withTenant(tenantId) {
-            try {
-                details = userDetailsService.loadUserByUsername(username)
-            } catch (UsernameNotFoundException ignored) {
-                securityService.createUser(
-                    tenantId: tenantId,
-                    username: username,
-                    password: securityService.generatePassword(),
-                    firstname: firstname,
-                    lastname: lastname,
-                    email: profile.email,
-                    telephone: profile.telephone,
-                    note: profile.note,
-                    failOnError: true,
-                )
+            List<TUser> users = TUser.findAllByEmailIlike(email)
+            if (users.size() > 1) {
+                throw new UsernameNotFoundException('No unique local user matches the authentication email')
+            }
 
-                details = userDetailsService.loadUserByUsername(username)
+            if (users) {
+                details = userDetailsService.loadUserByUsername(users.first().username)
+            } else {
+                try {
+                    details = userDetailsService.loadUserByUsername(username)
+                } catch (UsernameNotFoundException ignored) {
+                    securityService.createUser(
+                        tenantId: tenantId,
+                        username: username,
+                        password: securityService.generatePassword(),
+                        firstname: firstname,
+                        lastname: lastname,
+                        email: email,
+                        telephone: profile.telephone,
+                        note: profile.note,
+                        failOnError: true,
+                    )
+
+                    details = userDetailsService.loadUserByUsername(username)
+                }
             }
         }
 
@@ -83,6 +95,8 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
             throw new UsernameNotFoundException('OIDC identity has no provider, issuer or subject')
         }
 
+        String email = requiredEmail(profile.email as String)
+
         String host = hasRequest() ? request.getHeader('host') : null
         String tenantId = tenantService.getByHost(host)?.tenantId ?: tenantService.defaultTenantId
         UserDetails details
@@ -93,34 +107,20 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
                 return
             }
 
-            String email = firstEmailClaim(profile)
-            String verifiedEmailClaim = (profile.email as String)?.trim()
-            Boolean verifiedEmail = isVerifiedEmail(profile.email_verified) && verifiedEmailClaim?.contains('@')
             String username
             TUser user
-            if (verifiedEmail && profile.email) {
-                List<TUser> users = TUser.findAllByEmailIlike(verifiedEmailClaim)
-                if (users.size() > 1) {
-                    throw new UsernameNotFoundException('No unique local user matches the verified OIDC email')
-                }
-                if (users) {
-                    user = users.first()
-                    username = user.username
-
-                } else {
-                    username = verifiedEmailClaim.toLowerCase(Locale.ROOT)
-                    if (TUser.findByUsername(username)) {
-                        throw new UsernameNotFoundException('A different local user already uses the OIDC email as username')
-                    }
-                }
+            List<TUser> users = TUser.findAllByEmailIlike(email)
+            if (users.size() > 1) {
+                throw new UsernameNotFoundException('No unique local user matches the OIDC email')
+            }
+            if (users) {
+                user = users.first()
+                username = user.username
 
             } else {
-                String digest = HexFormat.of().formatHex(
-                    MessageDigest.getInstance('SHA-256').digest("${issuer}|${subject}".getBytes(StandardCharsets.UTF_8)),
-                )
-                username = "oidc_${providerType.name().toLowerCase(Locale.ROOT)}_${digest}"
+                username = email.toLowerCase(Locale.ROOT)
                 if (TUser.findByUsername(username)) {
-                    throw new UsernameNotFoundException('An OIDC username exists without a matching external identity')
+                    throw new UsernameNotFoundException('A different local user already uses the OIDC email as username')
                 }
             }
 
@@ -129,7 +129,7 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
                 [
                     firstname: profile.given_name,
                     lastname : profile.family_name,
-                    email     : email,
+                    email    : email,
                 ],
             )
 
@@ -149,19 +149,13 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
         return details
     }
 
-    private String firstEmailClaim(Map claims) {
-        for (String name in ['email', 'preferred_username', 'upn']) {
-            String value = claims[name] as String
-            if (value?.contains('@')) {
-                return value.trim()
-            }
+    private String requiredEmail(String value) {
+        String email = value?.trim()
+        if (!email || !email.contains('@')) {
+            throw new UsernameNotFoundException('Authenticated identity has no email')
         }
 
-        return null
-    }
-
-    private Boolean isVerifiedEmail(Object value) {
-        return value == Boolean.TRUE || value?.toString()?.toLowerCase(Locale.ROOT) == 'true'
+        return email
     }
 
 }

@@ -34,6 +34,11 @@ class AuthenticationIdentityService {
     AuthenticationProviderService authenticationProviderService
 
     @CompileDynamic
+    Boolean hasIdentity(TUser user) {
+        return user != null && TUserAuthenticationIdentity.countByUser(user) > 0
+    }
+
+    @CompileDynamic
     TAuthenticationProvider getProvider(Serializable providerId, Boolean superAdmin) {
         TAuthenticationProvider provider
         if (superAdmin) {
