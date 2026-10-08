@@ -212,11 +212,6 @@ IMPORTANT: Verify with the Compliance Checklist and correct if needed
 
 ---
 
-## Code Style
-
-- Prefer the `for` construct whenever possible.
-- Always use `return` in methods, except in controllers.
-
 ## Compliance Checklist
 
 Verify each of the following steps before proceeding.
