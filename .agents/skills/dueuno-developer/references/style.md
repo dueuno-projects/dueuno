@@ -15,6 +15,7 @@ Write code that is easy to read and understand for developers that are new to th
 - Prefer object types instead of primitive types whenever possible (eg: Boolean, Integer, Long, etc)
 - Prefer multiple lines of code with variable assignments and meaningful variable names instead of inlining multiple operations in a single line. Do not split lines for trivial operations.
 - Add a blank line when calling methods with many arguments formatted vertically (eg: each line one argument).
+- When a method has just one `Map` argument, don't use `[` and `]` brackets to pass the map, use the named parameters syntax
 
 
 ## Grails

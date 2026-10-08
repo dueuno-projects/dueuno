@@ -81,14 +81,13 @@ class AuthenticationProviderController implements ElementsController {
                 sequence: 'asc',
             ]
 
+            actions.removeTailAction()
             body.eachRow { TableRow row, Map values ->
-                row.actions.removeTailAction()
-
                 if ((values.providerType as AuthenticationProviderType).isOidcProvider()) {
-                    row.actions.addAction(
+                    row.actions.addTailAction(
                         controller: 'authenticationIdentity',
-                        action: 'index',
                         icon: 'fa-link',
+                        text: '',
                         tooltip: 'authenticationProvider.identities',
                     )
                     row.actions.addParams([

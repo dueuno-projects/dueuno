@@ -41,12 +41,14 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
     @Transactional
     @CompileDynamic
     UserDetails ensureUser(String username, Map profile = [:]) {
-        if (!username) throw new UsernameNotFoundException('Authenticated identity has no username')
+        if (!username) {
+            throw new UsernameNotFoundException('Authenticated identity has no username')
+        }
 
         String firstname = (profile.firstname as String)?.trim()
         String lastname = (profile.lastname as String)?.trim()
-        if (!firstname) firstname = null
-        if (!lastname) lastname = null
+        if (!firstname) { firstname = null }
+        if (!lastname) { lastname = null }
 
         String host = hasRequest() ? request.getHeader('host') : null
         String tenantId = tenantService.getByHost(host)?.tenantId ?: tenantService.defaultTenantId
@@ -66,9 +68,11 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
                     note: profile.note,
                     failOnError: true,
                 )
+
                 details = userDetailsService.loadUserByUsername(username)
             }
         }
+
         return details
     }
 
@@ -91,7 +95,7 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
 
             String email = firstEmailClaim(profile)
             String verifiedEmailClaim = (profile.email as String)?.trim()
-            boolean verifiedEmail = isVerifiedEmail(profile.email_verified) && verifiedEmailClaim?.contains('@')
+            Boolean verifiedEmail = isVerifiedEmail(profile.email_verified) && verifiedEmailClaim?.contains('@')
             String username
             TUser user
             if (verifiedEmail && profile.email) {
@@ -102,12 +106,14 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
                 if (users) {
                     user = users.first()
                     username = user.username
+
                 } else {
                     username = verifiedEmailClaim.toLowerCase(Locale.ROOT)
                     if (TUser.findByUsername(username)) {
                         throw new UsernameNotFoundException('A different local user already uses the OIDC email as username')
                     }
                 }
+
             } else {
                 String digest = HexFormat.of().formatHex(
                     MessageDigest.getInstance('SHA-256').digest("${issuer}|${subject}".getBytes(StandardCharsets.UTF_8)),
@@ -118,13 +124,19 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
                 }
             }
 
-            details = ensureUser(username, [
-                firstname: profile.given_name,
-                lastname : profile.family_name,
-                email     : email,
-            ])
+            details = ensureUser(
+                username,
+                [
+                    firstname: profile.given_name,
+                    lastname : profile.family_name,
+                    email     : email,
+                ],
+            )
+
             user = TUser.findByUsername(username)
-            if (!user) throw new UsernameNotFoundException('Unable to load the provisioned OIDC user')
+            if (!user) {
+                throw new UsernameNotFoundException('Unable to load the provisioned OIDC user')
+            }
 
             new TUserAuthenticationIdentity(
                 user: user,
@@ -133,18 +145,22 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
                 subject: subject,
             ).save(flush: true, failOnError: true)
         }
+
         return details
     }
 
     private String firstEmailClaim(Map claims) {
         for (String name in ['email', 'preferred_username', 'upn']) {
             String value = claims[name] as String
-            if (value?.contains('@')) return value.trim()
+            if (value?.contains('@')) {
+                return value.trim()
+            }
         }
+
         return null
     }
 
-    private boolean isVerifiedEmail(Object value) {
+    private Boolean isVerifiedEmail(Object value) {
         return value == Boolean.TRUE || value?.toString()?.toLowerCase(Locale.ROOT) == 'true'
     }
 

@@ -55,22 +55,17 @@ class AuthenticationIdentityController implements ElementsController {
                 'issuer',
                 'subject',
             ]
-            labels = [
-                user: 'authenticationIdentity.username',
-            ]
             sortable = [
                 issuer: 'asc',
                 subject: 'asc',
             ]
             body.eachRow { TableRow row, Map values ->
-                row.actions.addParams([
-                    providerId: provider.id,
-                ])
+                row.actions.addParams(providerId: provider.id)
             }
             body = authenticationIdentityService.list(provider.id, isSuperAdmin)
         }
 
-        display content: c, modal: true
+        display content: c, modal: true, large: true
     }
 
     private buildForm(TAuthenticationProvider provider, TUserAuthenticationIdentity obj = null) {
