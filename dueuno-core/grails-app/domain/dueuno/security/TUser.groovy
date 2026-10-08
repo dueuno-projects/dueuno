@@ -40,8 +40,9 @@ class TUser implements GormEntity, Serializable {
     Boolean accountLocked
     Boolean passwordExpired
 
-    String apiKey
     String physicalId
+    String email
+    String apiKey
 
     // System fields
     Boolean deletable
@@ -52,8 +53,6 @@ class TUser implements GormEntity, Serializable {
     String firstname
     String lastname
     String language
-    String email
-    String telephone
 
     // Session data
     Integer sessionDuration
@@ -77,9 +76,9 @@ class TUser implements GormEntity, Serializable {
         tenant nullable: false
         username nullable: false, blank: false, unique: true
         password nullable: false, blank: false, password: true
-        apiKey unique: true
         physicalId unique: true
-        email email: true
+        email unique: true, email: true
+        apiKey unique: true
         note maxSize: 1000
 
         sessionDuration nullable: false

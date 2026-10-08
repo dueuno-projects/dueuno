@@ -28,12 +28,14 @@ class TUserAuthenticationIdentity implements GormEntity, Serializable {
     private static final long serialVersionUID = 1
 
     Long id
-    TUser user
     AuthenticationProviderType providerType
     String issuer
     String subject
 
-    static belongsTo = [user: TUser]
+    TUser user
+    static belongsTo = [
+        user: TUser,
+    ]
 
     static constraints = {
         user nullable: false

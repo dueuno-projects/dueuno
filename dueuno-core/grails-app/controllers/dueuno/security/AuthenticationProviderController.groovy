@@ -41,12 +41,20 @@ class AuthenticationProviderController implements ElementsController {
         def c = createContent(ContentTable)
         c.header.removeNextButton()
         List tableColumns = []
-        if (isSuperAdmin) tableColumns += ['tenant.tenantId']
-        tableColumns += ['sequence', 'providerType', 'enabled']
+        if (isSuperAdmin) {
+            tableColumns.add('tenant.tenantId')
+        }
+
+        tableColumns.addAll([
+            'sequence',
+            'providerType',
+            'enabled',
+        ])
 
         c.table.with {
             filters.with {
                 fold = false
+
                 if (isSuperAdmin) {
                     addField(
                         class: Select,
@@ -58,24 +66,42 @@ class AuthenticationProviderController implements ElementsController {
                     )
                 }
             }
+
             columns = tableColumns
             labels = [
                 providerType: 'authenticationProvider.providerType',
             ]
             prettyPrinterProperties = [
-                providerType: [textPrefix: 'authenticationProvider.providerType'],
+                providerType: [
+                    textPrefix: 'authenticationProvider.providerType',
+                ],
             ]
             sortable = [
                 'tenant.tenantId': 'asc',
                 sequence: 'asc',
             ]
+
             body.eachRow { TableRow row, Map values ->
                 row.actions.removeTailAction()
+
+                if ((values.providerType as AuthenticationProviderType).isOidcProvider()) {
+                    row.actions.addAction(
+                        controller: 'authenticationIdentity',
+                        action: 'index',
+                        icon: 'fa-link',
+                        tooltip: 'authenticationProvider.identities',
+                    )
+                    row.actions.addParams([
+                        providerId: values.id,
+                    ])
+                }
             }
+
             body = isSuperAdmin
                 ? authenticationProviderService.listAll(filterParams)
                 : authenticationProviderService.list()
         }
+
         display content: c
     }
 
@@ -118,35 +144,130 @@ class AuthenticationProviderController implements ElementsController {
             )
 
             if (obj.providerType == AuthenticationProviderType.LDAP) {
-                addField(class: TextField, id: 'server', cols: 12)
-                addField(class: TextField, id: 'managerDn', cols: 6)
-                addField(class: PasswordField, id: 'managerPassword', cols: 6)
-                addField(class: TextField, id: 'searchBase', cols: 12)
-                addField(class: TextField, id: 'searchFilter', cols: 12)
-                addField(class: Checkbox, id: 'searchSubtree', cols: 6)
-                addField(class: Checkbox, id: 'retrieveGroupRoles', cols: 6)
-                addField(class: TextField, id: 'groupSearchBase', cols: 4)
-                addField(class: TextField, id: 'groupSearchFilter', cols: 4)
-                addField(class: TextField, id: 'groupRoleAttribute', cols: 4)
-                addField(class: Checkbox, id: 'retrieveDatabaseRoles', cols: 6)
-                addField(class: TextField, id: 'defaultRole', cols: 6)
+                addField(
+                    class: TextField,
+                    id: 'server',
+                    cols: 12,
+                )
+                addField(
+                    class: TextField,
+                    id: 'managerDn',
+                    cols: 6,
+                )
+                addField(
+                    class: PasswordField,
+                    id: 'managerPassword',
+                    cols: 6,
+                )
+                addField(
+                    class: TextField,
+                    id: 'searchBase',
+                    cols: 12,
+                )
+                addField(
+                    class: TextField,
+                    id: 'searchFilter',
+                    cols: 12,
+                )
+                addField(
+                    class: Checkbox,
+                    id: 'searchSubtree',
+                    cols: 6,
+                )
+                addField(
+                    class: Checkbox,
+                    id: 'retrieveGroupRoles',
+                    cols: 6,
+                )
+                addField(
+                    class: TextField,
+                    id: 'groupSearchBase',
+                    cols: 4,
+                )
+                addField(
+                    class: TextField,
+                    id: 'groupSearchFilter',
+                    cols: 4,
+                )
+                addField(
+                    class: TextField,
+                    id: 'groupRoleAttribute',
+                    cols: 4,
+                )
+                addField(
+                    class: Checkbox,
+                    id: 'retrieveDatabaseRoles',
+                    cols: 6,
+                )
+                addField(
+                    class: TextField,
+                    id: 'defaultRole',
+                    cols: 6,
+                )
             }
 
             if (obj.providerType.isOidcProvider()) {
-                addField(class: TextField, id: 'clientId', cols: 6)
-                addField(class: PasswordField, id: 'clientSecret', cols: 6)
-                addField(class: Select, id: 'clientAuthenticationMethod', cols: 12, options: [
-                    client_secret_basic: 'authenticationProvider.clientAuthenticationMethod.basic',
-                    client_secret_post : 'authenticationProvider.clientAuthenticationMethod.post',
-                ])
-                addField(class: TextField, id: 'discoveryUri', cols: 12, help: 'authenticationProvider.discoveryUri.help')
-                addField(class: TextField, id: 'issuerUri', cols: 12)
-                addField(class: TextField, id: 'authorizationUri', cols: 12)
-                addField(class: TextField, id: 'tokenUri', cols: 12)
-                addField(class: TextField, id: 'jwksUri', cols: 12)
-                addField(class: TextField, id: 'userInfoUri', cols: 12)
-                addField(class: TextField, id: 'redirectUri', cols: 12, help: 'authenticationProvider.redirectUri.help')
-                addField(class: TextField, id: 'scopes', cols: 12)
+                addField(
+                    class: TextField,
+                    id: 'clientId',
+                    cols: 6,
+                )
+                addField(
+                    class: PasswordField,
+                    id: 'clientSecret',
+                    cols: 6,
+                )
+                addField(
+                    class: Select,
+                    id: 'clientAuthenticationMethod',
+                    cols: 12,
+                    options: [
+                        client_secret_basic: 'clientAuthenticationMethod.basic',
+                        client_secret_post : 'clientAuthenticationMethod.post',
+                    ],
+                )
+                addField(
+                    class: TextField,
+                    id: 'discoveryUri',
+                    cols: 12,
+                    help: 'authenticationProvider.discoveryUri.help',
+                )
+                addField(
+                    class: TextField,
+                    id: 'issuerUri',
+                    cols: 12,
+                )
+                addField(
+                    class: TextField,
+                    id: 'authorizationUri',
+                    cols: 12,
+                )
+                addField(
+                    class: TextField,
+                    id: 'tokenUri',
+                    cols: 12,
+                )
+                addField(
+                    class: TextField,
+                    id: 'jwksUri',
+                    cols: 12,
+                )
+                addField(
+                    class: TextField,
+                    id: 'userInfoUri',
+                    cols: 12,
+                )
+                addField(
+                    class: TextField,
+                    id: 'redirectUri',
+                    cols: 12,
+                    help: 'authenticationProvider.redirectUri.help',
+                )
+                addField(
+                    class: TextField,
+                    id: 'scopes',
+                    cols: 12,
+                )
             }
         }
 
@@ -162,6 +283,7 @@ class AuthenticationProviderController implements ElementsController {
             display action: 'index'
             return
         }
+
         display content: buildForm(obj), modal: true
     }
 

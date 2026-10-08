@@ -927,9 +927,13 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      *
      * @param username the username of the user to delete
      */
+    @CompileDynamic
     void deleteUser(String username) {
         TUser user = getUserByUsername(username)
         TUserRoleGroup.removeAll(user)
+        for (TUserAuthenticationIdentity identity in TUserAuthenticationIdentity.findAllByUser(user)) {
+            identity.delete(flush: true)
+        }
         user.delete(flush: true)
     }
 
