@@ -89,7 +89,7 @@ class AuthenticationIdentityService {
         fetchParams.fetch = fetch
         DetachedCriteria<TUserAuthenticationIdentity> query = buildQuery(filterParams)
         query = query.where {
-            providerType == provider.providerType && user.tenant == provider.tenant
+            providerType == provider.providerType && user.tenant.id == provider.tenant.id
         }
         return query.list(fetchParams)
     }

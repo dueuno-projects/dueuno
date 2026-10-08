@@ -16,10 +16,17 @@
  */
 package dueuno.security
 
+import dueuno.application.TConnectionSource
+import dueuno.tenant.TTenant
+import grails.testing.gorm.DataTest
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import spock.lang.Specification
 
-class AuthenticationUserProvisioningServiceSpec extends Specification {
+class AuthenticationUserProvisioningServiceSpec extends Specification implements DataTest {
+
+    Class<?>[] getDomainClassesToMock() {
+        [TUser, TUserAuthenticationIdentity, TAuthenticationProvider, TTenant, TConnectionSource, TRoleGroup] as Class<?>[]
+    }
 
     void 'blocks LDAP provisioning when the identity has no email'() {
         given:
