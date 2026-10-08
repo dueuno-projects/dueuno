@@ -120,7 +120,8 @@ class UserController implements ElementsController {
 
                 }
 
-                if (values.authenticationIdentities?.size()) {
+                if (values.authenticationIdentities) {
+                    row.actions.tailAction.text = TextDefault.HARD_DELETE
                     row.actions.addTailAction(
                         controller: 'userIdentity',
                         icon: 'fa-users',
