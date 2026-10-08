@@ -193,7 +193,7 @@ class BootStrap {
                 username: tenantId == tenantService.defaultTenantId ? 'user1' : "${tenantId}/user1",
                 password: 'user1',
                 groups: ['GROUP_1'],
-                email: 'user@company.it',
+                email: "user1@${tenantId}.it",
                 firstname: 'User',
                 lastname: 'ONE',
                 physicalId: tenantId == tenantService.defaultTenantId ? 'FB78E50B' : null,
@@ -203,7 +203,7 @@ class BootStrap {
                 username: tenantId == tenantService.defaultTenantId ? 'user2' : "${tenantId}/user2",
                 password: 'user2',
                 groups: ['GROUP_2', 'GROUP_1'],
-                email: 'user@company.it',
+                email: "user2@${tenantId}.it",
                 firstname: 'User',
                 lastname: 'ONE TWO',
             )
@@ -212,15 +212,9 @@ class BootStrap {
                 username: tenantId == tenantService.defaultTenantId ? 'user3' : "${tenantId}/user3",
                 password: 'user3',
                 groups: ['GROUP_3'],
-                email: 'user@company.it',
+                email: "user3@${tenantId}.it",
                 firstname: 'User',
                 lastname: 'THREE',
-            )
-
-            securityService.createSystemUser(
-                username: '*',
-                firstname: 'Nessun',
-                lastname: 'Utente',
             )
         }
 

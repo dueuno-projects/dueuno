@@ -37,25 +37,6 @@ class UserProfileController implements ElementsController {
     TenantPropertyService tenantPropertyService
     SecurityService securityService
 
-    private buildSensitiveDataForm(ContentForm c) {
-        c.form.with {
-            addField(
-                class: TextField,
-                id: 'firstname',
-                cols: 6,
-            )
-            addField(
-                class: TextField,
-                id: 'lastname',
-                cols: 6,
-            )
-            addField(
-                class: EmailField,
-                id: 'email',
-            )
-        }
-    }
-
     private buildPreferencesForm(ContentForm c) {
         c.form.with {
             addField(
@@ -185,12 +166,25 @@ class UserProfileController implements ElementsController {
                 id: 'username',
                 readonly: true,
                 icon: 'fa-user',
-                help: 'userProfile.edit.username.help',
-                cols: 12,
+                cols: 6,
+            )
+            addField(
+                class: EmailField,
+                id: 'email',
+                readonly: true,
+                cols: 6,
+            )
+            addField(
+                class: TextField,
+                id: 'firstname',
+                cols: 6,
+            )
+            addField(
+                class: TextField,
+                id: 'lastname',
+                cols: 6,
             )
         }
-
-        buildSensitiveDataForm(c)
 
         buildPreferencesForm(c)
 
