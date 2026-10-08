@@ -120,6 +120,16 @@ class UserController implements ElementsController {
 
                 }
 
+                if (values.authenticationIdentities?.size()) {
+                    row.actions.addTailAction(
+                        controller: 'userIdentity',
+                        icon: 'fa-users',
+                        text: '',
+                        tooltip: 'authenticationProvider.identities',
+                    )
+                    row.actions.addParams(userId: values.id)
+                }
+
                 if (isSuperAdmin) {
                     row.cells.tenant.tag = true
                 }

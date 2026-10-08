@@ -72,6 +72,11 @@ class TUser implements GormEntity, Serializable {
     String guiStyle // 'ROUNDED' or 'SQUARED'
     Boolean animations
 
+    Set<TUserAuthenticationIdentity> authenticationIdentities
+    static hasMany = [
+        authenticationIdentities: TUserAuthenticationIdentity,
+    ]
+
     static constraints = {
         tenant nullable: false
         username nullable: false, blank: false, unique: true

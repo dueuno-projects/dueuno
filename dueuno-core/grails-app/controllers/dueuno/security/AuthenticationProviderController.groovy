@@ -85,8 +85,8 @@ class AuthenticationProviderController implements ElementsController {
             body.eachRow { TableRow row, Map values ->
                 if ((values.providerType as AuthenticationProviderType).isOidcProvider()) {
                     row.actions.addTailAction(
-                        controller: 'authenticationIdentity',
-                        icon: 'fa-link',
+                        controller: 'authenticationProviderIdentity',
+                        icon: 'fa-users',
                         text: '',
                         tooltip: 'authenticationProvider.identities',
                     )

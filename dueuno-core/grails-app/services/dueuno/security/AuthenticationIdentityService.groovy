@@ -22,20 +22,20 @@ import dueuno.application.AuthenticationProviderService
 import dueuno.tenant.TTenant
 import grails.gorm.DetachedCriteria
 import grails.gorm.transactions.Transactional
+import groovy.contracts.Requires
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
-import groovy.util.logging.Slf4j
 
-@Slf4j
 @Transactional
 @CompileStatic
 class AuthenticationIdentityService {
 
     AuthenticationProviderService authenticationProviderService
+    SecurityService securityService
 
     @CompileDynamic
     Boolean hasIdentity(TUser user) {
-        return user != null && TUserAuthenticationIdentity.countByUser(user) > 0
+        return user?.authenticationIdentities?.isEmpty() == false
     }
 
     @CompileDynamic
@@ -55,10 +55,8 @@ class AuthenticationIdentityService {
     }
 
     @CompileDynamic
-    private DetachedCriteria<TUserAuthenticationIdentity> buildQuery(TAuthenticationProvider provider, Map filters = [:]) {
-        DetachedCriteria<TUserAuthenticationIdentity> query = TUserAuthenticationIdentity.where {
-            providerType == provider.providerType && user.tenant == provider.tenant
-        }
+    private DetachedCriteria<TUserAuthenticationIdentity> buildQuery(Map filters = [:]) {
+        DetachedCriteria<TUserAuthenticationIdentity> query = TUserAuthenticationIdentity.where {}
 
         if (filters.containsKey('id')) { query = query.where { id == filters.id } }
         if (filters.containsKey('user')) { query = query.where { user.id == filters.user } }
@@ -78,9 +76,9 @@ class AuthenticationIdentityService {
     }
 
     @CompileDynamic
-    List<TUserAuthenticationIdentity> list(Serializable providerId, Boolean superAdmin, Map filterParams = [:], Map fetchParams = [:]) {
-        TAuthenticationProvider provider = getProvider(providerId, superAdmin)
-        if (!provider) {
+    List<TUserAuthenticationIdentity> listByProvider(Serializable providerId, Map filterParams = [:], Map fetchParams = [:]) {
+        TAuthenticationProvider provider = authenticationProviderService.get(providerId)
+        if (!provider || !provider.providerType.isOidcProvider()) {
             return []
         }
 
@@ -89,30 +87,27 @@ class AuthenticationIdentityService {
         }
 
         fetchParams.fetch = fetch
-        DetachedCriteria<TUserAuthenticationIdentity> query = buildQuery(provider, filterParams)
+        DetachedCriteria<TUserAuthenticationIdentity> query = buildQuery(filterParams)
+        query = query.where {
+            providerType == provider.providerType && user.tenant == provider.tenant
+        }
         return query.list(fetchParams)
     }
 
     @CompileDynamic
-    Number count(Serializable providerId, Boolean superAdmin, Map filterParams = [:]) {
-        TAuthenticationProvider provider = getProvider(providerId, superAdmin)
-        if (!provider) {
-            return 0
+    List<TUserAuthenticationIdentity> listByUser(Serializable userId, Map fetchParams = [:]) {
+        if (!fetchParams.sort) {
+            fetchParams.sort = [issuer: 'asc', subject: 'asc']
         }
 
-        DetachedCriteria<TUserAuthenticationIdentity> query = buildQuery(provider, filterParams)
-        return query.count()
+        fetchParams.fetch = fetch
+        DetachedCriteria<TUserAuthenticationIdentity> query = buildQuery(user: userId)
+        return query.list(fetchParams)
     }
 
     @CompileDynamic
-    TUserAuthenticationIdentity get(Serializable id, Serializable providerId, Boolean superAdmin) {
-        TAuthenticationProvider provider = getProvider(providerId, superAdmin)
-        if (!provider) {
-            return null
-        }
-
-        DetachedCriteria<TUserAuthenticationIdentity> query = buildQuery(provider, [id: id])
-        return query.get(fetch: fetchAll) as TUserAuthenticationIdentity
+    TUserAuthenticationIdentity get(Serializable id) {
+        return buildQuery(id: id).get(fetch: fetchAll) as TUserAuthenticationIdentity
     }
 
     @CompileDynamic
@@ -127,8 +122,8 @@ class AuthenticationIdentityService {
     }
 
     @CompileDynamic
-    TUserAuthenticationIdentity create(Map args, Serializable providerId, Boolean superAdmin) {
-        TAuthenticationProvider provider = getProvider(providerId, superAdmin)
+    TUserAuthenticationIdentity create(Map args = [:]) {
+        TAuthenticationProvider provider = getProvider(args.providerId as Serializable, securityService.isSuperAdmin())
         if (!provider) {
             return null
         }
@@ -141,17 +136,14 @@ class AuthenticationIdentityService {
             subject: args.subject,
         )
 
-        identity.validate()
-        if (!identity.hasErrors()) {
-            identity.save(flush: true)
-        }
-
+        identity.save(flush: true)
         return identity
     }
 
     @CompileDynamic
-    TUserAuthenticationIdentity update(Map args, Serializable providerId, Boolean superAdmin) {
-        TUserAuthenticationIdentity identity = get(args.id as Serializable, providerId, superAdmin)
+    @Requires({ args.id })
+    TUserAuthenticationIdentity update(Map args = [:]) {
+        TUserAuthenticationIdentity identity = get(args.id)
         if (!identity) {
             return null
         }
@@ -159,18 +151,14 @@ class AuthenticationIdentityService {
         identity.user = getProviderUser(args.user as Serializable, identity.user.tenant)
         identity.issuer = args.issuer
         identity.subject = args.subject
-
-        identity.validate()
-        if (!identity.hasErrors()) {
-            identity.save(flush: true)
-        }
+        identity.save(flush: true)
 
         return identity
     }
 
     @CompileDynamic
-    void delete(Serializable id, Serializable providerId, Boolean superAdmin) {
-        TUserAuthenticationIdentity identity = get(id, providerId, superAdmin)
+    void delete(Serializable id) {
+        TUserAuthenticationIdentity identity = get(id)
         if (identity) {
             identity.delete(flush: true)
         }

@@ -596,17 +596,18 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     private Map getFetchAll() {
         // Add any relationship here (Eg. references to other DomainObjects or hasMany)
         return [
-            tenant      : 'join',
-            defaultGroup: 'join',
+            tenant                  : 'join',
+            defaultGroup            : 'join',
+            authenticationIdentities: 'join',
         ]
     }
 
     private Map getFetch() {
-        // Add only single-sided relationships here (Eg. references to other Domain Objects)
-        // DO NOT add hasMany relationships, you are going to have troubles with pagination
+        // Includes hasMany relationships for paginated user lists.
         return [
-            tenant      : 'join',
-            defaultGroup: 'join',
+            tenant                  : 'join',
+            defaultGroup            : 'join',
+            authenticationIdentities: 'join',
         ]
     }
 
@@ -931,9 +932,6 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     void deleteUser(String username) {
         TUser user = getUserByUsername(username)
         TUserRoleGroup.removeAll(user)
-        for (TUserAuthenticationIdentity identity in TUserAuthenticationIdentity.findAllByUser(user)) {
-            identity.delete(flush: true)
-        }
         user.delete(flush: true)
     }
 
