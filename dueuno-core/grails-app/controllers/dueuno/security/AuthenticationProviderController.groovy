@@ -16,6 +16,7 @@ package dueuno.security
 
 import dueuno.application.AuthenticationProviderService
 import dueuno.elements.ElementsController
+import dueuno.elements.components.Separator
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
@@ -144,6 +145,11 @@ class AuthenticationProviderController implements ElementsController {
 
             if (obj.providerType == AuthenticationProviderType.LDAP) {
                 addField(
+                    class: Separator,
+                    id: 'ldap',
+                    icon: 'fa-plug',
+                )
+                addField(
                     class: TextField,
                     id: 'server',
                     cols: 12,
@@ -207,9 +213,13 @@ class AuthenticationProviderController implements ElementsController {
 
             if (obj.providerType.isOidcProvider()) {
                 addField(
+                    class: Separator,
+                    id: 'oidc',
+                    icon: 'fa-brands fa-openid',
+                )
+                addField(
                     class: TextField,
                     id: 'clientId',
-                    cols: 6,
                 )
                 addField(
                     class: PasswordField,
@@ -219,11 +229,11 @@ class AuthenticationProviderController implements ElementsController {
                 addField(
                     class: Select,
                     id: 'clientAuthenticationMethod',
-                    cols: 12,
                     options: [
                         client_secret_basic: 'clientAuthenticationMethod.basic',
                         client_secret_post : 'clientAuthenticationMethod.post',
                     ],
+                    cols: 6,
                 )
                 addField(
                     class: TextField,
