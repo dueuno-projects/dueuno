@@ -15,6 +15,7 @@ class Select extends Control {
             ele: element,
             dropboxWrapper: '#' + dropboxPortal.id,
             zIndex: 1060,
+            optionHeight: Select.getOptionHeight(dropboxPortal),
             options: properties.options,
             multiple: properties.multiple,
             search: properties.search,
@@ -219,6 +220,27 @@ class Select extends Control {
 
         let $trailing = Select.getTrailingFocusable($previous);
         ($trailing.length ? $trailing.last() : $previous).trigger('focus');
+    }
+
+    static getOptionHeight(dropboxPortal) {
+        // Virtual Select uses optionHeight for its virtual scroll calculations.
+        // Measure the styled option so those calculations match the rem-based CSS,
+        // including the active root font size and responsive styles.
+        let optionHeightProbe = document.createElement('div');
+        optionHeightProbe.className = 'vscomp-wrapper';
+        optionHeightProbe.style.position = 'absolute';
+        optionHeightProbe.style.visibility = 'hidden';
+        optionHeightProbe.style.pointerEvents = 'none';
+
+        let optionProbe = document.createElement('div');
+        optionProbe.className = 'vscomp-option';
+        optionHeightProbe.appendChild(optionProbe);
+        dropboxPortal.appendChild(optionHeightProbe);
+
+        let optionHeight = getComputedStyle(optionProbe).height;
+        optionHeightProbe.remove();
+
+        return optionHeight;
     }
 
     static setValue($element, valueMap, trigger = true) {

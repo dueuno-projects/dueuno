@@ -204,6 +204,7 @@
 }
 
 .control-select .vscomp-option {
+    height: 2.857142857rem; /* 40px at the default 14px desktop font size */
     padding: 0;
     color: rgb(var(--elements-main-text));
     font-weight: normal;
