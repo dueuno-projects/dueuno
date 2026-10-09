@@ -246,6 +246,7 @@ class SandboxController implements ElementsController {
                 onChange: 'onIconChange',
                 highlight: true,
                 maxSize: 7,
+                displayMaxSize: true,
                 cols: 6,
             )
             addField(

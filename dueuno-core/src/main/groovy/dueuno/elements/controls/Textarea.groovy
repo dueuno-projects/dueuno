@@ -42,10 +42,11 @@ class Textarea extends TextField {
     /**
      * Creates a {@code Textarea} instance configured from the supplied argument map.
      * Sets the value type to {@link dueuno.types.Type#STRING}, disables auto-select by default,
-     * and marks the container as multi-line.
+     * marks the container as multi-line, and enables the character counter by default.
      *
      * @param args initialisation arguments; recognised keys include:
      * {@code autoSelect} ({@link Boolean}, default {@code false}),
+     * {@code displayMaxSize} ({@link Boolean}, default {@code true}; set {@code false} to hide the counter),
      * {@code acceptNewLine} ({@link Boolean}, default {@code true}),
      * {@code encode} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link TextField#TextField(Map)}
@@ -55,6 +56,7 @@ class Textarea extends TextField {
 
         valueType = Type.STRING
         autoSelect = args.autoSelect == null ? false : args.autoSelect
+        displayMaxSize = args.displayMaxSize == null ? true : args.displayMaxSize as Boolean
         acceptNewLine = args.acceptNewLine == null ? true : args.acceptNewLine
         encode = args.encode == null ? false : args.encode
 

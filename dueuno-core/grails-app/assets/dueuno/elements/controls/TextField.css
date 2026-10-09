@@ -2,12 +2,52 @@
     padding: var(--elements-spacing-y) var(--elements-spacing-x);
 }
 
-.input-group:has(.control-text-field) :first-child {
+.input-group:has(.control-text-field) {
+    position: relative;
+}
+
+.input-group > .control-text-field {
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+}
+
+.input-group > .character-counter {
+    position: absolute;
+    z-index: 6;
+    padding: .55rem;
+    right: 0;
+    bottom: 0;
+    font-weight: normal;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.character-counter-value {
+    display: inline-block;
+    font-size: 85%;
+    opacity: .3;
+}
+
+.input-group:has(> .character-counter) > .control-text-field {
+    padding-right: 3.5rem !important;
+}
+
+.input-group:has(> .character-counter:last-child) > .control-text-field {
+    border-top-right-radius: var(--bs-border-radius-sm) !important;
+    border-bottom-right-radius: var(--bs-border-radius-sm) !important;
+}
+
+.input-group:has(> .control-text-field:disabled) > .character-counter {
+    display: none;
+}
+
+.input-group:has(.control-text-field) :first-child:not(.character-counter) {
     border-top-left-radius: var(--bs-border-radius-sm);
     border-bottom-left-radius: var(--bs-border-radius-sm);
 }
 
-.input-group:has(.control-text-field) :last-child {
+.input-group:has(.control-text-field) :last-child:not(.character-counter) {
     border-top-right-radius: var(--bs-border-radius-sm);
     border-bottom-right-radius: var(--bs-border-radius-sm);
 }

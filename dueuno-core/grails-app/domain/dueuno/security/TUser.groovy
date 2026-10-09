@@ -84,7 +84,7 @@ class TUser implements GormEntity, Serializable {
         physicalId unique: true
         email unique: true, email: true
         apiKey unique: true
-        note maxSize: 1000
+        note maxSize: 500
 
         sessionDuration nullable: false
         rememberMeDuration nullable: false

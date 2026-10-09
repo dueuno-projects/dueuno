@@ -28,7 +28,8 @@ import groovy.transform.CompileStatic
  * {@link NumberField}, {@link TelephoneField}, {@link Textarea}). Supports configurable
  * HTML input type and input mode, an optional icon or prefix displayed inside the input,
  * maximum character length, placeholder text, autocomplete, auto-select-on-focus, text
- * transformation, and an optional async {@code onChange} handler. An adjacent action
+ * transformation, an optional remaining-character counter, and an optional async
+ * {@code onChange} handler. An adjacent action
  * {@link Button} can be populated via {@link #addAction(Map)}.
  * </p>
  *
@@ -56,6 +57,12 @@ class TextField extends Control {
     /** Maximum number of characters accepted; {@code 0} means no limit. */
     Integer maxSize
 
+    /**
+     * Whether to display the remaining-character counter. Defaults to {@code false}; set
+     * this to {@code true} together with a positive {@code maxSize} to display it.
+     */
+    Boolean displayMaxSize
+
     /** Placeholder text shown when the field is empty. */
     String placeholder
 
@@ -80,6 +87,7 @@ class TextField extends Control {
      * {@code icon} ({@link String}),
      * {@code prefix} ({@link String}),
      * {@code maxSize} ({@link Integer}),
+     * {@code displayMaxSize} ({@link Boolean}, default {@code false}),
      * {@code placeholder} ({@link String}),
      * {@code autocomplete} ({@link Boolean}, default {@code false}),
      * {@code autoSelect} ({@link Boolean}, default {@code true}),
@@ -98,6 +106,7 @@ class TextField extends Control {
         icon = args.icon ?: ''
         prefix = args.prefix ?: ''
         maxSize = args.maxSize as Integer ?: 0
+        displayMaxSize = args.displayMaxSize == null ? false : args.displayMaxSize as Boolean
         placeholder = args.placeholder == null ? '' : args.placeholder
         autocomplete = args.autocomplete == null ? false : args.autocomplete
         autoSelect = args.autoSelect == null ? true : args.autoSelect
@@ -157,7 +166,7 @@ class TextField extends Control {
 
     /**
      * Serialises this control's properties to JSON, adding {@code autocomplete},
-     * {@code autoSelect}, {@code textTransform}, and {@code onChangeAsync}.
+     * {@code autoSelect}, {@code displayMaxSize}, {@code textTransform}, and {@code onChangeAsync}.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this control's properties
@@ -165,10 +174,11 @@ class TextField extends Control {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-            autocomplete : autocomplete,
-            autoSelect   : autoSelect,
-            textTransform: textTransform as String,
-            onChangeAsync: onChangeAsync,
+            autocomplete  : autocomplete,
+            autoSelect    : autoSelect,
+            displayMaxSize: displayMaxSize,
+            textTransform : textTransform as String,
+            onChangeAsync : onChangeAsync,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

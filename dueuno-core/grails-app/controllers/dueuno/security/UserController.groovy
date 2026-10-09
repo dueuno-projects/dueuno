@@ -215,7 +215,6 @@ class UserController implements ElementsController {
             addField(
                 class: Textarea,
                 id: 'note',
-                maxSize: 2000,
                 rows: 2,
             )
         }

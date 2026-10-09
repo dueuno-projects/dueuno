@@ -16,6 +16,9 @@
        ${c.cssStyleColors ? raw('style="' + c.cssStyleColors + '"') : ''}
        ${raw(attributes)}
 >
+<g:if test="${c.displayMaxSize && c.maxSize > 0}">
+    <div class="character-counter" data-max="${c.maxSize}" aria-hidden="true"><span class="character-counter-value">${c.maxSize}</span></div>
+</g:if>
 <g:if test="${c.actions.hasActions()}"><!--
     <g:each var="action" in="${c.actions.defaultAction}">
         --><render:component instance="${action.link}" properties="[cssClass: 'btn btn-secondary', readonly: c.readonly]" /><!--

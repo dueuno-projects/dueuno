@@ -202,6 +202,8 @@ class FormController implements ElementsController {
             addField(
                 class: TextField,
                 id: 'textfield',
+                maxSize: 50,
+                displayMaxSize: true,
                 textTransform: TextTransform.UPPERCASE,
                 help: 'Questo è un messaggio di aiuto per te che non sai cosa diavolo fare',
             )

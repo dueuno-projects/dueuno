@@ -20,12 +20,6 @@
     pointer-events: none;
 }
 
-.control-textarea .character-counter-value {
-    display: inline-block;
-    font-size: 70%;
-    opacity: .3;
-}
-
 .control-textarea.maxlength:not(.disabled) textarea {
     padding-bottom: 3rem !important;
 }
