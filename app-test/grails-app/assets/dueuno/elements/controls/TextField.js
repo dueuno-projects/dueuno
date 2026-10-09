@@ -12,6 +12,7 @@ class TextField extends Control {
         $element.off('paste').on('paste', Control.onPaste);
         $element.off('keypress').on('keypress', TextField.onKeyPress);
         $element.off('input').on('input', TextField.onChange);
+        TextField.updateCharacterCounter($element);
 
         Transition.triggerEvent($element, 'load');
     }
@@ -41,6 +42,8 @@ class TextField extends Control {
             event.target.selectionStart = selStart;
             event.target.selectionEnd = selStart;
         }
+
+        TextField.updateCharacterCounter($element);
 
         let async = properties['onChangeAsync'];
         Transition.triggerEvent($element, 'change', async);
@@ -82,6 +85,7 @@ class TextField extends Control {
         }
 
         $element.val(value);
+        TextField.updateCharacterCounter($element);
 
         if (!trigger) $element.on('input', TextField.onChange);
     }
@@ -94,6 +98,19 @@ class TextField extends Control {
 
     static setPlaceholder($element, value) {
         $element[0].placeholder = value;
+    }
+
+    static updateCharacterCounter($element) {
+        let $textareaContainer = $element.closest('.control-textarea');
+        if (!$textareaContainer.length) return;
+
+        let $counter = $textareaContainer.children('.character-counter');
+        if (!$counter.length) return;
+
+        let maxSize = parseInt($counter.attr('data-max'), 10);
+        let value = $element.val() || '';
+
+        $counter.children('.character-counter-value').text(Math.max(0, maxSize - value.length));
     }
 
     static setIcon($element, value) {

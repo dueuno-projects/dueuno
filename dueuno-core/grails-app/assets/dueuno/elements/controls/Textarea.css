@@ -6,22 +6,31 @@
     resize: none;
 }
 
-.control-textarea label {
+.control-textarea {
+    position: relative;
+}
+
+.control-textarea .character-counter {
     position: absolute;
+    padding: .25rem .5rem;
+    bottom: 0;
+    right: 0;
+    font-weight: normal;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.control-textarea .character-counter-value {
+    display: inline-block;
+    font-size: 70%;
+    opacity: .3;
 }
 
 .control-textarea.maxlength:not(.disabled) textarea {
     padding-bottom: 3rem !important;
 }
 
-.control-textarea.maxlength label {
-    padding: .357143rem 1.071429rem;
-    bottom: 0;
-    right: 0;
-    font-weight: normal;
-}
-
-.control-textarea.maxlength.disabled label {
+.control-textarea.maxlength.disabled .character-counter {
     display: none;
 }
 
