@@ -45,8 +45,11 @@ class AuthenticationUserProvisioningServiceSpec extends Specification implements
         AuthenticationUserProvisioningService service = new AuthenticationUserProvisioningService()
 
         when:
+        TAuthenticationProvider provider = new TAuthenticationProvider(
+            providerType: AuthenticationProviderType.GOOGLE,
+        )
         service.ensureOidcUser(
-            AuthenticationProviderType.GOOGLE,
+            provider,
             'https://issuer.example.org',
             'subject-1',
             [preferred_username: 'alice@example.org', upn: 'alice@example.org'],

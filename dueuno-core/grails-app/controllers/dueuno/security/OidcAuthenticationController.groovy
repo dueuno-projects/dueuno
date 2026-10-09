@@ -136,7 +136,7 @@ class OidcAuthenticationController {
             if (!issuer || !subject) throw new IllegalArgumentException('OIDC identity is missing issuer or subject')
 
             UserDetails userDetails = authenticationUserProvisioningService.ensureOidcUser(
-                providerType,
+                provider,
                 issuer,
                 subject,
                 claims,

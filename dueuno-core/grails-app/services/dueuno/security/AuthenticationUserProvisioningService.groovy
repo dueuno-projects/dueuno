@@ -90,8 +90,8 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
 
     @Transactional
     @CompileDynamic
-    UserDetails ensureOidcUser(AuthenticationProviderType providerType, String issuer, String subject, Map profile) {
-        if (!providerType?.isOidcProvider() || !issuer || !subject) {
+    UserDetails ensureOidcUser(TAuthenticationProvider provider, String issuer, String subject, Map profile) {
+        if (!provider?.providerType?.isOidcProvider() || !issuer || !subject) {
             throw new UsernameNotFoundException('OIDC identity has no provider, issuer or subject')
         }
 
@@ -140,7 +140,7 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
 
             new TUserAuthenticationIdentity(
                 user: user,
-                providerType: providerType,
+                provider: provider,
                 issuer: issuer,
                 subject: subject,
             ).save(flush: true, failOnError: true)

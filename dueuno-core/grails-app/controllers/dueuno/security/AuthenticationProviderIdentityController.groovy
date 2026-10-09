@@ -20,11 +20,7 @@ package dueuno.security
 
 import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
-import dueuno.elements.contents.ContentCreate
-import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
-import dueuno.elements.controls.Select
-import dueuno.elements.controls.TextField
 import grails.plugin.springsecurity.annotation.Secured
 import groovy.util.logging.Slf4j
 
@@ -52,18 +48,18 @@ class AuthenticationProviderIdentityController implements ElementsController {
             ]
             columns = [
                 'user',
-                'providerType',
+                'provider.providerType',
                 'issuer',
                 'subject',
             ]
             labels = [
-                user        : 'authenticationIdentity.user',
-                providerType: 'authenticationIdentity.providerType',
-                issuer      : 'authenticationIdentity.issuer',
-                subject     : 'authenticationIdentity.subject',
+                user                   : 'authenticationIdentity.user',
+                'provider.providerType': 'authenticationIdentity.providerType',
+                issuer                 : 'authenticationIdentity.issuer',
+                subject                : 'authenticationIdentity.subject',
             ]
             sortable = [
-                issuer: 'asc',
+                issuer : 'asc',
                 subject: 'asc',
             ]
             actions.removeDefaultAction()

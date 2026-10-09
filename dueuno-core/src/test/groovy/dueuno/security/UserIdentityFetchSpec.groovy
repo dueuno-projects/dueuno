@@ -68,7 +68,7 @@ class UserIdentityFetchSpec extends Specification implements DataTest {
         TUser user = createUser(tenant, group, 'alice')
         TUserAuthenticationIdentity identity = new TUserAuthenticationIdentity(
             user: user,
-            providerType: AuthenticationProviderType.GOOGLE,
+            provider: createProvider(tenant),
             issuer: 'https://issuer.example.org',
             subject: 'subject-1',
         ).save(failOnError: true)
@@ -141,6 +141,7 @@ class UserIdentityFetchSpec extends Specification implements DataTest {
 
         then:
         updatedIdentity.user.id == updatedUser.id
+        updatedIdentity.provider.id == provider.id
         updatedIdentity.issuer == 'https://updated-issuer.example.org'
         updatedIdentity.subject == 'subject-2'
     }
@@ -189,10 +190,26 @@ class UserIdentityFetchSpec extends Specification implements DataTest {
     private static void createIdentity(TUser user, String subject) {
         new TUserAuthenticationIdentity(
             user: user,
-            providerType: AuthenticationProviderType.GOOGLE,
+            provider: createProvider(user.tenant),
             issuer: 'https://issuer.example.org',
             subject: subject,
         ).save(failOnError: true)
+    }
+
+    private static TAuthenticationProvider createProvider(TTenant tenant) {
+        TAuthenticationProvider provider = TAuthenticationProvider.findByTenantAndProviderType(
+            tenant,
+            AuthenticationProviderType.GOOGLE,
+        )
+        if (!provider) {
+            provider = new TAuthenticationProvider(
+                tenant: tenant,
+                providerType: AuthenticationProviderType.GOOGLE,
+                sequence: 1,
+                enabled: true,
+            ).save(failOnError: true)
+        }
+        return provider
     }
 
 }

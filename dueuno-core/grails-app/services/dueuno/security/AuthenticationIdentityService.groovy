@@ -60,15 +60,20 @@ class AuthenticationIdentityService {
 
         if (filters.containsKey('id')) { query = query.where { id == filters.id } }
         if (filters.containsKey('user')) { query = query.where { user.id == filters.user } }
-        if (filters.containsKey('providerType')) { query = query.where { providerType == filters.providerType } }
+        if (filters.containsKey('providerType')) { query = query.where { provider.providerType == filters.providerType } }
         if (filters.issuer) { query = query.where { issuer =~ "%${filters.issuer}%" } }
         if (filters.subject) { query = query.where { subject =~ "%${filters.subject}%" } }
+        if (filters.provider) {
+            query = query.where {
+                provider == filters.provider && user.tenant.id == filters.provider.tenant.id
+            }
+        }
 
         return query
     }
 
     private Map getFetch() {
-        return [user: 'join']
+        return [user: 'join', provider: 'join']
     }
 
     private Map getFetchAll() {
@@ -87,10 +92,7 @@ class AuthenticationIdentityService {
         }
 
         fetchParams.fetch = fetch
-        DetachedCriteria<TUserAuthenticationIdentity> query = buildQuery(filterParams)
-        query = query.where {
-            providerType == provider.providerType && user.tenant.id == provider.tenant.id
-        }
+        DetachedCriteria<TUserAuthenticationIdentity> query = buildQuery(filterParams + [provider: provider])
         return query.list(fetchParams)
     }
 
@@ -131,7 +133,7 @@ class AuthenticationIdentityService {
         TUser user = getProviderUser(args.user as Serializable, provider.tenant)
         TUserAuthenticationIdentity identity = new TUserAuthenticationIdentity(
             user: user,
-            providerType: provider.providerType,
+            provider: provider,
             issuer: args.issuer,
             subject: args.subject,
         )
