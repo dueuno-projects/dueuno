@@ -29,12 +29,12 @@ environments:
         session:
           persistent: true
           store-dir: app-test
-#      ssl:
-#        enabled: true
-#        key-store-type: PKCS12
-#        key-store: classpath:certificates/dev-keystore.p12
-#        key-store-password: password
-#        key-alias: tomcat
+      ssl:
+        enabled: true
+        key-store-type: PKCS12
+        key-store: classpath:certificates/dev-keystore.p12
+        key-store-password: password
+        key-alias: tomcat
 
 # CREATE PRODUCTION CERTIFICATE
 # See: https://certbot.eff.org/en/instructions
