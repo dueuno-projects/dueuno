@@ -57,6 +57,11 @@ class TAuthenticationProvider implements GormEntity, Serializable {
     String redirectUri
     String scopes
 
+    Set<TUserAuthenticationIdentity> authenticationIdentities
+    static hasMany = [
+        authenticationIdentities: TUserAuthenticationIdentity,
+    ]
+
     static constraints = {
         tenant nullable: false
         providerType nullable: false, unique: ['tenant']
