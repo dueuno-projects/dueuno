@@ -243,6 +243,22 @@ class AuthenticationProviderController implements ElementsController {
                 )
                 addField(
                     class: TextField,
+                    id: 'redirectUri',
+                    cols: 12,
+                    help: 'authenticationProvider.redirectUri.help',
+                )
+                addField(
+                    class: Separator,
+                    id: 'configuration',
+                    icon: 'fa-gear',
+                )
+                addField(
+                    class: TextField,
+                    id: 'scopes',
+                    cols: 12,
+                )
+                addField(
+                    class: TextField,
                     id: 'issuerUri',
                     cols: 12,
                 )
@@ -264,17 +280,6 @@ class AuthenticationProviderController implements ElementsController {
                 addField(
                     class: TextField,
                     id: 'userInfoUri',
-                    cols: 12,
-                )
-                addField(
-                    class: TextField,
-                    id: 'redirectUri',
-                    cols: 12,
-                    help: 'authenticationProvider.redirectUri.help',
-                )
-                addField(
-                    class: TextField,
-                    id: 'scopes',
                     cols: 12,
                 )
             }
