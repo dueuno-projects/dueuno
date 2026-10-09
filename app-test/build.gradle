@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     implementation project(":dueuno-core")
-//    implementation project(":dueuno-extra")
+    implementation project(":dueuno-extra")
 
     // Spring Boot DevTools may cause performance slowdowns or compatibility issues on larger applications
     developmentOnly "org.springframework.boot:spring-boot-devtools"
