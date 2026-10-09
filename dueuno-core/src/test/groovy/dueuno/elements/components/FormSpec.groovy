@@ -99,4 +99,15 @@ class FormSpec extends Specification {
         !field.displayLabel
     }
 
+    void preservesExplicitSqueezeSetting() {
+        given:
+        Form form = new Form(id: 'form')
+
+        when:
+        FormField field = form.addField(class: Separator, id: 'separator', squeeze: false)
+
+        then:
+        !(field.component as Separator).squeeze
+    }
+
 }

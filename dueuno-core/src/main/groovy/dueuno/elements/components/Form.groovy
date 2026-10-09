@@ -148,7 +148,7 @@ class Form extends Component {
         }
 
         // Auto squeeze if first component
-        if (args.sqeeze == null && !fields.size()) {
+        if (args.squeeze == null && !fields.size()) {
             args.squeeze = true
         }
 
