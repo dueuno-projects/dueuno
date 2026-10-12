@@ -82,6 +82,7 @@ class AuditService implements WebRequestAware {
         log.requestInfo = getClientRequestInfo(request)
 
         TAuditLog obj = new TAuditLog(log + integrity)
+        obj.dateCreated = dateCreated
         obj.save(flush: true, failOnError: true)
     }
 
