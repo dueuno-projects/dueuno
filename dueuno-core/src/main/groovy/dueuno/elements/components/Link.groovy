@@ -57,7 +57,6 @@ class Link extends Label {
         super(args)
 
         linkDefinition = new LinkDefinition(args)
-        linkDefinition.action = args.action ?: 'index'
 
         tag = args.tag == null ? false : args.tag
 

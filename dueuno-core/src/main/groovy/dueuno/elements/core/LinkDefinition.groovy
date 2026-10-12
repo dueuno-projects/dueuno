@@ -46,7 +46,7 @@ class LinkDefinition implements Serializable {
     /** The name of the controller to link to; if not specified the current controller is used. */
     String controller
 
-    /** The name of the action to link to; if not specified the default action is used. */
+    /** The name of the action to link to; defaults to {@code "index"}. */
     String action
 
     /** A map of request parameters to include in the link. */
@@ -103,7 +103,7 @@ class LinkDefinition implements Serializable {
     LinkDefinition(Map args = [:]) {
         namespace = args.namespace ?: ''
         controller = args.controller ?: ''
-        action = args.action ?: ''
+        action = args.action ?: 'index'
         fragment = args.fragment ?: ''
         path = args.path ?: ''
         url = args.url ?: ''
@@ -130,10 +130,11 @@ class LinkDefinition implements Serializable {
         confirmMessageArgs = args.confirmMessageArgs as List
         confirmMessageOnConfirm = args.confirmMessageOnClick as Map
 
-        if (args.renderProperties)
+        if (args.renderProperties) {
             renderProperties = (PageRenderProperties) args.renderProperties
-        else
+        } else {
             renderProperties = new PageRenderProperties(args)
+        }
     }
 
     /**
