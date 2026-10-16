@@ -261,17 +261,6 @@
     font-weight: normal;
 }
 
-.control-select .vscomp-option.focused:not(.selected),
-.control-select .vscomp-option:hover:not(.selected):not(.disabled):not(.group-title) {
-    background-color: transparent !important;
-    color: rgb(var(--elements-main-text)) !important;
-}
-
-.control-select .vscomp-option.focused:not(.selected) .vscomp-option-text,
-.control-select .vscomp-option:hover:not(.selected):not(.disabled):not(.group-title) .vscomp-option-text {
-    background-color: rgb(var(--elements-primary-bg-shaded));
-}
-
 .control-select .vscomp-option.selected,
 .control-select .vscomp-option.selected.focused {
     background-color: transparent !important;
@@ -286,6 +275,23 @@
 .control-select .vscomp-option.selected .vscomp-option-text,
 .control-select .vscomp-option.selected .vscomp-option-description {
     color: rgb(var(--elements-primary-text)) !important;
+}
+
+.control-select .vscomp-option.focused:not(.disabled):not(.group-title),
+.control-select .vscomp-option:hover:not(.disabled):not(.group-title) {
+    background-color: transparent !important;
+    color: rgb(var(--elements-main-text)) !important;
+}
+
+.control-select .vscomp-option.focused:not(.disabled):not(.group-title) .vscomp-option-text,
+.control-select .vscomp-option:hover:not(.disabled):not(.group-title) .vscomp-option-text {
+    background-color: rgb(var(--elements-primary-bg-shaded));
+    color: rgb(var(--elements-main-text)) !important;
+}
+
+.control-select .vscomp-option.focused:not(.disabled):not(.group-title) .vscomp-option-description,
+.control-select .vscomp-option:hover:not(.disabled):not(.group-title) .vscomp-option-description {
+    color: rgb(var(--elements-main-text)) !important;
 }
 
 .control-select .vscomp-option.disabled {
