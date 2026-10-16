@@ -2,48 +2,63 @@
     background-color: rgb(var(--elements-main-bg));
 }
 
+#page-modal .modal-dialog {
+    --bs-modal-width: 35.7143rem; /* 500px at 14px font size */
+}
+
+#page-modal .modal-sm {
+    --bs-modal-width: 21.4286rem; /* 300px at 14px font size */
+}
+
+@media (min-width: 576px) {
+    #page-modal .modal-lg,
+    #page-modal .modal-xl {
+        --bs-modal-width: 57.1429rem; /* 800px at 14px font size */
+    }
+}
+
 @media (min-width: 650px) {
     #page-modal .modal,
     #page-modal .modal-lg,
     #page-modal .modal-xl {
-        --bs-modal-width: 620px;
+        --bs-modal-width: 44.2857rem; /* 620px at 14px font size */
     }
 }
 
 @media (min-width: 740px) {
     #page-modal .modal-lg,
     #page-modal .modal-xl {
-        --bs-modal-width: 700px;
+        --bs-modal-width: 50rem; /* 700px at 14px font size */
     }
 }
 
 @media (min-width: 840px) {
     #page-modal .modal-xl {
-        --bs-modal-width: 800px;
+        --bs-modal-width: 57.1429rem; /* 800px at 14px font size */
     }
 }
 
 @media (min-width: 940px) {
     #page-modal .modal-xl {
-        --bs-modal-width: 900px;
+        --bs-modal-width: 64.2857rem; /* 900px at 14px font size */
     }
 }
 
 @media (min-width: 1040px) {
     #page-modal .modal-xl {
-        --bs-modal-width: 1000px;
+        --bs-modal-width: 71.4286rem; /* 1000px at 14px font size */
     }
 }
 
 @media (min-width: 1140px) {
     #page-modal .modal-xl {
-        --bs-modal-width: 1100px;
+        --bs-modal-width: 78.5714rem; /* 1100px at 14px font size */
     }
 }
 
 @media (min-width: 1240px) {
     #page-modal .modal-xl {
-        --bs-modal-width: 1200px;
+        --bs-modal-width: 85.7143rem; /* 1200px at 14px font size */
     }
 }
 
