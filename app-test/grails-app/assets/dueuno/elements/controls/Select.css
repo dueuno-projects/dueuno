@@ -51,17 +51,22 @@
     color: rgba(var(--elements-main-text), .7);
 }
 
-.control-select .vscomp-arrow::after {
+.control-select .vscomp-arrow::after,
+.control-select .vscomp-clear-icon::before {
     width: auto;
     height: auto;
     margin: 0;
     border: 0;
     transform: none;
     color: inherit;
-    content: "\f107";
     font-family: FontAwesome;
     font-size: 1rem;
+    font-style: normal;
     font-weight: normal;
+}
+
+.control-select .vscomp-arrow::after {
+    content: "\f107";
 }
 
 .control-select .vscomp-clear-button {
@@ -73,11 +78,27 @@
     background: none;
 }
 
-.control-select .vscomp-clear-icon::before,
-.control-select .vscomp-clear-icon::after,
-.control-select .vscomp-clear-button:hover .vscomp-clear-icon::before,
-.control-select .vscomp-clear-button:hover .vscomp-clear-icon::after {
-    background-color: currentColor;
+.control-select .vscomp-clear-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.control-select .vscomp-clear-icon::before {
+    width: 1rem;
+    height: 1rem;
+    left: 0;
+    line-height: 1rem;
+    background: none;
+    content: "\f00d";
+    text-align: center;
+}
+
+.control-select .vscomp-clear-button:hover .vscomp-clear-icon::before {
+    background: none;
+}
+
+.control-select .vscomp-clear-icon::after {
+    content: none;
 }
 
 /* FOCUS */
