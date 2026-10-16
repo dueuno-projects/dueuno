@@ -165,6 +165,7 @@ class UserController implements ElementsController {
         def isSuperAdmin = securityService.isSuperAdmin()
         def isEditingUserButNotSuperAdmin = obj && obj.username != securityService.USERNAME_SUPERADMIN
         def isTenantAdmin = obj && securityService.isAdmin(obj) && !obj.deletable
+        def isEmailReadonly = authenticationIdentityService.hasIdentity(obj)
 
         c.form.with {
             validate = TUser
@@ -210,7 +211,8 @@ class UserController implements ElementsController {
             addField(
                 class: EmailField,
                 id: 'email',
-                readonly: authenticationIdentityService.hasIdentity(obj),
+                readonly: isEmailReadonly,
+                help: isEmailReadonly ? 'user.email.readonly' : null
             )
             addField(
                 class: Textarea,
