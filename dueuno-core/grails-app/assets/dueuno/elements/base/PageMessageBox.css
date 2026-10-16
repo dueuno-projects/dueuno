@@ -1,3 +1,7 @@
+#page-messagebox .modal-dialog {
+    --bs-modal-width: 35.7143rem; /* 500px at 14px font size */
+}
+
 #page-messagebox .modal-content {
     background-color: rgb(var(--elements-frame-bg));
     color: rgb(var(--elements-frame-text));
