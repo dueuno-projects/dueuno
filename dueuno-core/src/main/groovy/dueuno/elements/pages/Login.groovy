@@ -22,6 +22,7 @@ import dueuno.elements.controls.PasswordField
 import dueuno.elements.controls.TextField
 import dueuno.elements.core.KeyPress
 import dueuno.elements.core.Page
+import dueuno.elements.style.Color
 import dueuno.elements.style.TextAlign
 import dueuno.security.AuthenticationProviderType
 import groovy.transform.CompileStatic
@@ -142,7 +143,7 @@ class Login extends Page {
                     text: provider.name as String,
                     icon: oidcProviderIcon(providerType),
                     backgroundColor: oidcProviderBackgroundColor(providerType),
-                    textColor: '#ffffff',
+                    textColor: oidcProviderTextColor(providerType),
                     displayLabel: false,
                     stretch: true,
                 )
@@ -154,17 +155,25 @@ class Login extends Page {
         switch (providerType) {
             case AuthenticationProviderType.GOOGLE: return 'fa-brands fa-google'
             case AuthenticationProviderType.MS_ENTRA: return 'fa-brands fa-microsoft'
-            case AuthenticationProviderType.SAP_IAS: return ''
+            case AuthenticationProviderType.SAP_IAS: return 'fa-bookmark'
             default: return 'fa-brands fa-openid'
+        }
+    }
+
+    private static String oidcProviderTextColor(AuthenticationProviderType providerType) {
+        switch (providerType) {
+            case AuthenticationProviderType.GOOGLE: return '#333333'
+            case AuthenticationProviderType.MS_ENTRA: return '#ffffff'
+            case AuthenticationProviderType.SAP_IAS: return '#ffffff'
         }
     }
 
     private static String oidcProviderBackgroundColor(AuthenticationProviderType providerType) {
         switch (providerType) {
-            case AuthenticationProviderType.GOOGLE: return '#1a73e8'
-            case AuthenticationProviderType.MS_ENTRA: return '#6f42c1'
-            case AuthenticationProviderType.SAP_IAS: return '#c2410c'
-            default: return '#334155'
+            case AuthenticationProviderType.GOOGLE: return '#F5F6F7'
+            case AuthenticationProviderType.MS_ENTRA: return '#00A4EF'
+            case AuthenticationProviderType.SAP_IAS: return '#0070F2'
         }
     }
+
 }
