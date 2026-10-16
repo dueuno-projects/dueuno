@@ -16,7 +16,11 @@ package dueuno.security
 
 import dueuno.application.AuthenticationProviderService
 import dueuno.elements.ElementsController
+import dueuno.elements.components.Form
+import dueuno.elements.components.Label
 import dueuno.elements.pages.Login
+import dueuno.elements.pages.PageBlank
+import dueuno.elements.style.Color
 import dueuno.tenant.TenantPropertyService
 import dueuno.tenant.TenantService
 import grails.converters.JSON
@@ -36,6 +40,23 @@ class AuthenticationController implements ElementsController {
     TenantPropertyService tenantPropertyService
     AuthenticationProviderService authenticationProviderService
 
+    def error() {
+        def p = createPage(PageBlank)
+
+        def form = p.content.addComponent(Form)
+        form.addField(
+            class: Label,
+            id: 'message',
+            text: params.message,
+            html: controllerSession.oidcAuthenticationErrorHtml,
+            textColor: Color.DANGER_TEXT,
+            backgroundColor: Color.DANGER_BACKGROUND,
+            displayLabel: false,
+        )
+
+        display page: p
+    }
+
     def login() {
         if (securityService.isLoggedIn()) {
             redirect uri: securityService.loginLandingPage
@@ -50,8 +71,8 @@ class AuthenticationController implements ElementsController {
             .collect { provider ->
                 [
                     providerType: provider.providerType,
-                    name: message(code: "authenticationProvider.loginWith.${provider.providerType.name()}"),
-                    url: createLink(uri: "/authentication/oidc/${provider.providerType}/start", absolute: false),
+                    name        : message(code: "authenticationProvider.loginWith.${provider.providerType.name()}"),
+                    url         : link("/authentication/oidc/${provider.providerType}/start"),
                 ]
             } as List<Map>
 
@@ -61,13 +82,13 @@ class AuthenticationController implements ElementsController {
 
         tenantService.withTenant(tenantId) {
             def loginArgs = [
-                backgroundImage    : tenantPropertyService.getString('LOGIN_BACKGROUND_IMAGE', true),
-                logoImage          : tenantPropertyService.getString('LOGIN_LOGO', true),
-                autocomplete       : tenantPropertyService.getBoolean('LOGIN_AUTOCOMPLETE', true),
-                copy               : tenantPropertyService.getString('LOGIN_COPY', true),
-                registerUrl        : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
-                passwordRecoveryUrl: tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
-                oidcProviders      : oidcProviders,
+                backgroundImage              : tenantPropertyService.getString('LOGIN_BACKGROUND_IMAGE', true),
+                logoImage                    : tenantPropertyService.getString('LOGIN_LOGO', true),
+                autocomplete                 : tenantPropertyService.getBoolean('LOGIN_AUTOCOMPLETE', true),
+                copy                         : tenantPropertyService.getString('LOGIN_COPY', true),
+                registerUrl                  : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
+                passwordRecoveryUrl          : tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
+                oidcProviders                : oidcProviders,
                 physicalAuthenticationEnabled: physicalAuthenticationEnabled,
             ]
             display page: createPage(Login, loginArgs)

@@ -14,14 +14,19 @@
 package dueuno.security
 
 import dueuno.application.AuthenticationProviderService
+import dueuno.elements.ElementsController
+import dueuno.utils.EnvUtils
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import org.springframework.security.authentication.*
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy
 import org.springframework.security.web.context.SecurityContextRepository
+import org.springframework.web.util.HtmlUtils
 
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -40,7 +45,7 @@ import java.time.Instant
  */
 @Slf4j
 @Secured(['permitAll'])
-class OidcAuthenticationController {
+class OidcAuthenticationController implements ElementsController {
 
     AuthenticationProviderService authenticationProviderService
     AuthenticationUserProvisioningService authenticationUserProvisioningService
@@ -52,18 +57,19 @@ class OidcAuthenticationController {
     def start() {
         AuthenticationProviderType providerType = AuthenticationProviderType.fromName(params.providerType as String)
         if (!providerType?.isOidcProvider()) {
-            rejectLogin()
+            rejectLogin('OIDC sign-in rejected: provider type is invalid or unsupported.')
             return
         }
         String providerTypeName = providerType.name()
         TAuthenticationProvider provider = authenticationProviderService.getByProviderType(providerType)
         if (!configured(provider)) {
-            rejectLogin()
+            rejectLogin('OIDC sign-in rejected: provider is disabled or its required configuration is incomplete.')
             return
         }
 
+        List<Map> serverResponses = []
         try {
-            Map metadata = metadata(provider)
+            Map metadata = metadata(provider, serverResponses)
             String authorizationEndpoint = metadata.authorization_endpoint as String
             if (!authorizationEndpoint) throw new IllegalArgumentException('OIDC authorization endpoint is missing')
 
@@ -91,8 +97,8 @@ class OidcAuthenticationController {
             String separator = authorizationEndpoint.contains('?') ? '&' : '?'
             redirect uri: "${authorizationEndpoint}${separator}${query}"
         } catch (Exception e) {
-            log.warn('Unable to start OIDC sign-in for provider {}: {}', providerTypeName, e.message)
-            rejectLogin()
+            log.warn('Unable to start OIDC sign-in for provider {}: {}\n{}', providerTypeName, e.message, responseDetails(serverResponses))
+            rejectLogin('OIDC sign-in initialization failed while loading provider metadata or preparing the authorization request.', serverResponses)
         }
     }
 
@@ -104,32 +110,33 @@ class OidcAuthenticationController {
 
         AuthenticationProviderType requestedProviderType = AuthenticationProviderType.fromName(params.providerType as String)
         if (!flow || (params.providerType && requestedProviderType?.name() != flow.providerType) || params.error) {
-            rejectLogin()
+            rejectLogin('OIDC callback rejected: state is missing, expired, or mismatched, or the provider returned an error.')
             return
         }
 
         AuthenticationProviderType providerType = AuthenticationProviderType.fromName(flow.providerType as String)
         if (!providerType?.isOidcProvider()) {
-            rejectLogin()
+            rejectLogin('OIDC callback rejected: the provider recorded in the sign-in flow is invalid or unsupported.')
             return
         }
         String providerTypeName = providerType.name()
         TAuthenticationProvider provider = authenticationProviderService.getByProviderType(providerType)
         String code = params.code as String
         if (!configured(provider) || !code) {
-            rejectLogin()
+            rejectLogin('OIDC callback rejected: provider configuration is incomplete or the authorization code is missing.')
             return
         }
 
+        List<Map> serverResponses = []
         try {
-            Map metadata = metadata(provider)
-            Map tokens = requestTokens(provider, metadata, code, flow.verifier as String)
+            Map metadata = metadata(provider, serverResponses)
+            Map tokens = requestTokens(provider, metadata, code, flow.verifier as String, serverResponses)
             String idToken = tokens.id_token as String
             if (!idToken) throw new IllegalArgumentException('OIDC provider did not return an ID token')
 
-            Map claims = verifyIdToken(provider, metadata, idToken)
+            Map claims = verifyIdToken(provider, metadata, idToken, serverResponses)
             if (claims.nonce != flow.nonce) throw new IllegalArgumentException('OIDC nonce validation failed')
-            claims = addUserInfoClaims(metadata, tokens, claims)
+            claims = addUserInfoClaims(metadata, tokens, claims, serverResponses)
 
             String issuer = claims.iss as String
             String subject = claims.sub as String
@@ -155,19 +162,19 @@ class OidcAuthenticationController {
             securityContextRepository.saveContext(context, request, response)
             redirect uri: '/authentication/afterLogin'
         } catch (Exception e) {
-            log.warn('OIDC sign-in failed for provider {}: {}', providerTypeName, e.message)
-            rejectLogin()
+            log.warn('OIDC sign-in failed for provider {}: {}\n{}', providerTypeName, e.message, responseDetails(serverResponses))
+            rejectLogin('OIDC callback processing failed during provider communication, token or claim validation, user provisioning, or session authentication.', serverResponses)
         }
     }
 
-    private Map metadata(TAuthenticationProvider provider) {
+    private Map metadata(TAuthenticationProvider provider, List<Map> serverResponses) {
         Map result
         if (provider.discoveryUri) {
             HttpRequest request = HttpRequest.newBuilder(URI.create(provider.discoveryUri))
                 .timeout(Duration.ofSeconds(10))
                 .GET()
                 .build()
-            HttpResponse<String> response = httpClient().send(request, HttpResponse.BodyHandlers.ofString())
+            HttpResponse<String> response = send(request, serverResponses)
             if (response.statusCode() != 200) throw new IllegalArgumentException('Unable to load OIDC discovery metadata')
             result = JSON.parse(response.body()) as Map
         } else {
@@ -186,7 +193,7 @@ class OidcAuthenticationController {
         return result
     }
 
-    private Map requestTokens(TAuthenticationProvider provider, Map metadata, String code, String verifier) {
+    private Map requestTokens(TAuthenticationProvider provider, Map metadata, String code, String verifier, List<Map> serverResponses) {
         Map<String, String> values = [
             code         : code,
             redirect_uri : provider.redirectUri,
@@ -211,19 +218,19 @@ class OidcAuthenticationController {
             .POST(HttpRequest.BodyPublishers.ofString(form))
         if (authorizationHeader) requestBuilder.header('Authorization', authorizationHeader)
         HttpRequest request = requestBuilder.build()
-        HttpResponse<String> response = httpClient().send(request, HttpResponse.BodyHandlers.ofString())
+        HttpResponse<String> response = send(request, serverResponses)
         if (response.statusCode() != 200) throw new IllegalArgumentException('OIDC authorization code exchange failed')
         return JSON.parse(response.body()) as Map
     }
 
-    private Map verifyIdToken(TAuthenticationProvider provider, Map metadata, String idToken) {
+    private Map verifyIdToken(TAuthenticationProvider provider, Map metadata, String idToken, List<Map> serverResponses) {
         String[] parts = idToken.split('\\.')
         if (parts.length != 3) throw new IllegalArgumentException('Invalid OIDC ID token')
         Map header = JSON.parse(new String(Base64.urlDecoder.decode(parts[0]), StandardCharsets.UTF_8)) as Map
         Map claims = JSON.parse(new String(Base64.urlDecoder.decode(parts[1]), StandardCharsets.UTF_8)) as Map
         if (header.alg != 'RS256') throw new IllegalArgumentException('Unsupported OIDC ID token signing algorithm')
 
-        List<Map> keys = signingKeys(metadata.jwks_uri as String)
+        List<Map> keys = signingKeys(metadata.jwks_uri as String, serverResponses)
         List<Map> candidates = keys.findAll { Map candidate -> !header.kid || candidate.kid == header.kid }
         if (candidates.size() != 1) throw new IllegalArgumentException('OIDC signing key was not found')
         Map key = candidates.first()
@@ -265,18 +272,18 @@ class OidcAuthenticationController {
         return claims
     }
 
-    private List<Map> signingKeys(String jwksUri) {
+    private List<Map> signingKeys(String jwksUri, List<Map> serverResponses) {
         HttpRequest request = HttpRequest.newBuilder(URI.create(jwksUri))
             .timeout(Duration.ofSeconds(10))
             .GET()
             .build()
-        HttpResponse<String> response = httpClient().send(request, HttpResponse.BodyHandlers.ofString())
+        HttpResponse<String> response = send(request, serverResponses)
         if (response.statusCode() != 200) throw new IllegalArgumentException('Unable to load OIDC signing keys')
         Map result = JSON.parse(response.body()) as Map
         return result.keys as List<Map>
     }
 
-    private Map addUserInfoClaims(Map metadata, Map tokens, Map claims) {
+    private Map addUserInfoClaims(Map metadata, Map tokens, Map claims, List<Map> serverResponses) {
         String userInfoEndpoint = metadata.userinfo_endpoint as String
         String accessToken = tokens.access_token as String
         if (!userInfoEndpoint || !accessToken) return claims
@@ -286,9 +293,9 @@ class OidcAuthenticationController {
             .header('Authorization', "Bearer ${accessToken}")
             .GET()
             .build()
-        HttpResponse<String> response = httpClient().send(request, HttpResponse.BodyHandlers.ofString())
+        HttpResponse<String> response = send(request, serverResponses)
         if (response.statusCode() != 200) {
-            log.warn('OIDC user information endpoint returned status {}', response.statusCode())
+            log.warn('OIDC user information endpoint returned status {} with response body: {}', response.statusCode(), response.body())
             return claims
         }
         Map userInfo = JSON.parse(response.body()) as Map
@@ -331,7 +338,78 @@ class OidcAuthenticationController {
         return HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build()
     }
 
-    private void rejectLogin() {
-        redirect controller: 'authentication', action: 'login', params: [login_error: '1']
+    private HttpResponse<String> send(HttpRequest request, List<Map> serverResponses) {
+        HttpResponse<String> response = httpClient().send(request, HttpResponse.BodyHandlers.ofString())
+        Map serverResponse = [
+            status : response.statusCode(),
+            uri    : response.uri().toString(),
+            headers: response.headers().map(),
+            body   : response.body(),
+        ]
+        serverResponses << serverResponse
+        log.info('OIDC server response:\n{}', formatResponse(serverResponse))
+        return response
     }
+
+    private String responseDetails(List<Map> serverResponses) {
+        return serverResponses ? "OIDC server responses:\n${serverResponses.collect { formatResponse(it) }.join('\n\n')}" : 'No OIDC server responses received.'
+    }
+
+    private String formatResponse(Map serverResponse) {
+        return "HTTP ${serverResponse.status} from ${serverResponse.uri}\nHeaders:\n${formatResponseHeaders(serverResponse.headers as Map)}\nBody:\n${serverResponse.body}"
+    }
+
+    private String formatResponseHeaders(Map headers) {
+        return headers.collectMany { String name, List<String> values ->
+            values.collect { String value -> """${name}: ${value}""" }
+        }.join('\n')
+    }
+
+    private void rejectLogin(String message) {
+        redirect controller: 'authentication', action: 'error', params: [message: message]
+    }
+
+    private void rejectLogin(String message, List<Map> serverResponses) {
+        if (EnvUtils.isDevelopment() && serverResponses) {
+            getNamedSession('authentication').oidcAuthenticationErrorHtml = responseDetailsHtml(message, serverResponses)
+            redirect controller: 'authentication', action: 'error'
+            return
+        }
+        rejectLogin(message)
+    }
+
+    private String responseDetailsHtml(String message, List<Map> serverResponses) {
+        String responseSections = serverResponses.collect { Map serverResponse ->
+            String responseHeader = "HTTP ${serverResponse.status} from ${serverResponse.uri}"
+            String headers = formatResponseHeaders(serverResponse.headers as Map)
+            String readableBody = prettyResponseBody(serverResponse.body as String)
+
+            """
+            <section class="mb-3">
+                <h6 class="mb-2">${HtmlUtils.htmlEscape(responseHeader)}</h6>
+                <div class="small fw-semibold mb-1">Response headers</div>
+                <pre class="p-3 border rounded" style="white-space: pre-wrap; overflow-wrap: anywhere;"><code>${HtmlUtils.htmlEscape(headers)}</code></pre>
+                <div class="small fw-semibold mb-1">Response body</div>
+                <pre class="p-3 border rounded" style="white-space: pre-wrap; overflow-wrap: anywhere;"><code>${HtmlUtils.htmlEscape(readableBody)}</code></pre>
+            </section>
+            """.stripIndent().trim()
+        }.join('\n')
+
+        return """
+        <div class="text-start">
+            <p class="mb-3">${HtmlUtils.htmlEscape(message)}</p>
+            ${responseSections}
+        </div>
+        """.stripIndent().trim()
+    }
+
+    private String prettyResponseBody(String body) {
+        try {
+            Object json = new JsonSlurper().parseText(body)
+            return JsonOutput.prettyPrint(JsonOutput.toJson(json))
+        } catch (Exception ignored) {
+            return body
+        }
+    }
+
 }

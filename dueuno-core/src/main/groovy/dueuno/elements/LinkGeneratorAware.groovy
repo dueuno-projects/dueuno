@@ -51,6 +51,18 @@ trait LinkGeneratorAware {
     }
 
     /**
+     * Generates an application link for the given URI. By default, the link is relative.
+     *
+     * @param uri The application URI to generate a link for
+     * @param absolute Whether to generate an absolute URL; defaults to {@code false}
+     * @return The generated relative or absolute URL
+     */
+    String link(String uri, Boolean absolute = false) {
+        LinkGenerator linkGenerator = Holders.applicationContext.getBean("grailsLinkGenerator") as LinkGenerator
+        return linkGenerator.link(uri: uri, absolute: absolute)
+    }
+
+    /**
      * Returns the relative URL to a static resource from a filesystem path defined in a System Property
      * @return the relative URL to a static resource from a filesystem path defined in a System Property
      *
