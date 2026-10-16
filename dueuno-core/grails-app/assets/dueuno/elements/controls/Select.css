@@ -145,6 +145,21 @@
     -webkit-backdrop-filter: blur(1.5rem);
 }
 
+.control-select .vscomp-wrapper.show-as-popup:not(.closed) .vscomp-dropbox {
+    box-shadow:
+        0 0 0 .27rem rgb(var(--elements-primary-bg-shaded)),
+        0 .25rem .75rem rgba(var(--bs-body-color-rgb), .15);
+}
+
+.control-select .vscomp-wrapper.show-as-popup .vscomp-dropbox {
+    width: 100%;
+    background-color: rgba(var(--elements-main-fg), .95);
+}
+
+.control-select .vscomp-wrapper.show-as-popup .vscomp-option {
+    height: 2.5rem; /* 40px at the 16px mobile font size */
+}
+
 .control-select .vscomp-dropbox-container.pop-comp-wrapper {
     border: 0;
     border-radius: var(--bs-border-radius-lg);
@@ -155,6 +170,12 @@
 .control-select .vscomp-dropbox-container {
     margin-top: var(--elements-spacing-y);
     z-index: 10;
+}
+
+.control-select .vscomp-wrapper.show-as-popup .vscomp-dropbox-container {
+    background-color: rgba(100, 100, 100, .5);
+    backdrop-filter: blur(1.5rem) grayscale(100%);
+    -webkit-backdrop-filter: blur(1.5rem) grayscale(100%);
 }
 
 .control-select .vscomp-options-container {

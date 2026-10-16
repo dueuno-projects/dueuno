@@ -32,7 +32,8 @@ class Select extends Control {
             allOptionsSelectedText: properties.text.allSelected,
             additionalClasses: 'w-100',
             silentInitialValueSet: true,
-            showDropboxAsPopup: false,
+            showDropboxAsPopup: Elements.isMobileDevice,
+            popupDropboxBreakpoint: Elements.isMobileDevice ? '99999px' : '576px',
             showDuration: 0,
             hideDuration: 0,
         };
@@ -224,10 +225,12 @@ class Select extends Control {
 
     static getOptionHeight(dropboxPortal) {
         // Virtual Select uses optionHeight for its virtual scroll calculations.
-        // Measure the styled option so those calculations match the rem-based CSS,
-        // including the active root font size and responsive styles.
+        // Measure the styled option so the virtual scroll matches the active
+        // root font size and popup row sizing on mobile.
         let optionHeightProbe = document.createElement('div');
-        optionHeightProbe.className = 'vscomp-wrapper';
+        optionHeightProbe.className = Elements.isMobileDevice
+            ? 'vscomp-wrapper show-as-popup'
+            : 'vscomp-wrapper';
         optionHeightProbe.style.position = 'absolute';
         optionHeightProbe.style.visibility = 'hidden';
         optionHeightProbe.style.pointerEvents = 'none';

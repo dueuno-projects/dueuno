@@ -308,7 +308,7 @@ class UserController implements ElementsController {
                 id: 'language',
                 optionsFromList: applicationService.languages,
                 textPrefix: 'default.language',
-                search: false,
+                search: true,
                 cols: 6,
             )
             addField(
