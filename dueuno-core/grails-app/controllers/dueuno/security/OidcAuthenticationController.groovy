@@ -97,7 +97,10 @@ class OidcAuthenticationController implements ElementsController {
             String separator = authorizationEndpoint.contains('?') ? '&' : '?'
             redirect uri: "${authorizationEndpoint}${separator}${query}"
         } catch (Exception e) {
-            log.warn('Unable to start OIDC sign-in for provider {}: {}\n{}', providerTypeName, e.message, responseDetails(serverResponses))
+            logError(
+                "Unable to start OIDC sign-in for provider ${providerTypeName}: ${e.message}",
+                serverResponses,
+            )
             rejectLogin('OIDC sign-in initialization failed while loading provider metadata or preparing the authorization request.', serverResponses)
         }
     }
@@ -162,8 +165,12 @@ class OidcAuthenticationController implements ElementsController {
             securityContextRepository.saveContext(context, request, response)
             redirect uri: '/authentication/afterLogin'
         } catch (Exception e) {
-            log.warn('OIDC sign-in failed for provider {}: {}\n{}', providerTypeName, e.message, responseDetails(serverResponses))
-            rejectLogin('OIDC callback processing failed during provider communication, token or claim validation, user provisioning, or session authentication.', serverResponses)
+            logError("OIDC sign-in failed for provider ${providerTypeName}: ${e.message}", serverResponses)
+            rejectLogin(
+                'OIDC callback processing failed during provider communication, token or claim validation, ' +
+                    'user provisioning, or session authentication.',
+                serverResponses,
+            )
         }
     }
 
@@ -295,7 +302,7 @@ class OidcAuthenticationController implements ElementsController {
             .build()
         HttpResponse<String> response = send(request, serverResponses)
         if (response.statusCode() != 200) {
-            log.warn('OIDC user information endpoint returned status {} with response body: {}', response.statusCode(), response.body())
+            logError("OIDC user information endpoint returned status ${response.statusCode()}", serverResponses)
             return claims
         }
         Map userInfo = JSON.parse(response.body()) as Map
@@ -347,16 +354,25 @@ class OidcAuthenticationController implements ElementsController {
             body   : response.body(),
         ]
         serverResponses << serverResponse
-        log.info('OIDC server response:\n{}', formatResponse(serverResponse))
+        if (EnvUtils.isDevelopment()) {
+            log.info('OIDC server response:\n{}', formatResponse(serverResponse))
+        }
         return response
     }
 
-    private String responseDetails(List<Map> serverResponses) {
-        return serverResponses ? "OIDC server responses:\n${serverResponses.collect { formatResponse(it) }.join('\n\n')}" : 'No OIDC server responses received.'
+    private void logError(String message, List<Map> serverResponses = null) {
+        log.warn(message)
+        if (serverResponses && EnvUtils.isDevelopment()) {
+            for (Map serverResponse in serverResponses) {
+                log.warn('OIDC server response:\n{}', formatResponse(serverResponse))
+            }
+        }
     }
 
     private String formatResponse(Map serverResponse) {
-        return "HTTP ${serverResponse.status} from ${serverResponse.uri}\nHeaders:\n${formatResponseHeaders(serverResponse.headers as Map)}\nBody:\n${serverResponse.body}"
+        return "HTTP ${serverResponse.status} from ${serverResponse.uri}\n" +
+            "Headers:\n${formatResponseHeaders(serverResponse.headers as Map)}\n" +
+            "Body:\n${serverResponse.body}"
     }
 
     private String formatResponseHeaders(Map headers) {
@@ -388,9 +404,15 @@ class OidcAuthenticationController implements ElementsController {
             <section class="mb-3">
                 <h6 class="mb-2">${HtmlUtils.htmlEscape(responseHeader)}</h6>
                 <div class="small fw-semibold mb-1">Response headers</div>
-                <pre class="p-3 border rounded" style="white-space: pre-wrap; overflow-wrap: anywhere;"><code>${HtmlUtils.htmlEscape(headers)}</code></pre>
+                <pre
+                    class="p-3 border rounded"
+                    style="white-space: pre-wrap; overflow-wrap: anywhere;"
+                ><code>${HtmlUtils.htmlEscape(headers)}</code></pre>
                 <div class="small fw-semibold mb-1">Response body</div>
-                <pre class="p-3 border rounded" style="white-space: pre-wrap; overflow-wrap: anywhere;"><code>${HtmlUtils.htmlEscape(readableBody)}</code></pre>
+                <pre
+                    class="p-3 border rounded"
+                    style="white-space: pre-wrap; overflow-wrap: anywhere;"
+                ><code>${HtmlUtils.htmlEscape(readableBody)}</code></pre>
             </section>
             """.stripIndent().trim()
         }.join('\n')
