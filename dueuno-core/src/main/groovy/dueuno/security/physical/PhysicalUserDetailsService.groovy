@@ -27,7 +27,7 @@ class PhysicalUserDetailsService extends GormUserDetailsService implements WebRe
 
         String loginTenantId = tenantService.currentTenantId ?: tenantService.defaultTenantId
         if (hasRequest()) {
-            loginTenantId = tenantService.getByHost(request.getHeader('host'))?.tenantId
+            loginTenantId = tenantService.getByRequest(request)?.tenantId
                 ?: tenantService.defaultTenantId
         }
         TTenant loginTenant = tenantService.getByTenantId(loginTenantId)

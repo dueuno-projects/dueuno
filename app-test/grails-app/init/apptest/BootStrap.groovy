@@ -134,7 +134,7 @@ class BootStrap {
                 failOnError: true,
                 tenantId: tenantId,
                 firstname: "Developer",
-                username: tenantId == tenantService.defaultTenantId ? 'dev' : "${tenantId}/dev",
+                username: 'dev',
                 password: 'dev',
                 groups: ['DEVELOPERS', 'PROJECT MANAGER'],
             )
@@ -190,7 +190,7 @@ class BootStrap {
 
             securityService.createUser(
                 tenantId: tenantId,
-                username: tenantId == tenantService.defaultTenantId ? 'user1' : "${tenantId}/user1",
+                username: 'user1',
                 password: 'user1',
                 groups: ['GROUP_1'],
                 email: "user1@${tenantId}.it",
@@ -200,7 +200,7 @@ class BootStrap {
             )
             securityService.createUser(
                 tenantId: tenantId,
-                username: tenantId == tenantService.defaultTenantId ? 'user2' : "${tenantId}/user2",
+                username: 'user2',
                 password: 'user2',
                 groups: ['GROUP_2', 'GROUP_1'],
                 email: "user2@${tenantId}.it",
@@ -209,7 +209,7 @@ class BootStrap {
             )
             securityService.createUser(
                 tenantId: tenantId,
-                username: tenantId == tenantService.defaultTenantId ? 'user3' : "${tenantId}/user3",
+                username: 'user3',
                 password: 'user3',
                 groups: ['GROUP_3'],
                 email: "user3@${tenantId}.it",

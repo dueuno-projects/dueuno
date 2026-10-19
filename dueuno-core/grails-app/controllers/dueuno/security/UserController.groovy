@@ -207,13 +207,24 @@ class UserController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: EmailField,
-                id: 'email',
-            )
-            addField(
                 class: Textarea,
                 id: 'note',
                 rows: 2,
+            )
+            addField(
+                class: Separator,
+                id: 'notifications',
+                icon: 'fa-comment',
+            )
+            addField(
+                class: EmailField,
+                id: 'email',
+                cols: 6,
+            )
+            addField(
+                class: TelephoneField,
+                id: 'telephone',
+                cols: 6,
             )
         }
 
@@ -537,7 +548,7 @@ class UserController implements ElementsController {
             c.form['groups'].value = user.authorities.collect { it.id }
         }
 
-        display content: c, modal: true
+        display content: c, modal: true, focus: 'note'
     }
 
     def onEdit() {

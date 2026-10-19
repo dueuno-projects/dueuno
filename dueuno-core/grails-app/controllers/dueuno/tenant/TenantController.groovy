@@ -101,6 +101,7 @@ class TenantController implements ElementsController {
             addField(
                 class: TextField,
                 id: 'host',
+                placeholder: 'my.domain.com:8080',
                 cols: 6,
             )
             addField(

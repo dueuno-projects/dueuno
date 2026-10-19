@@ -166,13 +166,6 @@ class UserProfileController implements ElementsController {
                 id: 'username',
                 readonly: true,
                 icon: 'fa-user',
-                cols: 6,
-            )
-            addField(
-                class: EmailField,
-                id: 'email',
-                readonly: true,
-                cols: 6,
             )
             addField(
                 class: TextField,
@@ -182,6 +175,21 @@ class UserProfileController implements ElementsController {
             addField(
                 class: TextField,
                 id: 'lastname',
+                cols: 6,
+            )
+            addField(
+                class: Separator,
+                id: 'notifications',
+                icon: 'fa-comment',
+            )
+            addField(
+                class: EmailField,
+                id: 'email',
+                cols: 6,
+            )
+            addField(
+                class: TelephoneField,
+                id: 'telephone',
                 cols: 6,
             )
         }

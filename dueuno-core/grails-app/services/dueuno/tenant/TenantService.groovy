@@ -33,6 +33,7 @@ import groovy.contracts.Requires
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import jakarta.servlet.http.HttpServletRequest
 import org.grails.datastore.mapping.core.connections.ConnectionSource
 
 /**
@@ -142,6 +143,13 @@ class TenantService {
     @WithoutTenant
     TTenant getByHost(String host) {
         return TTenant.findByHost(host)
+    }
+
+    @CompileDynamic
+    @WithoutTenant
+    TTenant getByRequest(HttpServletRequest request) {
+        String host = request?.getHeader('host')
+        return host ? getByHost(host) : null
     }
 
     @CompileDynamic

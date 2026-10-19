@@ -42,7 +42,7 @@ class TUserAuthenticationIdentity implements GormEntity, Serializable {
         provider nullable: false, validator: { TAuthenticationProvider value, TUserAuthenticationIdentity identity ->
             value?.providerType?.isOidcProvider() && value?.tenant?.id != null && value.tenant?.id == identity.user?.tenant?.id
         }
-        issuer nullable: false, blank: false, maxSize: 255, unique: ['subject']
+        issuer nullable: false, blank: false, maxSize: 255, unique: ['subject', 'provider']
         subject nullable: false, blank: false, maxSize: 255
     }
 

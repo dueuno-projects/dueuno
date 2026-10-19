@@ -26,7 +26,7 @@ import java.time.LocalDateTime
  */
 
 @GrailsCompileStatic
-@EqualsAndHashCode(includes = 'username')
+@EqualsAndHashCode(includes = ['tenant', 'username'])
 class TUser implements GormEntity, Serializable {
 
     private static final long serialVersionUID = 1
@@ -54,8 +54,11 @@ class TUser implements GormEntity, Serializable {
     // User data
     String firstname
     String lastname
-    String email
     String note
+
+    // Notification
+    String email
+    String telephone
 
     // Session data
     Integer sessionDuration
@@ -83,7 +86,7 @@ class TUser implements GormEntity, Serializable {
 
     static constraints = {
         tenant nullable: false
-        username nullable: false, blank: false, unique: true
+        username nullable: false, blank: false, unique: ['tenant']
         password nullable: false, blank: false, password: true
         physicalId unique: true
         email nullable: true

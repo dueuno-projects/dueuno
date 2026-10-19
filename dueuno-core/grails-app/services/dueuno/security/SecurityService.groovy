@@ -130,12 +130,11 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         createGroup(failOnError: true, ignoreGroupNameCollisions: true, tenantId: tenantId, name: GROUP_DEVELOPERS, authorities: [ROLE_DEVELOPER], deletable: false)
         createGroup(failOnError: true, ignoreGroupNameCollisions: true, tenantId: tenantId, name: GROUP_ADMINS, authorities: [ROLE_ADMIN], deletable: false)
 
-        String username = buildAdminUsername()
         createSystemUser(
             tenantId: tenantId,
-            username: username,
-            password: username,
-            firstname: tenantId,
+            username: 'admin',
+            password: 'admin',
+            firstname: tenantId.toUpperCase(),
             lastname: 'Admin',
             sessionDuration: EnvUtils.isDevelopment() ? 60 : 15, // defaults to 15 minutes in production for the Admin
             rememberMeDuration: EnvUtils.isDevelopment() ? 12 * 60 : 15, // defaults to 15 minutes in production for the Admin
@@ -411,7 +410,9 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
         Object principal = springSecurityService.principal
         String username = (principal['username'] as String).toLowerCase()
-        TUser user = getUserByUsername(username)
+        Serializable userId = principal['id'] as Serializable
+        // Usernames can repeat across tenants; the authenticated principal identifies the exact user by ID.
+        TUser user = userId ? getUser(userId) : getUserByUsername(username)
         if (!user) {
             user = createUser(
                 failOnError: true,
@@ -616,8 +617,22 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         return query.get(fetch: fetchAll) as TUser
     }
 
+    @CompileDynamic
     TUser getUserByUsername(String username) {
-        def query = TUser.where { username == username }
+        if (username?.equalsIgnoreCase(USERNAME_SUPERADMIN)) {
+            return getUserByTenantAndUsername(tenantService.defaultTenant, USERNAME_SUPERADMIN)
+        }
+
+        return getUserByTenantAndUsername(tenantService.currentTenant, username)
+    }
+
+    @CompileDynamic
+    private TUser getUserByTenantAndUsername(TTenant tenant, String username) {
+        if (!tenant) return null
+
+        TTenant tenantFilter = tenant
+        String usernameFilter = username
+        def query = TUser.where { tenant == tenantFilter && username == usernameFilter }
         return query.get(fetch: fetchAll) as TUser
     }
 
@@ -752,9 +767,18 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             ?: tenantService.getByTenantId(args.tenantId as String)
             ?: tenantService.currentTenant
 
+        TUser user
+        tenantService.withTenant(tenant.tenantId) {
+            user = createUserInTenant(args, tenant, groups, defaultGroup)
+        }
+        return user
+    }
+
+    @CompileDynamic
+    private TUser createUserInTenant(Map args, TTenant tenant, List<String> groups, String defaultGroup) {
         log.info "'${tenant.tenantId.toUpperCase()}' TENANT - Creating user '${args.username}' in groups ${groups} (default '${defaultGroup}')"
 
-        TUser user = TUser.findByUsername(args.username as String)
+        TUser user = TUser.findByTenantAndUsername(tenant, args.username as String)
         if (user) {
             log.warn "'${tenant.tenantId.toUpperCase()}' TENANT - User '${args.username}' already exists, skipping user creation."
             user.errors.rejectValue('username', 'user.username.already.exists', [args.username] as Object[], 'user.username.already.exists')
@@ -856,7 +880,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             validateFontSize(args)
         }
 
-        TUser user = getUserByUsername(username)
+        TUser user = getUserByTenantAndUsername(tenant, username)
         user.properties = args
         user.save(flush: true, failOnError: args.failOnError)
 

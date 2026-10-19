@@ -28,6 +28,7 @@ import dueuno.elements.style.Color
 import dueuno.elements.style.TextDefault
 import dueuno.elements.style.TextWrap
 import dueuno.tenant.AuditService
+import dueuno.tenant.TenantService
 import dueuno.types.QuantityService
 import dueuno.types.Type
 import grails.plugin.springsecurity.annotation.Secured
@@ -36,6 +37,7 @@ import java.time.LocalDate
 
 class CrudController implements ElementsController {
 
+    TenantService tenantService
     AuditService auditService
     ApplicationService applicationService
     QuantityService quantityService
@@ -56,7 +58,7 @@ class CrudController implements ElementsController {
 
         def c = createContent(ContentTable)
 
-        c.title = 'Runtime "content" title'
+        c.title = "${tenantService.currentTenantId}"
 
         if (isMobileDevice()) {
             c.addComponent(
@@ -70,7 +72,7 @@ class CrudController implements ElementsController {
 
         c.with {
             header.sticky = false
-            header.text = 'Runtime "content.header" title'
+            header.text = "Current tenant: ${tenantService.currentTenantId.toUpperCase()}"
             header.addBackButton().with {
                 addAction(action: 'pippo')
             }

@@ -31,6 +31,8 @@ import org.springframework.stereotype.Component
 @CompileStatic
 class TenantForCurrentUserResolver implements TenantResolver, WebRequestAware {
 
+    TenantService tenantService
+
     @Override
     Serializable resolveTenantIdentifier() throws TenantNotFoundException {
         if (!hasRequest()) {
@@ -41,9 +43,10 @@ class TenantForCurrentUserResolver implements TenantResolver, WebRequestAware {
             TUser user = session['_21CurrentUser'] as TUser
             if (user) {
                 return user.tenant.tenantId
-            } else {
-                return TenantService.defaultTenantId
             }
+
+            return tenantService.getByRequest(request)?.tenantId
+                ?: TenantService.defaultTenantId
 
         } catch (Exception ignore) {
             return TenantService.defaultTenantId

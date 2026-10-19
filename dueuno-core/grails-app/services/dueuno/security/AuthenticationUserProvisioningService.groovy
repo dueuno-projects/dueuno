@@ -17,6 +17,7 @@
 package dueuno.security
 
 import dueuno.elements.WebRequestAware
+import dueuno.tenant.TTenant
 import dueuno.tenant.TenantService
 import grails.gorm.transactions.Transactional
 import groovy.transform.CompileDynamic
@@ -54,35 +55,32 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
         if (!firstname) firstname = null
         if (!lastname) lastname = null
 
-        String host = hasRequest() ? request.getHeader('host') : null
-        String tenantId = tenantService.getByHost(host)?.tenantId ?: tenantService.defaultTenantId
-        UserDetails details
-        tenantService.withTenant(tenantId) {
-            TUser user = TUser.findByUsername(username)
-            LocalDateTime lastAccess = LocalDateTime.now()
-            if (!user) {
-                user = securityService.createUser(
-                    tenantId: tenantId,
-                    username: username,
-                    password: securityService.generatePassword(),
-                    firstname: firstname,
-                    lastname: lastname,
-                    email: email,
-                    telephone: profile.telephone,
-                    note: profile.note,
-                    failOnError: true,
-                )
-            }
-
-            user.username = username
-            user.email = email
-            user.ldapUid = ldapUid
-            user.ldapLastAccess = lastAccess
-            user.save(flush: true, failOnError: true)
-            details = userDetailsService.loadUserByUsername(username)
+        TTenant tenant = tenantService.getByRequest(request) ?: tenantService.defaultTenant
+        if (!tenant) {
+            throw new UsernameNotFoundException('Unable to resolve tenant for authenticated user')
+        }
+        TUser user = TUser.findByTenantAndUsername(tenant, username)
+        LocalDateTime lastAccess = LocalDateTime.now()
+        if (!user) {
+            user = securityService.createUser(
+                tenant: tenant,
+                username: username,
+                password: securityService.generatePassword(),
+                firstname: firstname,
+                lastname: lastname,
+                email: email,
+                telephone: profile.telephone,
+                note: profile.note,
+                failOnError: true,
+            )
         }
 
-        return details
+        user.username = username
+        user.email = email
+        user.ldapUid = ldapUid
+        user.ldapLastAccess = lastAccess
+        user.save(flush: true, failOnError: true)
+        return userDetailsService.loadUserByUsername(username)
     }
 
     @Transactional
@@ -98,43 +96,44 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
             throw new UsernameNotFoundException('Authenticated identity has no email')
         }
 
-        String host = hasRequest() ? request.getHeader('host') : null
-        String tenantId = tenantService.getByHost(host)?.tenantId ?: tenantService.defaultTenantId
-        UserDetails details
-        tenantService.withTenant(tenantId) {
-            TUserAuthenticationIdentity identity = TUserAuthenticationIdentity.findByIssuerAndSubject(issuer, subject)
-            if (identity) {
-                details = userDetailsService.loadUserByUsername(identity.user.username)
-                return
-            }
-
-            details = loadOrCreateUser(
-                username,
-                [
-                    firstname: profile.given_name,
-                    lastname : profile.family_name,
-                    email    : email,
-                ],
-            )
-
-            TUser user = TUser.findByUsername(username)
-            if (!user) {
-                throw new UsernameNotFoundException('Unable to load the provisioned OIDC user')
-            }
-
-            new TUserAuthenticationIdentity(
-                user: user,
-                provider: provider,
-                issuer: issuer,
-                subject: subject,
-            ).save(flush: true, failOnError: true)
+        TTenant tenant = provider.tenant
+        if (!tenant) {
+            throw new UsernameNotFoundException('OIDC provider has no tenant')
+        }
+        TUserAuthenticationIdentity identity = TUserAuthenticationIdentity.where {
+            issuer == issuer && subject == subject &&
+                provider.tenant.id == tenant.id && user.tenant.id == tenant.id
+        }.get() as TUserAuthenticationIdentity
+        if (identity) {
+            return userDetailsService.loadUserByUsername(identity.user.username)
         }
 
+        UserDetails details = loadOrCreateUser(
+            username,
+            tenant,
+            [
+                firstname: profile.given_name,
+                lastname : profile.family_name,
+                email    : email,
+            ],
+        )
+
+        TUser user = TUser.findByTenantAndUsername(tenant, username)
+        if (!user) {
+            throw new UsernameNotFoundException('Unable to load the provisioned OIDC user')
+        }
+
+        new TUserAuthenticationIdentity(
+            user: user,
+            provider: provider,
+            issuer: issuer,
+            subject: subject,
+        ).save(flush: true, failOnError: true)
         return details
     }
 
     @CompileDynamic
-    private UserDetails loadOrCreateUser(String username, Map profile) {
+    private UserDetails loadOrCreateUser(String username, TTenant tenant, Map profile) {
         if (!username) {
             throw new UsernameNotFoundException('Authenticated identity has no username')
         }
@@ -148,30 +147,25 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
             lastname = null
         }
 
-        String host = hasRequest() ? request.getHeader('host') : null
-        String tenantId = tenantService.getByHost(host)?.tenantId ?: tenantService.defaultTenantId
         UserDetails details
-        tenantService.withTenant(tenantId) {
-            try {
-                details = userDetailsService.loadUserByUsername(username)
-            } catch (UsernameNotFoundException ignored) {
-                securityService.createUser(
-                    tenantId: tenantId,
-                    username: username,
-                    password: securityService.generatePassword(),
-                    firstname: firstname,
-                    lastname: lastname,
-                    email: profile.email,
-                    telephone: profile.telephone,
-                    note: profile.note,
-                    failOnError: true,
-                )
+        try {
+            details = userDetailsService.loadUserByUsername(username)
+        } catch (UsernameNotFoundException ignored) {
+            securityService.createUser(
+                tenant: tenant,
+                username: username,
+                password: securityService.generatePassword(),
+                firstname: firstname,
+                lastname: lastname,
+                email: profile.email,
+                telephone: profile.telephone,
+                note: profile.note,
+                failOnError: true,
+            )
 
-                details = userDetailsService.loadUserByUsername(username)
-            }
+            details = userDetailsService.loadUserByUsername(username)
         }
 
         return details
     }
-
 }

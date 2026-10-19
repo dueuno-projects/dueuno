@@ -9,6 +9,7 @@ grails.gorm.multiTenancy.mode = 'DATABASE'
 
 // Spring Security Core plugin setup example
 grails.plugin.springsecurity.userLookup.userDomainClassName = 'dueuno.security.TUser'
+grails.plugin.springsecurity.userDetailsServiceBeanClass = 'dueuno.security.TenantUserDetailsService'
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'dueuno.security.TUserRoleGroup'
 grails.plugin.springsecurity.authority.className = 'dueuno.security.TRole'
 grails.plugin.springsecurity.authority.groupAuthorityNameField = 'authorities'
