@@ -66,8 +66,11 @@ class AuthenticationProviderIdentityController implements ElementsController {
             body.eachRow { TableRow row, Map values ->
                 values.providerId = provider.id
             }
-            body = authenticationIdentityService.listByProvider(provider.id)
         }
+
+        Map filters = c.table.filterParams
+        c.table.body = authenticationIdentityService.listByProvider(provider.id, filters, c.table.fetchParams)
+        c.table.paginate = authenticationIdentityService.countByProvider(provider.id, filters)
 
         display content: c, modal: true, large: true
     }

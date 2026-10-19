@@ -97,6 +97,17 @@ class AuthenticationIdentityService {
     }
 
     @CompileDynamic
+    Number countByProvider(Serializable providerId, Map filterParams = [:]) {
+        TAuthenticationProvider provider = authenticationProviderService.get(providerId)
+        if (!provider || !provider.providerType.isOidcProvider()) {
+            return 0
+        }
+
+        DetachedCriteria<TUserAuthenticationIdentity> query = buildQuery(filterParams + [provider: provider])
+        return query.count()
+    }
+
+    @CompileDynamic
     List<TUserAuthenticationIdentity> listByUser(Serializable userId, Map fetchParams = [:]) {
         if (!fetchParams.sort) {
             fetchParams.sort = [issuer: 'asc', subject: 'asc']
