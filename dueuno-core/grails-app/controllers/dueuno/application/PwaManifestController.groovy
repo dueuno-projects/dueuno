@@ -28,7 +28,7 @@ class PwaManifestController implements ElementsController {
 
     def index() {
         String appname = message('app.name')
-        String appicon = tenantPropertyService.getString('APPICON')
+        String appicon = tenantPropertyService.getString('APPICON', true)
         String contextPath = servletContext.contextPath ?: '/'
 
         response.contentType = 'application/manifest+json'
