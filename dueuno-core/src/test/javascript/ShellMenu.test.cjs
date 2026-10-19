@@ -66,6 +66,80 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
 }
 
 for (const moduleName of ['dueuno-core', 'app-test']) {
+    test(`${moduleName}: menu search only shows section titles with matching items`, () => {
+        const rows = [
+            { type: 'section', title: 'Finance', hidden: false },
+            { type: 'item', text: 'Reports', hidden: false },
+            { type: 'item', text: 'Invoices', hidden: false },
+            { type: 'section', title: 'Administration', hidden: false },
+            { type: 'item', text: 'Users', hidden: false },
+            { type: 'section', title: 'Empty section', hidden: false },
+        ];
+        let query = 'invoice';
+
+        function wrap(items) {
+            return {
+                items,
+                length: items.length,
+                each(callback) {
+                    items.forEach(item => callback.call(item));
+                    return this;
+                },
+                find() {
+                    return { html: () => items[0]?.text };
+                },
+                val: () => query,
+                nextUntil(selector) {
+                    const start = rows.indexOf(items[0]);
+                    let end = rows.findIndex((item, index) => index > start && item.type === 'section');
+                    if (end < 0) end = rows.length;
+                    return wrap(rows.slice(start + 1, end));
+                },
+                filter(selector) {
+                    if (selector === 'li.nav-item:has(a):not(.d-none)') {
+                        return wrap(items.filter(item => item.type === 'item' && !item.hidden));
+                    }
+                    return this;
+                },
+                addClass() { items.forEach(item => item.hidden = true); return this; },
+                removeClass() { items.forEach(item => item.hidden = false); return this; },
+            };
+        }
+
+        const context = vm.createContext({
+            Component: class { static register() {} },
+            isEmpty: value => !value,
+            $: value => {
+                if (value === '#shell-menu-search input') return wrap([]);
+                if (value === '#shell-menu li.nav-item:has(a)') return wrap(rows.filter(row => row.type === 'item'));
+                if (value === '#shell-menu li.nav-item-title') return wrap(rows.filter(row => row.type === 'section'));
+                if (value === '.sidebar-nav li') return wrap([]);
+                return wrap([value]);
+            },
+        });
+        const source = path.resolve(__dirname, '../../../..', moduleName,
+            'grails-app/assets/dueuno/elements/pages/ShellMenu.js');
+        vm.runInContext(fs.readFileSync(source, 'utf8'), context);
+        const ShellMenu = vm.runInContext('ShellMenu', context);
+
+        ShellMenu.onSearch();
+        assert.deepEqual(rows.map(row => row.hidden), [false, true, false, true, true, true]);
+
+        query = 'no match';
+        ShellMenu.onSearch();
+        assert.deepEqual(rows.map(row => row.hidden), [true, true, true, true, true, true]);
+
+        query = 'finance';
+        ShellMenu.onSearch();
+        assert.deepEqual(rows.map(row => row.hidden), [true, true, true, true, true, true]);
+
+        query = '';
+        ShellMenu.onSearch();
+        assert.deepEqual(rows.map(row => row.hidden), [false, false, false, false, false, true]);
+    });
+}
+
+for (const moduleName of ['dueuno-core', 'app-test']) {
     test(`${moduleName}: content focus skips unusable controls and falls back to the content`, () => {
         const document = { activeElement: null };
         const disabled = { disabled: true };
@@ -250,4 +324,3 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         });
     }
 }
-

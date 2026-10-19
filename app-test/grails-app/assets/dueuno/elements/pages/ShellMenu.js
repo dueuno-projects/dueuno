@@ -153,6 +153,16 @@ class ShellMenu extends Component {
             }
         });
 
+        $('#shell-menu li.nav-item-title').each(function () {
+            let sectionHasVisibleItems = $(this).nextUntil('.nav-item-title')
+                .filter('li.nav-item:has(a):not(.d-none)').length > 0;
+            if (sectionHasVisibleItems) {
+                $(this).removeClass('d-none');
+            } else {
+                $(this).addClass('d-none');
+            }
+        });
+
         if (isEmpty(search)) $('.sidebar-nav li').removeClass('hide');
     }
 }
