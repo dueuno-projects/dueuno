@@ -92,6 +92,8 @@ class DueunoGrailsPlugin extends Plugin {
 
             physicalUserDetailsService(PhysicalUserDetailsService) {
                 grailsApplication = ref('grailsApplication')
+                securityService = ref('securityService')
+                tenantService = ref('tenantService')
             }
 
             physicalAuthenticationProvider(PhysicalAuthenticationProvider) {

@@ -1,5 +1,12 @@
 package dueuno.security.physical
 
+import dueuno.elements.WebRequestAware
+import dueuno.security.AuthenticationProviderType
+import dueuno.security.SecurityService
+import dueuno.security.TAuthenticationProvider
+import dueuno.security.TUser
+import dueuno.tenant.TTenant
+import dueuno.tenant.TenantService
 import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.userdetails.GormUserDetailsService
@@ -10,26 +17,32 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 @Slf4j
-class PhysicalUserDetailsService extends GormUserDetailsService {
+class PhysicalUserDetailsService extends GormUserDetailsService implements WebRequestAware {
+
+    SecurityService securityService
+    TenantService tenantService
 
     @Transactional(readOnly = true, noRollbackFor = [IllegalArgumentException, UsernameNotFoundException])
     UserDetails loadUserByPhysicalId(String physicalId, boolean loadRoles) throws UsernameNotFoundException {
 
-        def conf = SpringSecurityUtils.securityConfig
-        String userClassName = conf.userLookup.userDomainClassName
-        def dc = grailsApplication.getArtefact 'Domain', userClassName
-        if (!dc) {
-            throw new IllegalArgumentException("The specified user domain class '$userClassName' is not a domain class")
+        String loginTenantId = tenantService.currentTenantId ?: tenantService.defaultTenantId
+        if (hasRequest()) {
+            loginTenantId = tenantService.getByHost(request.getHeader('host'))?.tenantId
+                ?: tenantService.defaultTenantId
+        }
+        TTenant loginTenant = tenantService.getByTenantId(loginTenantId)
+        if (!loginTenant) {
+            throw new NoStackUsernameNotFoundException()
         }
 
-        Class<?> User = dc.clazz
-
-        def user = User.createCriteria().get {
-            ne((conf.physicalId.propertyName), '')
-            eq((conf.physicalId.propertyName), physicalId)
+        TAuthenticationProvider provider = TAuthenticationProvider.findByTenantAndProviderType(
+            loginTenant, AuthenticationProviderType.PHYSICAL)
+        if (!provider?.enabled) {
+            throw new NoStackUsernameNotFoundException()
         }
 
-        if (!user) {
+        TUser user = securityService.getUserByPhysicalId(physicalId)
+        if (!user || user.tenant?.id != loginTenant.id) {
             log.warn 'User not found: {}', physicalId
             throw new NoStackUsernameNotFoundException()
         }
