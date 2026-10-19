@@ -20,10 +20,12 @@ import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.*
+import grails.gorm.multitenancy.CurrentTenant
 import dueuno.types.Type
 
 import java.time.LocalDate
 
+@CurrentTenant
 class CrudDataServicesController implements ElementsController {
 
     PersonDataService personDataService
