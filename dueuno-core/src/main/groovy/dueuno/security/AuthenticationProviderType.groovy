@@ -20,7 +20,7 @@ package dueuno.security
  * Stable keys for built-in authentication providers and OpenID Connect profiles.
  */
 enum AuthenticationProviderType {
-    EMBEDDED('daoAuthenticationProvider'),
+    LOCAL('daoAuthenticationProvider'),
     PHYSICAL('physicalAuthenticationProvider'),
     LDAP('ldapAuthenticationProvider'),
     GOOGLE('oidc'),

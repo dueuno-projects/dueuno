@@ -25,6 +25,8 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 
+import java.time.LocalDateTime
+
 /**
  * Loads or creates the local user associated with an authenticated identity.
  */
@@ -37,52 +39,47 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
 
     @Transactional
     @CompileDynamic
-    UserDetails ensureUser(String username, Map profile = [:]) {
-        if (!username) {
+    UserDetails ensureLdapUser(String ldapUid, Map profile = [:]) {
+        if (!ldapUid) {
             throw new UsernameNotFoundException('Authenticated identity has no username')
         }
 
-        String email = requiredEmail(profile.email)
-
+        String email = profile.email as String
+        String username = email?.trim()?.toLowerCase(Locale.ROOT)
+        if (!username) {
+            throw new UsernameNotFoundException('Authenticated identity has no email')
+        }
         String firstname = (profile.firstname as String)?.trim()
         String lastname = (profile.lastname as String)?.trim()
-        if (!firstname) {
-            firstname = null
-        }
-        if (!lastname) {
-            lastname = null
-        }
+        if (!firstname) firstname = null
+        if (!lastname) lastname = null
 
         String host = hasRequest() ? request.getHeader('host') : null
         String tenantId = tenantService.getByHost(host)?.tenantId ?: tenantService.defaultTenantId
         UserDetails details
         tenantService.withTenant(tenantId) {
-            List<TUser> users = TUser.findAllByEmailIlike(email)
-            if (users.size() > 1) {
-                throw new UsernameNotFoundException('No unique local user matches the authentication email')
+            TUser user = TUser.findByUsername(username)
+            LocalDateTime lastAccess = LocalDateTime.now()
+            if (!user) {
+                user = securityService.createUser(
+                    tenantId: tenantId,
+                    username: username,
+                    password: securityService.generatePassword(),
+                    firstname: firstname,
+                    lastname: lastname,
+                    email: email,
+                    telephone: profile.telephone,
+                    note: profile.note,
+                    failOnError: true,
+                )
             }
 
-            if (users) {
-                details = userDetailsService.loadUserByUsername(users.first().username)
-            } else {
-                try {
-                    details = userDetailsService.loadUserByUsername(username)
-                } catch (UsernameNotFoundException ignored) {
-                    securityService.createUser(
-                        tenantId: tenantId,
-                        username: username,
-                        password: securityService.generatePassword(),
-                        firstname: firstname,
-                        lastname: lastname,
-                        email: email,
-                        telephone: profile.telephone,
-                        note: profile.note,
-                        failOnError: true,
-                    )
-
-                    details = userDetailsService.loadUserByUsername(username)
-                }
-            }
+            user.username = username
+            user.email = email
+            user.ldapUid = ldapUid
+            user.ldapLastAccess = lastAccess
+            user.save(flush: true, failOnError: true)
+            details = userDetailsService.loadUserByUsername(username)
         }
 
         return details
@@ -95,7 +92,11 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
             throw new UsernameNotFoundException('OIDC identity has no provider, issuer or subject')
         }
 
-        String email = requiredEmail(profile.email as String)
+        String email = profile.email as String
+        String username = email?.trim()?.toLowerCase(Locale.ROOT)
+        if (!username) {
+            throw new UsernameNotFoundException('Authenticated identity has no email')
+        }
 
         String host = hasRequest() ? request.getHeader('host') : null
         String tenantId = tenantService.getByHost(host)?.tenantId ?: tenantService.defaultTenantId
@@ -107,24 +108,7 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
                 return
             }
 
-            String username
-            TUser user
-            List<TUser> users = TUser.findAllByEmailIlike(email)
-            if (users.size() > 1) {
-                throw new UsernameNotFoundException('No unique local user matches the OIDC email')
-            }
-            if (users) {
-                user = users.first()
-                username = user.username
-
-            } else {
-                username = email.toLowerCase(Locale.ROOT)
-                if (TUser.findByUsername(username)) {
-                    throw new UsernameNotFoundException('A different local user already uses the OIDC email as username')
-                }
-            }
-
-            details = ensureUser(
+            details = loadOrCreateUser(
                 username,
                 [
                     firstname: profile.given_name,
@@ -133,7 +117,7 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
                 ],
             )
 
-            user = TUser.findByUsername(username)
+            TUser user = TUser.findByUsername(username)
             if (!user) {
                 throw new UsernameNotFoundException('Unable to load the provisioned OIDC user')
             }
@@ -149,13 +133,45 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
         return details
     }
 
-    private String requiredEmail(String value) {
-        String email = value?.trim()
-        if (!email || !email.contains('@')) {
-            throw new UsernameNotFoundException('Authenticated identity has no email')
+    @CompileDynamic
+    private UserDetails loadOrCreateUser(String username, Map profile) {
+        if (!username) {
+            throw new UsernameNotFoundException('Authenticated identity has no username')
         }
 
-        return email
+        String firstname = (profile.firstname as String)?.trim()
+        String lastname = (profile.lastname as String)?.trim()
+        if (!firstname) {
+            firstname = null
+        }
+        if (!lastname) {
+            lastname = null
+        }
+
+        String host = hasRequest() ? request.getHeader('host') : null
+        String tenantId = tenantService.getByHost(host)?.tenantId ?: tenantService.defaultTenantId
+        UserDetails details
+        tenantService.withTenant(tenantId) {
+            try {
+                details = userDetailsService.loadUserByUsername(username)
+            } catch (UsernameNotFoundException ignored) {
+                securityService.createUser(
+                    tenantId: tenantId,
+                    username: username,
+                    password: securityService.generatePassword(),
+                    firstname: firstname,
+                    lastname: lastname,
+                    email: profile.email,
+                    telephone: profile.telephone,
+                    note: profile.note,
+                    failOnError: true,
+                )
+
+                details = userDetailsService.loadUserByUsername(username)
+            }
+        }
+
+        return details
     }
 
 }

@@ -19,6 +19,8 @@ import grails.compiler.GrailsCompileStatic
 import groovy.transform.EqualsAndHashCode
 import org.grails.datastore.gorm.GormEntity
 
+import java.time.LocalDateTime
+
 /**
  * @author Gianluca Sartori
  */
@@ -35,30 +37,32 @@ class TUser implements GormEntity, Serializable {
     String username
     String password
 
+    // System fields
     Boolean enabled
     Boolean accountExpired
     Boolean accountLocked
     Boolean passwordExpired
-
-    String physicalId
-    String email
-    String apiKey
-
-    // System fields
     Boolean deletable
     TRoleGroup defaultGroup
-    String note
+
+    // Integration
+    String physicalId
+    String ldapUid
+    LocalDateTime ldapLastAccess
+    String apiKey
 
     // User data
     String firstname
     String lastname
-    String language
+    String email
+    String note
 
     // Session data
     Integer sessionDuration
     Integer rememberMeDuration
 
     // Localization preferences
+    String language
     String decimalFormat // 'ISO_COM' (# ###,#) or 'ISO_DOT' (# ###.#)
     Boolean prefixedUnit
     Boolean symbolicCurrency
@@ -82,8 +86,10 @@ class TUser implements GormEntity, Serializable {
         username nullable: false, blank: false, unique: true
         password nullable: false, blank: false, password: true
         physicalId unique: true
-        email unique: true, email: true
+        email nullable: true
         apiKey unique: true
+        ldapUid nullable: true, blank: true
+        ldapLastAccess nullable: true
         note maxSize: 500
 
         sessionDuration nullable: false

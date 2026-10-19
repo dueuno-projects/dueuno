@@ -33,7 +33,7 @@ class AuthenticationUserProvisioningServiceSpec extends Specification implements
         AuthenticationUserProvisioningService service = new AuthenticationUserProvisioningService()
 
         when:
-        service.ensureUser('alice', [:])
+        service.ensureLdapUser('alice', [:])
 
         then:
         UsernameNotFoundException e = thrown()

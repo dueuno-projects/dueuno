@@ -82,7 +82,6 @@ class DueunoGrailsPlugin extends Plugin {
 
             runtimeAuthenticationProvider(AuthenticationProviderManager) {
                 authenticationProviderService = ref('authenticationProviderService')
-                authenticationUserProvisioningService = ref('authenticationUserProvisioningService')
                 grailsApplication = ref('grailsApplication')
             }
 

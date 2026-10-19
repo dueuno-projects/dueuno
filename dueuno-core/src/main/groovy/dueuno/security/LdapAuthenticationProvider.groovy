@@ -124,15 +124,8 @@ class LdapAuthenticationProvider implements AuthenticationProvider {
 
     @Transactional
     @CompileDynamic
-    private UserDetails loadUserDetails(
-        String username,
-        String firstname,
-        String lastname,
-        String email,
-        String telephone,
-        String note
-    ) {
-        return authenticationUserProvisioningService.ensureUser(username, [
+    private UserDetails loadUserDetails(String ldapUid, String firstname, String lastname, String email, String telephone, String note) {
+        return authenticationUserProvisioningService.ensureLdapUser(ldapUid, [
             firstname: firstname,
             lastname : lastname,
             email     : email,

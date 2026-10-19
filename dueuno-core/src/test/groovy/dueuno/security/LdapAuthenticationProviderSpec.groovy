@@ -49,7 +49,7 @@ class LdapAuthenticationProviderSpec extends Specification {
         UserDetails details = (UserDetails) method.invoke(provider, 'sartogia', null, null, 'sartogia@example.org', null, null, null)
 
         then:
-        1 * authenticationUserProvisioningService.ensureUser('sartogia', [
+        1 * authenticationUserProvisioningService.ensureLdapUser('sartogia', [
             firstname: null,
             lastname : null,
             email     : 'sartogia@example.org',

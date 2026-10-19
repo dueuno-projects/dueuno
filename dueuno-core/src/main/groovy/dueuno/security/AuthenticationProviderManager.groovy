@@ -15,14 +15,13 @@
 package dueuno.security
 
 import dueuno.application.AuthenticationProviderService
+import grails.core.GrailsApplication
 import groovy.transform.CompileStatic
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.security.authentication.ProviderManager
+import org.springframework.security.authentication.ProviderNotFoundException
 import org.springframework.security.core.Authentication
-import grails.core.GrailsApplication
-
-import java.util.concurrent.atomic.AtomicReference
 
 /**
  * @author Gianluca Sartori
@@ -31,77 +30,41 @@ import java.util.concurrent.atomic.AtomicReference
 @CompileStatic
 class AuthenticationProviderManager implements AuthenticationManager, AuthenticationProvider {
 
-    private static final Set<String> EXCLUDED_PROVIDER_IDENTIFIERS = [
-        'daoAuthorizationProvider', 'daoAuthenticationProvider', 'EMBEDDED',
-        'physicalAuthorizationProvider', 'physicalAuthenticationProvider', 'PHYSICAL',
-        'rememberMeProvider', 'rememberMeAuthenticationProvider', 'REMEMBERME',
-    ] as Set<String>
+    private static final List<AuthenticationProviderType> BUILT_IN_PROVIDER_TYPES = [
+        AuthenticationProviderType.LOCAL,
+        AuthenticationProviderType.PHYSICAL,
+        AuthenticationProviderType.LDAP,
+        AuthenticationProviderType.REMEMBERME,
+    ]
 
     AuthenticationProviderService authenticationProviderService
-    AuthenticationUserProvisioningService authenticationUserProvisioningService
     GrailsApplication grailsApplication
 
     @Override
     Authentication authenticate(Authentication authentication) {
-        AtomicReference<TAuthenticationProvider> successfulProvider = new AtomicReference<>()
-        Map<String, AuthenticationProvider> beans = [:]
-        for (TAuthenticationProvider provider in authenticationProviderService.list()) {
-            String beanName = provider.providerType.authenticationProviderBeanName
-            if (!provider.enabled || !grailsApplication.mainContext.containsBean(beanName)) continue
+        // Add each built-in provider only when it is enabled for the current tenant.
+        List<AuthenticationProvider> providers = []
+        for (AuthenticationProviderType providerType in BUILT_IN_PROVIDER_TYPES) {
+            TAuthenticationProvider providerConfiguration = authenticationProviderService.getByProviderType(providerType)
+            if (!providerConfiguration?.enabled) continue
+
+            String beanName = providerType.authenticationProviderBeanName
+            if (!grailsApplication.mainContext.containsBean(beanName)) continue
             Object bean = grailsApplication.mainContext.getBean(beanName)
             if (bean instanceof AuthenticationProvider) {
-                beans[beanName] = new TrackingAuthenticationProvider(
-                    (AuthenticationProvider) bean,
-                    provider,
-                    successfulProvider,
-                )
+                providers.add((AuthenticationProvider) bean)
             }
         }
-        List<AuthenticationProvider> providers = authenticationProviderService.getEnabledProviders(beans)
-        Authentication result = new ProviderManager(providers).authenticate(authentication)
-        TAuthenticationProvider provider = successfulProvider.get()
-        if (provider != null && !isExcluded(provider)) {
-            authenticationUserProvisioningService.ensureUser(result.name)
-        }
-        return result
-    }
 
-    private boolean isExcluded(TAuthenticationProvider provider) {
-        return EXCLUDED_PROVIDER_IDENTIFIERS.contains(provider.providerType.authenticationProviderBeanName) ||
-            EXCLUDED_PROVIDER_IDENTIFIERS.contains(provider.providerType.name())
+        if (!providers) {
+            throw new ProviderNotFoundException('No authentication providers are enabled for the current tenant')
+        }
+
+        return new ProviderManager(providers).authenticate(authentication)
     }
 
     @Override
     boolean supports(Class<?> authentication) {
         return true
-    }
-
-    private static class TrackingAuthenticationProvider implements AuthenticationProvider {
-
-        private final AuthenticationProvider delegate
-        private final TAuthenticationProvider provider
-        private final AtomicReference<TAuthenticationProvider> successfulProvider
-
-        TrackingAuthenticationProvider(
-            AuthenticationProvider delegate,
-            TAuthenticationProvider provider,
-            AtomicReference<TAuthenticationProvider> successfulProvider
-        ) {
-            this.delegate = delegate
-            this.provider = provider
-            this.successfulProvider = successfulProvider
-        }
-
-        @Override
-        Authentication authenticate(Authentication authentication) {
-            Authentication result = delegate.authenticate(authentication)
-            if (result != null && result.authenticated) successfulProvider.set(provider)
-            return result
-        }
-
-        @Override
-        boolean supports(Class<?> authentication) {
-            return delegate.supports(authentication)
-        }
     }
 }

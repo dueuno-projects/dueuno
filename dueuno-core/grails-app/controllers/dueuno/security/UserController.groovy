@@ -41,7 +41,6 @@ class UserController implements ElementsController {
 
     ApplicationService applicationService
     SecurityService securityService
-    AuthenticationIdentityService authenticationIdentityService
     TenantService tenantService
     ApplicationPropertyService applicationPropertyService
     TenantPropertyService tenantPropertyService
@@ -165,7 +164,6 @@ class UserController implements ElementsController {
         def isSuperAdmin = securityService.isSuperAdmin()
         def isEditingUserButNotSuperAdmin = obj && obj.username != securityService.USERNAME_SUPERADMIN
         def isTenantAdmin = obj && securityService.isAdmin(obj) && !obj.deletable
-        def isEmailReadonly = authenticationIdentityService.hasIdentity(obj)
 
         c.form.with {
             validate = TUser
@@ -211,8 +209,6 @@ class UserController implements ElementsController {
             addField(
                 class: EmailField,
                 id: 'email',
-                readonly: isEmailReadonly,
-                help: isEmailReadonly ? 'user.email.readonly' : null
             )
             addField(
                 class: Textarea,
@@ -274,6 +270,25 @@ class UserController implements ElementsController {
                     id: 'integration',
                     icon: 'fa-plug',
                 )
+                addField(
+                    class: TextField,
+                    id: 'ldapUid',
+                    icon: 'fa-user',
+                    readonly: true,
+                    cols: 8,
+                )
+                addField(
+                    class: DateTimeField,
+                    id: 'ldapLastAccess',
+                    icon: 'fa-time',
+                    readonly: true,
+                    cols: 4,
+                )
+                addField(
+                    class: TextField,
+                    id: 'physicalId',
+                    icon: 'fa-barcode',
+                )
                 TextField apiKey = addField(
                     class: TextField,
                     id: 'apiKey',
@@ -281,11 +296,6 @@ class UserController implements ElementsController {
                     readonly: !securityService.isDeveloper() && !securityService.isAdmin(),
                 ).component
                 apiKey.addAction(action: 'onGenerateApiKey', submit: ['form'], text: 'user.generateApiKey', icon: 'fa-key')
-                addField(
-                    class: TextField,
-                    id: 'physicalId',
-                    icon: 'fa-barcode',
-                )
             }
         }
 
@@ -532,10 +542,6 @@ class UserController implements ElementsController {
 
     def onEdit() {
         normalizeInput(params)
-        TUser user = securityService.getUserByUsername(params.username)
-        if (authenticationIdentityService.hasIdentity(user)) {
-            params.remove('email')
-        }
         def obj = securityService.updateUserAndGroups(params)
 
         if (obj.hasErrors()) {

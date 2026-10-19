@@ -43,7 +43,7 @@ class AuthenticationProviderService implements WebRequestAware {
     @CompileDynamic
     private void installDefaults(TTenant tenant) {
         List<Map> defaults = [
-            [providerType: AuthenticationProviderType.EMBEDDED, sequence: 1, enabled: true],
+            [providerType: AuthenticationProviderType.LOCAL, sequence: 1, enabled: true],
             [providerType: AuthenticationProviderType.PHYSICAL, sequence: 2, enabled: true],
             [providerType      : AuthenticationProviderType.LDAP, sequence: 3, enabled: false,
              searchFilter     : '(sAMAccountName={0})', searchSubtree: true, retrieveGroupRoles: true,
@@ -155,7 +155,7 @@ class AuthenticationProviderService implements WebRequestAware {
             }
         }
 
-        if (provider.providerType == AuthenticationProviderType.EMBEDDED) provider.enabled = true
+        if (provider.providerType == AuthenticationProviderType.LOCAL) provider.enabled = true
         provider.validate()
         provider.save(flush: true)
         return provider

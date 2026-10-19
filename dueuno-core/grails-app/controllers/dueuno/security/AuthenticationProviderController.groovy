@@ -108,7 +108,7 @@ class AuthenticationProviderController implements ElementsController {
     private buildForm(TAuthenticationProvider obj) {
         def c = createContent(ContentEdit)
 
-        def readonly = obj.providerType == AuthenticationProviderType.EMBEDDED
+        def readonly = obj.providerType == AuthenticationProviderType.LOCAL
         if (readonly) {
             c.header.removeNextButton()
         }
