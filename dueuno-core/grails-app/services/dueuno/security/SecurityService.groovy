@@ -355,6 +355,10 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @return true if the user with the specified username has admin authorities
      */
     Boolean isAdmin(TUser user) {
+        if (!user) {
+            return false
+        }
+
         return user.authorities.find { it.name == GROUP_ADMINS } != null
     }
 
@@ -620,19 +624,19 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     @CompileDynamic
     TUser getUserByUsername(String username) {
         if (username?.equalsIgnoreCase(USERNAME_SUPERADMIN)) {
-            return getUserByTenantAndUsername(tenantService.defaultTenant, USERNAME_SUPERADMIN)
+            return getUserByTenantIdAndUsername(tenantService.defaultTenant?.id, USERNAME_SUPERADMIN)
         }
 
-        return getUserByTenantAndUsername(tenantService.currentTenant, username)
+        return getUserByTenantIdAndUsername(tenantService.currentTenant?.id, username)
     }
 
     @CompileDynamic
-    private TUser getUserByTenantAndUsername(TTenant tenant, String username) {
-        if (!tenant) return null
+    TUser getUserByTenantIdAndUsername(Serializable tenantId, String username) {
+        if (!tenantId) return null
 
-        TTenant tenantFilter = tenant
+        Long tenantIdFilter = tenantId
         String usernameFilter = username
-        def query = TUser.where { tenant == tenantFilter && username == usernameFilter }
+        def query = TUser.where { tenant.id == tenantIdFilter && username == usernameFilter }
         return query.get(fetch: fetchAll) as TUser
     }
 
@@ -880,7 +884,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             validateFontSize(args)
         }
 
-        TUser user = getUserByTenantAndUsername(tenant, username)
+        TUser user = getUserByTenantIdAndUsername(tenant.id, username)
         user.properties = args
         user.save(flush: true, failOnError: args.failOnError)
 

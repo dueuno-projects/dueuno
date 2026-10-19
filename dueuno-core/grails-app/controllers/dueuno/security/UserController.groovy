@@ -94,7 +94,7 @@ class UserController implements ElementsController {
                 tenant  : 'asc',
                 username: 'asc',
             ]
-            keys = ['username']
+            keys = ['username', 'tenant.id']
             columns = cols
             labels = [
                 systemIcon: '',
@@ -528,7 +528,7 @@ class UserController implements ElementsController {
     }
 
     def edit() {
-        def user = securityService.getUserByUsername(params.username)
+        def user = securityService.getUserByTenantIdAndUsername(params.tenant.id, params.username)
         def c = buildForm(user)
 
         def isNotSuperAdmin = !securityService.isSuperAdmin()
