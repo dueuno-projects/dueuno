@@ -22,6 +22,7 @@ class PageMessageBox extends Component {
 
         PageMessageBox.$self.off('show.bs.modal').on('show.bs.modal', PageMessageBox.onShow);
         PageMessageBox.$self.off('shown.bs.modal').on('shown.bs.modal', PageMessageBox.onShown);
+        PageMessageBox.$self.off('hidden.bs.modal').on('hidden.bs.modal', PageMessageBox.onHidden);
         PageMessageBox.$self.off('keydown.messagebox').on('keydown.messagebox', PageMessageBox.onKeyDown);
         PageMessageBox.$self.off('hide.bs.modal').on('hide.bs.modal', PageMessageBox.onHide);
     }
@@ -42,8 +43,14 @@ class PageMessageBox extends Component {
         Component.setFocus(PageMessageBox.$self.attr('tabindex', '-1'), true);
     }
 
+    static onHidden(event) {
+        PageMessageBox.isActive = false;
+        KeyPress.initializeKeyboardEvents();
+    }
+
     static onKeyDown(event) {
-        if (event.key !== 'Enter' || event.target !== PageMessageBox.$self[0]) return;
+        if (event.key !== 'Enter') return;
+        if (event.target !== PageMessageBox.$self[0] && !KeyPress.isShortcutModifierPressed(event)) return;
 
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -179,6 +186,7 @@ class PageMessageBox extends Component {
     static show() {
         PageMessageBox.dialog.show('#page-messagebox');
         PageMessageBox.isActive = true;
+        KeyPress.setShortcutsVisible(false);
         Component.setFocus(PageMessageBox.$self.attr('tabindex', '-1'), true);
     }
 

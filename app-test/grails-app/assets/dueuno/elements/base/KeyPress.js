@@ -1,22 +1,45 @@
 //= require Component
 
+let KeyPress_shortcuts = new Map();
+
 class KeyPress extends Component {
 
+    static get shortcuts() { return KeyPress_shortcuts }
+    static set shortcuts(value) { KeyPress_shortcuts = value }
+
     static finalize($element, $root) {
-        let enabled = Component.getProperty($element, 'enabled');
-        if (!enabled) {
-            return;
-        }
+        KeyPress.initializeKeyboardEvents();
+    }
 
-        $(document).off('keydown.keyPress').on('keydown.keyPress', KeyPress.onKeyPress);
+    static initializeKeyboardEvents() {
+        $(document)
+            .off('keydown.keyPress keyup.keyPress')
+            .on('keydown.keyPress', KeyPress.onKeyPress)
+            .on('keyup.keyPress', KeyPress.onKeyUp);
+        $(window).off('blur.keyPress').on('blur.keyPress', KeyPress.onWindowBlur);
 
-        log.debug('Finalizing "' + Component.getId($element) + '"')
-        log.events($(document));
+        KeyPress.shortcuts.clear();
+        $('.component-link[data-21-shortcut-active]').removeAttr('data-21-shortcut-active');
+        $('.component-link[data-21-shortcut]:visible').each(function () {
+            KeyPress.registerShortcut($(this));
+        });
+
+        KeyPress.setShortcutsVisible(false);
     }
 
     static onKeyPress(event) {
+        KeyPress.setShortcutsVisible(KeyPress.isShortcutModifierPressed(event));
+
         let $element = $('[data-21-id="keyPress"]');
         let $search = $element.find('input');
+
+        if (KeyPress.onShortcut(event)) {
+            return;
+        }
+
+        if (!Component.getProperty($element, 'enabled')) {
+            return;
+        }
 
         event.stopPropagation();
 
@@ -74,6 +97,95 @@ class KeyPress extends Component {
             }
             $search.val('');
         }
+    }
+
+    static onKeyUp(event) {
+        KeyPress.setShortcutsVisible(KeyPress.isShortcutModifierPressed(event));
+    }
+
+    static onWindowBlur() {
+        KeyPress.setShortcutsVisible(false);
+    }
+
+    static setShortcutsVisible(visible) {
+        $('body').toggleClass('keyboard-shortcuts-visible', visible && !PageMessageBox.isActive);
+    }
+
+    static isShortcutModifierPressed(event) {
+        return event.ctrlKey || event.metaKey;
+    }
+
+    static registerShortcut($element) {
+        let element = $element[0];
+
+        for (let [registeredShortcut, registeredElement] of KeyPress.shortcuts) {
+            if (registeredElement === element) {
+                KeyPress.shortcuts.delete(registeredShortcut);
+            }
+        }
+
+        $element.removeAttr('data-21-shortcut-active');
+
+        let shortcut = Component.getProperty($element, 'shortcut');
+        if (typeof shortcut != 'string' || shortcut.length == 0) {
+            return;
+        }
+
+        shortcut = shortcut.toLowerCase();
+        let previousElement = KeyPress.shortcuts.get(shortcut);
+        if (previousElement && previousElement !== element) {
+            $(previousElement).removeAttr('data-21-shortcut-active');
+        }
+
+        KeyPress.shortcuts.set(shortcut, element);
+        $element.attr('data-21-shortcut-active', '');
+    }
+
+    static onShortcut(event) {
+        if (PageMessageBox.isActive || event.repeat) {
+            return false;
+        }
+
+        let shortcut = KeyPress.normalizeKey(event.key);
+        let element = KeyPress.shortcuts.get(shortcut);
+        if (!element) {
+            return false;
+        }
+
+        if (!document.documentElement.contains(element)) {
+            KeyPress.shortcuts.delete(shortcut);
+            return false;
+        }
+
+        let $link = $(element);
+        let registeredShortcut = Component.getProperty($link, 'shortcut');
+        if (typeof registeredShortcut != 'string' || registeredShortcut.toLowerCase() != shortcut ||
+            !Component.getDisplay($link) || !Component.getVisible($link) || Component.getReadonly($link) ||
+            !KeyPress.matchesShortcut(shortcut, event)) {
+            return false;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        $link.trigger('click');
+        return true;
+    }
+
+    static matchesShortcut(shortcut, event) {
+        if (typeof shortcut != 'string') {
+            return false;
+        }
+
+        let key = KeyPress.normalizeKey(event.key);
+        return KeyPress.isShortcutModifierPressed(event) && key == shortcut.toLowerCase();
+    }
+
+    static normalizeKey(key) {
+        let normalized = key.toLowerCase();
+        let aliases = {
+            return: 'enter',
+        };
+        return aliases[normalized] || normalized;
     }
 }
 

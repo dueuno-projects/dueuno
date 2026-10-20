@@ -24,7 +24,7 @@ import groovy.util.logging.Slf4j
  * page load or refresh. It provides the common infrastructure shared by every page layout:
  * </p>
  * <ul>
- *     <li>A {@link KeyPress} component for global keyboard/barcode-scanner event handling.</li>
+ *     <li>A {@link KeyPress} component for global keyboard-shortcut and barcode-scanner handling.</li>
  *     <li>A {@link PageModal} for displaying modal dialogs.</li>
  *     <li>A {@link PageMessageBox} for displaying informational, error, and confirmation messages.</li>
  *     <li>A transient {@link PageContent} slot that holds the main body content injected by the

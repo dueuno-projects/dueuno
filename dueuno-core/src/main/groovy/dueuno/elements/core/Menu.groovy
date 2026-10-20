@@ -89,7 +89,8 @@ class Menu extends Component {
      * </p>
      *
      * @param args map of menu properties; all {@link Component} args are supported, plus
-     * {@code separator}, {@code textPrefix}, {@code order}, and {@code authorities}
+     * {@code separator}, {@code textPrefix}, {@code order}, {@code authorities}, and
+     * {@code shortcut} ({@link KeyboardShortcut})
      */
     Menu(Map args = [:]) {
         super(args)
@@ -377,6 +378,11 @@ class Menu extends Component {
     //
     // LINK SHORTCUTS — convenience delegating accessors for the underlying {@link Link} component.
     //
+
+    /** Returns the keyboard shortcut that triggers this menu item's link. */
+    KeyboardShortcut getShortcut() { return link.shortcut }
+    /** Sets the keyboard shortcut that triggers this menu item's link. */
+    void setShortcut(KeyboardShortcut value) { link.shortcut = value }
 
     /** @see LinkDefinition#target */
     String getTarget() { return link.target }

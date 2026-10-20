@@ -21,6 +21,7 @@ import dueuno.elements.contents.ContentEdit
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
 import dueuno.elements.core.ComponentEvent
+import dueuno.elements.core.KeyboardShortcut
 import dueuno.elements.style.TextDefault
 import grails.gorm.multitenancy.CurrentTenant
 
@@ -49,7 +50,8 @@ class TabsController implements ElementsController {
                 stretch: true,
                 group: true,
                 loading: false,
-            ).component.addAction(action: 'onHide', text: "Hide!")
+                shortcut: KeyboardShortcut.F11,
+            ).component.addAction(action: 'onHide', text: "Hide!", shortcut: KeyboardShortcut.F12)
         }
 
         Form f1 = c.addComponent(Form, 'f1')

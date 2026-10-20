@@ -4,6 +4,7 @@ class Link extends Label {
 
     static finalize($element, $root) {
         $element.off('click').on('click', Link.onClick);
+        KeyPress.registerShortcut($element);
     }
 
     static hasTarget(componentEvent) {

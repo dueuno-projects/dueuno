@@ -565,7 +565,7 @@ class UserController implements ElementsController {
 
     def onEdit() {
         normalizeInput(params)
-        def obj = securitFyService.updateUserAndGroups(params)
+        def obj = securityService.updateUserAndGroups(params)
 
         if (obj.hasErrors()) {
             display errors: obj

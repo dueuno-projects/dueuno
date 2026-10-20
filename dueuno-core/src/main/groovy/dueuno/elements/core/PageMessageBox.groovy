@@ -40,6 +40,7 @@ class PageMessageBox extends Component {
         cancel.icon = 'fa-circle-xmark'
         cancel.text = TextDefault.CANCEL
         cancel.stretch = false
+        cancel.shortcut = null
 
         verify = addComponent(TextField, 'verify')
         verify.placeholder = 'messagebox.confirm.verify'
@@ -49,6 +50,7 @@ class PageMessageBox extends Component {
         confirm.icon = 'fa-circle-check'
         confirm.primary = true
         confirm.stretch = false
+        confirm.shortcut = null
     }
 
 }

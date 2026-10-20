@@ -69,6 +69,8 @@ class PageModal extends Component {
             PageModal.show();
             PageModal.isShowRequested = false;
         }
+
+        KeyPress.initializeKeyboardEvents();
     }
 
     static onScroll(event) {

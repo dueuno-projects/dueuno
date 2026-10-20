@@ -3,6 +3,7 @@
    data-21-id="${c.id}"
    data-21-properties="${c.propertiesAsJSON}"
    data-21-events="${c.eventsAsJSON}"
+   ${c.shortcut ? raw('data-21-shortcut="' + c.shortcut.key + '"') : ''}
    href="${dev.ifDevelopment() { c.devUrl } }"
    ${c.cssStyleColors ? raw('style="' + c.cssStyleColors + '"') : ''}
    ${c.tooltip ? raw('data-bs-custom-class="tooltip" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="' + c.message(c.tooltip) + '"') : ''}
