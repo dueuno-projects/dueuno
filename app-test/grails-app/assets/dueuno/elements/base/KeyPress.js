@@ -12,6 +12,10 @@ class KeyPress extends Component {
     }
 
     static initializeKeyboardEvents() {
+        // Adding the same listener again is ignored by the browser. Keep its
+        // original capture order so shortcuts run before other window handlers.
+        window.addEventListener('keydown', KeyPress.onKeyDownCapture, true);
+
         $(document)
             .off('keydown.keyPress keyup.keyPress')
             .on('keydown.keyPress', KeyPress.onKeyPress)
@@ -25,6 +29,14 @@ class KeyPress extends Component {
         });
 
         KeyPress.setShortcutsVisible(false);
+    }
+
+    static onKeyDownCapture(event) {
+        KeyPress.setShortcutsVisible(KeyPress.isShortcutModifierPressed(event));
+
+        if (KeyPress.onShortcut(event)) {
+            event.stopImmediatePropagation();
+        }
     }
 
     static onKeyPress(event) {
@@ -142,7 +154,7 @@ class KeyPress extends Component {
     }
 
     static onShortcut(event) {
-        if (PageMessageBox.isActive || event.repeat) {
+        if (PageMessageBox.isActive) {
             return false;
         }
 
@@ -167,7 +179,9 @@ class KeyPress extends Component {
 
         event.preventDefault();
         event.stopPropagation();
-        $link.trigger('click');
+        if (!event.repeat) {
+            $link.trigger('click');
+        }
         return true;
     }
 
