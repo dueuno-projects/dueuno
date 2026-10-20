@@ -63,11 +63,21 @@ class GroupController implements ElementsController {
                         optionsFromRecordset: tenantService.list(),
                         cols: 2,
                     )
+                } else {
+                    addField(
+                        class: TextField,
+                        id: 'tenantNoFilter',
+                        value: tenantService.currentTenantId,
+                        label: 'group.tenant',
+                        icon: 'fa-house-user',
+                        readonly: true,
+                        cols: 2,
+                    )
                 }
                 addField(
                     class: TextField,
                     id: 'name',
-                    cols: isSuperAdmin ? 10 : 12,
+                    cols: 10,
                 )
             }
 

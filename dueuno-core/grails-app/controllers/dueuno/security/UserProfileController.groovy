@@ -23,6 +23,7 @@ import dueuno.elements.core.PrettyPrinterDecimalFormat
 import dueuno.elements.style.GuiStyle
 import dueuno.elements.style.TextDefault
 import dueuno.tenant.TenantPropertyService
+import dueuno.utils.EnvUtils
 import grails.plugin.springsecurity.annotation.Secured
 
 /**
@@ -45,6 +46,8 @@ class UserProfileController implements ElementsController {
             removeBackButton()
         }
 
+        def isDevelopment = EnvUtils.isDevelopment()
+
         c.form.with {
             if (devDisplayHints) {
                 addField(
@@ -60,15 +63,17 @@ class UserProfileController implements ElementsController {
                 id: 'username',
                 readonly: true,
                 icon: 'fa-user',
-                cols: 6,
+                cols: isDevelopment ? 6 : 12,
             )
-            addField(
-                class: TextField,
-                id: 'tenant.tenantId',
-                readonly: true,
-                icon: 'fa-house-user',
-                cols: 6,
-            )
+            if (isDevelopment) {
+                addField(
+                    class: TextField,
+                    id: 'tenant.tenantId',
+                    icon: 'fa-house-user',
+                    readonly: true,
+                    cols: 6,
+                )
+            }
             addField(
                 class: TextField,
                 id: 'firstname',

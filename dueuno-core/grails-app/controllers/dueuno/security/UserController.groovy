@@ -78,11 +78,12 @@ class UserController implements ElementsController {
                     )
                 } else {
                     addField(
-                        class: Label,
-                        id: 'tenant',
-                        text: tenantService.currentTenantId,
-                        textStyle: TextStyle.BOLD,
-                        backgroundColor: mainBackgroundColor,
+                        class: TextField,
+                        id: 'tenantNoFilter',
+                        value: tenantService.currentTenantId,
+                        label: 'user.tenant',
+                        icon: 'fa-house-user',
+                        readonly: true,
                         cols: 2,
                     )
                 }
