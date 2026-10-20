@@ -20,11 +20,11 @@ const vm = require('node:vm');
 const { test } = require('node:test');
 
 for (const moduleName of ['dueuno-core', 'app-test']) {
-    test(`${moduleName}: keeps initial focus on the dialog and hides page shortcuts`, () => {
+    test(`${moduleName}: keeps initial focus on the dialog and hides page hotkeys`, () => {
         const root = {};
         let tabindex;
         let focused;
-        let shortcutsVisible = true;
+        let hotkeysVisible = true;
         const dialog = { 0: root, attr(name, value) {
             assert.equal(name, 'tabindex');
             tabindex = value;
@@ -40,10 +40,10 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                 }
             },
             KeyPress: {
-                setShortcutsVisible(visible) {
-                    shortcutsVisible = visible;
+                setHotkeysVisible(visible) {
+                    hotkeysVisible = visible;
                 },
-                isShortcutModifierPressed(event) {
+                isHotkeyModifierPressed(event) {
                     return event.ctrlKey || event.metaKey;
                 },
                 initializeKeyboardEvents() {},
@@ -57,7 +57,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         PageMessageBox.dialog = { show() {} };
         PageMessageBox.show();
         assert.equal(focused, dialog);
-        assert.equal(shortcutsVisible, false);
+        assert.equal(hotkeysVisible, false);
         tabindex = undefined;
         PageMessageBox.onShown({});
         assert.equal(focused, dialog);
@@ -79,8 +79,8 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         }
     });
 
-    test(`${moduleName}: hides and disables page shortcuts while a messagebox is active`, () => {
-        let shortcutsVisible;
+    test(`${moduleName}: hides and disables page hotkeys while a messagebox is active`, () => {
+        let hotkeysVisible;
         const context = vm.createContext({
             Component: class {
                 static register() {}
@@ -89,8 +89,8 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
             $: selector => ({
                 toggleClass(name, visible) {
                     assert.equal(selector, 'body');
-                    assert.equal(name, 'keyboard-shortcuts-visible');
-                    shortcutsVisible = visible;
+                    assert.equal(name, 'hotkeys-visible');
+                    hotkeysVisible = visible;
                 },
             }),
         });
@@ -99,8 +99,8 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         vm.runInContext(fs.readFileSync(source, 'utf8'), context);
         const KeyPress = vm.runInContext('KeyPress', context);
 
-        KeyPress.setShortcutsVisible(true);
-        assert.equal(shortcutsVisible, false);
-        assert.equal(KeyPress.onShortcut({repeat: false}), false);
+        KeyPress.setHotkeysVisible(true);
+        assert.equal(hotkeysVisible, false);
+        assert.equal(KeyPress.onHotkey({repeat: false}), false);
     });
 }

@@ -16,7 +16,7 @@ package dueuno.elements.components
 
 import dueuno.elements.core.Component
 import dueuno.elements.core.ComponentEvent
-import dueuno.elements.core.KeyboardShortcut
+import dueuno.elements.core.Hotkey
 import dueuno.elements.core.Menu
 import dueuno.elements.style.TextWrap
 import groovy.transform.CompileStatic
@@ -37,8 +37,8 @@ import groovy.transform.Synchronized
  * <p>
  * All link-navigation properties ({@code controller}, {@code action}, {@code params},
  * {@code modal}, {@code submit}, etc.) are delegated to the underlying {@link Menu}
- * items and can be set via the corresponding setters on this class. Its {@code shortcut}
- * property, selected from {@link KeyboardShortcut}, configures the default action.
+ * items and can be set via the corresponding setters on this class. Its {@code hotkey}
+ * property, selected from {@link Hotkey}, configures the default action.
  * </p>
  *
  * @author Gianluca Sartori
@@ -79,7 +79,7 @@ class Button extends Component {
      * {@code group} ({@link Boolean}),
      * {@code maxWidth} ({@link Integer}),
      * {@code text} ({@link String}) — label for the default action,
-     * {@code shortcut} ({@link KeyboardShortcut}) — shortcut for the default action,
+     * {@code hotkey} ({@link Hotkey}) — hotkey for the default action,
      * {@code dontCreateDefaultAction} ({@link Boolean}) — skip auto-creation of the default action,
      *             plus all keys accepted by {@link Component#Component(Map)} and {@link Menu}
      */
@@ -118,7 +118,7 @@ class Button extends Component {
      * Sets whether this button is rendered as a primary (highlighted) button.
      * When {@code true} and no background colour has been explicitly set, the
      * primary text and background colours are applied automatically. The
-     * default action also receives the {@link KeyboardShortcut#ENTER} shortcut,
+     * default action also receives the {@link Hotkey#ENTER} hotkey,
      * including when the default action is assigned later.
      *
      * @param value {@code true} to mark this button as primary
@@ -126,7 +126,7 @@ class Button extends Component {
     void setPrimary(Boolean value) {
         primary = value
 
-        setPrimaryShortcut()
+        setPrimaryHotkey()
 
         if (primary && !backgroundColor) {
             textColor = primaryTextColor
@@ -152,19 +152,19 @@ class Button extends Component {
         defaultAction.action = value
     }
 
-    /** Returns the keyboard shortcut that triggers the default action. */
-    KeyboardShortcut getShortcut() {
-        return defaultAction.shortcut
+    /** Returns the hotkey that triggers the default action. */
+    Hotkey getHotkey() {
+        return defaultAction.hotkey
     }
 
-    /** Sets the keyboard shortcut that triggers the default action. */
-    void setShortcut(KeyboardShortcut value) {
-        defaultAction.shortcut = value
+    /** Sets the hotkey that triggers the default action. */
+    void setHotkey(Hotkey value) {
+        defaultAction.hotkey = value
     }
 
-    private void setPrimaryShortcut() {
+    private void setPrimaryHotkey() {
         if (primary && defaultAction) {
-            defaultAction.shortcut = KeyboardShortcut.ENTER
+            defaultAction.hotkey = Hotkey.ENTER
         }
     }
 
@@ -449,7 +449,7 @@ class Button extends Component {
         Menu menu = addMenu(args)
         if (!defaultAction) {
             defaultAction = menu
-            setPrimaryShortcut()
+            setPrimaryHotkey()
         }
         return this
     }
@@ -571,7 +571,7 @@ class Button extends Component {
         Menu action = getAction(args)
         action.link.textWrap = TextWrap.DEFAULT
         defaultAction = action
-        setPrimaryShortcut()
+        setPrimaryHotkey()
     }
 
     /**
@@ -648,7 +648,7 @@ class Button extends Component {
 
             if (action == fromButton.defaultAction) {
                 defaultAction = clonedAction
-                setPrimaryShortcut()
+                setPrimaryHotkey()
 
             } else if (action == fromButton.tailAction) {
                 tailAction = clonedAction

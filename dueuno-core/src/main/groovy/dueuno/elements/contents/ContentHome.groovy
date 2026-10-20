@@ -21,7 +21,7 @@ import groovy.transform.CompileStatic
  * A {@link ContentBlank} that renders the application home/dashboard page.
  * <p>
  * {@code ContentHome} uses its own dedicated {@code ContentHome} view template and
- * exposes a {@code favouriteMenu} component that can be populated with shortcuts to
+ * exposes a {@code favouriteMenu} component that can be populated with hotkeys to
  * frequently used features. It is typically displayed as the default landing page
  * after login.
  * </p>

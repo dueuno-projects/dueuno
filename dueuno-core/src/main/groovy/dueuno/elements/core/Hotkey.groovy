@@ -17,9 +17,9 @@ package dueuno.elements.core
 import groovy.transform.CompileStatic
 
 /**
- * Keyboard shortcuts supported by {@link dueuno.elements.components.Link}.
+ * Hotkeys supported by {@link dueuno.elements.components.Link}.
  * <p>
- * Every shortcut must be used with at least one standard modifier key:
+ * Every hotkey must be used with at least one standard modifier key:
  * {@code Ctrl}/{@code Control} or {@code Meta}/{@code Command}, on either
  * platform. Left and right variants work identically. The {@code Shift},
  * {@code Alt}/{@code Option}, and {@code Fn} keys are not included.
@@ -28,7 +28,7 @@ import groovy.transform.CompileStatic
  * @author Gianluca Sartori
  */
 @CompileStatic
-enum KeyboardShortcut {
+enum Hotkey {
 
     /** Function key F1. */
     F1('F1'),
@@ -57,15 +57,15 @@ enum KeyboardShortcut {
     /** Enter, used with a standard modifier key. */
     ENTER('Enter')
 
-    /** The string representation passed to the client-side shortcut listener. */
+    /** The string representation passed to the client-side hotkey listener. */
     final String key
 
     /**
-     * Creates a keyboard shortcut with its client-side key representation.
+     * Creates a keyboard hotkey with its client-side key representation.
      *
      * @param key the key representation used by the browser listener
      */
-    KeyboardShortcut(String key) {
+    Hotkey(String key) {
         this.key = key
     }
 }

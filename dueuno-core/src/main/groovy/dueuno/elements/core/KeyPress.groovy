@@ -20,7 +20,7 @@ import groovy.transform.CompileStatic
 /**
  * Component that listens for global keyboard events and dispatches a server-side action
  * when a configured trigger key is detected.
- * It also dispatches keyboard shortcuts configured on {@link dueuno.elements.components.Link}
+ * It also dispatches keyboard hotkeys configured on {@link dueuno.elements.components.Link}
  * instances by triggering the link's normal click handler.
  * <p>
  * {@code KeyPress} is primarily designed to support barcode-scanner input. It distinguishes

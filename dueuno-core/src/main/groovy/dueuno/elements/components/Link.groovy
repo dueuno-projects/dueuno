@@ -15,7 +15,7 @@
 package dueuno.elements.components
 
 import dueuno.elements.core.ComponentEvent
-import dueuno.elements.core.KeyboardShortcut
+import dueuno.elements.core.Hotkey
 import dueuno.elements.core.LinkDefinition
 import groovy.transform.CompileStatic
 
@@ -27,8 +27,8 @@ import groovy.transform.CompileStatic
  * All navigation properties ({@code controller}, {@code action}, {@code url}, etc.)
  * are delegated to the underlying {@code linkDefinition}; changing any of them
  * automatically re-registers the click event via {@link #setOnEvent(String)}.
- * A keyboard shortcut can be set with {@code shortcut} using a
- * {@link KeyboardShortcut} value, for example {@code KeyboardShortcut.F1}.
+ * A hotkey can be set with {@code hotkey} using a
+ * {@link Hotkey} value, for example {@code Hotkey.F1}.
  * </p>
  * <p>
  * Additional render options (modal display, animations, scroll behaviour, etc.) are
@@ -48,13 +48,13 @@ class Link extends Label {
     /** The DOM event name that triggers the navigation action. Defaults to {@code "click"}. */
     String eventName
 
-    /** Keyboard shortcut that triggers this link. */
-    KeyboardShortcut shortcut
+    /** Hotkey that triggers this link. */
+    Hotkey hotkey
 
     /**
      * Creates a {@code Link} component from the given argument map.
      * All {@link Label} arguments are supported, plus all {@link LinkDefinition}
-     * properties and an optional {@code shortcut} from {@link KeyboardShortcut}.
+     * properties and an optional {@code hotkey} from {@link Hotkey}.
      * If no {@code action} is provided it defaults to {@code "index"}.
      * An optional {@code onClick} key may specify an action name override for the click event.
      *
@@ -73,7 +73,7 @@ class Link extends Label {
 
         eventName = 'click'
 
-        setShortcut(args.shortcut as KeyboardShortcut)
+        setHotkey(args.hotkey as Hotkey)
         setOnEvent(args.onClick as String)
     }
 
@@ -99,7 +99,8 @@ class Link extends Label {
 
     /**
      * Returns a JSON string of this link's client-side properties, adding its
-     * {@code loading} flag and {@code shortcut} on top of the inherited {@link Label} properties.
+     * {@code loading} flag and client-side {@code hotkey} on top of the inherited
+     * {@link Label} properties.
      *
      * @param properties additional properties to merge
      * @return a JSON representation of all component properties
@@ -108,27 +109,27 @@ class Link extends Label {
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
             loading: loading,
-            shortcut: shortcut?.key,
+            hotkey: hotkey?.key,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
 
-    /** Returns the keyboard shortcut that triggers this link. */
-    KeyboardShortcut getShortcut() { return shortcut }
+    /** Returns the hotkey that triggers this link. */
+    Hotkey getHotkey() { return hotkey }
 
     /**
-     * Sets the keyboard shortcut that triggers this link. Supported values are
-     * {@link KeyboardShortcut#F1} through {@link KeyboardShortcut#F12} and
-     * {@link KeyboardShortcut#ENTER}. Every shortcut requires at least one
+     * Sets the hotkey that triggers this link. Supported values are
+     * {@link Hotkey#F1} through {@link Hotkey#F12} and
+     * {@link Hotkey#ENTER}. Every hotkey requires at least one
      * {@code Ctrl}/{@code Control} or {@code Meta}/{@code Command}. Left and
      * right variants work identically; {@code Shift}, {@code Alt}/{@code Option},
      * and {@code Fn} are not included.
-     * {@code null} clears the shortcut.
+     * {@code null} clears the hotkey.
      *
-     * @param value the shortcut to register
+     * @param value the hotkey to register
      */
-    void setShortcut(KeyboardShortcut value) {
-        shortcut = value
+    void setHotkey(Hotkey value) {
+        hotkey = value
     }
 
     /**

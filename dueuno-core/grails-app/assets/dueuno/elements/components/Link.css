@@ -10,12 +10,12 @@
     cursor: pointer;
 }
 
-.component-link[data-21-shortcut] {
+.component-link[data-21-hotkey] {
     position: relative;
 }
 
-.component-link[data-21-shortcut-active]::after {
-    content: attr(data-21-shortcut);
+.component-link[data-21-hotkey-active]::after {
+    content: attr(data-21-hotkey);
     display: none;
     position: absolute;
     right: .5rem;
@@ -36,7 +36,7 @@
     pointer-events: none;
 }
 
-body.keyboard-shortcuts-visible .component-link[data-21-shortcut-active]::after {
+body.hotkeys-visible .component-link[data-21-hotkey-active]::after {
     display: block;
 }
 

@@ -50,7 +50,7 @@ class PageMessageBox extends Component {
 
     static onKeyDown(event) {
         if (event.key !== 'Enter') return;
-        if (event.target !== PageMessageBox.$self[0] && !KeyPress.isShortcutModifierPressed(event)) return;
+        if (event.target !== PageMessageBox.$self[0] && !KeyPress.isHotkeyModifierPressed(event)) return;
 
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -186,7 +186,7 @@ class PageMessageBox extends Component {
     static show() {
         PageMessageBox.dialog.show('#page-messagebox');
         PageMessageBox.isActive = true;
-        KeyPress.setShortcutsVisible(false);
+        KeyPress.setHotkeysVisible(false);
         Component.setFocus(PageMessageBox.$self.attr('tabindex', '-1'), true);
     }
 
