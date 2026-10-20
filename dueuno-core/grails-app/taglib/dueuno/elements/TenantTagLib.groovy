@@ -19,14 +19,15 @@ import dueuno.tenant.TenantService
 /**
  * @author Gianluca Sartori
  */
-class TenantTagLib {
+class TenantTagLib implements WebRequestAware {
 
     static namespace = "tenant"
 
     TenantService tenantService
 
     def current(Map attrs) {
-        out << tenantService.currentTenantId
+        String tenantId = hasRequest() ? tenantService.getByRequest(request)?.tenantId : null
+        out << (tenantId ?: tenantService.currentTenantId ?: tenantService.defaultTenantId)
     }
 
 }
