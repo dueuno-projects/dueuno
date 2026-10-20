@@ -18,14 +18,14 @@
     content: attr(data-21-shortcut);
     display: none;
     position: absolute;
-    right: -.5rem;
+    right: .5rem;
     bottom: -.5rem;
     z-index: 1;
     padding: .15rem .5rem;
-    color: rgba(var(--elements-main-text), .75);
+    color: rgb(var(--elements-main-text));
     background-color: rgb(var(--elements-main-bg));
     border: 1px solid rgba(var(--elements-main-text), .45);
-    border-bottom: .15rem solid rgba(var(--elements-main-text), .55);
+    border-bottom: .15rem solid rgba(var(--elements-main-text), .50);
     box-shadow: 0 .06rem 0 .1rem rgba(var(--elements-main-text), .65);
     border-radius: var(--bs-border-radius-sm);
     font-family: var(--bs-font-monospace), monospace;
