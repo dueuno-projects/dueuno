@@ -26,8 +26,10 @@ class PageContent extends Component {
         PageContent.updateScrollbar();
 
         PageContent.$scrollbar.off('scroll').on('scroll', PageContent.onScrollbarScroll);
-        $(window).on('scroll', PageContent.onWindowScroll);
-        $(window).on('resize', PageContent.onWindowResize);
+        $(window)
+            .off('scroll.pageContent resize.pageContent')
+            .on('scroll.pageContent', PageContent.onWindowScroll)
+            .on('resize.pageContent', PageContent.onWindowResize);
     }
 
     static onWindowResize(event) {
