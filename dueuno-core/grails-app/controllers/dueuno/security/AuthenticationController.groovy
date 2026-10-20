@@ -23,6 +23,7 @@ import dueuno.elements.pages.PageBlank
 import dueuno.elements.style.Color
 import dueuno.tenant.TenantPropertyService
 import dueuno.tenant.TenantService
+import dueuno.utils.EnvUtils
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -90,8 +91,12 @@ class AuthenticationController implements ElementsController {
                 passwordRecoveryUrl          : tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
                 oidcProviders                : oidcProviders,
                 physicalAuthenticationEnabled: physicalAuthenticationEnabled,
-                tenantId                     : tenantId.toUpperCase(),
             ]
+
+            if (EnvUtils.isDevelopment()) {
+                loginArgs += [tenantId: tenantId.toUpperCase()]
+            }
+
             display page: createPage(Login, loginArgs)
         }
     }
