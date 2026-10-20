@@ -31,8 +31,15 @@ function getOS() {
     );
 }
 
-function enableSimpleBar($element) {
+function mountSimpleBar($element) {
     new SimpleBar($element);
+}
+
+function unmountSimpleBar($element) {
+    let simpleBar = SimpleBar.instances.get($element);
+    if (simpleBar) {
+        simpleBar.unMount();
+    }
 }
 
 function capitalize(val) {

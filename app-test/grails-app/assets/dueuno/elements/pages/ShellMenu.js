@@ -2,7 +2,7 @@ class ShellMenu extends Component {
 
     static initialize($element, $root) {
         let $menu = $('#shell-menu-items');
-        enableSimpleBar($menu[0]);
+        mountSimpleBar($menu[0]);
     }
 
     static finalize($element, $root) {
