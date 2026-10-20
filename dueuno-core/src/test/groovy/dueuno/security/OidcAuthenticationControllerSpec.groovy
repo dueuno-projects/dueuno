@@ -25,8 +25,8 @@ class OidcAuthenticationControllerSpec extends Specification {
     void 'keeps server response bodies unchanged in response details'() {
         given:
         OidcAuthenticationController controller = new OidcAuthenticationController()
-        Method responseDetails = OidcAuthenticationController.getDeclaredMethod('responseDetails', List)
-        responseDetails.accessible = true
+        Method formatResponse = OidcAuthenticationController.getDeclaredMethod('formatResponse', Map)
+        formatResponse.accessible = true
         String body = '{"error":"invalid_grant","error_description":"Code expired"}'
         Map serverResponse = [
             status : 400,
@@ -36,10 +36,10 @@ class OidcAuthenticationControllerSpec extends Specification {
         ]
 
         when:
-        String details = responseDetails.invoke(controller, (Object) [serverResponse]) as String
+        String details = formatResponse.invoke(controller, serverResponse) as String
 
         then:
-        details == "OIDC server responses:\nHTTP 400 from https://issuer.example.org/token\nHeaders:\ncontent-type: application/json\nBody:\n${body}"
+        details == "HTTP 400 from https://issuer.example.org/token\nHeaders:\ncontent-type: application/json\nBody:\n${body}"
     }
 
     void 'formats response bodies as readable and escaped HTML'() {
