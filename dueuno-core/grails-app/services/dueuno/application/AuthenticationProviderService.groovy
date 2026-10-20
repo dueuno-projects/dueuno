@@ -97,7 +97,7 @@ class AuthenticationProviderService implements WebRequestAware {
             ],
             [
                 providerType: AuthenticationProviderType.REMEMBERME,
-                sequence    : 999,
+                sequence    : 99,
                 enabled     : true,
             ],
         ]
