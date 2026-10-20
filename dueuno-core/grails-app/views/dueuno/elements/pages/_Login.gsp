@@ -29,6 +29,12 @@
 
 </div>
 
+<g:if test="${c.tenantId}">
+    <div class="page-login-tenant">
+        <render:message code="authentication.tenant" args="${[c.tenantId]}"/>
+    </div>
+</g:if>
+
 </div>
 
 <page:footer component="${c}" />

@@ -22,7 +22,6 @@ import dueuno.elements.controls.PasswordField
 import dueuno.elements.controls.TextField
 import dueuno.elements.core.KeyPress
 import dueuno.elements.core.Page
-import dueuno.elements.style.Color
 import dueuno.elements.style.TextAlign
 import dueuno.security.AuthenticationProviderType
 import groovy.transform.CompileStatic
@@ -42,6 +41,7 @@ class Login extends Page {
     String passwordRecoveryUrl
     String googleLoginUrl
     List<Map> oidcProviders = []
+    String tenantId
 
     String backgroundImage
     String logoImage
@@ -65,6 +65,7 @@ class Login extends Page {
         passwordRecoveryUrl = args.passwordRecoveryUrl
         googleLoginUrl = args.googleLoginUrl
         oidcProviders = (args.oidcProviders ?: []) as List<Map>
+        tenantId = args.tenantId as String
 
         logoImage = args.logoImage
         backgroundImage = args.backgroundImage

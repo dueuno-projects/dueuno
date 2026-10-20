@@ -37,6 +37,101 @@ class UserProfileController implements ElementsController {
     TenantPropertyService tenantPropertyService
     SecurityService securityService
 
+    def index() {
+        def c = createContent(ContentForm)
+        c.header.with {
+            nextButton.action = 'onSave'
+            nextButton.text = TextDefault.SAVE
+            removeBackButton()
+        }
+
+        c.form.with {
+            if (devDisplayHints) {
+                addField(
+                    class: Textarea,
+                    id: 'authorities',
+                    text: '',
+                    readonly: true,
+                    cols: 12,
+                )
+            }
+            addField(
+                class: TextField,
+                id: 'username',
+                readonly: true,
+                icon: 'fa-user',
+                cols: 6,
+            )
+            addField(
+                class: TextField,
+                id: 'tenant.tenantId',
+                readonly: true,
+                icon: 'fa-house-user',
+                cols: 6,
+            )
+            addField(
+                class: TextField,
+                id: 'firstname',
+                cols: 6,
+            )
+            addField(
+                class: TextField,
+                id: 'lastname',
+                cols: 6,
+            )
+            addField(
+                class: Separator,
+                id: 'notifications',
+                icon: 'fa-comment',
+            )
+            addField(
+                class: EmailField,
+                id: 'email',
+                cols: 6,
+            )
+            addField(
+                class: TelephoneField,
+                id: 'telephone',
+                cols: 6,
+            )
+        }
+
+        buildPreferencesForm(c)
+
+        def canChangePassword = tenantPropertyService.getBoolean('USER_CAN_CHANGE_PASSWORD')
+        if (canChangePassword) {
+            c.form.with {
+                addField(
+                    class: Separator,
+                    id: 'change.password',
+                    icon: 'fa-key',
+                )
+                addField(
+                    class: PasswordField,
+                    id: 'newPassword',
+                    cols: 6,
+                )
+                addField(
+                    class: PasswordField,
+                    id: 'confirmNewPassword',
+                    cols: 6,
+                )
+            }
+
+        }
+
+        def obj = securityService.getCurrentUser(true)
+        if (obj) {
+            c.form.values = obj
+        }
+
+        if (devDisplayHints) {
+            c.form['authorities'].value = securityService.getCurrentUserAuthorities().join(',\n') + '.'
+        }
+
+        display content: c, modal: true
+    }
+
     private buildPreferencesForm(ContentForm c) {
         c.form.with {
             addField(
@@ -141,93 +236,6 @@ class UserProfileController implements ElementsController {
                 cols: 4,
             )
         }
-    }
-
-    def index() {
-        def c = createContent(ContentForm)
-        c.header.with {
-            nextButton.action = 'onSave'
-            nextButton.text = TextDefault.SAVE
-            removeBackButton()
-        }
-
-        c.form.with {
-            if (devDisplayHints) {
-                addField(
-                    class: Textarea,
-                    id: 'authorities',
-                    text: '',
-                    readonly: true,
-                    cols: 12,
-                )
-            }
-            addField(
-                class: TextField,
-                id: 'username',
-                readonly: true,
-                icon: 'fa-user',
-            )
-            addField(
-                class: TextField,
-                id: 'firstname',
-                cols: 6,
-            )
-            addField(
-                class: TextField,
-                id: 'lastname',
-                cols: 6,
-            )
-            addField(
-                class: Separator,
-                id: 'notifications',
-                icon: 'fa-comment',
-            )
-            addField(
-                class: EmailField,
-                id: 'email',
-                cols: 6,
-            )
-            addField(
-                class: TelephoneField,
-                id: 'telephone',
-                cols: 6,
-            )
-        }
-
-        buildPreferencesForm(c)
-
-        def canChangePassword = tenantPropertyService.getBoolean('USER_CAN_CHANGE_PASSWORD')
-        if (canChangePassword) {
-            c.form.with {
-                addField(
-                    class: Separator,
-                    id: 'change.password',
-                    icon: 'fa-key',
-                )
-                addField(
-                    class: PasswordField,
-                    id: 'newPassword',
-                    cols: 6,
-                )
-                addField(
-                    class: PasswordField,
-                    id: 'confirmNewPassword',
-                    cols: 6,
-                )
-            }
-
-        }
-
-        def obj = securityService.getCurrentUser(true)
-        if (obj) {
-            c.form.values = obj
-        }
-
-        if (devDisplayHints) {
-            c.form['authorities'].value = securityService.getCurrentUserAuthorities().join(',\n') + '.'
-        }
-
-        display content: c, modal: true
     }
 
     def onSave(UserProfileValidator val) {

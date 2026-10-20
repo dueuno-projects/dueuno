@@ -90,6 +90,7 @@ class AuthenticationController implements ElementsController {
                 passwordRecoveryUrl          : tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
                 oidcProviders                : oidcProviders,
                 physicalAuthenticationEnabled: physicalAuthenticationEnabled,
+                tenantId                     : tenantId.toUpperCase(),
             ]
             display page: createPage(Login, loginArgs)
         }

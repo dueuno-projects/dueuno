@@ -54,6 +54,18 @@ body, html {
     color: rgb(var(--elements-required-text));
 }
 
+.page-login-tenant {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1;
+    padding: .5rem .75rem;
+    border-radius: var(--bs-border-radius);
+    background-color: rgba(var(--elements-main-bg), .8);
+    box-shadow: 0 .25rem .75rem rgba(var(--bs-body-color-rgb), .15);
+    font-size: .875rem;
+}
+
 .page-login .input-group:has(#username),
 .page-login .input-group:has(#username) > * {
     border-top-left-radius: var(--bs-border-radius);

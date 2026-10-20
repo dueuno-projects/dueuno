@@ -17,6 +17,7 @@ package dueuno.security
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
 import dueuno.elements.ElementsController
+import dueuno.elements.components.Label
 import dueuno.elements.components.Separator
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
@@ -27,6 +28,7 @@ import dueuno.elements.controls.*
 import dueuno.elements.core.PrettyPrinterDecimalFormat
 import dueuno.elements.style.GuiStyle
 import dueuno.elements.style.TextDefault
+import dueuno.elements.style.TextStyle
 import dueuno.tenant.TenantPropertyService
 import dueuno.tenant.TenantService
 import grails.plugin.springsecurity.annotation.Secured
@@ -74,12 +76,21 @@ class UserController implements ElementsController {
                         optionsFromRecordset: tenantService.list(),
                         cols: 2,
                     )
+                } else {
+                    addField(
+                        class: Label,
+                        id: 'tenant',
+                        text: tenantService.currentTenantId,
+                        textStyle: TextStyle.BOLD,
+                        backgroundColor: mainBackgroundColor,
+                        cols: 2,
+                    )
                 }
                 addField(
                     class: TextField,
                     id: 'find',
                     label: TextDefault.FIND,
-                    cols: isSuperAdmin ? 8 : 10,
+                    cols: 8,
                 )
                 addField(
                     class: Select,
@@ -553,7 +564,7 @@ class UserController implements ElementsController {
 
     def onEdit() {
         normalizeInput(params)
-        def obj = securityService.updateUserAndGroups(params)
+        def obj = securitFyService.updateUserAndGroups(params)
 
         if (obj.hasErrors()) {
             display errors: obj
