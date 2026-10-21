@@ -20,3 +20,6 @@ trim_trailing_whitespace = true
 
 [*.{yml,yaml}]
 indent_size = 2
+
+[*.gsp]
+insert_final_newline = false
