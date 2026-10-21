@@ -289,4 +289,36 @@ class TableFilters extends Form {
         prettyValues = prettyResults
         return results
     }
+
+    /**
+     * Sets the value of the specified filter control and synchronises it with the action
+     * session and request parameters.
+     *
+     * @param id the identifier of the filter control
+     * @param value the value to assign to the control
+     */
+    void setValue(String id, Object value) {
+        controls[id].value = value
+        actionSession[id] = value
+        requestParams[id] = value
+    }
+
+    /**
+     * Returns the current value of the specified filter control after applying its
+     * initialization rules, including request parameters, the action session, default
+     * values, and filter reset requests.
+     *
+     * @param id the identifier of the filter control
+     * @return the filter value, or {@code null} if no control has the specified identifier
+     */
+    Object getValue(String id) {
+        Control control = controls[id]
+        if (!control) {
+            return null
+        }
+
+        initializeFilter(control)
+        return control.value
+    }
+
 }
