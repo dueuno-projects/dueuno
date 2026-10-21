@@ -5,7 +5,7 @@
      data-21-events="${c.eventsAsJSON}"
 >
     <g:if test="${c.component.getClassName() != 'HiddenField'}">
-        <label for="${c.component.getId()}" class="form-label text-truncate overflow-x-hidden pe-1 ${dev.displayHints() == 'true' ? 'dev' : ''} ${c.displayLabel ? '' : 'd-none'}">
+        <label class="form-label text-truncate overflow-x-hidden pe-1 ${dev.displayHints() == 'true' ? 'dev' : ''} ${c.displayLabel ? '' : 'd-none'}">
             <g:if test="${dev.displayHints() == 'true'}">
                 <span>${c.message(c.label, c.labelArgs)}&nbsp;(${c.component.getId()}, ${c.id})</span><i class="fa-solid fa-asterisk fa-2xs ps-1 ${c.nullable ? 'd-none' : ''}"></i>
             </g:if>
