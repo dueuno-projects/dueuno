@@ -782,6 +782,12 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     private TUser createUserInTenant(Map args, TTenant tenant, List<String> groups, String defaultGroup) {
         log.info "'${tenant.tenantId.toUpperCase()}' TENANT - Creating user '${args.username}' in groups ${groups} (default '${defaultGroup}')"
 
+        if (args.username == USERNAME_SUPERADMIN && tenant.tenantId != tenantService.defaultTenantId) {
+            TUser user = new TUser(tenant: tenant, username: args.username as String)
+            user.errors.rejectValue('username', 'user.username.superadmin.reserved')
+            return user
+        }
+
         TUser user = TUser.findByTenantAndUsername(tenant, args.username as String)
         if (user) {
             log.warn "'${tenant.tenantId.toUpperCase()}' TENANT - User '${args.username}' already exists, skipping user creation."
