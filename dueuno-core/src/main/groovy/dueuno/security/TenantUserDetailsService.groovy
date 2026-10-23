@@ -15,8 +15,8 @@
 package dueuno.security
 
 import dueuno.elements.WebRequestAware
-import dueuno.tenant.TTenant
 import dueuno.tenant.TenantService
+import dueuno.tenant.TTenant
 import grails.gorm.multitenancy.Tenants
 import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -24,6 +24,7 @@ import grails.plugin.springsecurity.userdetails.GormUserDetailsService
 import grails.plugin.springsecurity.userdetails.NoStackUsernameNotFoundException
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
+import jakarta.inject.Inject
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -34,11 +35,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 @CompileStatic
 class TenantUserDetailsService extends GormUserDetailsService implements WebRequestAware {
 
+    @Inject
+    TenantService tenantService
+
     @Override
     @CompileDynamic
     @Transactional(readOnly = true, noRollbackFor = [IllegalArgumentException, UsernameNotFoundException])
     UserDetails loadUserByUsername(String username, boolean loadRoles) throws UsernameNotFoundException {
-        TTenant tenant = resolveTenant()
+        TTenant tenant = SecurityService.USERNAME_SUPERADMIN.equalsIgnoreCase(username)
+            ? tenantService.getByTenantId(TenantService.defaultTenantId)
+            : resolveTenant()
         if (!tenant) {
             throw new NoStackUsernameNotFoundException()
         }

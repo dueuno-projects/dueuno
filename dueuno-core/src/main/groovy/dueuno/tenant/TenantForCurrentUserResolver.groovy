@@ -15,11 +15,14 @@
 package dueuno.tenant
 
 import dueuno.elements.WebRequestAware
+import dueuno.security.SecurityService
 import dueuno.security.TUser
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.grails.datastore.mapping.multitenancy.TenantResolver
 import org.grails.datastore.mapping.multitenancy.exceptions.TenantNotFoundException
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 
 /**
@@ -43,6 +46,11 @@ class TenantForCurrentUserResolver implements TenantResolver, WebRequestAware {
             TUser user = session['_21CurrentUser'] as TUser
             if (user) {
                 return user.tenant.tenantId
+            }
+
+            Authentication authentication = SecurityContextHolder.context.authentication
+            if (authentication?.authenticated && SecurityService.USERNAME_SUPERADMIN.equalsIgnoreCase(authentication.name)) {
+                return TenantService.defaultTenantId
             }
 
             return tenantService.getByRequest(request)?.tenantId
