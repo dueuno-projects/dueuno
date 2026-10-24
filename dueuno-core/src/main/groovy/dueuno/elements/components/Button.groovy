@@ -152,6 +152,16 @@ class Button extends Component {
         defaultAction.action = value
     }
 
+    /** Returns the client-side function name of the default action. */
+    String getCall() {
+        return defaultAction.call
+    }
+
+    /** Sets the client-side function name of the default action. */
+    void setCall(String value) {
+        defaultAction.call = value
+    }
+
     /** Returns the hotkey that triggers the default action. */
     Hotkey getHotkey() {
         return defaultAction.hotkey
@@ -363,7 +373,7 @@ class Button extends Component {
      */
     void setConfirmMessage(String value) {
         defaultAction.confirmMessage = value
-        defaultAction.confirmMessageOnConfirm = new ComponentEvent(defaultAction.link.linkDefinition.asMap())
+        defaultAction.confirmMessageOnConfirm = new ComponentEvent(defaultAction.link.componentAction.asMap())
     }
 
     /**

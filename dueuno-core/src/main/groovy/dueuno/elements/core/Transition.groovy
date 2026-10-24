@@ -146,7 +146,7 @@ class Transition implements WebRequestAware {
      * Adds a redirect command to this transition, causing the browser to navigate
      * to the URL or controller/action described by {@code args}.
      *
-     * @param args a map of link definition parameters (e.g. {@code controller}, {@code action},
+     * @param args a map of action definition parameters (e.g. {@code controller}, {@code action},
      * {@code url}, {@code params})
      */
     void redirect(Map args) {
@@ -521,7 +521,7 @@ class Transition implements WebRequestAware {
         return command
     }
 
-    private void initializeWithRequestData(LinkDefinition componentEventData) {
+    private void initializeWithRequestData(ComponentAction componentEventData) {
         if (!componentEventData) {
             return
         }

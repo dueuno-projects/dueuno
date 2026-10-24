@@ -235,7 +235,7 @@ class FormController implements ElementsController {
                 class: NumberField,
                 id: 'numberfield',
                 value: 0,
-                cols: 6,
+                cols: 3,
             ).component.addAction(
                 action: 'increment',
                 submit: 'form',
@@ -244,6 +244,20 @@ class FormController implements ElementsController {
             ).addAction(
                 action: 'decrement',
                 submit: 'form',
+                icon: 'fa-minus',
+                text: '',
+            )
+            addField(
+                class: NumberField,
+                id: 'numberfieldJS',
+                value: 0,
+                cols: 3,
+            ).component.addAction(
+                call: 'incrementNumberfieldJS',
+                icon: 'fa-plus',
+                text: '',
+            ).addAction(
+                call: 'decrementNumberfieldJS',
                 icon: 'fa-minus',
                 text: '',
             )

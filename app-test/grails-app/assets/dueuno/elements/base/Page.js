@@ -117,7 +117,7 @@ class Page {
         let $elements = Page.$self.find('[data-21-component][deactivate],[data-21-control][deactivate]');
         for (let element of $elements) {
             let $element = $(element);
-            let component = Elements.getByElement($element);
+            let component = Elements.getComponent($element);
 
             try {
                 if (Elements.hasMethod(component, 'deactivate')) {

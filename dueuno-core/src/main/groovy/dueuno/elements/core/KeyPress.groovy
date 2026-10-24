@@ -35,7 +35,7 @@ import groovy.transform.CompileStatic
  * {@link #getKeyPressed()}.
  * </p>
  * <p>
- * The target controller action is defined by the {@code linkDefinition} and defaults to
+ * The target controller action is defined by the {@code componentAction} and defaults to
  * the {@code keyPress} controller's {@code onKeyPress} action.
  * </p>
  *
@@ -45,8 +45,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class KeyPress extends Component {
 
-    /** The link definition describing the controller action to invoke on key press. */
-    LinkDefinition linkDefinition
+    /** The action definition describing the controller action to invoke on key press. */
+    ComponentAction componentAction
 
     /** Hidden form field used to buffer the characters received from the keyboard or scanner. */
     HiddenField buffer
@@ -90,7 +90,7 @@ class KeyPress extends Component {
      *     <li>{@code bufferTimeout} — buffer auto-clear delay (ms); defaults to {@code 500}</li>
      *     <li>{@code hideInput} — defaults to {@code false}</li>
      *     <li>{@code controller} / {@code action} / {@code namespace} / {@code params} / {@code submit}
-     *         — link definition for the triggered action; defaults to {@code keyPress/onKeyPress}</li>
+     *         — action definition for the triggered action; defaults to {@code keyPress/onKeyPress}</li>
      * </ul>
      *
      * @param args map of component and key-press properties
@@ -114,9 +114,9 @@ class KeyPress extends Component {
         // avoid writing text if focus is on an "input" element (default false)
         hideInput = args.hideInput == null ? false : args.hideInput
 
-        linkDefinition = new LinkDefinition(args)
-        linkDefinition.controller = args.controller ?: 'keyPress'
-        linkDefinition.action = args.action ?: 'onKeyPress'
+        componentAction = new ComponentAction(args)
+        componentAction.controller = args.controller ?: 'keyPress'
+        componentAction.action = args.action ?: 'onKeyPress'
 
         buffer = createControl(
             class: HiddenField,
@@ -138,11 +138,11 @@ class KeyPress extends Component {
 
     /**
      * (Re-)registers the {@code keypress} event on this component using the current
-     * {@code linkDefinition}. Called automatically on construction and whenever the
-     * link definition is modified.
+     * {@code componentAction}. Called automatically on construction and whenever the
+     * action definition is modified.
      */
     private void setOnKeyPressEvent() {
-        Map event = linkDefinition.properties
+        Map event = componentAction.properties
         Map eventOverride = [
                 event: 'keypress',
         ] as Map
@@ -174,7 +174,7 @@ class KeyPress extends Component {
      * @return the namespace, or an empty string if none is set
      */
     String getNamespace() {
-        return linkDefinition.namespace
+        return componentAction.namespace
     }
 
     /**
@@ -183,7 +183,7 @@ class KeyPress extends Component {
      * @param value the namespace to set
      */
     void setNamespace(String value) {
-        linkDefinition.namespace = value
+        componentAction.namespace = value
         setOnKeyPressEvent()
     }
 
@@ -193,7 +193,7 @@ class KeyPress extends Component {
      * @return the controller name
      */
     String getController() {
-        return linkDefinition.controller
+        return componentAction.controller
     }
 
     /**
@@ -202,7 +202,7 @@ class KeyPress extends Component {
      * @param value the controller name to set
      */
     void setController(String value) {
-        linkDefinition.controller = value
+        componentAction.controller = value
         setOnKeyPressEvent()
     }
 
@@ -212,7 +212,7 @@ class KeyPress extends Component {
      * @return the action name
      */
     String getAction() {
-        return linkDefinition.action
+        return componentAction.action
     }
 
     /**
@@ -221,7 +221,7 @@ class KeyPress extends Component {
      * @param value the action name to set
      */
     void setAction(String value) {
-        linkDefinition.action = value
+        componentAction.action = value
         setOnKeyPressEvent()
     }
 
@@ -231,7 +231,7 @@ class KeyPress extends Component {
      * @return the parameters map
      */
     Map getParams() {
-        return linkDefinition.params
+        return componentAction.params
     }
 
     /**
@@ -240,7 +240,7 @@ class KeyPress extends Component {
      * @param value the parameters map to set
      */
     void setParams(Map value) {
-        linkDefinition.params = value
+        componentAction.params = value
         setOnKeyPressEvent()
     }
 
@@ -250,7 +250,7 @@ class KeyPress extends Component {
      * @return the submit component name list
      */
     List<String> getSubmit() {
-        return linkDefinition.submit
+        return componentAction.submit
     }
 
     /**
@@ -259,7 +259,7 @@ class KeyPress extends Component {
      * @param value the submit component name list
      */
     void setSubmit(List<String> value) {
-        linkDefinition.submit = value
+        componentAction.submit = value
         setOnKeyPressEvent()
     }
 }

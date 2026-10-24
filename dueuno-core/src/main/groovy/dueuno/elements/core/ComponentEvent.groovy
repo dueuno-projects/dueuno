@@ -19,9 +19,9 @@ import dueuno.types.Types
 import groovy.transform.CompileStatic
 
 /**
- * Describes a server-side action to invoke in response to a client-side component event.
+ * Describes a server-side action or client-side function to invoke in response to a client-side component event.
  * <p>
- * A {@code ComponentEvent} extends {@link LinkDefinition} with an {@code on} field
+ * A {@code ComponentEvent} extends {@link ComponentAction} with an {@code on} field
  * that specifies which DOM event (e.g. {@code "click"}, {@code "change"}) should trigger the
  * action. It is used to bind controller actions to UI interactions such as button clicks,
  * selection changes, or any other browser event exposed by a component.
@@ -36,14 +36,14 @@ import groovy.transform.CompileStatic
  */
 
 @CompileStatic
-class ComponentEvent extends LinkDefinition {
+class ComponentEvent extends ComponentAction {
 
     /** The name of the DOM event that triggers the action (e.g. {@code "click"}, {@code "change"}). Defaults to {@code "click"}. */
     String on
 
     /**
      * Creates a {@code ComponentEvent} from a map of arguments.
-     * All {@link LinkDefinition} properties are supported, plus:
+     * All {@link ComponentAction} properties are supported, plus:
      * <ul>
      *     <li>{@code on} — the triggering DOM event name (defaults to {@code "click"})</li>
      * </ul>
@@ -78,6 +78,7 @@ class ComponentEvent extends LinkDefinition {
             namespace       : namespace,
             controller      : controller,
             action          : action,
+            call            : call,
             url             : url,
             params          : Types.serialize(params),
             submit          : submit,

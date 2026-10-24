@@ -27,24 +27,74 @@ class Elements {
         Page.render();
     }
 
-    static getId($element) {
+    static getComponentId($element) {
         return $element.data('21-id');
     }
 
-    static getById(id) {
-        let $element = Elements.getElementById(id);
-        return Elements.getByElement($element);
+    static getComponentById(componentId) {
+        let $element = Elements.getElementById(componentId);
+        return Elements.getComponent($element);
     }
 
-    static getElementById(id, $root) {
+    static getElementById(componentId, $root) {
         if (!$root) {
             $root = Page.$self;
         }
 
-        return $root.find('[data-21-id="' + id + '"]');
+        return $root.find('[data-21-id="' + componentId + '"]');
     }
 
-    static getByElement($element) {
+    static getElement(componentId) {
+        if (!componentId) {
+            return $();
+        }
+
+        const roots = {
+            page: Page.$self,
+            messagebox: PageMessageBox.$self,
+            modal: PageModal.$self,
+            content: $.merge(PageContent.$self, PageStickyBox.$self),
+        };
+
+        const parts = componentId.split('.');
+        let $root;
+
+        // A recognized root is handled separately.
+        if (roots[parts[0]]) {
+            $root = roots[parts.shift()];
+
+            // The component ID is exactly the root.
+            if (parts.length === 0) {
+                return $root;
+            }
+
+        } else {
+            $root = PageModal.isActive
+                ? PageModal.$self
+                : $.merge(PageContent.$self, PageStickyBox.$self);
+        }
+
+        for (let i = 0; i < parts.length; i++) {
+            const id = parts.slice(i).join('.');
+
+            // First try the complete remaining ID.
+            const $component = $root.find('[data-21-id="' + CSS.escape(id) + '"]');
+            if ($component.length) {
+                return $component;
+            }
+
+            // Move into the first component and continue searching.
+            $root = $root.find('[data-21-id="' + CSS.escape(parts[i]) + '"]');
+            if (!$root.length) {
+                break;
+            }
+        }
+
+        log.error(`Cannot find component "${componentId}"`);
+        return $();
+    }
+
+    static getComponent($element) {
         return Control.getByElement($element)
             ?? Component.getByElement($element)
             ?? Page.get();

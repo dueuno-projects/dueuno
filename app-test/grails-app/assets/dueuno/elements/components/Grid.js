@@ -10,13 +10,13 @@ class Grid extends Component {
 
         for (let column of $columns) {
             let $column = $(column);
-            let id = Elements.getId($column);
+            let id = Elements.getComponentId($column);
             columnsToRemove.push(id);
         }
 
         for (let newColumn of $newColumns) {
             let $newColumn = $(newColumn);
-            let id = Elements.getId($newColumn);
+            let id = Elements.getComponentId($newColumn);
 
             let $column = Elements.getElementById(id);
             if ($column.length) {

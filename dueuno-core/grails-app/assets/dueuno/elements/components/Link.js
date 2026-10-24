@@ -11,6 +11,26 @@ class Link extends Label {
         return componentEvent && componentEvent['target'] && componentEvent['target'] != '_self';
     }
 
+    static executeCall(call) {
+        let context = window;
+        let path = call.split('.');
+        let functionName = path.pop();
+
+        for (let property of path) {
+            context = context?.[property];
+            if (context == null) {
+                break;
+            }
+        }
+
+        let functionToCall = context?.[functionName];
+        if (typeof functionToCall === 'function') {
+            functionToCall.call(context);
+        } else {
+            log.error("Cannot find client-side function '" + call + "'.");
+        }
+    }
+
     static onClick(event) {
         event.preventDefault();
 
@@ -35,7 +55,7 @@ class Link extends Label {
         }
 
         // Open a on a different target tab
-        if (Link.hasTarget(componentEvent)) {
+        if (!componentEvent['call'] && Link.hasTarget(componentEvent)) {
             let url = Transition.buildUrl(componentEvent);
             let queryString = Transition.buildQueryString(componentEvent);
             window.open(url + queryString, componentEvent['target']);
@@ -51,6 +71,9 @@ class Link extends Label {
 
         } else if (componentEvent['infoMessage']) {
             PageMessageBox.info(null, componentEvent);
+
+        } else if (componentEvent['call']) {
+            Link.executeCall(componentEvent['call']);
 
         } else {
             if (componentEvent.renderProperties) {

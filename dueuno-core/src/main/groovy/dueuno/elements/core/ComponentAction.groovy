@@ -18,14 +18,17 @@ package dueuno.elements.core
 import groovy.transform.CompileStatic
 
 /**
- * Base class that holds all the properties needed to define a navigable link or
- * server-side action invocation within the Elements framework.
+ * Describes an action exposed through an Elements UI component. The client can
+ * invoke a controller action, navigate to a URL, or call a JavaScript function.
+ * The action is associated with the component interaction; it does not describe
+ * an operation performed on the component itself.
  * <p>
- * A {@code LinkDefinition} can describe a target in one of two ways:
+ * A {@code ComponentAction} can describe a target in one of three ways:
  * </p>
  * <ul>
  *     <li>As a Grails controller/action pair (optionally namespaced), with request parameters.</li>
  *     <li>As an explicit URL, which is always treated as a direct link by default.</li>
+ *     <li>As a client-side JavaScript function name to call instead of navigating.</li>
  * </ul>
  * <p>
  * Additional properties control how the response is rendered ({@code direct},
@@ -38,7 +41,7 @@ import groovy.transform.CompileStatic
  */
 
 @CompileStatic
-class LinkDefinition implements Serializable {
+class ComponentAction implements Serializable {
 
     /** The namespace of the controller to use in the link. */
     String namespace
@@ -48,6 +51,9 @@ class LinkDefinition implements Serializable {
 
     /** The name of the action to link to; defaults to {@code "index"}. */
     String action
+
+    /** The name of a client-side JavaScript function to call instead of navigating. */
+    String call
 
     /** A map of request parameters to include in the link. */
     Map params
@@ -92,7 +98,7 @@ class LinkDefinition implements Serializable {
     Map confirmMessageOnConfirm
 
     /**
-     * Creates a {@code LinkDefinition} from a map of arguments.
+     * Creates a {@code ComponentAction} from a map of arguments.
      * Supported keys mirror the field names of this class. If {@code url} is provided
      * and {@code direct} is not explicitly set, {@code direct} defaults to {@code true}.
      * {@code renderProperties} can be passed as a {@link PageRenderProperties} instance
@@ -100,10 +106,11 @@ class LinkDefinition implements Serializable {
      *
      * @param args map of link properties
      */
-    LinkDefinition(Map args = [:]) {
+    ComponentAction(Map args = [:]) {
         namespace = args.namespace ?: ''
         controller = args.controller ?: ''
         action = args.action ?: 'index'
+        call = args.call
         fragment = args.fragment ?: ''
         path = args.path ?: ''
         url = args.url ?: ''
@@ -204,17 +211,18 @@ class LinkDefinition implements Serializable {
     }
 
     /**
-     * Serialises the link definition to a map suitable for JSON encoding.
+     * Serialises the action definition to a map suitable for JSON encoding.
      * Only the properties relevant to the frontend are included; interpolation
      * argument lists and path/fragment fields are omitted.
      *
-     * @return a map representation of this link definition
+     * @return a map representation of this action definition
      */
     Map asMap() {
         return [
             namespace       : namespace,
             controller      : controller,
             action          : action,
+            call            : call,
             url             : url,
             params          : params,
             submit          : submit,

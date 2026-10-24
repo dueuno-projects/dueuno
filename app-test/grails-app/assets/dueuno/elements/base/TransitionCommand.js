@@ -98,7 +98,7 @@ class TransitionCommand {
             top = document.body.scrollHeight;
 
         } else { // Scroll to top of the specified component
-            let $element = Transition.getTargetElement(path);
+            let $element = Elements.getElement(path);
             if (!$element.exists()) {
                 return;
             }
@@ -187,7 +187,7 @@ class TransitionCommand {
             return;
         }
 
-        let $element = Transition.getTargetElement(path.join('.'));
+        let $element = Elements.getElement(path.join('.'));
         Component.setFocus($element, true);
     }
 

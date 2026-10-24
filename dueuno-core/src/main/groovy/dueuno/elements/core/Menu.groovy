@@ -384,49 +384,54 @@ class Menu extends Component {
     /** Sets the hotkey that triggers this menu item's link. */
     void setHotkey(Hotkey value) { link.hotkey = value }
 
-    /** @see LinkDefinition#target */
+    /** @see ComponentAction#target */
     String getTarget() { return link.target }
-    /** @see LinkDefinition#target */
+    /** @see ComponentAction#target */
     void setTarget(String value) { link.target = value }
 
-    /** @see LinkDefinition#getTargetNew() */
+    /** @see ComponentAction#getTargetNew() */
     Boolean getTargetNew() { return link.targetNew }
-    /** @see LinkDefinition#setTargetNew(Boolean) */
+    /** @see ComponentAction#setTargetNew(Boolean) */
     void setTargetNew(Boolean value) { link.targetNew = value }
 
-    /** @see LinkDefinition#namespace */
+    /** @see ComponentAction#namespace */
     String getNamespace() { return link.namespace }
-    /** @see LinkDefinition#namespace */
+    /** @see ComponentAction#namespace */
     void setNamespace(String value) { link.namespace = value }
 
-    /** @see LinkDefinition#controller */
+    /** @see ComponentAction#controller */
     String getController() { return link.controller }
-    /** @see LinkDefinition#controller */
+    /** @see ComponentAction#controller */
     void setController(String value) { link.controller = value }
 
-    /** @see LinkDefinition#action */
+    /** @see ComponentAction#action */
     String getAction() { return link.action }
-    /** @see LinkDefinition#action */
+    /** @see ComponentAction#action */
     void setAction(String value) { link.action = value }
 
-    /** @see LinkDefinition#params */
+    /** @see ComponentAction#call */
+    String getCall() { return link.call }
+    /** @see ComponentAction#call */
+    void setCall(String value) { link.call = value }
+
+    /** @see ComponentAction#params */
     Map getParams() { return link.params }
-    /** @see LinkDefinition#params */
+    /** @see ComponentAction#params */
     void setParams(Map value) { link.params = value }
 
-    /** @see LinkDefinition#fragment */
+    /** @see ComponentAction#fragment */
     String getFragment() { return link.fragment }
-    /** @see LinkDefinition#fragment */
+    /** @see ComponentAction#fragment */
     void setFragment(String value) { link.fragment = value }
 
-    /** @see LinkDefinition#path */
+    /** @see ComponentAction#path */
     String getPath() { return link.path }
-    /** @see LinkDefinition#path */
+    /** @see ComponentAction#path */
     void setPath(String value) { link.path = value }
 
-    /** @see LinkDefinition#url */
+    /** @see ComponentAction#url */
     String getUrl() { return link.url }
-    /** @see LinkDefinition#url */
+    /** @see ComponentAction#url */
     void setUrl(String value) { link.url = value }
 
     /** The icon identifier displayed on this menu item's link. */
@@ -444,9 +449,9 @@ class Menu extends Component {
     /** Sets the image for this menu item's link. */
     void setImage(String value) { link.image = value }
 
-    /** @see LinkDefinition#submit */
+    /** @see ComponentAction#submit */
     List<String> getSubmit() { return link.submit }
-    /** @see LinkDefinition#submit */
+    /** @see ComponentAction#submit */
     void setSubmit(List<String> value) { link.submit = value }
 
     /** Whether this menu item opens its target in a modal dialog. */
@@ -469,9 +474,9 @@ class Menu extends Component {
     /** Sets the CSS animation applied when navigating to this menu item's target. */
     void setAnimate(String value) { link.animate = value }
 
-    /** @see LinkDefinition#direct */
+    /** @see ComponentAction#direct */
     Boolean getDirect() { return link.direct }
-    /** @see LinkDefinition#direct */
+    /** @see ComponentAction#direct */
     void setDirect(Boolean value) { link.direct = value }
 
     /** Whether a close button is displayed when this menu item's target is shown in a modal. */
@@ -501,24 +506,24 @@ class Menu extends Component {
     /** Sets the interpolation arguments for the menu item's display text. */
     void setTextArgs(List values) { link.textArgs = values }
 
-    /** @see LinkDefinition#loading */
+    /** @see ComponentAction#loading */
     Boolean getLoading() { return link.loading }
-    /** @see LinkDefinition#loading */
+    /** @see ComponentAction#loading */
     void setLoading(Boolean value) { link.loading = value }
 
-    /** @see LinkDefinition#infoMessage */
+    /** @see ComponentAction#infoMessage */
     String getInfoMessage() { return link.infoMessage }
-    /** @see LinkDefinition#infoMessage */
+    /** @see ComponentAction#infoMessage */
     void setInfoMessage(String value) { link.infoMessage = value }
-    /** @see LinkDefinition#infoMessageArgs */
+    /** @see ComponentAction#infoMessageArgs */
     void setInfoMessageArgs(List value) { link.infoMessageArgs = value }
 
-    /** @see LinkDefinition#confirmMessage */
+    /** @see ComponentAction#confirmMessage */
     String getConfirmMessage() { return link.confirmMessage }
-    /** @see LinkDefinition#confirmMessage */
+    /** @see ComponentAction#confirmMessage */
     void setConfirmMessage(String value) { link.confirmMessage = value }
-    /** @see LinkDefinition#confirmMessageArgs */
+    /** @see ComponentAction#confirmMessageArgs */
     void setConfirmMessageArgs(List value) { link.confirmMessageArgs = value }
-    /** @see LinkDefinition#confirmMessageOnConfirm */
+    /** @see ComponentAction#confirmMessageOnConfirm */
     void setConfirmMessageOnConfirm(ComponentEvent value) { link.confirmMessageOnConfirm = value }
 }

@@ -27,7 +27,7 @@ import groovy.transform.CompileStatic
  */
 
 @CompileStatic
-class Feature extends LinkDefinition {
+class Feature extends ComponentAction {
 
     private static Integer idCounter = 0
     private Integer id

@@ -69,8 +69,8 @@ class Transition {
     }
 
     static async executeCommand(transition, command, componentEvent) {
-        let $element = Transition.getTargetElement(command.component);
-        let component = Elements.getByElement($element);
+        let $element = Elements.getElement(command.component);
+        let component = Elements.getComponent($element);
         let componentId = command.component;
         let method = command.method;
         let property = command.property;
@@ -127,59 +127,6 @@ class Transition {
                 log.error('Invalid transition command "' + command.method + '"');
                 log.error(JSON.stringify(command));
         }
-    }
-
-    static getTargetElement(componentId) {
-        if (!componentId) {
-            return $();
-        }
-
-        const roots = {
-            page: Page.$self,
-            messagebox: PageMessageBox.$self,
-            modal: PageModal.$self,
-            content: $.merge(PageContent.$self, PageStickyBox.$self),
-        };
-
-        const parts = componentId.split('.');
-
-        let $root;
-
-        // A recognized root is handled separately.
-        if (roots[parts[0]]) {
-            $root = roots[parts.shift()];
-
-            // The component ID is exactly the root.
-            if (parts.length === 0) {
-                return $root;
-            }
-
-        } else {
-            $root = PageModal.isActive
-                ? PageModal.$self
-                : $.merge(PageContent.$self, PageStickyBox.$self);
-        }
-
-        for (let i = 0; i < parts.length; i++) {
-            const id = parts.slice(i).join('.');
-
-            // First try the complete remaining ID.
-            const $component = $root.find('[data-21-id="' + CSS.escape(id) + '"]');
-
-            if ($component.length) {
-                return $component;
-            }
-
-            // Move into the first component and continue searching.
-            $root = $root.find('[data-21-id="' + CSS.escape(parts[i]) + '"]');
-
-            if (!$root.length) {
-                break;
-            }
-        }
-
-        log.error(`Cannot find component "${componentId}"`);
-        return $();
     }
 
     static triggerEvent($element, eventName, async = true) {
@@ -250,7 +197,7 @@ class Transition {
             if (componentEvent['submit']) {
                 let componentIds = componentEvent['submit'];
                 for (let componentId of componentIds) {
-                    let $component = Transition.getTargetElement(componentId);
+                    let $component = Elements.getElement(componentId);
                     let control = Control.getByElement($component)
                     let component = Component.getByElement($component);
 

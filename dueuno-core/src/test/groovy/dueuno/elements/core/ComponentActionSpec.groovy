@@ -18,16 +18,16 @@ package dueuno.elements.core
 
 import spock.lang.Specification
 
-class LinkDefinitionSpec extends Specification {
+class ComponentActionSpec extends Specification {
 
     void defaultsMissingActionToIndex() {
         expect:
-        new LinkDefinition([controller: 'shell']).action == 'index'
+        new ComponentAction([controller: 'shell']).action == 'index'
     }
 
     void preservesExplicitAction() {
         expect:
-        new LinkDefinition([controller: 'shell', action: 'home']).action == 'home'
+        new ComponentAction([controller: 'shell', action: 'home']).action == 'home'
     }
 
     void includesDefaultActionInFeatureId() {
