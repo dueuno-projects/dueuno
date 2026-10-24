@@ -114,6 +114,14 @@ class Button extends Component {
         }
     }
 
+    @Override
+    void setReadonly(Boolean value) {
+        super.setReadonly(value)
+        for (Menu action in actionMenu?.items ?: []) {
+            action.readonly = readonly
+        }
+    }
+
     /**
      * Sets whether this button is rendered as a primary (highlighted) button.
      * When {@code true} and no background colour has been explicitly set, the
@@ -445,7 +453,9 @@ class Button extends Component {
             args.loading = args.loading == null ? defaultAction.loading : args.loading
         }
 
-        return actionMenu.addItem(args)
+        Menu menu = actionMenu.addItem(args)
+        if (readonly) menu.readonly = true
+        return menu
     }
 
     /**
@@ -655,6 +665,7 @@ class Button extends Component {
     void copyActionsFrom(Button fromButton) {
         for (action in fromButton.actionMenu.items) {
             Menu clonedAction = actionMenu.addItem(action.copy())
+            if (readonly) clonedAction.readonly = true
 
             if (action == fromButton.defaultAction) {
                 defaultAction = clonedAction

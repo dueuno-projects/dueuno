@@ -172,7 +172,8 @@ class KeyPress extends Component {
         let $link = $(element);
         let registeredHotkey = Component.getProperty($link, 'hotkey');
         if (typeof registeredHotkey != 'string' || registeredHotkey.toLowerCase() != hotkey ||
-            !Component.getDisplay($link) || !Component.getVisible($link) || Component.getReadonly($link) ||
+            !Component.getDisplay($link) || !Component.getVisible($link) ||
+            Component.getProperty($link, 'readonly') === true || $link.is('[disabled]') ||
             !KeyPress.matchesHotkey(hotkey, event)) {
             return false;
         }

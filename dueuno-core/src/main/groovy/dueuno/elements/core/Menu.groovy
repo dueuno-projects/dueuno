@@ -110,6 +110,15 @@ class Menu extends Component {
         link = (Link) addComponent(Link, id, args)
     }
 
+    @Override
+    void setReadonly(Boolean value) {
+        super.setReadonly(value)
+        if (link) link.readonly = readonly
+        for (Menu item in items) {
+            item.readonly = readonly
+        }
+    }
+
     /**
      * Returns {@code "---"} for separator items or the string representation of the
      * underlying {@link Link} for navigable items.
@@ -151,6 +160,7 @@ class Menu extends Component {
         if (!args.id) args.id = menuId.toString()
         args.order = args.order == null ? this.items.size() + 1 : args.order
         Menu menu = new Menu(args)
+        if (readonly) menu.readonly = true
         addItem(menu)
         return menu
     }
