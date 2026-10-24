@@ -7,6 +7,10 @@ class Link extends Label {
         KeyPress.registerHotkey($element);
     }
 
+    static setReadonly($element, value) {
+        Component.setReadonly($element, value);
+    }
+
     static hasTarget(componentEvent) {
         return componentEvent && componentEvent['target'] && componentEvent['target'] != '_self';
     }
