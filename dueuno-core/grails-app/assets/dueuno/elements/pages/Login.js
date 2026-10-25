@@ -15,7 +15,7 @@ class Login extends Page {
 
         let triggerKey = Component.getProperty(PageKeyPress.$self, 'triggerKey');
         let fieldId = $(event.target).data('21-id');
-        if (Component.getProperty(Page.$self, 'physicalIdEnabled') !== true) {
+        if (Component.getProperty(Page.$self, 'phisicalIdAuthentication') !== true) {
             if (event.key == triggerKey && ['username', 'password'].includes(fieldId)) {
                 event.preventDefault();
                 Login.onClick(event);
@@ -23,14 +23,7 @@ class Login extends Page {
             return;
         }
 
-        let reading = PageKeyPress.readDevice(event, {
-            triggerKey: triggerKey,
-            hideInput: Component.getProperty(PageKeyPress.$self, 'hideInput') === true,
-            averageSpeed: true,
-            minimumCharacters: 2,
-            resetOnControlKeys: true,
-            restoreInputOnRead: true,
-        });
+        let reading = PageKeyPress.readDevice(event);
 
         if (reading.isDevice) {
             event.preventDefault();

@@ -148,7 +148,6 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         tenantPropertyService.setNumber('REMEMBER_ME_DEFAULT_DURATION', 10080) // One week in minutes
 
         tenantPropertyService.setBoolean('REMEMBER_ME_ENABLED', true)
-        tenantPropertyService.setBoolean('LOGIN_AUTOCOMPLETE', true)
         tenantPropertyService.setString('LOGIN_LANDING_URL', '')
         tenantPropertyService.setString('LOGOUT_LANDING_URL', '')
         tenantPropertyService.setString('LOGIN_REGISTRATION_URL', '')

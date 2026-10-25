@@ -33,8 +33,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class Login extends Page {
 
-    Boolean autocomplete
-
     String copy
     String registerUrl
     String passwordRecoveryUrl
@@ -45,18 +43,16 @@ class Login extends Page {
     String backgroundImage
     String logoImage
 
-    Boolean physicalIdEnabled
+    Boolean phisicalIdAuthentication
     Form form
 
     Login(Map args) {
         super(args)
 
         keyPress.enabled = false
-        physicalIdEnabled = args.physicalIdEnabled != null
-            ? args.physicalIdEnabled
+        phisicalIdAuthentication = args.phisicalIdAuthentication != null
+            ? args.phisicalIdAuthentication
             : false
-
-        autocomplete = (args.autocomplete == null) ? false : args.autocomplete
 
         copy = args.copy
         registerUrl = args.registerUrl
@@ -153,7 +149,7 @@ class Login extends Page {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-            physicalIdEnabled: physicalIdEnabled,
+            phisicalIdAuthentication: phisicalIdAuthentication,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

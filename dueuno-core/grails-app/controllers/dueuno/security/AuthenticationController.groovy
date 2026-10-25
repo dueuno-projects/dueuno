@@ -77,7 +77,7 @@ class AuthenticationController implements ElementsController {
                 ]
             } as List<Map>
 
-        def physicalIdEnabled = authenticationProviders.find {
+        def phisicalIdAuthentication = authenticationProviders.find {
             it.providerType == AuthenticationProviderType.PHYSICAL
         }?.enabled ?: false
 
@@ -85,12 +85,11 @@ class AuthenticationController implements ElementsController {
             def loginArgs = [
                 backgroundImage              : tenantPropertyService.getString('LOGIN_BACKGROUND_IMAGE', true),
                 logoImage                    : tenantPropertyService.getString('LOGIN_LOGO', true),
-                autocomplete                 : tenantPropertyService.getBoolean('LOGIN_AUTOCOMPLETE', true),
                 copy                         : tenantPropertyService.getString('LOGIN_COPY', true),
                 registerUrl                  : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
                 passwordRecoveryUrl          : tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
                 oidcProviders                : oidcProviders,
-                physicalIdEnabled            : physicalIdEnabled,
+                phisicalIdAuthentication     : phisicalIdAuthentication,
             ]
 
             if (EnvUtils.isDevelopment()) {

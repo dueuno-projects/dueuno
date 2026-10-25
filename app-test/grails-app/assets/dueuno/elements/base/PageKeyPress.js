@@ -1,14 +1,17 @@
 //= require Component
 
 let PageKeyPress_hotkeys = new Map();
-let PageKeyPress_bufferStates = new Map();
+let PageKeyPress_bufferElement = null;
+let PageKeyPress_bufferState = null;
 
 class PageKeyPress extends Component {
 
     static get hotkeys() { return PageKeyPress_hotkeys }
     static set hotkeys(value) { PageKeyPress_hotkeys = value }
-    static get bufferStates() { return PageKeyPress_bufferStates }
-    static set bufferStates(value) { PageKeyPress_bufferStates = value }
+    static get bufferElement() { return PageKeyPress_bufferElement }
+    static set bufferElement(value) { PageKeyPress_bufferElement = value }
+    static get bufferState() { return PageKeyPress_bufferState }
+    static set bufferState(value) { PageKeyPress_bufferState = value }
     static get READING_SPEED_MS() { return 20 }
     static get BUFFER_TIMEOUT_MS() { return 500 }
 
@@ -29,10 +32,9 @@ class PageKeyPress extends Component {
             .on('keyup.pageKeyPress', PageKeyPress.onKeyUp);
         $(window).off('blur.pageKeyPress').on('blur.pageKeyPress', PageKeyPress.onWindowBlur);
 
-        for (let element of PageKeyPress.bufferStates.keys()) {
-            if (!document.documentElement.contains(element)) {
-                PageKeyPress.bufferStates.delete(element);
-            }
+        if (PageKeyPress.bufferElement && !document.documentElement.contains(PageKeyPress.bufferElement)) {
+            PageKeyPress.bufferElement = null;
+            PageKeyPress.bufferState = null;
         }
 
         PageKeyPress.hotkeys.clear();
@@ -60,8 +62,7 @@ class PageKeyPress extends Component {
             return;
         }
 
-        if (document.body.hasAttribute('data-21-physical-id-enabled') ||
-            !Component.getProperty($element, 'enabled')) {
+        if (!Component.getProperty($element, 'enabled')) {
             return;
         }
 
@@ -73,7 +74,7 @@ class PageKeyPress extends Component {
         }
 
         let hideInput = Component.getProperty($element, 'hideInput') === true;
-        let reading = PageKeyPress.readDevice(event, {triggerKey: triggerKey, hideInput: hideInput});
+        let reading = PageKeyPress.readDevice(event);
         if (reading.isDevice) {
             if (triggerKey.length > 0 && reading.deviceId.length > 0 &&
                 (event.target.tagName == 'A' || event.target.tagName == 'BUTTON')) {
@@ -93,10 +94,10 @@ class PageKeyPress extends Component {
         let $element = PageKeyPress.$self;
         let triggerKey = options.triggerKey != null ? options.triggerKey : Component.getProperty($element, 'triggerKey');
         let hideInput = options.hideInput != null ? options.hideInput : Component.getProperty($element, 'hideInput') === true;
-        let averageSpeed = options.averageSpeed === true;
-        let minimumCharacters = options.minimumCharacters == null ? 1 : options.minimumCharacters;
-        let resetOnControlKeys = options.resetOnControlKeys === true;
-        let restoreInputOnRead = options.restoreInputOnRead === true;
+        let averageSpeed = options.averageSpeed == null ? true : options.averageSpeed === true;
+        let minimumCharacters = options.minimumCharacters == null ? 2 : options.minimumCharacters;
+        let resetOnControlKeys = options.resetOnControlKeys == null ? true : options.resetOnControlKeys === true;
+        let restoreInputOnRead = options.restoreInputOnRead == null ? true : options.restoreInputOnRead === true;
 
         if (triggerKey == null) {
             return {triggered: false, isDevice: false};
@@ -107,13 +108,13 @@ class PageKeyPress extends Component {
         let state = PageKeyPress.getBufferState();
         let timeInterval = state.lastKeyAt == null ? Infinity : now - state.lastKeyAt;
         if (timeInterval > PageKeyPress.BUFFER_TIMEOUT_MS) {
-            state = PageKeyPress.createBufferState();
-            PageKeyPress.bufferStates.set($element[0], state);
+            PageKeyPress.resetBuffer();
+            state = PageKeyPress.getBufferState();
         }
 
         if (resetOnControlKeys && ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) {
-            state = PageKeyPress.createBufferState();
-            PageKeyPress.bufferStates.set($element[0], state);
+            PageKeyPress.resetBuffer();
+            state = PageKeyPress.getBufferState();
         }
 
         let previousKeyAt = state.lastKeyAt;
@@ -190,12 +191,11 @@ class PageKeyPress extends Component {
     static getBufferState() {
         let $element = PageKeyPress.$self;
         let element = $element[0];
-        let state = PageKeyPress.bufferStates.get(element);
-        if (!state) {
-            state = PageKeyPress.createBufferState();
-            PageKeyPress.bufferStates.set(element, state);
+        if (PageKeyPress.bufferElement !== element || !PageKeyPress.bufferState) {
+            PageKeyPress.bufferElement = element;
+            PageKeyPress.bufferState = PageKeyPress.createBufferState();
         }
-        return state;
+        return PageKeyPress.bufferState;
     }
 
     static createBufferState() {
@@ -248,7 +248,8 @@ class PageKeyPress extends Component {
         if (!$element || !$element.length) {
             return;
         }
-        PageKeyPress.bufferStates.set($element[0], PageKeyPress.createBufferState());
+        PageKeyPress.bufferElement = $element[0];
+        PageKeyPress.bufferState = PageKeyPress.createBufferState();
     }
 
     static onKeyUp(event) {
