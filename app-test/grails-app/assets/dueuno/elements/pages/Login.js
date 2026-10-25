@@ -15,7 +15,7 @@ class Login extends Page {
 
         let triggerKey = Component.getProperty(PageKeyPress.$self, 'triggerKey');
         let fieldId = $(event.target).data('21-id');
-        if (Component.getProperty(Page.$self, 'phisicalIdAuthentication') !== true) {
+        if (Component.getProperty(Page.$self, 'phisicalIdEnabled') !== true) {
             if (event.key == triggerKey && ['username', 'password'].includes(fieldId)) {
                 event.preventDefault();
                 Login.onClick(event);
@@ -50,6 +50,9 @@ class Login extends Page {
             username: $username.val(),
             password: $password.val(),
         };
+        if (Component.getProperty(Page.$self, 'rememberMeEnabled') === true) {
+            data['remember-me'] = 'true';
+        }
 
         Login.onLogin(null, data);
     }

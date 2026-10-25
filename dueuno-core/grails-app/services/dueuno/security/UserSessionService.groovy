@@ -21,9 +21,12 @@ import org.apache.catalina.Manager
 import org.apache.catalina.Session
 
 import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
 /**
  * Reads and invalidates authenticated sessions managed by the embedded Tomcat instance.
@@ -33,8 +36,10 @@ class UserSessionService {
 
     private static final String SESSION_KEY_ATTRIBUTE = '_dueunoUserSessionKey'
     private static final String REMEMBER_ME_EXPIRATION_ATTRIBUTE = '_dueunoRememberMeExpirationTime'
+    private static final String REMEMBER_ME_TOKEN_ATTRIBUTE = '_dueunoRememberMeToken'
 
     private volatile Context tomcatContext
+    private final ConcurrentMap<String, Long> revokedRememberMeTokens = new ConcurrentHashMap<>()
 
     void initializeTomcat(Context context) {
         tomcatContext = context
@@ -50,7 +55,7 @@ class UserSessionService {
 
         try {
             if (!cookieValue) {
-                httpSession.removeAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE)
+                clearRememberMeAttributes(httpSession)
                 return
             }
 
@@ -66,7 +71,7 @@ class UserSessionService {
             int firstDelimiter = cookieContents.indexOf(':')
             int secondDelimiter = cookieContents.indexOf(':', firstDelimiter + 1)
             if (firstDelimiter < 0 || secondDelimiter < 0) {
-                httpSession.removeAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE)
+                clearRememberMeAttributes(httpSession)
                 return
             }
 
@@ -75,11 +80,24 @@ class UserSessionService {
                 StandardCharsets.UTF_8,
             )
             httpSession.setAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE, Long.parseLong(expirationValue))
+            httpSession.setAttribute(REMEMBER_ME_TOKEN_ATTRIBUTE, fingerprint(cookieValue))
         } catch (IllegalArgumentException ignored) {
-            httpSession.removeAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE)
+            clearRememberMeAttributes(httpSession)
         } catch (IllegalStateException ignored) {
             // The session may be invalidated while the request is being processed.
         }
+    }
+
+    boolean isRememberMeRevoked(String cookieValue) {
+        if (!cookieValue) return false
+
+        String tokenFingerprint = fingerprint(cookieValue)
+        Long expirationTime = revokedRememberMeTokens.get(tokenFingerprint)
+        if (!expirationTime) return false
+        if (expirationTime > System.currentTimeMillis()) return true
+
+        revokedRememberMeTokens.remove(tokenFingerprint, expirationTime)
+        return false
     }
 
     List<Map<String, Object>> list(String tenantId, Boolean includeAllTenants) {
@@ -156,6 +174,13 @@ class UserSessionService {
                 String userTenantId = user?.tenant?.tenantId
                 if (!user || (!includeAllTenants && userTenantId != tenantId)) return
 
+                String rememberMeToken = httpSession.getAttribute(REMEMBER_ME_TOKEN_ATTRIBUTE) as String
+                Long rememberMeExpirationTime = httpSession.getAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE) as Long
+                if (rememberMeToken && rememberMeExpirationTime && rememberMeExpirationTime > System.currentTimeMillis()) {
+                    removeExpiredRevocations()
+                    revokedRememberMeTokens.put(rememberMeToken, rememberMeExpirationTime)
+                }
+
                 httpSession.invalidate()
                 return
             } catch (IllegalStateException ignored) {
@@ -172,6 +197,25 @@ class UserSessionService {
                 httpSession.setAttribute(SESSION_KEY_ATTRIBUTE, sessionKey)
             }
             return sessionKey
+        }
+    }
+
+    private static void clearRememberMeAttributes(HttpSession httpSession) {
+        httpSession.removeAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE)
+        httpSession.removeAttribute(REMEMBER_ME_TOKEN_ATTRIBUTE)
+    }
+
+    private static String fingerprint(String cookieValue) {
+        byte[] digest = MessageDigest.getInstance('SHA-256').digest(cookieValue.getBytes(StandardCharsets.UTF_8))
+        return Base64.getEncoder().encodeToString(digest)
+    }
+
+    private void removeExpiredRevocations() {
+        long now = System.currentTimeMillis()
+        for (Map.Entry<String, Long> entry in revokedRememberMeTokens.entrySet()) {
+            if (entry.value <= now) {
+                revokedRememberMeTokens.remove(entry.key, entry.value)
+            }
         }
     }
 

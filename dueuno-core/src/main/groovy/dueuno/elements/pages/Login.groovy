@@ -43,15 +43,17 @@ class Login extends Page {
     String backgroundImage
     String logoImage
 
-    Boolean phisicalIdAuthentication
+    Boolean rememberMeEnabled
+    Boolean phisicalIdEnabled
     Form form
 
     Login(Map args) {
         super(args)
 
         keyPress.enabled = false
-        phisicalIdAuthentication = args.phisicalIdAuthentication != null
-            ? args.phisicalIdAuthentication
+        rememberMeEnabled = args.rememberMeEnabled as Boolean ?: false
+        phisicalIdEnabled = args.phisicalIdEnabled != null
+            ? args.phisicalIdEnabled
             : false
 
         copy = args.copy
@@ -149,7 +151,8 @@ class Login extends Page {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-            phisicalIdAuthentication: phisicalIdAuthentication,
+            phisicalIdEnabled: phisicalIdEnabled,
+            rememberMeEnabled: rememberMeEnabled,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

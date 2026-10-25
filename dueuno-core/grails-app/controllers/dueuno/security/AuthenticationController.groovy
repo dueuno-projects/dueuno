@@ -77,19 +77,25 @@ class AuthenticationController implements ElementsController {
                 ]
             } as List<Map>
 
-        def phisicalIdAuthentication = authenticationProviders.find {
+        def phisicalIdEnabled = authenticationProviders.find {
             it.providerType == AuthenticationProviderType.PHYSICAL
+        }?.enabled ?: false
+        def rememberMeEnabled = authenticationProviders.find {
+            it.providerType == AuthenticationProviderType.REMEMBERME
         }?.enabled ?: false
 
         tenantService.withTenant(tenantId) {
+            securityService.initializeRememberMe()
+
             def loginArgs = [
-                backgroundImage              : tenantPropertyService.getString('LOGIN_BACKGROUND_IMAGE', true),
-                logoImage                    : tenantPropertyService.getString('LOGIN_LOGO', true),
-                copy                         : tenantPropertyService.getString('LOGIN_COPY', true),
-                registerUrl                  : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
-                passwordRecoveryUrl          : tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
-                oidcProviders                : oidcProviders,
-                phisicalIdAuthentication     : phisicalIdAuthentication,
+                backgroundImage    : tenantPropertyService.getString('LOGIN_BACKGROUND_IMAGE', true),
+                logoImage          : tenantPropertyService.getString('LOGIN_LOGO', true),
+                copy               : tenantPropertyService.getString('LOGIN_COPY', true),
+                registerUrl        : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
+                passwordRecoveryUrl: tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
+                oidcProviders      : oidcProviders,
+                phisicalIdEnabled  : phisicalIdEnabled,
+                rememberMeEnabled  : rememberMeEnabled,
             ]
 
             if (EnvUtils.isDevelopment()) {

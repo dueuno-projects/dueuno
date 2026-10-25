@@ -279,9 +279,30 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     void initializeSessionDuration() {
         TUser user = getCurrentUser()
         session.maxInactiveInterval = user.sessionDuration * 60 // minutes to seconds
+        configureRememberMe(user.rememberMeDuration)
+    }
+
+    @CompileDynamic
+    void initializeRememberMe(String username = null) {
+        if (!username) {
+            configureRememberMe(null)
+            return
+        }
+
+        TTenant tenant = tenantService.defaultTenant
+        if (!USERNAME_SUPERADMIN.equalsIgnoreCase(username)) {
+            tenant = tenantService.getByRequest(request) ?: tenant
+        }
+        TUser user = TUser.findByTenantAndUsername(tenant, username)
+        if (user) configureRememberMe(user.rememberMeDuration)
+    }
+
+    private void configureRememberMe(Integer duration) {
         tokenBasedRememberMeServices.cookieName = tenantPropertyService.getString('REMEMBER_ME_COOKIE_NAME', true)
-        tokenBasedRememberMeServices.alwaysRemember = tenantPropertyService.getBoolean('REMEMBER_ME_ENABLED', true)
-        tokenBasedRememberMeServices.tokenValiditySeconds = user.rememberMeDuration * 60 // minutes to seconds
+        tokenBasedRememberMeServices.alwaysRemember = false
+        if (duration != null) {
+            tokenBasedRememberMeServices.tokenValiditySeconds = duration * 60
+        }
     }
 
     void initializeShell() {

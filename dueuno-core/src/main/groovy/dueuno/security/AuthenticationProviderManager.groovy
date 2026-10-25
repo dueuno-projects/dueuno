@@ -15,6 +15,7 @@
 package dueuno.security
 
 import dueuno.application.AuthenticationProviderService
+import dueuno.elements.WebRequestAware
 import grails.core.GrailsApplication
 import groovy.transform.CompileStatic
 import org.springframework.security.authentication.AuthenticationManager
@@ -28,7 +29,7 @@ import org.springframework.security.core.Authentication
  */
 
 @CompileStatic
-class AuthenticationProviderManager implements AuthenticationManager, AuthenticationProvider {
+class AuthenticationProviderManager implements AuthenticationManager, AuthenticationProvider, WebRequestAware {
 
     private static final List<AuthenticationProviderType> BUILT_IN_PROVIDER_TYPES = [
         AuthenticationProviderType.LOCAL,
@@ -39,6 +40,7 @@ class AuthenticationProviderManager implements AuthenticationManager, Authentica
 
     AuthenticationProviderService authenticationProviderService
     GrailsApplication grailsApplication
+    SecurityService securityService
 
     @Override
     Authentication authenticate(Authentication authentication) {
@@ -60,7 +62,11 @@ class AuthenticationProviderManager implements AuthenticationManager, Authentica
             throw new ProviderNotFoundException('No authentication providers are enabled for the current tenant')
         }
 
-        return new ProviderManager(providers).authenticate(authentication)
+        Authentication result = new ProviderManager(providers).authenticate(authentication)
+        if (hasRequest() && 'true'.equalsIgnoreCase(request.getParameter('remember-me'))) {
+            securityService.initializeRememberMe(result.name)
+        }
+        return result
     }
 
     @Override
