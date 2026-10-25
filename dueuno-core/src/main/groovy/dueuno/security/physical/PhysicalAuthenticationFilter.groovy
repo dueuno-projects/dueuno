@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 
 @CompileStatic
 class PhysicalAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -16,7 +17,7 @@ class PhysicalAuthenticationFilter extends AbstractAuthenticationProcessingFilte
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+    Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
         throws AuthenticationException {
         if (!request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod())
@@ -24,7 +25,7 @@ class PhysicalAuthenticationFilter extends AbstractAuthenticationProcessingFilte
         String physicalId = request.getParameter('physicalId')
         physicalId = (physicalId != null) ? physicalId.trim() : ""
 
-        PhysicalAuthenticationToken authRequest = PhysicalAuthenticationToken.unauthenticated(physicalId)
+        PreAuthenticatedAuthenticationToken authRequest = new PreAuthenticatedAuthenticationToken(physicalId, '')
         authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request))
         return this.authenticationManager.authenticate(authRequest)
     }

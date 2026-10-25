@@ -27,7 +27,6 @@ grails.plugin.springsecurity.logout.afterLogoutUrl = '/authentication/afterLogou
 grails.plugin.springsecurity.logout.filterProcessesUrl = '/springSecurityLogout'
 grails.plugin.springsecurity.adh.errorPage = '/authentication/denied'
 grails.plugin.springsecurity.physicalId.filterProcessesUrl = '/api/auth/physical'
-grails.plugin.springsecurity.physicalId.propertyName = 'physicalId'
 
 // Prevent Session Fixation attacks
 grails.plugin.springsecurity.useSessionFixationPrevention = true

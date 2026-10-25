@@ -17,7 +17,6 @@ package dueuno
 import dueuno.application.SessionInitializer
 import dueuno.security.physical.PhysicalUserDetailsService
 import dueuno.security.physical.PhysicalAuthenticationFilter
-import dueuno.security.physical.PhysicalAuthenticationProvider
 import dueuno.security.AuthenticationProviderManager
 import dueuno.security.LdapAuthenticationProvider
 import dueuno.tenant.TenantForCurrentUserResolver
@@ -27,6 +26,7 @@ import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider
 
 /**
  * @author Gianluca Sartori
@@ -92,8 +92,8 @@ class DueunoGrailsPlugin extends Plugin {
 
             physicalUserDetailsService(PhysicalUserDetailsService)
 
-            physicalAuthenticationProvider(PhysicalAuthenticationProvider) {
-                physicalUserDetailsService = ref('physicalUserDetailsService')
+            physicalAuthenticationProvider(PreAuthenticatedAuthenticationProvider) {
+                preAuthenticatedUserDetailsService = ref('physicalUserDetailsService')
             }
 
             ConfigObject conf = SpringSecurityUtils.securityConfig
@@ -102,7 +102,6 @@ class DueunoGrailsPlugin extends Plugin {
                 authenticationSuccessHandler = ref('authenticationSuccessHandler')
                 authenticationFailureHandler = ref('authenticationFailureHandler')
                 sessionAuthenticationStrategy = ref('sessionAuthenticationStrategy')
-                rememberMeServices = ref('rememberMeServices')
                 securityContextRepository = ref('securityContextRepository')
             }
         }

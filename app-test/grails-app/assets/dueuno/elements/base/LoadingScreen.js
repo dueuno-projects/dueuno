@@ -10,6 +10,14 @@ class LoadingScreen {
     static get timeoutIdModal() { return LoadingScreen_timeoutIdModal }
     static set timeoutIdModal(value) { LoadingScreen_timeoutIdModal = value }
 
+    static show(show) {
+        if (PageModal.isActive) {
+            LoadingScreen.modal(show);
+        } else {
+            LoadingScreen.page(show);
+        }
+    }
+
     static page(show) {
         clearTimeout(LoadingScreen.timeoutIdModal);
         LoadingScreen.timeoutIdModal = null;
@@ -55,14 +63,6 @@ class LoadingScreen {
             $loading.css('display', 'none');
             clearTimeout(LoadingScreen.timeoutIdModal);
             LoadingScreen.timeoutIdModal = null;
-        }
-    }
-
-    static show(show) {
-        if (PageModal.isActive) {
-            LoadingScreen.modal(show);
-        } else {
-            LoadingScreen.page(show);
         }
     }
 

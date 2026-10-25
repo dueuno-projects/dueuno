@@ -1,24 +1,24 @@
 package dueuno.security.physical
 
 import dueuno.elements.WebRequestAware
-import dueuno.security.AuthenticationProviderType
 import dueuno.security.SecurityService
-import dueuno.security.TAuthenticationProvider
 import dueuno.security.TUser
 import dueuno.tenant.TTenant
 import dueuno.tenant.TenantService
 import grails.gorm.transactions.Transactional
-import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.userdetails.GormUserDetailsService
 import grails.plugin.springsecurity.userdetails.NoStackUsernameNotFoundException
 import groovy.util.logging.Slf4j
 import jakarta.inject.Inject
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 
 @Slf4j
-class PhysicalUserDetailsService extends GormUserDetailsService implements WebRequestAware {
+class PhysicalUserDetailsService extends GormUserDetailsService implements WebRequestAware,
+    AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
     @Inject
     SecurityService securityService
@@ -26,8 +26,14 @@ class PhysicalUserDetailsService extends GormUserDetailsService implements WebRe
     @Inject
     TenantService tenantService
 
+    @Override
     @Transactional(readOnly = true, noRollbackFor = [IllegalArgumentException, UsernameNotFoundException])
-    UserDetails loadUserByPhysicalId(String physicalId, boolean loadRoles) throws UsernameNotFoundException {
+    UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken authentication)
+        throws UsernameNotFoundException {
+        String physicalId = authentication.getPrincipal()?.toString()
+        if (!physicalId) {
+            throw new NoStackUsernameNotFoundException()
+        }
 
         String loginTenantId = tenantService.currentTenantId ?: tenantService.defaultTenantId
         if (hasRequest()) {
@@ -39,46 +45,13 @@ class PhysicalUserDetailsService extends GormUserDetailsService implements WebRe
             throw new NoStackUsernameNotFoundException()
         }
 
-        TAuthenticationProvider provider = TAuthenticationProvider.findByTenantAndProviderType(
-            loginTenant, AuthenticationProviderType.PHYSICAL)
-        if (!provider?.enabled) {
-            throw new NoStackUsernameNotFoundException()
-        }
-
         TUser user = securityService.getUserByPhysicalId(physicalId)
         if (!user || user.tenant?.id != loginTenant.id) {
             log.warn 'User not found: {}', physicalId
             throw new NoStackUsernameNotFoundException()
         }
 
-        Collection<GrantedAuthority> authorities = loadAuthorities(user, physicalId, loadRoles)
-        createUserDetails user, authorities
-    }
-
-    UserDetails loadUserByPhysicalId(String physicalId) throws UsernameNotFoundException {
-        loadUserByPhysicalId physicalId, true
-    }
-
-    @Override
-    protected UserDetails createUserDetails(user, Collection<GrantedAuthority> authorities) {
-
-        def conf = SpringSecurityUtils.securityConfig
-
-        String usernamePropertyName = conf.userLookup.usernamePropertyName
-        String passwordPropertyName = conf.userLookup.passwordPropertyName
-        String enabledPropertyName = conf.userLookup.enabledPropertyName
-        String accountExpiredPropertyName = conf.userLookup.accountExpiredPropertyName
-        String accountLockedPropertyName = conf.userLookup.accountLockedPropertyName
-        String passwordExpiredPropertyName = conf.userLookup.passwordExpiredPropertyName
-
-        String username = user."$usernamePropertyName"
-        String password = user."$passwordPropertyName"
-        boolean enabled = enabledPropertyName ? user."$enabledPropertyName" : true
-        boolean accountExpired = accountExpiredPropertyName ? user."$accountExpiredPropertyName" : false
-        boolean accountLocked = accountLockedPropertyName ? user."$accountLockedPropertyName" : false
-        boolean passwordExpired = passwordExpiredPropertyName ? user."$passwordExpiredPropertyName" : false
-
-        new PhysicalGrailsUser(username, password, enabled, !accountExpired, !passwordExpired,
-            !accountLocked, authorities, user.id, username)
+        Collection<GrantedAuthority> authorities = loadAuthorities(user, user.username, true)
+        return createUserDetails(user, authorities)
     }
 }

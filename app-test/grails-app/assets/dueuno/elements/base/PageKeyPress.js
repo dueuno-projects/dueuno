@@ -7,7 +7,6 @@ let PageKeyPress_bufferState = null;
 class PageKeyPress extends Component {
 
     static get hotkeys() { return PageKeyPress_hotkeys }
-    static set hotkeys(value) { PageKeyPress_hotkeys = value }
     static get bufferElement() { return PageKeyPress_bufferElement }
     static set bufferElement(value) { PageKeyPress_bufferElement = value }
     static get bufferState() { return PageKeyPress_bufferState }
