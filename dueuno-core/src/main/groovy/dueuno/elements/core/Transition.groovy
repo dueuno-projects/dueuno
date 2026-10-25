@@ -146,17 +146,17 @@ class Transition implements WebRequestAware {
      * Adds a redirect command to this transition, causing the browser to navigate
      * to the URL or controller/action described by {@code args}.
      *
-     * @param args a map of action definition parameters (e.g. {@code controller}, {@code action},
+     * @param args a map of invocation-definition parameters (e.g. {@code controller}, {@code action},
      * {@code url}, {@code params})
      */
     void redirect(Map args) {
-        ComponentEvent event = new ComponentEvent(args)
-        initializeWithRequestData(event)
+        InvocationDefinition invocationDefinition = new InvocationDefinition(args)
+        initializeWithRequestData(invocationDefinition)
         addCommand(
             TransitionCommandMethod.REDIRECT,
             null,
             null,
-            event.asMap(),
+            invocationDefinition.asMap(),
         )
     }
 
@@ -375,9 +375,9 @@ class Transition implements WebRequestAware {
      * Displays an informational message box.
      *
      * @param msg the i18n message key or literal message text
-     * @param onClick optional {@link ComponentEvent} to invoke when the message is clicked
+     * @param onClick optional {@link InvocationDefinition} to invoke when the message is clicked
      */
-    void infoMessage(String msg, ComponentEvent onClick = null) {
+    void infoMessage(String msg, InvocationDefinition onClick = null) {
         infoMessage('info', msg, null, onClick)
     }
 
@@ -386,20 +386,20 @@ class Transition implements WebRequestAware {
      *
      * @param msg the i18n message key or literal message text
      * @param msgArgs arguments used for i18n message interpolation
-     * @param onCLick optional {@link ComponentEvent} to invoke when the message is clicked
+     * @param onClick optional {@link InvocationDefinition} to invoke when the message is clicked
      */
-    void infoMessage(String msg, List msgArgs, ComponentEvent onCLick = null) {
-        infoMessage('info', msg, msgArgs, onCLick)
+    void infoMessage(String msg, List msgArgs, InvocationDefinition onClick = null) {
+        infoMessage('info', msg, msgArgs, onClick)
     }
 
     /**
      * Displays an error message box.
      *
      * @param msg the i18n message key or literal message text
-     * @param onCLick optional {@link ComponentEvent} to invoke when the message is clicked
+     * @param onClick optional {@link InvocationDefinition} to invoke when the message is clicked
      */
-    void errorMessage(String msg, ComponentEvent onCLick = null) {
-        infoMessage('error', msg, null, onCLick)
+    void errorMessage(String msg, InvocationDefinition onClick = null) {
+        infoMessage('error', msg, null, onClick)
     }
 
     /**
@@ -407,10 +407,10 @@ class Transition implements WebRequestAware {
      *
      * @param msg the i18n message key or literal message text
      * @param msgArgs arguments used for i18n message interpolation
-     * @param onCLick optional {@link ComponentEvent} to invoke when the message is clicked
+     * @param onClick optional {@link InvocationDefinition} to invoke when the message is clicked
      */
-    void errorMessage(String msg, List msgArgs, ComponentEvent onCLick = null) {
-        infoMessage('error', msg, msgArgs, onCLick)
+    void errorMessage(String msg, List msgArgs, InvocationDefinition onClick = null) {
+        infoMessage('error', msg, msgArgs, onClick)
     }
 
     /**
@@ -420,9 +420,9 @@ class Transition implements WebRequestAware {
      * @param type the message type (e.g. {@code "info"} or {@code "error"})
      * @param msg the i18n message key or literal message text
      * @param msgArgs optional arguments used for i18n message interpolation
-     * @param onClick optional {@link ComponentEvent} to invoke when the message is clicked
+     * @param onClick optional {@link InvocationDefinition} to invoke when the message is clicked
      */
-    void infoMessage(String type, String msg, List msgArgs = [], ComponentEvent onClick = null) {
+    void infoMessage(String type, String msg, List msgArgs = [], InvocationDefinition onClick = null) {
         String infoMessage = hasRequest()
             ? message(msg, msgArgs)
             : msg
@@ -440,13 +440,13 @@ class Transition implements WebRequestAware {
 
     /**
      * Displays a confirmation message box with a single confirm button.
-     * Equivalent to calling {@link #optionsMessage(String, List, ComponentEvent, ComponentEvent)}
+     * Equivalent to calling {@link #optionsMessage(String, List, InvocationDefinition, InvocationDefinition)}
      * with no cancel action.
      *
      * @param msg the i18n message key or literal message text
-     * @param onClickConfirm the {@link ComponentEvent} invoked when the user confirms
+     * @param onClickConfirm the {@link InvocationDefinition} invoked when the user confirms
      */
-    void confirmMessage(String msg, ComponentEvent onClickConfirm) {
+    void confirmMessage(String msg, InvocationDefinition onClickConfirm) {
         optionsMessage(msg, [], null, onClickConfirm)
     }
 
@@ -455,9 +455,9 @@ class Transition implements WebRequestAware {
      *
      * @param msg the i18n message key or literal message text
      * @param msgArgs arguments used for i18n message interpolation
-     * @param onClickConfirm the {@link ComponentEvent} invoked when the user confirms
+     * @param onClickConfirm the {@link InvocationDefinition} invoked when the user confirms
      */
-    void confirmMessage(String msg, List msgArgs, ComponentEvent onClickConfirm) {
+    void confirmMessage(String msg, List msgArgs, InvocationDefinition onClickConfirm) {
         optionsMessage(msg, msgArgs, null, onClickConfirm)
     }
 
@@ -465,10 +465,10 @@ class Transition implements WebRequestAware {
      * Displays an options message box with both cancel and confirm buttons.
      *
      * @param msg the i18n message key or literal message text
-     * @param onClickCancel the {@link ComponentEvent} invoked when the user cancels
-     * @param onClickConfirm the {@link ComponentEvent} invoked when the user confirms
+     * @param onClickCancel the {@link InvocationDefinition} invoked when the user cancels
+     * @param onClickConfirm the {@link InvocationDefinition} invoked when the user confirms
      */
-    void optionsMessage(String msg, ComponentEvent onClickCancel, ComponentEvent onClickConfirm) {
+    void optionsMessage(String msg, InvocationDefinition onClickCancel, InvocationDefinition onClickConfirm) {
         optionsMessage(msg, [], onClickCancel, onClickConfirm)
     }
 
@@ -477,10 +477,10 @@ class Transition implements WebRequestAware {
      *
      * @param msg the i18n message key or literal message text
      * @param msgArgs arguments used for i18n message interpolation
-     * @param onClickCancel the {@link ComponentEvent} invoked when the user cancels; may be {@code null}
-     * @param onClickConfirm the {@link ComponentEvent} invoked when the user confirms
+     * @param onClickCancel the {@link InvocationDefinition} invoked when the user cancels; may be {@code null}
+     * @param onClickConfirm the {@link InvocationDefinition} invoked when the user confirms
      */
-    void optionsMessage(String msg, List msgArgs, ComponentEvent onClickCancel, ComponentEvent onClickConfirm) {
+    void optionsMessage(String msg, List msgArgs, InvocationDefinition onClickCancel, InvocationDefinition onClickConfirm) {
         String confirmMessage = hasRequest()
             ? message(msg, msgArgs)
             : msg
@@ -521,12 +521,12 @@ class Transition implements WebRequestAware {
         return command
     }
 
-    private void initializeWithRequestData(ComponentEvent componentEvent) {
-        if (!componentEvent) {
+    private void initializeWithRequestData(InvocationDefinition invocationDefinition) {
+        if (!invocationDefinition) {
             return
         }
 
-        if (!hasRequest() && !componentEvent.controller) {
+        if (!hasRequest() && !invocationDefinition.controller) {
             throw new ElementsException("The transition is outside a web request, a controller name must be specified (Eg. 't.redirect(controller: 'myController')')")
         }
 
@@ -534,12 +534,12 @@ class Transition implements WebRequestAware {
             return
         }
 
-        if (componentEvent.action && !componentEvent.controller) {
-            componentEvent.controller = getControllerName()
+        if (invocationDefinition.action && !invocationDefinition.controller) {
+            invocationDefinition.controller = getControllerName()
         }
 
-        if (!componentEvent.action && componentEvent.controller) {
-            componentEvent.action = componentEvent.action ?: 'index'
+        if (!invocationDefinition.action && invocationDefinition.controller) {
+            invocationDefinition.action = invocationDefinition.action ?: 'index'
         }
     }
 

@@ -27,7 +27,7 @@ import groovy.transform.CompileStatic
  */
 
 @CompileStatic
-class Feature extends ComponentAction {
+class Feature extends InvocationDefinition {
 
     private static Integer idCounter = 0
     private Integer id

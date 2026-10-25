@@ -1016,9 +1016,9 @@ c.form.with {
 |
 |A list of objects to pass to the localized confirm message.
 |`confirmMessageOnConfirm`
-|`ComponentEvent`
+|`InvocationDefinition`
 |
-|Event to execute after the user confirms the confirmation message.
+|Invocation to execute after the user confirms the confirmation message.
 |===
 
 ==== Events

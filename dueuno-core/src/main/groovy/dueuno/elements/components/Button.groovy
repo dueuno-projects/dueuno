@@ -15,8 +15,8 @@
 package dueuno.elements.components
 
 import dueuno.elements.core.Component
-import dueuno.elements.core.ComponentEvent
 import dueuno.elements.core.Hotkey
+import dueuno.elements.core.InvocationDefinition
 import dueuno.elements.core.Menu
 import dueuno.elements.style.TextWrap
 import groovy.transform.CompileStatic
@@ -375,13 +375,12 @@ class Button extends Component {
 
     /**
      * Sets the confirmation message shown before the default action is executed.
-     * Also wires the "Confirm" button to re-trigger the default action.
+     * The default action is re-triggered when no confirmation invocation is specified.
      *
      * @param value the i18n message key or literal confirmation message
      */
     void setConfirmMessage(String value) {
         defaultAction.confirmMessage = value
-        defaultAction.confirmMessageOnConfirm = new ComponentEvent(defaultAction.link.componentAction.asMap())
     }
 
     /**
@@ -394,12 +393,12 @@ class Button extends Component {
     }
 
     /**
-     * Sets the {@link ComponentEvent} fired when the user confirms the confirmation dialog
+     * Sets the {@link InvocationDefinition} fired when the user confirms the confirmation dialog
      * of the default action.
      *
-     * @param value the event to fire on confirmation
+     * @param value the invocation to run on confirmation
      */
-    void confirmMessageOnConfirm(ComponentEvent value) {
+    void confirmMessageOnConfirm(InvocationDefinition value) {
         defaultAction.confirmMessageOnConfirm = value
     }
 

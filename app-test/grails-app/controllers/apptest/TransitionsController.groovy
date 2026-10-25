@@ -21,7 +21,7 @@ import dueuno.elements.components.Label
 import dueuno.elements.components.Separator
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.controls.*
-import dueuno.elements.core.ComponentEvent
+import dueuno.elements.core.InvocationDefinition
 import dueuno.elements.style.TextStyle
 import dueuno.security.SecurityService
 import dueuno.types.Money
@@ -242,7 +242,7 @@ class TransitionsController implements ElementsController {
     }
 
     def showConfirm() {
-        def onConfirm = new ComponentEvent(
+        def onConfirm = new InvocationDefinition(
             controller: 'transitions',
             action: 'index',
             params: [transitioned: true],

@@ -35,8 +35,8 @@ import groovy.transform.CompileStatic
  * {@link #getKeyPressed()}.
  * </p>
  * <p>
- * The target controller action is defined by the {@code componentAction} and defaults to
- * the {@code keyPress} controller's {@code onKeyPress} action.
+ * The target controller action is configured by the {@code invocationDefinition} and
+ * defaults to the {@code keyPress} controller's {@code onKeyPress} action.
  * </p>
  *
  * @author Gianluca Sartori
@@ -45,8 +45,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class KeyPress extends Component {
 
-    /** The action definition describing the controller action to invoke on key press. */
-    ComponentAction componentAction
+    /** The invocation definition describing the controller action to invoke on key press. */
+    InvocationDefinition invocationDefinition
 
     /** Hidden form field used to buffer the characters received from the keyboard or scanner. */
     HiddenField buffer
@@ -90,7 +90,7 @@ class KeyPress extends Component {
      *     <li>{@code bufferTimeout} — buffer auto-clear delay (ms); defaults to {@code 500}</li>
      *     <li>{@code hideInput} — defaults to {@code false}</li>
      *     <li>{@code controller} / {@code action} / {@code namespace} / {@code params} / {@code submit}
-     *         — action definition for the triggered action; defaults to {@code keyPress/onKeyPress}</li>
+     *         — invocation definition for the triggered action; defaults to {@code keyPress/onKeyPress}</li>
      * </ul>
      *
      * @param args map of component and key-press properties
@@ -114,9 +114,9 @@ class KeyPress extends Component {
         // avoid writing text if focus is on an "input" element (default false)
         hideInput = args.hideInput == null ? false : args.hideInput
 
-        componentAction = new ComponentAction(args)
-        componentAction.controller = args.controller ?: 'keyPress'
-        componentAction.action = args.action ?: 'onKeyPress'
+        invocationDefinition = new InvocationDefinition(args)
+        invocationDefinition.controller = args.controller ?: 'keyPress'
+        invocationDefinition.action = args.action ?: 'onKeyPress'
 
         buffer = createControl(
             class: HiddenField,
@@ -138,11 +138,11 @@ class KeyPress extends Component {
 
     /**
      * (Re-)registers the {@code keypress} event on this component using the current
-     * {@code componentAction}. Called automatically on construction and whenever the
-     * action definition is modified.
+     * {@code invocationDefinition}. Called automatically on construction and whenever the
+     * invocation definition is modified.
      */
     private void setOnKeyPressEvent() {
-        Map event = componentAction.properties
+        Map event = invocationDefinition.properties
         Map eventOverride = [
                 event: 'keypress',
         ] as Map
@@ -174,7 +174,7 @@ class KeyPress extends Component {
      * @return the namespace, or an empty string if none is set
      */
     String getNamespace() {
-        return componentAction.namespace
+        return invocationDefinition.namespace
     }
 
     /**
@@ -183,7 +183,7 @@ class KeyPress extends Component {
      * @param value the namespace to set
      */
     void setNamespace(String value) {
-        componentAction.namespace = value
+        invocationDefinition.namespace = value
         setOnKeyPressEvent()
     }
 
@@ -193,7 +193,7 @@ class KeyPress extends Component {
      * @return the controller name
      */
     String getController() {
-        return componentAction.controller
+        return invocationDefinition.controller
     }
 
     /**
@@ -202,7 +202,7 @@ class KeyPress extends Component {
      * @param value the controller name to set
      */
     void setController(String value) {
-        componentAction.controller = value
+        invocationDefinition.controller = value
         setOnKeyPressEvent()
     }
 
@@ -212,7 +212,7 @@ class KeyPress extends Component {
      * @return the action name
      */
     String getAction() {
-        return componentAction.action
+        return invocationDefinition.action
     }
 
     /**
@@ -221,7 +221,7 @@ class KeyPress extends Component {
      * @param value the action name to set
      */
     void setAction(String value) {
-        componentAction.action = value
+        invocationDefinition.action = value
         setOnKeyPressEvent()
     }
 
@@ -231,7 +231,7 @@ class KeyPress extends Component {
      * @return the parameters map
      */
     Map getParams() {
-        return componentAction.params
+        return invocationDefinition.params
     }
 
     /**
@@ -240,7 +240,7 @@ class KeyPress extends Component {
      * @param value the parameters map to set
      */
     void setParams(Map value) {
-        componentAction.params = value
+        invocationDefinition.params = value
         setOnKeyPressEvent()
     }
 
@@ -250,7 +250,7 @@ class KeyPress extends Component {
      * @return the submit component name list
      */
     List<String> getSubmit() {
-        return componentAction.submit
+        return invocationDefinition.submit
     }
 
     /**
@@ -259,7 +259,7 @@ class KeyPress extends Component {
      * @param value the submit component name list
      */
     void setSubmit(List<String> value) {
-        componentAction.submit = value
+        invocationDefinition.submit = value
         setOnKeyPressEvent()
     }
 }

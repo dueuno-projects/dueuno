@@ -16,7 +16,7 @@ package dueuno.elements
 
 import dueuno.commons.utils.LogUtils
 import dueuno.elements.contents.ContentHeader
-import dueuno.elements.core.ComponentEvent
+import dueuno.elements.core.InvocationDefinition
 import dueuno.elements.core.Page
 import dueuno.elements.core.PageContent
 import dueuno.elements.core.Transition
@@ -260,23 +260,23 @@ trait ElementsController implements Controller, RestResponder, WebRequestAware, 
         } else if (args.message) {
             String message = args.message as String
             List messageArgs = args.messageArgs as List ?: []
-            t.infoMessage(message, messageArgs, new ComponentEvent(args))
+            t.infoMessage(message, messageArgs, new InvocationDefinition(args))
 
         } else if (args.confirmMessage) {
             String message = args.confirmMessage as String
             List messageArgs = args.messageArgs as List ?: []
-            t.confirmMessage(message, messageArgs, new ComponentEvent(args))
+            t.confirmMessage(message, messageArgs, new InvocationDefinition(args))
 
         } else if (args.errorMessage) {
             String message = args.errorMessage as String
             List messageArgs = args.messageArgs as List ?: []
-            t.errorMessage(message, messageArgs, new ComponentEvent(args))
+            t.errorMessage(message, messageArgs, new InvocationDefinition(args))
 
         } else if (args.exception) {
             Exception e = args.exception as Exception
             log.error LogUtils.logStackTrace(e)
             String message = e.message ?: e.cause.message ?: "${e.toString()} caused by ${e.cause.toString()}"
-            t.errorMessage(message, new ComponentEvent(args))
+            t.errorMessage(message, new InvocationDefinition(args))
 
         } else if (args.errors) {
             Integer submittedComponentCount = requestParams._21SubmittedCount as Integer

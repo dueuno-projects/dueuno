@@ -20,7 +20,7 @@ import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
-import dueuno.elements.core.ComponentEvent
+import dueuno.elements.core.InvocationDefinition
 import dueuno.elements.core.Hotkey
 import dueuno.elements.style.TextDefault
 import grails.gorm.multitenancy.CurrentTenant
@@ -239,7 +239,7 @@ class TabsController implements ElementsController {
 
         } else {
             def t = createTransition()
-            t.confirmMessage('Sicuro di voler continuare?', new ComponentEvent(
+            t.confirmMessage('Sicuro di voler continuare?', new InvocationDefinition(
                 controller: 'table',
                 action: 'index',
                 params: [f1: params.f1, f2: params.f2, table1: params.table1],

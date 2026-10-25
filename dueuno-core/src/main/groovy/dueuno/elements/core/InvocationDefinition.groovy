@@ -15,15 +15,15 @@
 package dueuno.elements.core
 
 
+import dueuno.types.Types
 import groovy.transform.CompileStatic
 
 /**
- * Describes an action exposed through an Elements UI component. The client can
- * invoke a controller action, navigate to a URL, or call a JavaScript function.
- * The action is associated with the component interaction; it does not describe
- * an operation performed on the component itself.
+ * Describes how to invoke a target from the Elements UI. The target can be a
+ * controller action, a URL, or a JavaScript function. This class stores the
+ * target and its invocation options; it does not perform the invocation.
  * <p>
- * A {@code ComponentAction} can describe a target in one of three ways:
+ * A {@code InvocationDefinition} can describe a target in one of three ways:
  * </p>
  * <ul>
  *     <li>As a Grails controller/action pair (optionally namespaced), with request parameters.</li>
@@ -34,14 +34,15 @@ import groovy.transform.CompileStatic
  * Additional properties control how the response is rendered ({@code direct},
  * {@code target}, {@code renderProperties}), which form data is submitted
  * ({@code submit}), and optional UI feedback shown before or instead of
- * executing the link ({@code loading}, {@code infoMessage}, {@code confirmMessage}).
+ * executing the link ({@code loading}, {@code infoMessage}, {@code confirmMessage},
+ * {@code confirmMessageOnConfirm}).
  * </p>
  *
  * @author Gianluca Sartori
  */
 
 @CompileStatic
-class ComponentAction implements Serializable {
+class InvocationDefinition implements Serializable {
 
     /** The namespace of the controller to use in the link. */
     String namespace
@@ -94,19 +95,21 @@ class ComponentAction implements Serializable {
     /** Optional interpolation arguments for {@code confirmMessage}. */
     List confirmMessageArgs
 
-    /** Optional map defining the action to invoke when the user confirms the {@code confirmMessage} dialog. */
-    Map confirmMessageOnConfirm
+    /** Invocation to execute when the user confirms the {@code confirmMessage} dialog. */
+    InvocationDefinition confirmMessageOnConfirm
 
     /**
-     * Creates a {@code ComponentAction} from a map of arguments.
+     * Creates a {@code InvocationDefinition} from a map of arguments.
      * Supported keys mirror the field names of this class. If {@code url} is provided
      * and {@code direct} is not explicitly set, {@code direct} defaults to {@code true}.
      * {@code renderProperties} can be passed as a {@link PageRenderProperties} instance
      * or as individual keys that will be forwarded to the {@link PageRenderProperties} constructor.
+     * {@code confirmMessageOnConfirm} can be passed as an {@code InvocationDefinition}
+     * instance or as a map of invocation properties.
      *
      * @param args map of link properties
      */
-    ComponentAction(Map args = [:]) {
+    InvocationDefinition(Map args = [:]) {
         namespace = args.namespace ?: ''
         controller = args.controller ?: ''
         action = args.action ?: 'index'
@@ -135,7 +138,12 @@ class ComponentAction implements Serializable {
         infoMessageArgs = args.infoMessageArgs as List
         confirmMessage = args.confirmMessage
         confirmMessageArgs = args.confirmMessageArgs as List
-        confirmMessageOnConfirm = args.confirmMessageOnClick as Map
+        Object confirmMessageOnConfirmArgs = args.confirmMessageOnConfirm
+        if (confirmMessageOnConfirmArgs in Map) {
+            confirmMessageOnConfirm = new InvocationDefinition((Map) confirmMessageOnConfirmArgs)
+        } else {
+            confirmMessageOnConfirm = confirmMessageOnConfirmArgs as InvocationDefinition
+        }
 
         if (args.renderProperties) {
             renderProperties = (PageRenderProperties) args.renderProperties
@@ -211,27 +219,29 @@ class ComponentAction implements Serializable {
     }
 
     /**
-     * Serialises the action definition to a map suitable for JSON encoding.
+     * Serialises the invocation definition to a map suitable for the frontend.
+     * Request parameters are converted to their typed-value representation.
      * Only the properties relevant to the frontend are included; interpolation
      * argument lists and path/fragment fields are omitted.
      *
-     * @return a map representation of this action definition
+     * @return a map representation of this invocation definition
      */
     Map asMap() {
         return [
-            namespace       : namespace,
-            controller      : controller,
-            action          : action,
-            call            : call,
-            url             : url,
-            params          : params,
-            submit          : submit,
-            direct          : direct,
-            target          : target,
-            loading         : loading,
-            infoMessage     : infoMessage,
-            confirmMessage  : confirmMessage,
-            renderProperties: renderProperties.asMap(),
+            namespace               : namespace,
+            controller              : controller,
+            action                  : action,
+            call                    : call,
+            url                     : url,
+            params                  : Types.serialize(params),
+            submit                  : submit,
+            direct                  : direct,
+            target                  : target,
+            loading                 : loading,
+            infoMessage             : infoMessage,
+            confirmMessage          : confirmMessage,
+            confirmMessageOnConfirm : confirmMessageOnConfirm?.asMap(),
+            renderProperties        : renderProperties.asMap(),
         ]
     }
 }

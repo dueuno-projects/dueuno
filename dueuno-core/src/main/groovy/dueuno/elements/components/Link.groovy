@@ -14,18 +14,17 @@
  */
 package dueuno.elements.components
 
-import dueuno.elements.core.ComponentEvent
 import dueuno.elements.core.Hotkey
-import dueuno.elements.core.ComponentAction
+import dueuno.elements.core.InvocationDefinition
 import groovy.transform.CompileStatic
 
 /**
  * A {@link Label}-based component that renders a navigable link.
  * <p>
- * {@code Link} wraps a {@link ComponentAction} and registers a client-side
+ * {@code Link} wraps a {@link InvocationDefinition} and registers a client-side
  * event (default: {@code "click"}) that triggers the configured server-side action.
  * All navigation properties ({@code controller}, {@code action}, {@code url}, etc.)
- * are delegated to the underlying {@code componentAction}; changing any of them
+ * are delegated to the underlying {@code invocationDefinition}; changing any of them
  * automatically re-registers the click event via {@link #setOnEvent(String)}.
  * A hotkey can be set with {@code hotkey} using a
  * {@link Hotkey} value, for example {@code Hotkey.F1}.
@@ -33,7 +32,7 @@ import groovy.transform.CompileStatic
  * <p>
  * Additional render options (modal display, animations, scroll behaviour, etc.) are
  * stored in {@link dueuno.elements.core.PageRenderProperties} accessible through
- * {@code componentAction}.
+ * the {@code invocationDefinition} property.
  * </p>
  *
  * @author Gianluca Sartori
@@ -42,8 +41,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class Link extends Label {
 
-    /** The underlying action definition holding all navigation and render properties. */
-    ComponentAction componentAction
+    /** The invocation definition holding all navigation and render properties. */
+    InvocationDefinition invocationDefinition
 
     /** The DOM event name that triggers the navigation action. Defaults to {@code "click"}. */
     String eventName
@@ -53,7 +52,7 @@ class Link extends Label {
 
     /**
      * Creates a {@code Link} component from the given argument map.
-     * All {@link Label} arguments are supported, plus all {@link ComponentAction}
+     * All {@link Label} arguments are supported, plus all {@link InvocationDefinition}
      * properties and an optional {@code hotkey} from {@link Hotkey}.
      * If no {@code action} is provided it defaults to {@code "index"}.
      * An optional {@code onClick} key may specify an action name override for the click event.
@@ -63,7 +62,8 @@ class Link extends Label {
     Link(Map args = [:]) {
         super(args)
 
-        componentAction = new ComponentAction(args)
+        eventName = 'click'
+        invocationDefinition = new InvocationDefinition(args)
 
         tag = args.tag == null ? false : args.tag
 
@@ -71,30 +71,28 @@ class Link extends Label {
         containerSpecs.label = ''
         containerSpecs.help = ''
 
-        eventName = 'click'
-
         setHotkey(args.hotkey as Hotkey)
-        setOnEvent(args.onClick as String)
+        setEvent(args.onClick as String)
     }
 
     /**
      * Registers (or re-registers) the client-side event that triggers this link's action.
-     * Uses the current {@code componentAction} properties, resolved i18n messages for
+     * Uses the current {@code invocationDefinition} properties, resolved i18n messages for
      * {@code infoMessage} and {@code confirmMessage}, and the optional {@code onEvent}
      * action override.
      *
-     * @param onEvent optional action name to use instead of {@link ComponentAction#action};
-     *                when {@code null} the action definition's own action is used
+     * @param onEvent optional action name to use instead of {@link InvocationDefinition#action};
+     *                when {@code null} the definition's controller action is used
      */
-    void setOnEvent(String onEvent = null) {
-        Map event = componentAction.properties
-        Map eventOverride = [
+    void setEvent(String onEvent = null) {
+        Map invocationDefinitionProperties = this.invocationDefinition.properties
+        Map eventOverrides = [
                 event: eventName,
-                action: onEvent ?: componentAction.action,
-                infoMessage: message(componentAction.infoMessage, componentAction.infoMessageArgs),
-                confirmMessage: message(componentAction.confirmMessage, componentAction.confirmMessageArgs),
+                action: onEvent ?: this.invocationDefinition.action,
+                infoMessage: message(this.invocationDefinition.infoMessage, this.invocationDefinition.infoMessageArgs),
+                confirmMessage: message(this.invocationDefinition.confirmMessage, this.invocationDefinition.confirmMessageArgs),
         ] as Map
-        on(event + eventOverride)
+        on(invocationDefinitionProperties + eventOverrides)
     }
 
     /**
@@ -138,9 +136,9 @@ class Link extends Label {
      * @return a string in the form {@code "Link: /namespace/controller/action?key=value&..."}
      */
     String toString() {
-        String ns = componentAction.namespace ?: ''
-        String path = "${ns}/${componentAction.controller}/${componentAction.action}"
-        String queryParams = componentAction.params.collect { "${it.key}=${it.value}" }.join('&')
+        String ns = invocationDefinition.namespace ?: ''
+        String path = "${ns}/${invocationDefinition.controller}/${invocationDefinition.action}"
+        String queryParams = invocationDefinition.params.collect { "${it.key}=${it.value}" }.join('&')
         String queryString = queryParams ? "?${queryParams}" : ''
         return "Link: ${path}${queryString}"
     }
@@ -158,77 +156,77 @@ class Link extends Label {
         return null
     }
 
-    /** @see ComponentAction#target */
-    String getTarget() { return componentAction.target }
-    /** @see ComponentAction#target */
-    void setTarget(String value) { componentAction.target = value }
+    /** @see InvocationDefinition#target */
+    String getTarget() { return invocationDefinition.target }
+    /** @see InvocationDefinition#target */
+    void setTarget(String value) { invocationDefinition.target = value }
 
-    /** @see ComponentAction#namespace */
-    String getNamespace() { return componentAction.namespace }
+    /** @see InvocationDefinition#namespace */
+    String getNamespace() { return invocationDefinition.namespace }
     /** Sets the controller namespace and re-registers the click event. */
     void setNamespace(String value) {
-        componentAction.namespace = value
-        setOnEvent()
+        invocationDefinition.namespace = value
+        setEvent()
     }
 
-    /** @see ComponentAction#controller */
-    String getController() { return componentAction.controller }
+    /** @see InvocationDefinition#controller */
+    String getController() { return invocationDefinition.controller }
     /** Sets the controller name and re-registers the click event. */
     void setController(String value) {
-        componentAction.controller = value
-        setOnEvent()
+        invocationDefinition.controller = value
+        setEvent()
     }
 
-    /** @see ComponentAction#action */
-    String getAction() { return componentAction.action }
+    /** @see InvocationDefinition#action */
+    String getAction() { return invocationDefinition.action }
     /** Sets the action name and re-registers the click event. */
     void setAction(String value) {
-        componentAction.action = value
-        setOnEvent()
+        invocationDefinition.action = value
+        setEvent()
     }
 
-    /** @see ComponentAction#call */
-    String getCall() { return componentAction.call }
+    /** @see InvocationDefinition#call */
+    String getCall() { return invocationDefinition.call }
     /** Sets the client-side function name and re-registers the click event. */
     void setCall(String value) {
-        componentAction.call = value
-        setOnEvent()
+        invocationDefinition.call = value
+        setEvent()
     }
 
-    /** @see ComponentAction#params */
-    Map getParams() { return componentAction.params }
+    /** @see InvocationDefinition#params */
+    Map getParams() { return invocationDefinition.params }
     /** Sets the request parameters and re-registers the click event. */
     void setParams(Map value) {
-        componentAction.params = value
-        setOnEvent()
+        invocationDefinition.params = value
+        setEvent()
     }
 
-    /** @see ComponentAction#fragment */
-    String getFragment() { return componentAction.fragment }
+    /** @see InvocationDefinition#fragment */
+    String getFragment() { return invocationDefinition.fragment }
     /** Sets the URL fragment and re-registers the click event. */
     void setFragment(String value) {
-        componentAction.fragment = value
-        setOnEvent()
+        invocationDefinition.fragment = value
+        setEvent()
     }
 
-    /** @see ComponentAction#path */
-    String getPath() { return componentAction.path }
+    /** @see InvocationDefinition#path */
+    String getPath() { return invocationDefinition.path }
     /** Sets the path and re-registers the click event. */
     void setPath(String value) {
-        componentAction.path = value
-        setOnEvent()
+        invocationDefinition.path = value
+        setEvent()
     }
 
-    /** @see ComponentAction#url */
-    String getUrl() { return componentAction.url }
+    /** @see InvocationDefinition#url */
+    String getUrl() { return invocationDefinition.url }
     /** Sets the explicit URL and re-registers the click event. */
     void setUrl(String value) {
-        componentAction.url = value
-        setOnEvent()
+        invocationDefinition.url = value
+        setEvent()
     }
 
-    /** @see ComponentAction#submit */
-    List<String> getSubmit() { return componentAction.submit }
+    /** @see InvocationDefinition#submit */
+    List<String> getSubmit() { return invocationDefinition.submit }
 
     /**
      * Convenience overload that wraps a single component name in a list before delegating
@@ -240,112 +238,112 @@ class Link extends Label {
 
     /** Sets the submit component list and re-registers the click event. */
     void setSubmit(List<String> value) {
-        componentAction.submit = value
-        setOnEvent()
+        invocationDefinition.submit = value
+        setEvent()
     }
 
-    /** @see ComponentAction#direct */
-    Boolean getDirect() { return componentAction.direct }
-    /** @see ComponentAction#direct */
-    void setDirect(Boolean value) { componentAction.direct = value }
+    /** @see InvocationDefinition#direct */
+    Boolean getDirect() { return invocationDefinition.direct }
+    /** @see InvocationDefinition#direct */
+    void setDirect(Boolean value) { invocationDefinition.direct = value }
 
     /** Whether this link opens its target in a modal dialog. */
-    Boolean getModal() { return componentAction.renderProperties.modal }
+    Boolean getModal() { return invocationDefinition.renderProperties.modal }
     /** Sets whether this link opens its target in a modal dialog and re-registers the click event. */
     void setModal(Boolean value) {
-        componentAction.renderProperties.modal = value
-        setOnEvent()
+        invocationDefinition.renderProperties.modal = value
+        setEvent()
     }
 
     /** Whether this link renders in a small (compact) style. */
-    Boolean getSmall() { return componentAction.renderProperties.small }
+    Boolean getSmall() { return invocationDefinition.renderProperties.small }
     /** Sets the small (compact) rendering style and re-registers the click event. */
     void setSmall(Boolean value) {
-        componentAction.renderProperties.small = value
-        setOnEvent()
+        invocationDefinition.renderProperties.small = value
+        setEvent()
     }
 
     /** Whether this link renders in a large style. */
-    Boolean getLarge() { return componentAction.renderProperties.large }
+    Boolean getLarge() { return invocationDefinition.renderProperties.large }
     /** Sets the large rendering style and re-registers the click event. */
     void setLarge(Boolean value) {
-        componentAction.renderProperties.large = value
-        setOnEvent()
+        invocationDefinition.renderProperties.large = value
+        setEvent()
     }
 
     /** The CSS animation name applied when navigating via this link. */
-    String getAnimate() { return componentAction.renderProperties.animate }
+    String getAnimate() { return invocationDefinition.renderProperties.animate }
     /** Sets the CSS animation for navigation and re-registers the click event. */
     void setAnimate(String value) {
-        componentAction.renderProperties.animate = value
-        setOnEvent()
+        invocationDefinition.renderProperties.animate = value
+        setEvent()
     }
 
     /** Whether a close button is shown when the target is displayed in a modal. */
-    Boolean getCloseButton() { return componentAction.renderProperties.closeButton }
+    Boolean getCloseButton() { return invocationDefinition.renderProperties.closeButton }
     /** Sets whether a close button is shown in the modal and re-registers the click event. */
     void setCloseButton(Boolean value) {
-        componentAction.renderProperties.closeButton = value
-        setOnEvent()
+        invocationDefinition.renderProperties.closeButton = value
+        setEvent()
     }
 
     /** The scroll behaviour applied when navigating via this link (e.g. {@code "reset"}). */
-    String getScroll() { return componentAction.renderProperties.scroll }
+    String getScroll() { return invocationDefinition.renderProperties.scroll }
     /** Sets the scroll behaviour and re-registers the click event. */
     void setScroll(String value) {
-        componentAction.renderProperties.scroll = value
-        setOnEvent()
+        invocationDefinition.renderProperties.scroll = value
+        setEvent()
     }
 
-    /** @see ComponentAction#getTargetNew() */
-    Boolean getTargetNew() { return componentAction.targetNew }
+    /** @see InvocationDefinition#getTargetNew() */
+    Boolean getTargetNew() { return invocationDefinition.targetNew }
     /** Sets whether the link opens in a new tab and re-registers the click event. */
     void setTargetNew(Boolean value) {
-        componentAction.targetNew = value
-        setOnEvent()
+        invocationDefinition.targetNew = value
+        setEvent()
     }
 
-    /** @see ComponentAction#loading */
-    Boolean getLoading() { return componentAction.loading }
+    /** @see InvocationDefinition#loading */
+    Boolean getLoading() { return invocationDefinition.loading }
     /** Sets the loading indicator flag and re-registers the click event. */
     void setLoading(Boolean value) {
-        componentAction.loading = value
-        setOnEvent()
+        invocationDefinition.loading = value
+        setEvent()
     }
 
-    /** @see ComponentAction#infoMessage */
-    String getInfoMessage() { return componentAction.infoMessage }
+    /** @see InvocationDefinition#infoMessage */
+    String getInfoMessage() { return invocationDefinition.infoMessage }
     /** Sets the info message and re-registers the click event. */
     void setInfoMessage(String value) {
-        componentAction.infoMessage = value
-        setOnEvent()
+        invocationDefinition.infoMessage = value
+        setEvent()
     }
     /** Sets the info message interpolation arguments and re-registers the click event. */
     void setInfoMessageArgs(List value) {
-        componentAction.infoMessageArgs = value
-        setOnEvent()
+        invocationDefinition.infoMessageArgs = value
+        setEvent()
     }
 
-    /** @see ComponentAction#confirmMessage */
-    String getConfirmMessage() { return componentAction.confirmMessage }
+    /** @see InvocationDefinition#confirmMessage */
+    String getConfirmMessage() { return invocationDefinition.confirmMessage }
     /** Sets the confirmation dialog message and re-registers the click event. */
     void setConfirmMessage(String value) {
-        componentAction.confirmMessage = value
-        setOnEvent()
+        invocationDefinition.confirmMessage = value
+        setEvent()
     }
     /** Sets the confirmation message interpolation arguments and re-registers the click event. */
     void setConfirmMessageArgs(List value) {
-        componentAction.confirmMessageArgs = value
-        setOnEvent()
+        invocationDefinition.confirmMessageArgs = value
+        setEvent()
     }
     /**
-     * Sets the {@link ComponentEvent} to invoke when the user confirms the confirmation dialog,
+     * Sets the {@link InvocationDefinition} to invoke when the user confirms the confirmation dialog,
      * and re-registers the click event.
      *
-     * @param value the event to fire on confirmation
+     * @param value the invocation to run on confirmation
      */
-    void setConfirmMessageOnConfirm(ComponentEvent value) {
-        componentAction.confirmMessageOnConfirm = value.asMap()
-        setOnEvent()
+    void setConfirmMessageOnConfirm(InvocationDefinition value) {
+        invocationDefinition.confirmMessageOnConfirm = value
+        setEvent()
     }
 }
