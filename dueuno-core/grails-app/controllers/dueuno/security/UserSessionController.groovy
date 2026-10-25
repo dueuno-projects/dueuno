@@ -73,8 +73,9 @@ class UserSessionController implements ElementsController {
             actions.removeAllActions()
             actions.addDefaultAction(
                 action: 'onDisconnect',
-                text: 'userSession.disconnect',
+                text: '',
                 icon: 'fa-right-from-bracket',
+                tooltip: 'userSession.disconnect',
                 confirmMessage: 'userSession.disconnect.confirm',
             )
             String tenantId = tenantService.currentTenantId
