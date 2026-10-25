@@ -521,12 +521,12 @@ class Transition implements WebRequestAware {
         return command
     }
 
-    private void initializeWithRequestData(ComponentAction componentEventData) {
-        if (!componentEventData) {
+    private void initializeWithRequestData(ComponentEvent componentEvent) {
+        if (!componentEvent) {
             return
         }
 
-        if (!hasRequest() && !componentEventData.controller) {
+        if (!hasRequest() && !componentEvent.controller) {
             throw new ElementsException("The transition is outside a web request, a controller name must be specified (Eg. 't.redirect(controller: 'myController')')")
         }
 
@@ -534,12 +534,12 @@ class Transition implements WebRequestAware {
             return
         }
 
-        if (componentEventData.action && !componentEventData.controller) {
-            componentEventData.controller = getControllerName()
+        if (componentEvent.action && !componentEvent.controller) {
+            componentEvent.controller = getControllerName()
         }
 
-        if (!componentEventData.action && componentEventData.controller) {
-            componentEventData.action = componentEventData.action ?: 'index'
+        if (!componentEvent.action && componentEvent.controller) {
+            componentEvent.action = componentEvent.action ?: 'index'
         }
     }
 
