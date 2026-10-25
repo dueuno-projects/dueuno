@@ -24,17 +24,15 @@ class Login extends Page {
             return;
         }
 
-        let $search = $element.find('input');
-        let readingSpeed = Component.getProperty($element, 'readingSpeed');
-        let bufferTimeout = Component.getProperty($element, 'bufferTimeout');
         let now = performance.now();
         let printable = Control.isPrintable(event.keyCode);
-        let buffer = $search.val() || '';
+        let hideInput = Component.getProperty($element, 'hideInput') === true;
+        let buffer = Component.getProperty($element, 'physicalBuffer') || '';
         let lastCharacterAt = Component.getProperty($element, 'lastCharacterAt');
         let firstCharacterAt = Component.getProperty($element, 'firstCharacterAt');
         let targetValues = Component.getProperty($element, 'targetValues') || [];
 
-        if (buffer.length > 0 && bufferTimeout > 0 && lastCharacterAt && now - lastCharacterAt > bufferTimeout) {
+        if (buffer.length > 0 && lastCharacterAt && now - lastCharacterAt > KeyPress.BUFFER_TIMEOUT_MS) {
             Login.resetPhysicalBuffer($element);
             buffer = '';
             firstCharacterAt = null;
@@ -56,7 +54,7 @@ class Login extends Page {
 
             Login.rememberLoginFieldValue(event.target, targetValues);
             buffer += event.key;
-            $search.val(buffer);
+            Component.setProperty($element, 'physicalBuffer', buffer);
             Component.setProperty($element, 'firstCharacterAt', firstCharacterAt);
             Component.setProperty($element, 'lastCharacterAt', now);
             Component.setProperty($element, 'targetValues', targetValues);
@@ -68,11 +66,13 @@ class Login extends Page {
             let averageCharacterInterval = duration / (buffer.length - 1);
             // At least two characters are needed to estimate an inter-character interval.
             let isPhysicalToken = buffer.length >= 2 &&
-                (readingSpeed == 0 || averageCharacterInterval < readingSpeed);
+                averageCharacterInterval < KeyPress.READING_SPEED_MS;
 
             if (isPhysicalToken) {
                 event.preventDefault();
-                Login.restoreLoginFieldValues(targetValues);
+                if (hideInput) {
+                    Login.restoreLoginFieldValues(targetValues);
+                }
                 Login.resetPhysicalBuffer($element);
                 Login.onLogin(null, {
                     processUrl: 'api/auth/physical',
@@ -115,7 +115,7 @@ class Login extends Page {
     }
 
     static resetPhysicalBuffer($element) {
-        $element.find('input').val('');
+        Component.setProperty($element, 'physicalBuffer', '');
         Component.setProperty($element, 'firstCharacterAt', null);
         Component.setProperty($element, 'lastCharacterAt', null);
         Component.setProperty($element, 'targetValues', []);

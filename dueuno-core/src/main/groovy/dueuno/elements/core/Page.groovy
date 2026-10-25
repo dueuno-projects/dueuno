@@ -49,7 +49,7 @@ abstract class Page extends Component {
     /** The message box used to display info, error, and confirmation messages. */
     PageMessageBox messageBox
 
-    /** The global keyboard/barcode-scanner listener for this page. */
+    /** The global keyboard listener for this page. */
     KeyPress keyPress
 
     /**

@@ -6,6 +6,8 @@ class KeyPress extends Component {
 
     static get hotkeys() { return KeyPress_hotkeys }
     static set hotkeys(value) { KeyPress_hotkeys = value }
+    static get READING_SPEED_MS() { return 20 }
+    static get BUFFER_TIMEOUT_MS() { return 500 }
 
     static finalize($element, $root) {
         KeyPress.initializeKeyboardEvents();
@@ -43,8 +45,6 @@ class KeyPress extends Component {
         KeyPress.setHotkeysVisible(KeyPress.isHotkeyModifierPressed(event));
 
         let $element = $('[data-21-id="keyPress"]');
-        let $search = $element.find('input');
-
         if (KeyPress.onHotkey(event)) {
             return;
         }
@@ -56,59 +56,121 @@ class KeyPress extends Component {
         event.stopPropagation();
 
         let triggerKey = Component.getProperty($element, 'triggerKey');
-        let readingSpeed = Component.getProperty($element, 'readingSpeed');
-        let bufferTimeout = Component.getProperty($element, 'bufferTimeout');
-        let hideInput = Component.getProperty($element, 'hideInput');
-        let timer = Component.getProperty($element, 'timer');
+        let hideInput = Component.getProperty($element, 'hideInput') === true;
+        let buffer = Component.getProperty($element, 'buffer') || '';
+        let lastKeyAt = Component.getProperty($element, 'lastKeyAt');
         let lastKey = Component.getProperty($element, 'lastKey');
+        let scannerInput = Component.getProperty($element, 'scannerInput') || false;
+        let priorInputState = Component.getProperty($element, 'priorInputState');
+        let previousInputState = Component.getProperty($element, 'previousInputState');
+        let lastInterval = Component.getProperty($element, 'lastInterval');
 
         if (triggerKey == null) {
             return;
         }
 
-        if (isNaN(timer)) timer = 0;
-        let now = Date.now();
-        let timeInterval = now - timer;
-        Component.setProperty($element, 'timer', now);
-        Component.setProperty($element, 'lastKey', event.key);
-
-        let checkMinTime = (readingSpeed == 0 || timeInterval < readingSpeed);
-        let checkMaxTime = (bufferTimeout == 0 || timeInterval > bufferTimeout);
-
-        if (checkMaxTime) {
-            $search.val('');
+        let now = performance.now();
+        let timeInterval = lastKeyAt == null ? Infinity : now - lastKeyAt;
+        if (timeInterval > KeyPress.BUFFER_TIMEOUT_MS) {
+            buffer = '';
+            scannerInput = false;
+            priorInputState = null;
+            previousInputState = null;
+            lastInterval = Infinity;
         }
 
         let printable = Control.isPrintable(event.keyCode);
         let isModifierPressed = Control.isModifierPressed(event, lastKey);
+        let checkMinTime = timeInterval < KeyPress.READING_SPEED_MS;
+        let currentInputState = hideInput && event.target.tagName == 'INPUT' && printable && !isModifierPressed
+            ? KeyPress.captureInputState(event.target)
+            : null;
 
         if (triggerKey.length == 0) {
-            $search.val(event.key);
+            buffer = event.key;
         } else {
             if (printable) {
-                $search.val($search.val() + event.key);
+                buffer += event.key;
             }
         }
 
-        if (hideInput && !isModifierPressed && checkMinTime && event.target.tagName == 'INPUT') {
-            event.preventDefault();
-            $(event.target).val('');
+        if (hideInput && triggerKey.length > 0 && !scannerInput && checkMinTime &&
+            lastInterval < KeyPress.READING_SPEED_MS && event.target.tagName == 'INPUT' &&
+            priorInputState && previousInputState &&
+            priorInputState.target === event.target && previousInputState.target === event.target) {
+            KeyPress.restoreInputState(priorInputState);
+            scannerInput = true;
         }
 
-        if ((event.key == triggerKey && $search.val().length > 0 && checkMinTime) || triggerKey.length == 0) {
-            if (triggerKey.length > 0 && $search.val().length > 0 &&
+        if (hideInput && scannerInput && event.target.tagName == 'INPUT' && printable && !isModifierPressed) {
+            event.preventDefault();
+        }
+
+        Component.setProperty($element, 'buffer', buffer);
+        Component.setProperty($element, 'lastKeyAt', now);
+        Component.setProperty($element, 'lastKey', event.key);
+        Component.setProperty($element, 'scannerInput', scannerInput);
+        Component.setProperty($element, 'priorInputState', currentInputState ? previousInputState : priorInputState);
+        Component.setProperty($element, 'previousInputState', currentInputState || previousInputState);
+        Component.setProperty($element, 'lastInterval', timeInterval);
+
+        if ((event.key == triggerKey && buffer.length > 0 && (checkMinTime || (hideInput && scannerInput))) || triggerKey.length == 0) {
+            if (hideInput && scannerInput && event.target.tagName == 'INPUT') {
+                event.preventDefault();
+            }
+
+            if (triggerKey.length > 0 && buffer.length > 0 &&
                 (event.target.tagName == 'A' || event.target.tagName == 'BUTTON')) {
                 event.preventDefault();
             }
 
             let triggerEvent = Component.getEvent($element, 'keypress');
-            if (triggerEvent && (event.target.tagName != 'INPUT' || !printable || checkMinTime)) {
+            if (triggerEvent && (event.target.tagName != 'INPUT' || !printable || checkMinTime || (hideInput && scannerInput))) {
                 if (!triggerEvent.params) triggerEvent.params = {};
-                triggerEvent.params['_21KeyPressed'] = $search.val();
+                triggerEvent.params['_21KeyPressed'] = buffer;
                 Transition.submit(triggerEvent);
             }
-            $search.val('');
+            KeyPress.resetBuffer($element);
         }
+    }
+
+    static captureInputState(input) {
+        let selectionStart = null;
+        let selectionEnd = null;
+        try {
+            selectionStart = input.selectionStart;
+            selectionEnd = input.selectionEnd;
+        } catch (error) {
+            // Some input types do not expose a text selection.
+        }
+        return {
+            target: input,
+            value: input.value,
+            selectionStart: selectionStart,
+            selectionEnd: selectionEnd,
+        };
+    }
+
+    static restoreInputState(state) {
+        if (!state || !state.target || !document.documentElement.contains(state.target)) {
+            return;
+        }
+        state.target.value = state.value;
+        if (state.selectionStart != null && state.selectionEnd != null) {
+            try {
+                state.target.setSelectionRange(state.selectionStart, state.selectionEnd);
+            } catch (error) {
+                // Some input types do not support text selections.
+            }
+        }
+    }
+
+    static resetBuffer($element) {
+        Component.setProperty($element, 'buffer', '');
+        Component.setProperty($element, 'scannerInput', false);
+        Component.setProperty($element, 'priorInputState', null);
+        Component.setProperty($element, 'previousInputState', null);
+        Component.setProperty($element, 'lastInterval', Infinity);
     }
 
     static onKeyUp(event) {

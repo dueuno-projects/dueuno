@@ -14,7 +14,6 @@
  */
 package dueuno.elements.core
 
-import dueuno.elements.controls.HiddenField
 import groovy.transform.CompileStatic
 
 /**
@@ -23,16 +22,13 @@ import groovy.transform.CompileStatic
  * It also dispatches keyboard hotkeys configured on {@link dueuno.elements.components.Link}
  * instances by triggering the link's normal click handler.
  * <p>
- * {@code KeyPress} is primarily designed to support barcode-scanner input. It distinguishes
- * between human typing and scanner input by measuring the speed at which characters arrive:
- * if the characters arrive faster than {@code readingSpeed} milliseconds apart, the input
- * is treated as coming from a scanner and the action is triggered when the {@code triggerKey}
- * is pressed (typically {@code Enter}).
+ * {@code KeyPress} is primarily designed to support barcode-scanner input. The client
+ * distinguishes scanner input from human typing and triggers the action when the configured
+ * {@code triggerKey} is pressed (typically {@code Enter}).
  * </p>
  * <p>
- * The accumulated characters are stored in an internal {@link HiddenField} ({@code buffer})
- * and sent to the server as the {@code _21KeyPressed} request parameter, accessible via
- * {@link #getKeyPressed()}.
+ * The client buffers the accumulated characters and sends them to the server as the
+ * {@code _21KeyPressed} request parameter, accessible via {@link #getKeyPressed()}.
  * </p>
  * <p>
  * The target controller action is configured by the {@code invocationDefinition} and
@@ -48,9 +44,6 @@ class KeyPress extends Component {
     /** The invocation definition describing the controller action to invoke on key press. */
     InvocationDefinition invocationDefinition
 
-    /** Hidden form field used to buffer the characters received from the keyboard or scanner. */
-    HiddenField buffer
-
     /** Whether keyboard listening is active. Defaults to {@code true}. */
     Boolean enabled
 
@@ -60,24 +53,7 @@ class KeyPress extends Component {
      */
     String triggerKey
 
-    /**
-     * Maximum inter-character delay in milliseconds used to distinguish scanner input from
-     * human typing. If characters arrive faster than this value, the input is treated as
-     * coming from a barcode scanner. Defaults to {@code 20} ms.
-     * Only evaluated when the focus is on an {@code <input>} element.
-     */
-    Integer readingSpeed
-
-    /**
-     * Time in milliseconds after which the input buffer is automatically cleared to
-     * prevent accidental partial input from being submitted. Defaults to {@code 500} ms.
-     */
-    Integer bufferTimeout
-
-    /**
-     * When {@code true}, characters typed while an {@code <input>} element has focus are
-     * suppressed (not displayed in the field). Defaults to {@code false}.
-     */
+    /** Whether scanner input is suppressed from a focused input field. Defaults to {@code false}. */
     Boolean hideInput
 
     /**
@@ -86,9 +62,7 @@ class KeyPress extends Component {
      * <ul>
      *     <li>{@code enabled} — defaults to {@code true}</li>
      *     <li>{@code triggerKey} — defaults to {@code "Enter"}</li>
-     *     <li>{@code readingSpeed} — max inter-character delay for scanner detection (ms); defaults to {@code 20}</li>
-     *     <li>{@code bufferTimeout} — buffer auto-clear delay (ms); defaults to {@code 500}</li>
-     *     <li>{@code hideInput} — defaults to {@code false}</li>
+     *     <li>{@code hideInput} — suppress scanner text from a focused input; defaults to {@code false}</li>
      *     <li>{@code controller} / {@code action} / {@code namespace} / {@code params} / {@code submit}
      *         — invocation definition for the triggered action; defaults to {@code keyPress/onKeyPress}</li>
      * </ul>
@@ -102,26 +76,11 @@ class KeyPress extends Component {
 
         enabled = args.enabled == null ? true : args.enabled
         triggerKey = args.triggerKey ?: 'Enter'
-
-        // a barcode reader is typically much faster at typing than a human...
-        // let's use this principle to understand if the typing comes from a reader (ms)
-        // (only evaluated if focus is on an "input" element)
-        readingSpeed = args.readingSpeed == null ? 20 : args.readingSpeed as Integer
-
-        // to prevent accidental typing, the buffer empties after a certain time (ms)
-        bufferTimeout = args.bufferTimeout == null ? 500 : args.bufferTimeout as Integer
-
-        // avoid writing text if focus is on an "input" element (default false)
-        hideInput = args.hideInput == null ? false : args.hideInput
+        hideInput = args.hideInput == null ? false : args.hideInput as Boolean
 
         invocationDefinition = new InvocationDefinition(args)
         invocationDefinition.controller = args.controller ?: 'keyPress'
         invocationDefinition.action = args.action ?: 'onKeyPress'
-
-        buffer = createControl(
-            class: HiddenField,
-            id: 'buffer',
-        )
 
         setOnKeyPressEvent()
     }
@@ -151,19 +110,16 @@ class KeyPress extends Component {
 
     /**
      * Returns a JSON string of the client-side properties needed to configure the
-     * key-press listener on the frontend ({@code enabled}, {@code triggerKey},
-     * {@code readingSpeed}, {@code bufferTimeout}, {@code hideInput}).
+     * key-press listener on the frontend ({@code enabled}, {@code triggerKey}, {@code hideInput}).
      *
      * @return a JSON representation of the key-press configuration
      */
     @Override
     String getPropertiesAsJSON() {
         Map thisProperties = [
-            enabled      : enabled,
-            triggerKey   : triggerKey,
-            readingSpeed : readingSpeed,
-            bufferTimeout: bufferTimeout,
-            hideInput    : hideInput,
+            enabled   : enabled,
+            triggerKey: triggerKey,
+            hideInput : hideInput,
         ]
         return Elements.encodeAsJSON(thisProperties)
     }

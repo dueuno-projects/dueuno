@@ -45,9 +45,6 @@ class PageService implements WebRequestAware, LinkGeneratorAware {
         tenantPropertyService.setString('APPICON', linkPublicResource(tenantId, 'brand/appicon.png', false))
 
         tenantPropertyService.setString('KEYPRESS_TRIGGER_KEY', 'Enter')
-        tenantPropertyService.setNumber('KEYPRESS_READING_SPEED', 20)
-        tenantPropertyService.setNumber('KEYPRESS_BUFFER_CLEANUP_TIMEOUT', 500)
-        tenantPropertyService.setBoolean('KEYPRESS_KEEP_CLEAN', false)
     }
 
     Page getMainPage() {
@@ -108,10 +105,7 @@ class PageService implements WebRequestAware, LinkGeneratorAware {
         args.requiredTextColor = tenantPropertyService.getString('REQUIRED_TEXT_COLOR', true)
 
         args.keyPress = [
-            triggerKey          : tenantPropertyService.getString('KEYPRESS_TRIGGER_KEY'),
-            readingSpeed        : tenantPropertyService.getNumber('KEYPRESS_READING_SPEED'),
-            bufferCleanupTimeout: tenantPropertyService.getNumber('KEYPRESS_BUFFER_CLEANUP_TIMEOUT'),
-            keepClean           : tenantPropertyService.getBoolean('KEYPRESS_KEEP_CLEAN'),
+            triggerKey: tenantPropertyService.getString('KEYPRESS_TRIGGER_KEY'),
         ]
 
         return args

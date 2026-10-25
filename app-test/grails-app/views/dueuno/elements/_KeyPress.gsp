@@ -3,5 +3,4 @@
      data-21-id="${c.id}"
      data-21-properties="${c.propertiesAsJSON}"
      data-21-events="${c.eventsAsJSON}">
-    <render:component instance="${c.buffer}"/>
 </div>

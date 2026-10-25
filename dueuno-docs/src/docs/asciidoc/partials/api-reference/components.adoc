@@ -1226,7 +1226,7 @@ Wa can use separators to space between a set of fields and another one in a form
 
 [[key-press]]
 === KeyPress
-We use the `KeyPress` component to intercept key pressed by the user on the GUI. Its main use is to integrate barcode readers but it can be used for any other scenario.
+We use the `KeyPress` component to intercept key presses on the client. It buffers input until the trigger key is pressed and sends it with the configured event. Scanner-speed input is detected automatically and removed from a focused input field. Its main use is to integrate barcode and RFID readers
 
 [source,groovy]
 ----
@@ -1252,18 +1252,10 @@ c.addComponent(
 |`Boolean`
 |`true`
 |Whether key press detection is enabled.
-|`readingSpeed`
-|`Integer`
-|`20`
-|Maximum time, in milliseconds, used to distinguish fast input devices, such as barcode readers, from manual typing when focus is on an input element.
-|`bufferTimeout`
-|`Integer`
-|`500`
-|Time, in milliseconds, after which the key buffer is cleared.
 |`hideInput`
 |`Boolean`
 |`false`
-|If set to `true`, typed text is not written into the focused input element.
+|When `true`, scanner-speed input is removed from the focused input field. When `false`, the field is left unchanged by KeyPress.
 |===
 
 ==== Events
