@@ -16,7 +16,6 @@ package dueuno.security
 
 import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
-import dueuno.elements.components.Timer
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.Select
 import dueuno.tenant.TenantService
@@ -42,12 +41,6 @@ class UserSessionController implements ElementsController {
 
         def c = createContent(ContentTable)
         c.header.removeNextButton()
-        c.addComponent(Timer, 'refresh', [
-            interval          : 10000,
-            action            : 'index',
-            executeImmediately: false,
-        ])
-
         c.table.with {
             filters.with {
                 fold = false
