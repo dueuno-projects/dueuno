@@ -37,10 +37,16 @@ class UserSessionController implements ElementsController {
         Boolean isSuperAdmin = securityService.isSuperAdmin()
         List tableColumns = []
         if (isSuperAdmin) tableColumns += ['tenant']
-        tableColumns += ['username', 'firstname', 'lastname', 'lastAccessedTime']
+        tableColumns += ['username', 'firstname', 'lastname', 'lastAccessedTime', 'expirationTime', 'rememberMeExpirationTime']
 
         def c = createContent(ContentTable)
         c.header.removeNextButton()
+        c.header.addBackButton(
+            action: 'index',
+            icon: 'fa-rotate',
+            text: '',
+            tooltip: 'default.text.refresh',
+        )
         c.table.with {
             filters.with {
                 fold = false
@@ -50,15 +56,7 @@ class UserSessionController implements ElementsController {
                         id: 'tenant',
                         optionsFromRecordset: tenantService.list(),
                         noSelection: true,
-                        cols: 4,
-                    )
-                }
-                actionbar.with {
-                    addAction(
-                        action: 'index',
-                        icon: 'fa-rotate',
-                        text: '',
-                        tooltip: 'default.text.refresh',
+                        cols: 3,
                     )
                 }
             }
@@ -69,6 +67,8 @@ class UserSessionController implements ElementsController {
                 username : 'user.username',
                 firstname: 'user.firstname',
                 lastname : 'user.lastname',
+                expirationTime           : 'userSession.expirationTime',
+                rememberMeExpirationTime: 'userSession.rememberMeExpirationTime',
             ]
             actions.removeAllActions()
             actions.addDefaultAction(
@@ -90,7 +90,7 @@ class UserSessionController implements ElementsController {
             }
         }
 
-        display content: c, modal: true, closeButton: true
+        display content: c, modal: true, large: true, closeButton: true
     }
 
     def onDisconnect() {

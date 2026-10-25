@@ -68,7 +68,7 @@ class UserController implements ElementsController {
             controller: 'userSession',
             action: 'index',
             text: 'shell.security.userSession.index',
-            icon: 'fa-desktop',
+            icon: 'fa-tv',
         )
 
         c.table.with {

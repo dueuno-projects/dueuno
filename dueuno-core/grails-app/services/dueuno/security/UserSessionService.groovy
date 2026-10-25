@@ -20,6 +20,7 @@ import org.apache.catalina.Context
 import org.apache.catalina.Manager
 import org.apache.catalina.Session
 
+import java.nio.charset.StandardCharsets
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -31,6 +32,7 @@ import java.time.ZoneId
 class UserSessionService {
 
     private static final String SESSION_KEY_ATTRIBUTE = '_dueunoUserSessionKey'
+    private static final String REMEMBER_ME_EXPIRATION_ATTRIBUTE = '_dueunoRememberMeExpirationTime'
 
     private volatile Context tomcatContext
 
@@ -41,6 +43,43 @@ class UserSessionService {
     void register(HttpSession httpSession, TUser user) {
         if (!httpSession || !user) return
         getOrCreateSessionKey(httpSession)
+    }
+
+    void updateRememberMeExpiration(HttpSession httpSession, String cookieValue) {
+        if (!httpSession) return
+
+        try {
+            if (!cookieValue) {
+                httpSession.removeAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE)
+                return
+            }
+
+            String paddedCookieValue = cookieValue
+            while (paddedCookieValue.length() % 4 != 0) {
+                paddedCookieValue += '='
+            }
+
+            String cookieContents = new String(
+                Base64.getDecoder().decode(paddedCookieValue),
+                StandardCharsets.UTF_8,
+            )
+            int firstDelimiter = cookieContents.indexOf(':')
+            int secondDelimiter = cookieContents.indexOf(':', firstDelimiter + 1)
+            if (firstDelimiter < 0 || secondDelimiter < 0) {
+                httpSession.removeAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE)
+                return
+            }
+
+            String expirationValue = URLDecoder.decode(
+                cookieContents.substring(firstDelimiter + 1, secondDelimiter),
+                StandardCharsets.UTF_8,
+            )
+            httpSession.setAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE, Long.parseLong(expirationValue))
+        } catch (IllegalArgumentException ignored) {
+            httpSession.removeAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE)
+        } catch (IllegalStateException ignored) {
+            // The session may be invalidated while the request is being processed.
+        }
     }
 
     List<Map<String, Object>> list(String tenantId, Boolean includeAllTenants) {
@@ -68,17 +107,27 @@ class UserSessionService {
                 if (tenantId && userTenantId != tenantId) continue
                 if (!includeAllTenants && userTenantId != tenantId) continue
 
+                Long rememberMeExpirationTime = httpSession.getAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE) as Long
+
                 result.add([
-                    id              : getOrCreateSessionKey(httpSession),
-                    tenant          : userTenantId,
-                    username        : user.username,
-                    firstname       : user.firstname,
-                    lastname        : user.lastname,
-                    lastAccessedTime: LocalDateTime.ofInstant(
+                    id                       : getOrCreateSessionKey(httpSession),
+                    tenant                   : userTenantId,
+                    username                 : user.username,
+                    firstname                : user.firstname,
+                    lastname                 : user.lastname,
+                    lastAccessedTime         : LocalDateTime.ofInstant(
                         Instant.ofEpochMilli(lastAccessedTime),
                         ZoneId.systemDefault(),
                     ),
-                ])
+                    expirationTime           : timeout > 0 ? LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(lastAccessedTime + timeout * 1000L),
+                        ZoneId.systemDefault(),
+                    ) : null,
+                    rememberMeExpirationTime: rememberMeExpirationTime ? LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(rememberMeExpirationTime),
+                        ZoneId.systemDefault(),
+                    ) : null,
+                ] as Map)
             } catch (IllegalStateException ignored) {
                 // The session may be invalidated while the list is being built.
             }
