@@ -4,7 +4,7 @@ class Link extends Label {
 
     static finalize($element, $root) {
         $element.off('click').on('click', Link.onClick);
-        KeyPress.registerHotkey($element);
+        PageKeyPress.registerHotkey($element);
     }
 
     static setReadonly($element, value) {

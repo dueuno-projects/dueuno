@@ -71,7 +71,7 @@ class PageModal extends Component {
             PageModal.isShowRequested = false;
         }
 
-        KeyPress.initializeKeyboardEvents();
+        PageKeyPress.initializeKeyboardEvents();
     }
 
     static onScroll(event) {

@@ -1225,19 +1225,24 @@ Wa can use separators to space between a set of fields and another one in a form
 |===
 
 [[key-press]]
-=== KeyPress
-We use the `KeyPress` component to intercept key presses on the client. It buffers input until the trigger key is pressed and sends it with the configured event. Scanner-speed input is detected automatically and removed from a focused input field. Its main use is to integrate barcode and RFID readers
+=== PageKeyPress
+`PageKeyPress` is a standard component created automatically for every `Page`. It provides page-wide keyboard hotkeys and detects fast input from barcode and RFID readers. With a trigger key configured, the client buffers characters and uses their timing to distinguish scanner input from ordinary typing. When it detects scanner-speed input followed by the trigger key, it sends the value with the configured event. The server receives it as `_21KeyPressed`; controller actions can read it through `keyPressed`.
+
+Configure the page's existing component through the nested `keyPress` map when creating the page. Do not create a separate `PageKeyPress` with `addComponent` or `createComponent`.
 
 [source,groovy]
 ----
-def c = createContent(ContentTable)
-c.addComponent(
-    class: KeyPress,
-    id: 'keyPress',
-    action: 'onKeyPress', // <1>
-)
+def page = createPage(PageBlank, [
+    keyPress: [
+        enabled: true,
+        triggerKey: 'Enter',
+        hideInput: true,
+    ],
+])
 ----
-<1> See <<events>> to configure the event
+The nested map accepts the component properties and the event options `controller`, `action`, `namespace`, `params`, and `submit`. By default the event invokes `keyPress/onKeyPress`.
+
+When `hideInput` is enabled, scanner-speed characters are removed from a focused input while ordinary typing remains in the field. The `PageKeyPress` component also handles hotkeys configured on `Link` components.
 
 ==== Properties
 [cols="1,1,1,7a"]
@@ -1247,15 +1252,15 @@ c.addComponent(
 |`triggerKey`
 |`String`
 |`'Enter'`
-|Key pressed are stored into a buffer until a trigger key is pressed. When this happens the configured event is called. The trigger key can be any character or `Enter`. If set to blank `''` each key pressed will be immediately sent.
+|Characters are buffered until the trigger key is pressed. The event is dispatched when the buffered sequence is recognized as scanner-speed input. The trigger key can be any character or `Enter`. If blank (`''`), each key meets the trigger condition.
 |`enabled`
 |`Boolean`
 |`true`
-|Whether key press detection is enabled.
+|Whether scanner input detection is enabled.
 |`hideInput`
 |`Boolean`
 |`false`
-|When `true`, scanner-speed input is removed from the focused input field. When `false`, the field is left unchanged by KeyPress.
+|When `true`, scanner-speed input is removed from the focused input field. When `false`, the field is left unchanged by PageKeyPress.
 |===
 
 ==== Events
@@ -1264,7 +1269,7 @@ c.addComponent(
 |Event|Description
 
 |`keypress`
-|Triggered when the configured `triggerKey` is pressed, or on every key when `triggerKey` is blank.
+|Triggered when scanner-speed input ends with the configured `triggerKey`. The collected value is sent as `_21KeyPressed`. When `triggerKey` is blank, each key meets the trigger condition.
 |===
 ////
 Licensed to the Apache Software Foundation (ASF) under one or more

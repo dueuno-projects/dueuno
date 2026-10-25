@@ -77,7 +77,7 @@ class AuthenticationController implements ElementsController {
                 ]
             } as List<Map>
 
-        def physicalAuthenticationEnabled = authenticationProviders.find {
+        def physicalIdEnabled = authenticationProviders.find {
             it.providerType == AuthenticationProviderType.PHYSICAL
         }?.enabled ?: false
 
@@ -90,7 +90,7 @@ class AuthenticationController implements ElementsController {
                 registerUrl                  : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
                 passwordRecoveryUrl          : tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),
                 oidcProviders                : oidcProviders,
-                physicalAuthenticationEnabled: physicalAuthenticationEnabled,
+                physicalIdEnabled            : physicalIdEnabled,
             ]
 
             if (EnvUtils.isDevelopment()) {

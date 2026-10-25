@@ -22,7 +22,7 @@ import groovy.transform.CompileStatic
  * It also dispatches keyboard hotkeys configured on {@link dueuno.elements.components.Link}
  * instances by triggering the link's normal click handler.
  * <p>
- * {@code KeyPress} is primarily designed to support barcode-scanner input. The client
+ * {@code PageKeyPress} is primarily designed to support barcode-scanner input. The client
  * distinguishes scanner input from human typing and triggers the action when the configured
  * {@code triggerKey} is pressed (typically {@code Enter}).
  * </p>
@@ -39,7 +39,7 @@ import groovy.transform.CompileStatic
  */
 
 @CompileStatic
-class KeyPress extends Component {
+class PageKeyPress extends Component {
 
     /** The invocation definition describing the controller action to invoke on key press. */
     InvocationDefinition invocationDefinition
@@ -57,7 +57,7 @@ class KeyPress extends Component {
     Boolean hideInput
 
     /**
-     * Creates a {@code KeyPress} component from the given argument map.
+     * Creates a {@code PageKeyPress} component from the given argument map.
      * All {@link Component} arguments are supported, plus:
      * <ul>
      *     <li>{@code enabled} — defaults to {@code true}</li>
@@ -69,14 +69,14 @@ class KeyPress extends Component {
      *
      * @param args map of component and key-press properties
      */
-    KeyPress(Map args) {
+    PageKeyPress(Map args) {
         super(args)
 
         viewPath = '/dueuno/elements/'
 
         enabled = args.enabled == null ? true : args.enabled
         triggerKey = args.triggerKey ?: 'Enter'
-        hideInput = args.hideInput == null ? false : args.hideInput as Boolean
+        hideInput = args.hideInput == null ? true : args.hideInput as Boolean
 
         invocationDefinition = new InvocationDefinition(args)
         invocationDefinition.controller = args.controller ?: 'keyPress'

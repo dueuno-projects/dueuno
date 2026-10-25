@@ -20,7 +20,6 @@ import dueuno.elements.components.Label
 import dueuno.elements.components.Link
 import dueuno.elements.controls.PasswordField
 import dueuno.elements.controls.TextField
-import dueuno.elements.core.KeyPress
 import dueuno.elements.core.Page
 import dueuno.elements.style.TextAlign
 import dueuno.security.AuthenticationProviderType
@@ -46,17 +45,16 @@ class Login extends Page {
     String backgroundImage
     String logoImage
 
-    KeyPress loginKeyPress
+    Boolean physicalIdEnabled
     Form form
 
     Login(Map args) {
         super(args)
 
         keyPress.enabled = false
-        Boolean physicalAuthenticationEnabled = args.physicalAuthenticationEnabled != null
-            ? args.physicalAuthenticationEnabled
+        physicalIdEnabled = args.physicalIdEnabled != null
+            ? args.physicalIdEnabled
             : false
-        loginKeyPress = createComponent(KeyPress, 'loginKeyPress', [enabled: physicalAuthenticationEnabled])
 
         autocomplete = (args.autocomplete == null) ? false : args.autocomplete
 
@@ -150,6 +148,14 @@ class Login extends Page {
                 )
             }
         }
+    }
+
+    @Override
+    String getPropertiesAsJSON(Map properties = [:]) {
+        Map thisProperties = [
+            physicalIdEnabled: physicalIdEnabled,
+        ]
+        return super.getPropertiesAsJSON(thisProperties + properties)
     }
 
     private static String oidcProviderIcon(AuthenticationProviderType providerType) {

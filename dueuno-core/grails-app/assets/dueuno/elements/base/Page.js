@@ -59,7 +59,7 @@ class Page {
         Page.finalizeControls($root, reinitialize);
         Page.finalizeComponents($root, reinitialize);
         PageContent.finalize();
-        KeyPress.initializeKeyboardEvents();
+        PageKeyPress.initializeKeyboardEvents();
     }
 
     static reinitializeContent($root, reinitialize = false, deactivate = false) {

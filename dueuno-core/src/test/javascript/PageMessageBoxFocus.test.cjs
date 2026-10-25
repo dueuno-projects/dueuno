@@ -39,7 +39,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                     focused = target;
                 }
             },
-            KeyPress: {
+            PageKeyPress: {
                 setHotkeysVisible(visible) {
                     hotkeysVisible = visible;
                 },
@@ -95,12 +95,12 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
             }),
         });
         const source = path.resolve(__dirname, '../../../..', moduleName,
-            'grails-app/assets/dueuno/elements/base/KeyPress.js');
+            'grails-app/assets/dueuno/elements/base/PageKeyPress.js');
         vm.runInContext(fs.readFileSync(source, 'utf8'), context);
-        const KeyPress = vm.runInContext('KeyPress', context);
+        const PageKeyPress = vm.runInContext('PageKeyPress', context);
 
-        KeyPress.setHotkeysVisible(true);
+        PageKeyPress.setHotkeysVisible(true);
         assert.equal(hotkeysVisible, false);
-        assert.equal(KeyPress.onHotkey({repeat: false}), false);
+        assert.equal(PageKeyPress.onHotkey({repeat: false}), false);
     });
 }

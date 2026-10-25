@@ -9,6 +9,7 @@
       style="background-image: url('${raw(c.backgroundImage)}');"
       data-21-page="${c.className}"
       data-21-id="${c.id}"
+      data-21-properties="${c.propertiesAsJSON}"
 >
 
 <page:loading />
@@ -23,7 +24,6 @@
             <render:message code="shell.auth.bad.credentials"/>
         </div>
 
-        <render:component instance="${c.loginKeyPress}" />
         <render:component instance="${c.form}" />
     </div>
 
