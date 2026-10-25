@@ -17,7 +17,6 @@ package dueuno.security
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
 import dueuno.elements.ElementsController
-import dueuno.elements.components.Label
 import dueuno.elements.components.Separator
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
@@ -28,7 +27,6 @@ import dueuno.elements.controls.*
 import dueuno.elements.core.PrettyPrinterDecimalFormat
 import dueuno.elements.style.GuiStyle
 import dueuno.elements.style.TextDefault
-import dueuno.elements.style.TextStyle
 import dueuno.tenant.TenantPropertyService
 import dueuno.tenant.TenantService
 import grails.plugin.springsecurity.annotation.Secured
@@ -65,6 +63,13 @@ class UserController implements ElementsController {
         def c = createContent(ContentTable)
 
         c.header.removeBackButton()
+
+        c.table.actionbar.addAction(
+            controller: 'userSession',
+            action: 'index',
+            text: 'shell.security.userSession.index',
+            icon: 'fa-desktop',
+        )
 
         c.table.with {
             filters.with {

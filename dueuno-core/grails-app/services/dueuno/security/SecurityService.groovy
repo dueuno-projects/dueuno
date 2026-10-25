@@ -81,6 +81,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     ShellService shellService
     TenantService tenantService
     AuditService auditService
+    UserSessionService userSessionService
 
     void init() {
         applicationService.registerPrettyPrinter(TTenant, '${it.tenantId}')
@@ -467,6 +468,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     void executeAfterLogin() {
         initializeSessionDuration()
         initializeShell()
+        userSessionService.register(request.getSession(false), currentUser)
 
         // Executes custom login code
         String tenantId = tenantService.currentTenantId

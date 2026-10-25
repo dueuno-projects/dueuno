@@ -15,6 +15,7 @@
 package dueuno
 
 import dueuno.application.SessionInitializer
+import dueuno.security.UserSessionTomcatContextListener
 import dueuno.security.physical.PhysicalUserDetailsService
 import dueuno.security.physical.PhysicalAuthenticationFilter
 import dueuno.security.AuthenticationProviderManager
@@ -79,6 +80,9 @@ class DueunoGrailsPlugin extends Plugin {
         { ->
             tenantForCurrentUserResolver(TenantForCurrentUserResolver)
             sessionInitializer(SessionInitializer)
+            userSessionTomcatContextListener(UserSessionTomcatContextListener) {
+                userSessionService = ref('userSessionService')
+            }
 
             runtimeAuthenticationProvider(AuthenticationProviderManager) {
                 authenticationProviderService = ref('authenticationProviderService')
