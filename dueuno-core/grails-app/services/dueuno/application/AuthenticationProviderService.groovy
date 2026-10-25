@@ -19,13 +19,17 @@ import dueuno.security.AuthenticationProviderType
 import dueuno.security.TAuthenticationProvider
 import dueuno.tenant.TTenant
 import dueuno.tenant.TenantService
+import grails.gorm.multitenancy.CurrentTenant
+import grails.gorm.multitenancy.Tenants
+import grails.gorm.multitenancy.WithoutTenant
 import grails.gorm.transactions.Transactional
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
+import org.grails.datastore.mapping.core.connections.ConnectionSource
 import org.springframework.security.authentication.AuthenticationProvider
 
 /**
- * Manages tenant-specific authentication providers and their runtime order.
+ * Manages tenant-specific authentication providers stored in the default tenant database.
  */
 @Transactional
 @CompileStatic
@@ -33,9 +37,11 @@ class AuthenticationProviderService implements WebRequestAware {
 
     TenantService tenantService
 
+    @CurrentTenant
     @CompileDynamic
-    void tenantInstall(String tenantId) {
-        TTenant tenant = TTenant.findByTenantId(tenantId)
+    void tenantInstall() {
+        String tenantId = tenantService.currentTenantId
+        TTenant tenant = tenantService.getByTenantId(tenantId)
         if (!tenant) throw new IllegalArgumentException("Tenant '${tenantId}' does not exist")
         installDefaults(tenant)
     }
@@ -116,7 +122,7 @@ class AuthenticationProviderService implements WebRequestAware {
                     provider.clientAuthenticationMethod = values.clientAuthenticationMethod as String
                 }
             }
-            provider.save(flush: true, failOnError: true)
+            provider.save(validate: false, flush: true, failOnError: true)
         }
     }
 
@@ -169,6 +175,7 @@ class AuthenticationProviderService implements WebRequestAware {
         return providers
     }
 
+    @Transactional
     @CompileDynamic
     TAuthenticationProvider update(Map args, boolean superAdmin) {
         TAuthenticationProvider provider = superAdmin

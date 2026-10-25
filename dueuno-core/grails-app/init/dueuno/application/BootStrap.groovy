@@ -49,7 +49,7 @@ class BootStrap {
         }
 
         applicationService.onPluginTenantInstall { String tenantId ->
-            authenticationProviderService.tenantInstall(tenantId)
+            authenticationProviderService.tenantInstall()
             securityService.tenantInstall()
             cryptoService.tenantInstall()
             tenantPropertyService.tenantInstall()

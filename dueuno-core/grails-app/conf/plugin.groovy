@@ -1,8 +1,8 @@
 // H2 Console enabled by default (protected by Spring Security, only "superadmin" can access it)
 spring.h2.console.enabled = true
 
-// Uses custom table naming
-hibernate.naming_strategy = dueuno.database.TNamingStrategy
+// Removes the T domain-class prefix and applies snake_case to physical names
+hibernate.physical_naming_strategy = dueuno.database.TNamingStrategy
 
 // Tenants are stored in separate database schemas
 grails.gorm.multiTenancy.mode = 'DATABASE'

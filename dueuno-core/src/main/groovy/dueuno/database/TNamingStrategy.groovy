@@ -15,7 +15,9 @@
 package dueuno.database
 
 import groovy.transform.CompileStatic
-import org.hibernate.cfg.ImprovedNamingStrategy
+import org.hibernate.boot.model.naming.Identifier
+import org.hibernate.boot.model.naming.PhysicalNamingStrategySnakeCaseImpl
+import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment
 
 /**
  * Remove "t" prefix from table names if the domain class name starts with "T"
@@ -24,14 +26,20 @@ import org.hibernate.cfg.ImprovedNamingStrategy
  */
 
 @CompileStatic
-class TNamingStrategy extends ImprovedNamingStrategy {
+class TNamingStrategy extends PhysicalNamingStrategySnakeCaseImpl {
 
-    String classToTableName(String className){
-        String tableName = className.startsWith('T')
-                ? className.drop(1)
-                : className
+    @Override
+    Identifier toPhysicalTableName(Identifier logicalName, JdbcEnvironment jdbcEnvironment) {
+        if (logicalName != null && logicalName.text.startsWith('T')) {
+            logicalName = Identifier.toIdentifier(logicalName.text.substring(1), logicalName.quoted)
+        }
 
-        return super.classToTableName(tableName)
+        return super.toPhysicalTableName(logicalName, jdbcEnvironment)
+    }
+
+    @Override
+    protected Identifier quotedIdentifier(Identifier quotedName) {
+        return unquotedIdentifier(quotedName).quoted()
     }
 
 }
