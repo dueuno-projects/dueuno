@@ -2,6 +2,8 @@
     --bs-tooltip-font-size: .9rem;
     --bs-tooltip-color: rgb(var(--elements-frame-text));
     --bs-tooltip-bg: rgb(var(--elements-frame-bg));
+    --bs-tooltip-padding-x: .75rem;
+    --bs-tooltip-padding-y: .25rem;
     --bs-border-radius: var(--bs-border-radius-sm);
 }
 
