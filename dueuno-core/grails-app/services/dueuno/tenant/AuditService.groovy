@@ -87,11 +87,23 @@ class AuditService implements WebRequestAware {
     }
 
     Boolean verifyLogIntegrity(TAuditLog obj) {
+        if (obj.digest == null) return false
+
         Map log = buildLog(obj.dateCreated, obj.username, obj.operation, obj.message, obj.objectName, obj.stateBefore, obj.stateAfter, obj.ip, obj.userAgent)
         byte[] AESKey = cryptoService.getTenantAESKey()
         String actualDigest = computeHmac(log, AESKey)
 
         return MessageDigest.isEqual(actualDigest.bytes, obj.digest.bytes)
+    }
+
+    List<TAuditLog> listInvalidLogIntegrity() {
+        List<TAuditLog> invalidLogs = []
+        for (TAuditLog obj in list()) {
+            if (!verifyLogIntegrity(obj)) {
+                invalidLogs.add(obj)
+            }
+        }
+        return invalidLogs
     }
 
     private Map buildLog(LocalDateTime dateCreated, String username, AuditOperation operation, String message, String objectName, String stateBefore, String stateAfter, String ip, String userAgent) {
