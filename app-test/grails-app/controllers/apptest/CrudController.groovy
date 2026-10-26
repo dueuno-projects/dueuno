@@ -118,6 +118,12 @@ class CrudController implements ElementsController {
                         id: 'name',
                         cols: 3,
                     )
+                    addField(
+                        class: Checkbox,
+                        id: 'testCheckbox',
+                        defaultValue: true,
+                        cols: 3,
+                    )
                 }
 
                 actionbar.with {

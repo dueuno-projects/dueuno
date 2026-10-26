@@ -39,7 +39,17 @@ class Checkbox extends Control {
     static setValue($element, valueMap, trigger = true) {
         valueMap = TypedValue.require(valueMap);
         $element.val(valueMap.value);
-        $element.prop('checked', valueMap.value);
+        Checkbox.disableAnimation($element, valueMap.value);
+    }
+
+    static disableAnimation($element, value) {
+        $element.addClass('checkbox-no-transition');
+        try {
+            $element.prop('checked', value);
+            if ($element.length) $element[0].offsetHeight;
+        } finally {
+            $element.removeClass('checkbox-no-transition');
+        }
     }
 
     static setReadonly($element, value) {
