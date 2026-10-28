@@ -88,8 +88,16 @@ class TenantService {
     }
 
     void withTenant(String tenantId, Closure closure) {
-        Tenants.withId(tenantId) {
-            closure.call(tenantId)
+        try {
+            Tenants.withId(tenantId) {
+                closure.call(tenantId)
+            }
+
+        } catch (Exception e) {
+            log.warn "Cannot determine the tenant to execute for, executing for '${defaultTenantId}'."
+            Tenants.withId(defaultTenantId) {
+                closure.call(defaultTenantId)
+            }
         }
     }
 
