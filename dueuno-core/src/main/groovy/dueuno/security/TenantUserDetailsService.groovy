@@ -17,7 +17,6 @@ package dueuno.security
 import dueuno.elements.WebRequestAware
 import dueuno.tenant.TenantService
 import dueuno.tenant.TTenant
-import grails.gorm.multitenancy.Tenants
 import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.userdetails.GormUserDetailsService
@@ -72,12 +71,14 @@ class TenantUserDetailsService extends GormUserDetailsService implements WebRequ
         TTenant tenant
         if (hasRequest()) {
             String host = request.getHeader('host')
-            if (host) tenant = TTenant.findByHost(host)
+            if (host) {
+                tenant = TTenant.findByHost(host)
+            }
         }
 
         if (!tenant) {
-            String tenantId = Tenants.currentId() as String
-            tenant = TTenant.findByTenantId(tenantId ?: TenantService.defaultTenantId)
+            String tenantId = tenantService.currentTenantId ?: TenantService.defaultTenantId
+            tenant = tenantService.getByTenantId(tenantId)
         }
 
         return tenant
