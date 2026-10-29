@@ -63,9 +63,11 @@ class ParamsInterceptor implements ElementsController {
         Map _21Params = slurper.parseText(params._21Params as String) as Map
 
         Map componentValues = processComponents(_21Params)
+        Map controlValues = processControls(_21Params)
         Map processedParams = processParams(_21Params)
 
         params.putAll(componentValues)
+        params.putAll(controlValues)
         params.putAll(processedParams)
         params.remove('_21Params')
     }
@@ -74,10 +76,25 @@ class ParamsInterceptor implements ElementsController {
         return Types.deserialize(submitted.params as Map ?: [:])
     }
 
+    private Map processControls(Map submitted) {
+        Map controls = submitted.controls as Map ?: [:]
+        return ObjectUtils.expandDotKeysMap(Types.deserialize(controls))
+    }
+
     private Map processComponents(Map submitted) {
-        Map components = submitted.components as Map
-        if (!components) {
+        Map components = submitted.components as Map ?: [:]
+        Map controls = submitted.controls as Map ?: [:]
+        Integer submittedComponentCount = components.size() + controls.size()
+
+        if (submittedComponentCount == 0) {
             return [_21SubmittedCount: 0]
+        }
+
+        if (submittedComponentCount == 1 && controls) {
+            return [
+                _21SubmittedCount: 1,
+                _21SubmittedName: controls.keySet()[0],
+            ]
         }
 
         Map results = [:]
@@ -87,14 +104,14 @@ class ParamsInterceptor implements ElementsController {
             results[componentName] = ObjectUtils.expandDotKeysMap(Types.deserialize(componentValues))
         }
 
-        if (components.size() == 1) {
+        if (submittedComponentCount == 1) {
             String formName = components.keySet()[0]
             Map result = results[formName] as Map
             result._21SubmittedCount = 1
             return result
 
         } else {
-            results._21SubmittedCount = results.size()
+            results._21SubmittedCount = submittedComponentCount
             return results
         }
     }

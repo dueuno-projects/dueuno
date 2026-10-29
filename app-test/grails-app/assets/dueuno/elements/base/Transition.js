@@ -189,7 +189,8 @@ class Transition {
 
     static build21Params(componentEvent) {
         let _21Params = {};
-        let components = {};  // Component controls value
+        let components = {};  // Component values
+        let controls = {};    // Control values
         let params = {};      // Strings, Numbers, Boolean or eg. {type: 'ID', value: 1}
 
         if (componentEvent) {
@@ -202,8 +203,7 @@ class Transition {
                     let component = Component.getByElement($component);
 
                     if (control) {
-                        components[componentId] = { [componentId]: control.getValue($component) };
-                        components[componentId]._21SubmittedName = componentId;
+                        controls[componentId] = control.getValue($component);
 
                     } else if (component) {
                         components[componentId] = component.getValues($component);
@@ -229,6 +229,7 @@ class Transition {
         }
 
         _21Params.components = components;
+        _21Params.controls = controls;
         _21Params.params = params;
 
         return {_21Params: JSON.stringify(_21Params)};

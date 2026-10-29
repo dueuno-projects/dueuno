@@ -125,7 +125,7 @@ class TransitionsController implements ElementsController {
                 keys: ['id'],
                 loading: true,
                 onChange: 'onSelectChange',
-                submit: 'form',
+                submit: ['form', 'user1', 'textfield'],
                 params: [id: 10],
                 textStyle: TextStyle.LINE_THROUGH,
                 cols: 12,
@@ -273,6 +273,7 @@ class TransitionsController implements ElementsController {
 
     def onSelectChange() {
         println params
+        println "Selected user: ${params.user1}, text: ${params.textfield}"
 
         sleep(1000)
         def t = createTransition()
