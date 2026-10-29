@@ -563,6 +563,15 @@ c.form.with {
 |Saves the uploaded file to `path`, optionally using `newFilename`.
 |===
 
+==== Client Methods
+[cols="1,8a"]
+|===
+|Method|Description
+
+|`Upload.clear()`
+|Removes all files from the client-side control. For example: `t.call('documents', 'clear')`.
+|===
+
 [[quantity-field]]
 === QuantityField
 A text field to input quantities.
@@ -604,6 +613,15 @@ c.form.with {
 |`QuantityUnit`
 |
 |The default unit to display
+|===
+
+==== Client Methods
+[cols="1,8a"]
+|===
+|Method|Description
+
+|`QuantityField.setAvailableUnits($element, args)`
+|Updates the client-side selector. `args.units` must be a list of unit strings; each string is used as both the unit value and its label. The current unit is kept if it is still available; otherwise, the first unit is selected. An empty list removes the selector. From a controller transition, call it with `t.call('quantityfield', 'setAvailableUnits', [units: quantityService.listAllUnits()])`.
 |===
 
 ==== Events

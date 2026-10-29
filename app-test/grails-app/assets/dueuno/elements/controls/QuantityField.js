@@ -73,6 +73,58 @@ class QuantityField extends NumberField {
         }
     }
 
+    /**
+     * Sets the units available for selection from a list of strings.
+     */
+    static setAvailableUnits($element, args) {
+        let units = args?.units;
+        if (!Array.isArray(units) || units.some(unit => typeof unit !== 'string')) {
+            throw new TypeError('Available units must be a list of strings.');
+        }
+
+        let $group = $element.closest('.input-group');
+        let $unitList = $group.find('.control-quantity-field-unit-list');
+        let $unit = $group.find('.control-quantity-field-unit');
+        let $menu = $group.find('ul.dropdown-menu');
+        let currentUnit = QuantityField.getUnit($element);
+        let canSelectUnit = units.length > 0 && (!$element.prop('readonly') || $unitList.length);
+
+        if (canSelectUnit) {
+            $unit.remove();
+            if (!$unitList.length) {
+                $unitList = $('<button>', {
+                    class: 'control-quantity-field-unit-list btn dropdown-toggle fw-bold',
+                    type: 'button',
+                    'data-bs-toggle': 'dropdown',
+                    'aria-expanded': 'false',
+                }).insertBefore($element);
+            }
+            if (!$menu.length) {
+                $menu = $('<ul>', {class: 'dropdown-menu'}).insertBefore($element);
+            }
+
+            $menu.empty();
+            for (let unit of units) {
+                let $link = $('<a>', {class: 'dropdown-item', href: '#'});
+                $link.attr('data-21-unit', unit).data('21-unit', unit);
+                $link.text(unit);
+                $menu.append($('<li>').append($link));
+                $link.on('click', QuantityField.onSelectUnit);
+            }
+        } else {
+            $unitList.remove();
+            $menu.remove();
+            if (!$unit.length) {
+                $unit = $('<span>', {
+                    class: 'control-quantity-field-unit input-group-text',
+                }).insertBefore($element);
+            }
+        }
+
+        let selectedUnit = units.includes(currentUnit) ? currentUnit : (units[0] ?? currentUnit);
+        QuantityField.setUnit($element, selectedUnit);
+    }
+
     static getUnit($element) {
         let $unit = $element.closest('.input-group').find('.control-quantity-field-unit-list');
         if (!$unit.length) {

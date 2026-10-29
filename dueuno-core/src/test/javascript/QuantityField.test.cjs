@@ -20,6 +20,27 @@ const vm = require('node:vm');
 const { test } = require('node:test');
 
 for (const moduleName of ['dueuno-core', 'app-test']) {
+    test(`${moduleName}: exposes a client method to set available units`, () => {
+        const context = vm.createContext({
+            NumberField: class {},
+            Control: { register() {} },
+        });
+        const source = path.resolve(__dirname, '../../../..', moduleName,
+            'grails-app/assets/dueuno/elements/controls/QuantityField.js');
+        vm.runInContext(fs.readFileSync(source, 'utf8'), context);
+        const QuantityField = vm.runInContext('QuantityField', context);
+
+        assert.equal(typeof QuantityField.setAvailableUnits, 'function');
+        assert.throws(
+            () => QuantityField.setAvailableUnits({}, {units: {KG: 'kg'}}),
+            error => error.name === 'TypeError'
+        );
+        assert.throws(
+            () => QuantityField.setAvailableUnits({}, {units: ['KG', 1]}),
+            error => error.name === 'TypeError'
+        );
+    });
+
     test(`${moduleName}: choosing a unit returns focus to the quantity input`, () => {
         const input = {};
         let selectedUnit;

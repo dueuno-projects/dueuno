@@ -26,6 +26,7 @@ import dueuno.elements.style.TextStyle
 import dueuno.security.SecurityService
 import dueuno.types.Money
 import dueuno.types.Quantity
+import dueuno.types.QuantityService
 import dueuno.types.QuantityUnit
 
 import java.time.LocalDate
@@ -36,6 +37,7 @@ class TransitionsController implements ElementsController {
 
     SecurityService securityService
     PersonService personService
+    QuantityService quantityService
 
     def index() {
         // PAGE SETUP
@@ -339,6 +341,7 @@ class TransitionsController implements ElementsController {
 
         //setting value and unit
         t.setValue('quantityfield', new Quantity(500, QuantityUnit.M))
+        t.call('quantityfield', 'setAvailableUnits', [units: quantityService.listAllUnits()])
 
         t.setValue('textfield', 'Test 12345')
 
