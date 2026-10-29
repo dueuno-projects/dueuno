@@ -40,7 +40,7 @@ class QuantityService {
         return results
     }
 
-    List<String> listAllUnits(Boolean unit = true, Boolean mass = true, Boolean length = true, Boolean area = true, Boolean volume = true, Boolean volumeLitre = true, Boolean power = true, Boolean time = true) {
+    List<String> listAllUnits(Boolean unit = true, Boolean mass = true, Boolean length = true, Boolean area = true, Boolean volume = true, Boolean volumeLitre = true, Boolean time = true, Boolean power = true, Boolean energy = true) {
         List<String> results = []
         if (unit) results.addAll(listUnit())
         if (mass) results.addAll(listUnitMass())
@@ -50,6 +50,7 @@ class QuantityService {
         if (volumeLitre) results.addAll(listUnitVolumeLitre())
         if (time) results.addAll(listUnitTime())
         if (power) results.addAll(listUnitPower())
+        if (energy) results.addAll(listUnitEnergy())
         return results
     }
 
