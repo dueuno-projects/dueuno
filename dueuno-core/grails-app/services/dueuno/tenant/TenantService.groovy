@@ -94,10 +94,16 @@ class TenantService {
             }
 
         } catch (Exception e) {
-            log.warn "Cannot determine the tenant to execute for, executing for '${defaultTenantId}'."
+            log.warn "Cannot determine the tenant to execute for, executing for '${defaultTenantId}'. This is a BUG: ${e.message}"
             Tenants.withId(defaultTenantId) {
                 closure.call(defaultTenantId)
             }
+        }
+    }
+
+    void withTenant(Class domainClass, String tenantId, Closure closure) {
+        Tenants.withId(domainClass, tenantId) {
+            closure.call(tenantId)
         }
     }
 
