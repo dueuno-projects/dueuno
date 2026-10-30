@@ -61,16 +61,16 @@ grails:
         - runtimeAuthenticationProvider
 
 ---
-grails:
-  codegen:
-    defaultPackage: test.app
-  profile: web
-  views:
-    gsp:
-      encoding: UTF-8
-      htmlcodec: xml
-      codecs:
-        scriptlet: html
+#grails:
+#  codegen:
+#    defaultPackage: test.app
+#  profile: web
+#  views:
+#    gsp:
+#      encoding: UTF-8
+#      htmlcodec: xml
+#      codecs:
+#        scriptlet: html
 
 ---
 spring:
@@ -103,7 +103,7 @@ dataSource:
   jmxExport: true
   driverClassName: com.mysql.cj.jdbc.Driver
 
-  url: jdbc:mysql://localhost:3306/g8_dueuno?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+  url: jdbc:mysql://localhost:3306/g9_dueuno?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
   username: root
   password: root
 

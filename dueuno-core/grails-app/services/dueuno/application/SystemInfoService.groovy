@@ -65,7 +65,7 @@ class SystemInfoService implements WebRequestAware {
             applicationPath     : servletContext.getRealPath('/'),
             applicationVersion  : grailsApplication.config.getProperty('info.app.version', String) as String,
 
-            dueunoVersion       : dueunoVersion,
+            dueunoVersion       : coreVersion,
             grailsVersion       : grailsApplication.config.getProperty('info.app.grailsVersion', String) as String,
             groovyVersion       : GroovySystem.getVersion(),
 
@@ -82,14 +82,14 @@ class SystemInfoService implements WebRequestAware {
 
             osVersion           : System.getProperty('os.name') + ' ' + System.getProperty('os.version'),
 
-            hardwareHD          : "${(hwHD.totalSpace / 1_000_000_000).round(0)} GB (${(hwHD.totalSpace / (1024**3)).round(0)} GiB)",
+            hardwareHD          : "${(hwHD.totalSpace / 1_000_000_000).round(0)} GB (${((hwHD.totalSpace / (1024**3)) as BigDecimal).round(0)} GiB)",
             hardwareRAM         : "${ramToGb(hw.ram)} GB",
             hardwareGPU         : gpuList.join(', '),
             hardwareCPU         : "${hw.cpu.model} (${hw.cpu.physicalCores} cores, ${hw.cpu.architecture})",
         ]
     }
 
-    String getDueunoVersion() {
+    String getCoreVersion() {
         return (grailsPluginManager.allPlugins.find { it.name == "dueuno" })?.version
     }
 

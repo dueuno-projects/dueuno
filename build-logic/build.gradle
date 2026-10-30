@@ -4,7 +4,42 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven {url = "https://repo.grails.org/grails/restricted" }
+    maven {
+        url = "https://repo.grails.org/grails/restricted"
+    }
+    maven {
+        url = 'https://repository.apache.org/content/groups/snapshots'
+        content {
+            includeVersionByRegex('org[.]apache[.]grails.*', '.*', '.*-SNAPSHOT')
+        }
+        content {
+            includeVersionByRegex('org[.]apache[.]groovy.*', 'groovy.*', '.*-SNAPSHOT')
+        }
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
+    maven {
+        url = 'https://central.sonatype.com/repository/maven-snapshots'
+        content {
+            includeVersionByRegex('org[.]sitemesh.*', '.*', '.*')
+        }
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
+    maven {
+        url = 'https://repository.apache.org/content/groups/staging'
+        content {
+            includeVersionByRegex('org[.]apache[.]grails[.]gradle', 'grails-publish', '.*')
+        }
+        content {
+            includeVersionByRegex('org[.]apache[.]groovy.*', 'groovy.*', '.*')
+        }
+        mavenContent {
+            releasesOnly()
+        }
+    }
 }
 
 def loadProperties() {
@@ -20,9 +55,10 @@ def loadProperties() {
 }; loadProperties()
 
 dependencies {
-    implementation platform("org.apache.grails:grails-bom:${grailsVersion}")
-    implementation "org.apache.grails:grails-gradle-plugins"
     implementation "cloud.wondrify:asset-pipeline-gradle"
+    implementation platform("org.apache.grails:grails-bom:$grailsVersion")
+    implementation "org.apache.grails:grails-data-hibernate5"
+    implementation "org.apache.grails:grails-gradle-plugins"
 
     implementation "org.asciidoctor:asciidoctor-gradle-jvm:4.0.5"
     implementation "org.asciidoctor:asciidoctor-gradle-jvm-pdf:4.0.5"

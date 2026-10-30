@@ -1,4 +1,17 @@
 pluginManagement {
+    repositories {
+        maven {
+            url = 'https://repository.apache.org/content/groups/snapshots'
+            content {
+                includeGroupByRegex('org[.]apache[.]grails.*')
+                includeGroupByRegex('org[.]apache[.]groovy.*')
+            }
+            mavenContent {
+                snapshotsOnly()
+            }
+        }
+        gradlePluginPortal()
+    }
     includeBuild("build-logic")
 }
 

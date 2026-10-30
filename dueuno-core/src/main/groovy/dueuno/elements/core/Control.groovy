@@ -248,7 +248,7 @@ abstract class Control extends Component {
                 textStyle = [value as TextStyle]
                 break
 
-            case List<TextStyle>:
+            case List:
                 textStyle = value as List<TextStyle>
                 break
 

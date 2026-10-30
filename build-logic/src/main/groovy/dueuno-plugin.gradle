@@ -19,6 +19,16 @@ repositories {
     maven {
         url = 'https://repo.grails.org/grails/restricted'
     }
+    maven {
+        url = 'https://repository.apache.org/content/groups/snapshots'
+        content {
+            includeGroupByRegex('org[.]apache[.]grails.*')
+            includeGroupByRegex('org[.]apache[.]groovy.*')
+        }
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
 }
 
 dependencies {
@@ -54,18 +64,14 @@ dependencies {
     testImplementation "org.apache.grails:grails-testing-support-web"
     testImplementation "org.mockito:mockito-core"
     testImplementation "org.spockframework:spock-core"
-    testImplementation testFixtures("org.apache.grails:grails-core")
-    testImplementation testFixtures("org.apache.grails.web:grails-web-common")
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
 
 assets {
     packagePlugin = true
-    minifyCss = true
-    minifyJs = true
     minifyOptions = [
             //SIMPLE (default) or ADVANCED or WHITESPACE_ONLY
             optimizationLevel: "SIMPLE",
