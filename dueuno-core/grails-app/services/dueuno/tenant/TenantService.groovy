@@ -93,7 +93,7 @@ class TenantService {
                 closure.call(tenantId)
             }
         } catch (Exception e) {
-            log.warn "Cannot determine the tenant to execute for, executing for '${defaultTenantId}'. This is a BUG: ${e.message}"
+            log.warn "Cannot determine the tenant to execute for. This is a BUG: ${e.message}"
             throw e
         }
     }
