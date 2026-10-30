@@ -370,10 +370,10 @@ class ApplicationService implements LinkGeneratorAware {
             log.info "'${tenantId.toUpperCase()}' TENANT - Executing '${revisionName}'..."
 
             tenantService.withTenant(tenantId) {
-                if (closure.maximumNumberOfParameters == 1) {
-                    closure.call(tenantId)
+                if (closure.maximumNumberOfParameters == 0) {
+                    closure.call()
                 } else {
-                    closure.call(tenantId, pluginName)
+                    closure.call(tenantId)
                 }
             }
 
@@ -402,7 +402,9 @@ class ApplicationService implements LinkGeneratorAware {
 
             log.info "'${tenantId.toUpperCase()}' TENANT - Executing '${revisionName}'..."
             tenantService.withTenant(tenantId) {
-                if (closure.maximumNumberOfParameters == 1) {
+                if (closure.maximumNumberOfParameters == 0) {
+                    closure.call()
+                } else if (closure.maximumNumberOfParameters == 1 || !(listName in ['afterLogin', 'afterLogout'])) {
                     closure.call(tenantId)
                 } else {
                     closure.call(tenantId, session)
@@ -424,20 +426,20 @@ class ApplicationService implements LinkGeneratorAware {
     }
 
     private void executeBeforeTenantInit() {
-        tenantService.eachTenant { String tenantId ->
-            executeBootEvents(tenantId, 'beforeTenantInit')
+        for (tenant in tenantService.list()) {
+            executeBootEvents(tenant.tenantId, 'beforeTenantInit')
         }
     }
 
     private void executeOnTenantInit() {
-        tenantService.eachTenant { String tenantId ->
-            executeBootEvents(tenantId, 'onTenantInit')
+        for (tenant in tenantService.list()) {
+            executeBootEvents(tenant.tenantId, 'onTenantInit')
         }
     }
 
     private void executeAfterTenantInit() {
-        tenantService.eachTenant { String tenantId ->
-            executeBootEvents(tenantId, 'afterTenantInit')
+        for (tenant in tenantService.list()) {
+            executeBootEvents(tenant.tenantId, 'afterTenantInit')
         }
     }
 

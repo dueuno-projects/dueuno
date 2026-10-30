@@ -16,7 +16,6 @@ package dueuno.tenant
 
 import dueuno.database.ConnectionSourceService
 import dueuno.elements.ElementsController
-import dueuno.elements.components.Label
 import dueuno.elements.components.Separator
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
@@ -24,9 +23,6 @@ import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
-import dueuno.elements.style.Color
-import dueuno.elements.style.TextTransform
-import dueuno.utils.EnvUtils
 import grails.plugin.springsecurity.annotation.Secured
 
 /**
@@ -81,17 +77,18 @@ class TenantController implements ElementsController {
 
         c.form.with {
             validate = TTenant
-            if (!obj && EnvUtils.isDevelopment()) {
-                addField(
-                    class: Label,
-                    id: 'info',
-                    html: 'tenant.info',
-                    color: Color.WARNING_TEXT,
-                    backgroundColor: Color.WARNING_BACKGROUND,
-                    displayLabel: false,
-                    tag: true,
-                )
-            }
+            // Not needed anymore with Grails 9
+//            if (!obj && EnvUtils.isDevelopment()) {
+//                addField(
+//                    class: Label,
+//                    id: 'info',
+//                    html: 'tenant.info',
+//                    color: Color.WARNING_TEXT,
+//                    backgroundColor: Color.WARNING_BACKGROUND,
+//                    displayLabel: false,
+//                    tag: true,
+//                )
+//            }
             addField(
                 class: TextField,
                 id: 'tenantId',
