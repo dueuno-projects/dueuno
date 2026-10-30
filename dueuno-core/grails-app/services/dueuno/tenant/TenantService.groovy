@@ -17,17 +17,17 @@ package dueuno.tenant
 import dueuno.DueunoGrailsPlugin
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
-import dueuno.database.ConnectionSourceService
 import dueuno.application.TApplicationInstall
 import dueuno.commons.utils.FileUtils
+import dueuno.database.ConnectionSourceService
 import dueuno.security.TRoleGroup
 import dueuno.security.TRoleGroupRole
 import dueuno.security.TUser
 import dueuno.security.TUserRoleGroup
 import dueuno.utils.ResourceUtils
 import grails.gorm.DetachedCriteria
+import grails.gorm.multitenancy.CurrentTenant
 import grails.gorm.multitenancy.Tenants
-import grails.gorm.multitenancy.WithoutTenant
 import grails.gorm.transactions.Transactional
 import groovy.contracts.Requires
 import groovy.transform.CompileDynamic
@@ -58,11 +58,13 @@ class TenantService {
         )
     }
 
+    @CurrentTenant
     String getPrivateDir() {
         String tenantIdUpper = currentTenantId.toUpperCase()
         return applicationPropertyService.getDirectory(tenantIdUpper + '_TENANT_PRIVATE_DIR')
     }
 
+    @CurrentTenant
     String getPublicDir() {
         String tenantIdUpper = currentTenantId.toUpperCase()
         return applicationPropertyService.getDirectory(tenantIdUpper + '_TENANT_PUBLIC_DIR')
@@ -127,12 +129,13 @@ class TenantService {
     }
 
     /**
-     * INTERNAL USE ONLY. Use SecurityService.getCurrentUserTenantId()
+     * INTERNAL USE ONLY. Use securityService.getCurrentUserTenantId()
      *
      * Returns the name of the current tenantId
      * @return the name of the current tenantId
      */
-    static String getCurrentTenantId() {
+    @CurrentTenant
+    String getCurrentTenantId() {
         return Tenants.currentId()
     }
 
@@ -142,6 +145,7 @@ class TenantService {
      * Returns the name of the current tenant
      * @return the name of the current tenant
      */
+    @CurrentTenant
     TTenant getCurrentTenant() {
         return getByTenantId(currentTenantId)
     }
@@ -152,19 +156,16 @@ class TenantService {
     }
 
     @CompileDynamic
-    @WithoutTenant
     TTenant getByTenantId(String tenantId) {
         return TTenant.findByTenantId(tenantId)
     }
 
     @CompileDynamic
-    @WithoutTenant
     TTenant getByHost(String host) {
         return TTenant.findByHost(host)
     }
 
     @CompileDynamic
-    @WithoutTenant
     TTenant getByRequest(HttpServletRequest request) {
         String host = request?.getHeader('host')
         return host ? getByHost(host) : null
@@ -193,7 +194,6 @@ class TenantService {
         return query.count()
     }
 
-    @WithoutTenant
     @Transactional
     TTenant create(Map args) {
         if (args.deletable == null) args.deletable = true
@@ -267,7 +267,6 @@ class TenantService {
         }
     }
 
-    @WithoutTenant
     @Transactional
     @CompileDynamic
     @Requires({ args.id })
@@ -280,7 +279,6 @@ class TenantService {
         return obj
     }
 
-    @WithoutTenant
     @Transactional
     @CompileDynamic
     void delete(Serializable id) {
@@ -293,7 +291,6 @@ class TenantService {
         applicationInstall.deleteAll()
     }
 
-    @WithoutTenant
     @Transactional
     @CompileDynamic
     private void deleteTenantUsersAndGroups(TTenant tenant) {
