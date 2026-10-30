@@ -17,7 +17,10 @@ package dueuno.elements.components
 
 import dueuno.elements.core.Component
 import dueuno.elements.core.Control
-import grails.util.GrailsWebMockUtil
+import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.mock.web.MockHttpServletRequest
+import org.springframework.mock.web.MockHttpServletResponse
+import org.springframework.mock.web.MockServletContext
 import org.springframework.web.context.request.RequestContextHolder
 import spock.lang.Specification
 
@@ -46,7 +49,9 @@ class FormSpec extends Specification {
     }
 
     def setup() {
-        GrailsWebMockUtil.bindMockWebRequest()
+        MockServletContext servletContext = new MockServletContext()
+        RequestContextHolder.setRequestAttributes(new GrailsWebRequest(
+            new MockHttpServletRequest(servletContext), new MockHttpServletResponse(), servletContext))
     }
 
     def cleanup() {

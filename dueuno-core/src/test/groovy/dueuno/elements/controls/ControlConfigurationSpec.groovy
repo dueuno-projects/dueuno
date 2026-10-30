@@ -20,9 +20,12 @@ import dueuno.elements.components.FormField
 import dueuno.types.QuantityUnit
 import dueuno.types.Type
 import grails.core.DefaultGrailsApplication
-import grails.util.GrailsWebMockUtil
 import grails.util.Holders
 import org.springframework.context.support.GenericApplicationContext
+import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.mock.web.MockHttpServletRequest
+import org.springframework.mock.web.MockHttpServletResponse
+import org.springframework.mock.web.MockServletContext
 import org.springframework.web.context.request.RequestContextHolder
 import org.grails.core.support.GrailsApplicationDiscoveryStrategy
 import spock.lang.Specification
@@ -35,7 +38,9 @@ class ControlConfigurationSpec extends Specification {
     GenericApplicationContext applicationContext
 
     def setup() {
-        GrailsWebMockUtil.bindMockWebRequest()
+        MockServletContext servletContext = new MockServletContext()
+        RequestContextHolder.setRequestAttributes(new GrailsWebRequest(
+            new MockHttpServletRequest(servletContext), new MockHttpServletResponse(), servletContext))
 
         applicationContext = new GenericApplicationContext()
         applicationContext.refresh()

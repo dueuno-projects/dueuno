@@ -18,22 +18,31 @@ package dueuno.application
 
 import dueuno.tenant.TTenant
 import dueuno.tenant.TenantService
+import grails.testing.gorm.DataTest
 import org.springframework.mock.web.MockServletContext
 import spock.lang.Specification
 
-class ApplicationServiceTenantFlowSpec extends Specification {
+class ApplicationServiceTenantFlowSpec extends Specification implements DataTest {
+
+    @Override
+    Class<?>[] getDomainClassesToMock() {
+        return [TTenant] as Class<?>[]
+    }
 
     void 'provisions and updates every existing tenant through ApplicationService'() {
         given:
-        RecordingApplicationService service = new RecordingApplicationService()
-        service.tenantService = new StubTenantService([
+        RecordingApplicationService service = new RecordingApplicationService(
+            servletContext: new MockServletContext(),
+        )
+        StubTenantService tenantService = new StubTenantService([
             new TTenant(tenantId: 'tenant-one'),
             new TTenant(tenantId: 'tenant-two'),
         ])
+        tenantService.applicationService = service
 
         when:
-        service.provisionAllTenants()
-        service.updateAllTenants()
+        tenantService.provisionAllTenants()
+        tenantService.updateAllTenants()
 
         then:
         service.provisionedTenants == ['tenant-one', 'tenant-two']
@@ -83,7 +92,7 @@ class ApplicationServiceTenantFlowSpec extends Specification {
         List<String> updatedTenants = []
 
         @Override
-        void provisionTenant(String tenantId) {
+        void executeOnPluginTenantInstall(String tenantId) {
             provisionedTenants << tenantId
         }
 
@@ -103,6 +112,11 @@ class ApplicationServiceTenantFlowSpec extends Specification {
         @Override
         List<TTenant> list(Map filters = [:], Map fetchParams = [:]) {
             return tenants
+        }
+
+        @Override
+        void withTenant(String tenantId, Closure closure) {
+            closure.call(tenantId)
         }
     }
 
