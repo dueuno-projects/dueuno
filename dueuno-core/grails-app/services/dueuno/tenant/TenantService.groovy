@@ -93,8 +93,15 @@ class TenantService {
                 closure.call(tenantId)
             }
         } catch (Exception e) {
-            log.warn "Cannot determine the tenant to execute for. This is a BUG: ${e.message}"
-            throw e
+            log.warn "Cannot determine the tenant to execute for, executing for '${defaultTenantId}'. This is a BUG: ${e.message}"
+//            throw e
+
+            // See: https://github.com/apache/grails-core/issues/16801
+            // This is a workaround to make applications work with the default tenant until Grails fixes the issue
+            // At the moment applications wont work with another tenant.
+            Tenants.withId(defaultTenantId) {
+                closure.call(defaultTenantId)
+            }
         }
     }
 
