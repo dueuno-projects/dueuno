@@ -123,7 +123,6 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         )
     }
 
-    @CurrentTenant
     void tenantInstall() {
         String tenantId = tenantService.currentTenantId
 
