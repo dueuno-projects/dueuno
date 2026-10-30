@@ -92,12 +92,9 @@ class TenantService {
             Tenants.withId(tenantId) {
                 closure.call(tenantId)
             }
-
         } catch (Exception e) {
             log.warn "Cannot determine the tenant to execute for, executing for '${defaultTenantId}'. This is a BUG: ${e.message}"
-            Tenants.withId(defaultTenantId) {
-                closure.call(defaultTenantId)
-            }
+            throw e
         }
     }
 
