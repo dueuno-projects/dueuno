@@ -16,6 +16,9 @@ package dueuno.elements
 
 import grails.plugins.Plugin
 import groovy.util.logging.Slf4j
+import org.springframework.beans.factory.BeanRegistrar
+import org.springframework.beans.factory.BeanRegistry
+import org.springframework.core.env.Environment
 import org.springframework.scheduling.annotation.EnableScheduling
 
 /**
@@ -64,9 +67,12 @@ class DueunoExtraGrailsPlugin extends Plugin {
     // Online location of the plugin's browseable source code.
 //    def scm = [ url: 'http://svn.codehaus.org/grails-plugins/' ]
 
-    Closure doWithSpring() { { ->
-        // no-op
-    } }
+    @Override
+    BeanRegistrar beanRegistrar() {
+        return { BeanRegistry registry, Environment environment ->
+//            registry.registerBean('myService', MyServiceImpl)
+        } as BeanRegistrar
+    }
 
     void doWithDynamicMethods() {
         // TODO Implement registering dynamic methods to classes (optional)

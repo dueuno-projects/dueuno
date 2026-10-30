@@ -14,20 +14,27 @@
  */
 package dueuno
 
+import dueuno.application.AuthenticationProviderService
 import dueuno.application.SessionInitializer
-import dueuno.security.UserSessionTomcatContextListener
-import dueuno.security.physical.PhysicalUserDetailsService
+import dueuno.security.*
 import dueuno.security.physical.PhysicalAuthenticationFilter
-import dueuno.security.AuthenticationProviderManager
-import dueuno.security.LdapAuthenticationProvider
+import dueuno.security.physical.PhysicalUserDetailsService
 import dueuno.tenant.TenantForCurrentUserResolver
+import grails.core.GrailsApplication
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugins.Plugin
-import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import org.springframework.beans.factory.BeanRegistrar
+import org.springframework.beans.factory.BeanRegistry
+import org.springframework.core.env.Environment
 import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.web.authentication.AuthenticationFailureHandler
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy
+import org.springframework.security.web.context.SecurityContextRepository
 
 /**
  * @author Gianluca Sartori
@@ -75,41 +82,71 @@ class DueunoGrailsPlugin extends Plugin {
     // Online location of the plugin's browseable source code.
 //    def scm = [ url: 'http://svn.codehaus.org/grails-plugins/' ]
 
-    @CompileDynamic
-    Closure doWithSpring() {
-        { ->
-            tenantForCurrentUserResolver(TenantForCurrentUserResolver)
-            sessionInitializer(SessionInitializer)
-            userSessionTomcatContextListener(UserSessionTomcatContextListener) {
-                userSessionService = ref('userSessionService')
+    @Override
+    BeanRegistrar beanRegistrar() {
+        return { BeanRegistry registry, Environment environment ->
+            registry.registerBean('tenantForCurrentUserResolver', TenantForCurrentUserResolver)
+            registry.registerBean('sessionInitializer', SessionInitializer)
+
+            registry.registerBean('userSessionTomcatContextListener', UserSessionTomcatContextListener) { spec ->
+                spec.supplier { context ->
+                    UserSessionTomcatContextListener bean = new UserSessionTomcatContextListener()
+                    bean.userSessionService = context.bean('userSessionService', UserSessionService)
+                    bean
+                }
             }
 
-            runtimeAuthenticationProvider(AuthenticationProviderManager) {
-                authenticationProviderService = ref('authenticationProviderService')
-                grailsApplication = ref('grailsApplication')
-                securityService = ref('securityService')
+            registry.registerBean('runtimeAuthenticationProvider', AuthenticationProviderManager) { spec ->
+                spec.supplier { context ->
+                    AuthenticationProviderManager bean = new AuthenticationProviderManager()
+                    bean.authenticationProviderService = context.bean(
+                        'authenticationProviderService', AuthenticationProviderService)
+                    bean.grailsApplication = context.bean('grailsApplication', GrailsApplication)
+                    bean.securityService = context.bean('securityService', SecurityService)
+                    bean
+                }
             }
 
-            ldapAuthenticationProvider(LdapAuthenticationProvider) {
-                authenticationProviderService = ref('authenticationProviderService')
-                authenticationUserProvisioningService = ref('authenticationUserProvisioningService')
+            registry.registerBean('ldapAuthenticationProvider', LdapAuthenticationProvider) { spec ->
+                spec.supplier { context ->
+                    LdapAuthenticationProvider bean = new LdapAuthenticationProvider()
+                    bean.authenticationProviderService = context.bean(
+                        'authenticationProviderService', AuthenticationProviderService)
+                    bean.authenticationUserProvisioningService = context.bean(
+                        'authenticationUserProvisioningService', AuthenticationUserProvisioningService)
+                    bean
+                }
             }
 
-            physicalUserDetailsService(PhysicalUserDetailsService)
+            registry.registerBean('physicalUserDetailsService', PhysicalUserDetailsService)
 
-            physicalAuthenticationProvider(PreAuthenticatedAuthenticationProvider) {
-                preAuthenticatedUserDetailsService = ref('physicalUserDetailsService')
+            registry.registerBean('physicalAuthenticationProvider', PreAuthenticatedAuthenticationProvider) { spec ->
+                spec.supplier { context ->
+                    PreAuthenticatedAuthenticationProvider bean = new PreAuthenticatedAuthenticationProvider()
+                    bean.preAuthenticatedUserDetailsService = context.bean('physicalUserDetailsService', PhysicalUserDetailsService)
+                    bean
+                }
             }
 
-            ConfigObject conf = SpringSecurityUtils.securityConfig
-            physicalAuthenticationFilter(PhysicalAuthenticationFilter, conf.physicalId.filterProcessesUrl) {
-                authenticationManager = ref('authenticationManager')
-                authenticationSuccessHandler = ref('authenticationSuccessHandler')
-                authenticationFailureHandler = ref('authenticationFailureHandler')
-                sessionAuthenticationStrategy = ref('sessionAuthenticationStrategy')
-                securityContextRepository = ref('securityContextRepository')
+            registry.registerBean('physicalAuthenticationFilter', PhysicalAuthenticationFilter) { spec ->
+                spec.supplier { context ->
+                    ConfigObject securityConfig = SpringSecurityUtils.securityConfig as ConfigObject
+                    ConfigObject physicalIdConfig = securityConfig.get('physicalId') as ConfigObject
+                    String filterProcessesUrl = physicalIdConfig.get('filterProcessesUrl') as String
+                    PhysicalAuthenticationFilter bean = new PhysicalAuthenticationFilter(filterProcessesUrl)
+                    bean.authenticationManager = context.bean('authenticationManager', AuthenticationManager)
+                    bean.authenticationSuccessHandler = context.bean(
+                        'authenticationSuccessHandler', AuthenticationSuccessHandler)
+                    bean.authenticationFailureHandler = context.bean(
+                        'authenticationFailureHandler', AuthenticationFailureHandler)
+                    bean.sessionAuthenticationStrategy = context.bean(
+                        'sessionAuthenticationStrategy', SessionAuthenticationStrategy)
+                    bean.securityContextRepository = context.bean(
+                        'securityContextRepository', SecurityContextRepository)
+                    bean
+                }
             }
-        }
+        } as BeanRegistrar
     }
 
     void doWithDynamicMethods() {
