@@ -165,7 +165,7 @@ class PrettyPrinter {
 
             case Set:
             case List:
-                return printList(value as List, properties)
+                return printCollection(value as Collection, properties)
 
             case Map:
                 return printMap(value as Map, properties)
@@ -374,14 +374,15 @@ class PrettyPrinter {
     }
 
     /**
-     * Renders each element of a list with {@link #printObject} and joins the results
-     * using {@link PrettyPrinterProperties#renderDelimiter} (defaults to {@code ", "}).
+     * Renders each element of the collection with {@link #printObject} and joins the
+     * results using {@link PrettyPrinterProperties#renderDelimiter}. If the delimiter
+     * is {@code null}, it defaults to {@code ", "}.
      *
-     * @param value the list to render
+     * @param value the collection to render
      * @param properties formatting options
-     * @return the joined string
+     * @return the rendered elements joined by the delimiter
      */
-    static String printList(List value, PrettyPrinterProperties properties) {
+    static String printCollection(Collection value, PrettyPrinterProperties properties) {
         if (properties.renderDelimiter == null) properties.renderDelimiter = ', '
 
         List results = []
