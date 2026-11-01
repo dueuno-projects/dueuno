@@ -17,6 +17,7 @@ package dueuno.security
 import dueuno.application.ApplicationService
 import dueuno.commons.utils.CryptoUtils
 import dueuno.tenant.TenantService
+import grails.gorm.multitenancy.CurrentTenant
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -31,34 +32,41 @@ class CryptoService {
     ApplicationService applicationService
     TenantService tenantService
 
+    @CurrentTenant
     void tenantInstall() {
+        String tenantId = tenantService.currentTenantId
         byte[] password = CryptoUtils.generateAESKey()
         CryptoUtils.saveAESKey(password, tenantAESKeyPathname)
-        applicationService.setAttribute(tenantAESKeyAttributeName, password)
+        applicationService.setAttribute(getTenantAESKeyAttributeName(tenantId), password)
     }
 
+    @CurrentTenant
     void tenantInit() {
+        String tenantId = tenantService.currentTenantId
         byte[] password = CryptoUtils.loadAESKey(tenantAESKeyPathname)
-        applicationService.setAttribute(tenantAESKeyAttributeName, password)
+        applicationService.setAttribute(getTenantAESKeyAttributeName(tenantId), password)
     }
 
+    @CurrentTenant
     String encrypt(String value) {
-        return CryptoUtils.encrypt(value, tenantAESKey)
+        return CryptoUtils.encrypt(value, getTenantAESKey())
     }
 
+    @CurrentTenant
     String decrypt(String encryptedValue) {
-        return CryptoUtils.decrypt(encryptedValue, tenantAESKey)
+        return CryptoUtils.decrypt(encryptedValue, getTenantAESKey())
     }
 
+    @CurrentTenant
     byte[] getTenantAESKey() {
-        return applicationService.getAttribute(tenantAESKeyAttributeName) as byte[]
+        return applicationService.getAttribute(getTenantAESKeyAttributeName(tenantService.currentTenantId)) as byte[]
     }
 
     private String getTenantAESKeyPathname() {
         return tenantService.privateDir + applicationService.applicationName + '.key'
     }
 
-    private String getTenantAESKeyAttributeName() {
-        return tenantService.currentTenantId + '_TENANT_AES_KEY'
+    private String getTenantAESKeyAttributeName(String tenantId) {
+        return tenantId.toUpperCase() + '_TENANT_AES_KEY'
     }
 }
