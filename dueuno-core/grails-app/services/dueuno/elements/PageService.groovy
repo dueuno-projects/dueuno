@@ -35,12 +35,10 @@ import groovy.util.logging.Slf4j
 class PageService implements WebRequestAware, LinkGeneratorAware {
 
     SecurityService securityService
-    TenantService tenantService
     TenantPropertyService tenantPropertyService
     TransitionService transitionService
 
-    void tenantInstall() {
-        String tenantId = tenantService.currentTenantId
+    void tenantInstall(String tenantId) {
         tenantPropertyService.setString('FAVICON', linkPublicResource(tenantId, 'brand/favicon.png', false))
         tenantPropertyService.setString('APPICON', linkPublicResource(tenantId, 'brand/appicon.png', false))
 

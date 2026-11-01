@@ -33,12 +33,10 @@ class AuthenticationIdentityService {
     AuthenticationProviderService authenticationProviderService
     SecurityService securityService
 
-    @CompileDynamic
     Boolean hasIdentity(TUser user) {
         return user?.authenticationIdentities?.isEmpty() == false
     }
 
-    @CompileDynamic
     TAuthenticationProvider getProvider(Serializable providerId, Boolean superAdmin) {
         TAuthenticationProvider provider
         if (superAdmin) {
@@ -80,7 +78,6 @@ class AuthenticationIdentityService {
         return fetch + [:]
     }
 
-    @CompileDynamic
     List<TUserAuthenticationIdentity> listByProvider(Serializable providerId, Map filterParams = [:], Map fetchParams = [:]) {
         TAuthenticationProvider provider = authenticationProviderService.get(providerId)
         if (!provider || !provider.providerType.isOidcProvider()) {
@@ -96,7 +93,6 @@ class AuthenticationIdentityService {
         return query.list(fetchParams)
     }
 
-    @CompileDynamic
     Number countByProvider(Serializable providerId, Map filterParams = [:]) {
         TAuthenticationProvider provider = authenticationProviderService.get(providerId)
         if (!provider || !provider.providerType.isOidcProvider()) {
@@ -107,7 +103,6 @@ class AuthenticationIdentityService {
         return query.count()
     }
 
-    @CompileDynamic
     List<TUserAuthenticationIdentity> listByUser(Serializable userId, Map fetchParams = [:]) {
         if (!fetchParams.sort) {
             fetchParams.sort = [issuer: 'asc', subject: 'asc']
@@ -118,7 +113,6 @@ class AuthenticationIdentityService {
         return query.list(fetchParams)
     }
 
-    @CompileDynamic
     TUserAuthenticationIdentity get(Serializable id) {
         return buildQuery(id: id).get(fetch: fetchAll) as TUserAuthenticationIdentity
     }
@@ -134,7 +128,6 @@ class AuthenticationIdentityService {
         return query.list(sort: 'username', order: 'asc', fetch: [tenant: 'join'])
     }
 
-    @CompileDynamic
     TUserAuthenticationIdentity create(Map args = [:]) {
         TAuthenticationProvider provider = getProvider(args.providerId as Serializable, securityService.isSuperAdmin())
         if (!provider) {
@@ -169,7 +162,6 @@ class AuthenticationIdentityService {
         return identity
     }
 
-    @CompileDynamic
     void delete(Serializable id) {
         TUserAuthenticationIdentity identity = get(id)
         if (identity) {

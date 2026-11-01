@@ -6,6 +6,7 @@ hibernate.naming_strategy = dueuno.database.TNamingStrategy
 
 // Tenants are stored in separate database schemas
 grails.gorm.multiTenancy.mode = 'DATABASE'
+grails.gorm.multiTenancy.tenantResolverClass = 'dueuno.tenant.TenantForCurrentUserResolver'
 
 // Spring Security Core plugin setup example
 grails.plugin.springsecurity.userLookup.userDomainClassName = 'dueuno.security.TUser'

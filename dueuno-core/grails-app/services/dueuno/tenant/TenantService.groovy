@@ -28,6 +28,7 @@ import dueuno.utils.ResourceUtils
 import grails.gorm.DetachedCriteria
 import grails.gorm.multitenancy.CurrentTenant
 import grails.gorm.multitenancy.Tenants
+import grails.gorm.multitenancy.WithoutTenant
 import grails.gorm.transactions.Transactional
 import groovy.contracts.Requires
 import groovy.transform.CompileDynamic
@@ -124,6 +125,7 @@ class TenantService {
     /**
      * Returns the DEFAULT tenant
      */
+    @WithoutTenant
     TTenant getDefaultTenant() {
         return getByTenantId(ConnectionSource.DEFAULT)
     }
@@ -151,20 +153,24 @@ class TenantService {
     }
 
     @Transactional
+    @WithoutTenant
     TTenant get(Serializable id) {
         return TTenant.get(id) as TTenant
     }
 
+    @WithoutTenant
     @CompileDynamic
     TTenant getByTenantId(String tenantId) {
         return TTenant.findByTenantId(tenantId)
     }
 
+    @WithoutTenant
     @CompileDynamic
     TTenant getByHost(String host) {
         return TTenant.findByHost(host)
     }
 
+    @WithoutTenant
     @CompileDynamic
     TTenant getByRequest(HttpServletRequest request) {
         String host = request?.getHeader('host')

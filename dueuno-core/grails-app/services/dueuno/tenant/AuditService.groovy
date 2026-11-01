@@ -39,7 +39,6 @@ import java.time.LocalTime
  */
 
 @CurrentTenant
-@Transactional
 @CompileStatic
 class AuditService implements WebRequestAware {
 
@@ -70,6 +69,7 @@ class AuditService implements WebRequestAware {
         log(operation, message, null, null, null)
     }
 
+    @Transactional
     void log(AuditOperation operation, String message, String objectName, String stateBefore, String stateAfter) {
         String username = securityService.currentUsername ?: 'super'
         LocalDateTime dateCreated = LocalDateTime.now()

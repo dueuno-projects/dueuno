@@ -39,7 +39,7 @@ class TenantPropertyService extends PropertyService {
     CryptoService cryptoService
     TenantService tenantService
 
-    void tenantInstall() {
+    void tenantInstall(String tenantId) {
         // Logs
         setBoolean('LOG_ERROR', EnvUtils.isDevelopment())
         setBoolean('LOG_DEBUG', EnvUtils.isDevelopment())

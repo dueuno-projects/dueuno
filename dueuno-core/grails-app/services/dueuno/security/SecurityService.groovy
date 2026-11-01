@@ -29,6 +29,7 @@ import dueuno.tenant.*
 import dueuno.utils.EnvUtils
 import grails.gorm.DetachedCriteria
 import grails.gorm.multitenancy.CurrentTenant
+import grails.gorm.multitenancy.WithoutTenant
 import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -49,7 +50,7 @@ import org.springframework.security.web.authentication.rememberme.TokenBasedReme
  */
 
 @Slf4j
-@Transactional
+@WithoutTenant
 @CompileStatic
 class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
@@ -123,9 +124,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         )
     }
 
-    void tenantInstall() {
-        String tenantId = tenantService.currentTenantId
-
+    void tenantInstall(String tenantId) {
         createGroup(failOnError: true, ignoreGroupNameCollisions: true, tenantId: tenantId, name: GROUP_USERS, authorities: [ROLE_USER], deletable: false)
         createGroup(failOnError: true, ignoreGroupNameCollisions: true, tenantId: tenantId, name: GROUP_DEVELOPERS, authorities: [ROLE_DEVELOPER], deletable: false)
         createGroup(failOnError: true, ignoreGroupNameCollisions: true, tenantId: tenantId, name: GROUP_ADMINS, authorities: [ROLE_ADMIN], deletable: false)
@@ -341,8 +340,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @return true if the specified user has a local account
      */
 
-    Boolean isLocalUser(String username) {
-        TUser user = getUserByUsername(username)
+    Boolean isLocalUser(String tenantId, String username) {
+        TUser user = getUserByTenantIdAndUsername(tenantId, username)
         return user ? true : false
     }
 
@@ -386,8 +385,10 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * Returns true if the user with the specified username has admin authorities
      * @return true if the user with the specified username has admin authorities
      */
+    @CurrentTenant
     Boolean isAdmin(String username) {
-        TUser user = getUserByUsername(username)
+        String tenantId = tenantService.currentTenantId
+        TUser user = getUserByTenantIdAndUsername(tenantId, username)
         return isAdmin(user)
     }
 
@@ -422,6 +423,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * Returns the currently logged in user
      * @return the currently logged in user
      */
+    @CurrentTenant
     TUser getCurrentUser(Boolean reload = false) {
         if (!springSecurityService.isLoggedIn()) {
             return null
@@ -435,11 +437,14 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         Object principal = springSecurityService.principal
         String username = (principal['username'] as String).toLowerCase()
         Serializable userId = principal['id'] as Serializable
+
         // Usernames can repeat across tenants; the authenticated principal identifies the exact user by ID.
-        TUser user = userId ? getUser(userId) : getUserByUsername(username)
+        TTenant tenant = tenantService.currentTenant
+        TUser user = userId ? getUser(userId) : getUserByTenantIdAndUsername(tenant.tenantId, username)
         if (!user) {
             user = createUser(
                 failOnError: true,
+                tenant: tenant,
                 username: username,
                 password: StringUtils.generateRandomToken(),
             )
@@ -460,8 +465,11 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     /**
      * INTERNAL USE ONLY. Persists the current language for the currently logged in user.
      */
+    @Transactional
+    @CurrentTenant
     void saveCurrentUserLanguage() {
-        TUser current = getUserByUsername(currentUsername)
+        String tenantId = tenantService.currentTenantId
+        TUser current = getUserByTenantIdAndUsername(tenantId, currentUsername)
         current.language = currentLanguage
         current.save(flush: true, failOnError: true)
     }
@@ -601,7 +609,6 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         if (filterParams.containsKey('apiKey')) query = query.where { apiKey == filterParams.apiKey }
         if (filterParams.containsKey('physicalId')) query = query.where { physicalId == filterParams.physicalId }
         if (filterParams.containsKey('tenant')) query = query.where { tenant.id == filterParams.tenant }
-        if (filterParams.containsKey('tenantId')) query = query.where { tenant.tenantId == filterParams.tenantId }
         if (filterParams.containsKey('deletable')) query = query.where { deletable == filterParams.deletable }
         if (filterParams.containsKey('enabled')) query = query.where { enabled == filterParams.enabled }
 
@@ -642,7 +649,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         return query.get(fetch: fetchAll) as TUser
     }
 
-    @CompileDynamic
+    @CurrentTenant
     TUser getUserByUsername(String username) {
         if (username?.equalsIgnoreCase(USERNAME_SUPERADMIN)) {
             return getUserByTenantIdAndUsername(tenantService.defaultTenant?.id, USERNAME_SUPERADMIN)
@@ -653,9 +660,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
     @CompileDynamic
     TUser getUserByTenantIdAndUsername(Serializable tenantId, String username) {
-        if (!tenantId) return null
-
-        Long tenantIdFilter = tenantId
+        Serializable tenantIdFilter = tenantId
         String usernameFilter = username
         def query = TUser.where { tenant.id == tenantIdFilter && username == usernameFilter }
         return query.get(fetch: fetchAll) as TUser
@@ -681,11 +686,13 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     }
 
     TUser getSuperAdminUser() {
-        return getUserByUsername(USERNAME_SUPERADMIN)
+        return getUserByTenantIdAndUsername(tenantService.defaultTenant.tenantId, USERNAME_SUPERADMIN)
     }
 
+    @CurrentTenant
     TUser getAdminUser() {
-        return getUserByUsername(USERNAME_ADMIN)
+        String tenantId = tenantService.currentTenantId
+        return getUserByTenantIdAndUsername(tenantId, USERNAME_ADMIN)
     }
 
     List<TUser> listAllUser(Map filterParams = [:], Map fetchParams = [:]) {
@@ -769,6 +776,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      *
      * @return the newly created user
      */
+    @Transactional
     @CompileDynamic
     TUser createUser(Map args) {
         if (args.failOnError == null) args.failOnError = false
@@ -799,6 +807,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         return user
     }
 
+    @Transactional
     @CompileDynamic
     private TUser createUserInTenant(Map args, TTenant tenant, List<String> groups, String defaultGroup) {
         log.info "'${tenant.tenantId.toUpperCase()}' TENANT - Creating user '${args.username}' in groups ${groups} (default '${defaultGroup}')"
@@ -872,6 +881,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @return the newly created user
      */
 
+    @Transactional
     TUser createSystemUser(Map args) {
         args.deletable = false
         if (!args.password) args.password = StringUtils.generateRandomToken(32)
@@ -885,8 +895,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @param args see createUser()
      * @return the modified user
      */
+    @Transactional
     @CompileDynamic
-    @Requires({ args.username })
     TUser updateUserAndGroups(Map args) {
         String username = args.username
         if (args.failOnError == null) args.failOnError = false
@@ -943,8 +953,9 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @param args see createUser()
      * @return the modified user
      */
+    @Transactional
     @CompileDynamic
-    @Requires({ args.username })
+    @Requires({ args.tenant && args.username })
     TUser updateUser(Map args) {
         String username = args.username
         if (args.failOnError == null) args.failOnError = false
@@ -959,7 +970,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             validateFontSize(args)
         }
 
-        TUser user = getUserByUsername(username)
+        TTenant tenant = tenantService.get(args.tenant)
+        TUser user = getUserByTenantIdAndUsername(tenant.tenantId, username)
         user.properties = args
         user.save(flush: true, failOnError: args.failOnError)
 
@@ -972,8 +984,9 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         if (fontSize > 42) args.fontSize = 42
     }
 
-    void changeUsername(String oldUsername, String newUsername) {
-        TUser user = getUserByUsername(oldUsername)
+    @Transactional
+    void changeUsername(String tenantId, String oldUsername, String newUsername) {
+        TUser user = getUserByTenantIdAndUsername(tenantId, oldUsername)
         user.username = newUsername
         user.save(flush: true, failOnError: true)
     }
@@ -983,9 +996,10 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      *
      * @param username the username of the user to delete
      */
+    @Transactional
     @CompileDynamic
-    void deleteUser(String username) {
-        TUser user = getUserByUsername(username)
+    void deleteUser(String tenantId, String username) {
+        TUser user = getUserByTenantIdAndUsername(tenantId, username)
         TUserRoleGroup.removeAll(user)
         user.delete(flush: true)
     }
@@ -1060,6 +1074,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      *
      * @return the newly created group
      */
+    @Transactional
     @CompileDynamic
     TRoleGroup createGroup(Map args) {
         if (args.failOnError == null) args.failOnError = false
@@ -1123,6 +1138,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      *
      * @return the updated group
      */
+    @Transactional
     @CompileDynamic
     @Requires({ args.id || args.tenantId })
     TRoleGroup updateGroup(Map args) {
@@ -1166,6 +1182,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      *
      * @param name the name of the group to delete
      */
+    @Transactional
     @CompileDynamic
     void deleteGroup(Serializable id) {
         TRoleGroup roleGroup = TRoleGroup.get(id)
@@ -1183,6 +1200,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      *
      * @return the newly created authority
      */
+    @Transactional
     @CompileDynamic
     TRole createAuthority(String authority) {
         TRole role = TRole.findByAuthority(authority)
@@ -1240,4 +1258,5 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             return tenant.tenantId.toLowerCase() + 'admin'
         }
     }
+
 }

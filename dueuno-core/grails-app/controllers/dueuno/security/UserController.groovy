@@ -157,6 +157,7 @@ class UserController implements ElementsController {
         }
 
         def filters = c.table.filterParams
+        if (filters.tenantNoFilter) filters.tenant = tenantService.currentTenant.id
         c.table.body = securityService.listAllUser(filters, params)
         c.table.paginate = securityService.countAllUser(filters)
 
@@ -470,13 +471,14 @@ class UserController implements ElementsController {
         t.set('defaultGroup', 'options', tenantGroups)
         t.set('groups', 'options', tenantGroups)
 
-        def user = securityService.getUserByUsername(params.username)
+        def tenant = tenantService.get(params.tenant)
+        def user = securityService.getUserByTenantIdAndUsername(tenant.tenantId, params.username)
+
         if (user) {
             t.setValue('defaultGroup', user.defaultGroup?.id)
             t.setValue('groups', user.authorities*.id)
 
         } else {
-            def tenant = tenantService.get(params.tenant)
             if (tenant) {
                 tenantService.withTenant(tenant.tenantId) {
                     def sessionDuration = tenantPropertyService.getNumber('SESSION_DEFAULT_DURATION')

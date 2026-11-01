@@ -31,6 +31,7 @@ import java.time.LocalDateTime
 /**
  * Loads or creates the local user associated with an authenticated identity.
  */
+@Transactional
 @CompileStatic
 class AuthenticationUserProvisioningService implements WebRequestAware {
 
@@ -38,7 +39,6 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
     SecurityService securityService
     UserDetailsService userDetailsService
 
-    @Transactional
     @CompileDynamic
     UserDetails ensureLdapUser(String ldapUid, Map profile = [:]) {
         if (!ldapUid) {
@@ -83,7 +83,6 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
         return userDetailsService.loadUserByUsername(username)
     }
 
-    @Transactional
     @CompileDynamic
     UserDetails ensureOidcUser(TAuthenticationProvider provider, String issuer, String subject, Map profile) {
         if (!provider?.providerType?.isOidcProvider() || !issuer || !subject) {
@@ -132,7 +131,6 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
         return details
     }
 
-    @CompileDynamic
     private UserDetails loadOrCreateUser(String username, TTenant tenant, Map profile) {
         if (!username) {
             throw new UsernameNotFoundException('Authenticated identity has no username')
@@ -168,4 +166,5 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
 
         return details
     }
+
 }

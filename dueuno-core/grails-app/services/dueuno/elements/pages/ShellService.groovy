@@ -35,13 +35,11 @@ import groovy.util.logging.Slf4j
 class ShellService implements WebRequestAware, LinkGeneratorAware {
 
     ApplicationService applicationService
-    TenantService tenantService
     ApplicationPropertyService applicationPropertyService
     TenantPropertyService tenantPropertyService
     PageService pageService
 
-    void tenantInstall() {
-        String tenantId = tenantService.currentTenantId
+    void tenantInstall(String tenantId) {
         tenantPropertyService.setString('LOGO', linkPublicResource(tenantId, '/brand/logo.png', false))
     }
 
