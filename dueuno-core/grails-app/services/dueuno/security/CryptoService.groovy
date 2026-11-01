@@ -32,7 +32,9 @@ class CryptoService {
     ApplicationService applicationService
     TenantService tenantService
 
-    void tenantInstall(String tenantId) {
+    @CurrentTenant
+    void tenantInstall() {
+        String tenantId = tenantService.currentTenantId
         byte[] password = CryptoUtils.generateAESKey()
         CryptoUtils.saveAESKey(password, tenantAESKeyPathname)
         applicationService.setAttribute(getTenantAESKeyAttributeName(tenantId), password)

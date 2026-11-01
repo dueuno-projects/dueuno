@@ -23,6 +23,7 @@ import dueuno.elements.PageService
 import dueuno.elements.WebRequestAware
 import dueuno.tenant.TenantPropertyService
 import dueuno.tenant.TenantService
+import grails.gorm.multitenancy.CurrentTenant
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -35,11 +36,14 @@ import groovy.util.logging.Slf4j
 class ShellService implements WebRequestAware, LinkGeneratorAware {
 
     ApplicationService applicationService
+    TenantService tenantService
     ApplicationPropertyService applicationPropertyService
     TenantPropertyService tenantPropertyService
     PageService pageService
 
-    void tenantInstall(String tenantId) {
+    @CurrentTenant
+    void tenantInstall() {
+        String tenantId = tenantService.currentTenantId
         tenantPropertyService.setString('LOGO', linkPublicResource(tenantId, '/brand/logo.png', false))
     }
 

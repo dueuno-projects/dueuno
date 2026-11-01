@@ -23,6 +23,7 @@ import dueuno.elements.core.Transition
 import dueuno.security.SecurityService
 import dueuno.tenant.TenantPropertyService
 import dueuno.tenant.TenantService
+import grails.gorm.multitenancy.CurrentTenant
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -35,10 +36,13 @@ import groovy.util.logging.Slf4j
 class PageService implements WebRequestAware, LinkGeneratorAware {
 
     SecurityService securityService
+    TenantService tenantService
     TenantPropertyService tenantPropertyService
     TransitionService transitionService
 
-    void tenantInstall(String tenantId) {
+    @CurrentTenant
+    void tenantInstall() {
+        String tenantId = tenantService.currentTenantId
         tenantPropertyService.setString('FAVICON', linkPublicResource(tenantId, 'brand/favicon.png', false))
         tenantPropertyService.setString('APPICON', linkPublicResource(tenantId, 'brand/appicon.png', false))
 

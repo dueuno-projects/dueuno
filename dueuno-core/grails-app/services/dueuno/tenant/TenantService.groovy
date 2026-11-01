@@ -247,7 +247,6 @@ class TenantService {
         return obj
     }
 
-    @Transactional
     void provision(String tenantId) {
         withTenant(tenantId) {
             provisionTenant(tenantId)

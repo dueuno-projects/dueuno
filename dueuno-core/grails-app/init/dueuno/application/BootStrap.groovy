@@ -49,11 +49,11 @@ class BootStrap {
         }
 
         applicationService.onPluginTenantInstall { String tenantId ->
-            securityService.tenantInstall(tenantId)
-            cryptoService.tenantInstall(tenantId)
-            tenantPropertyService.tenantInstall(tenantId)
-            pageService.tenantInstall(tenantId)
-            shellService.tenantInstall(tenantId)
+            securityService.tenantInstall()
+            cryptoService.tenantInstall()
+            tenantPropertyService.tenantInstall()
+            pageService.tenantInstall()
+            shellService.tenantInstall()
         }
 
         applicationService.beforeInit {

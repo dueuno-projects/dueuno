@@ -29,7 +29,6 @@ import dueuno.tenant.*
 import dueuno.utils.EnvUtils
 import grails.gorm.DetachedCriteria
 import grails.gorm.multitenancy.CurrentTenant
-import grails.gorm.multitenancy.WithoutTenant
 import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -50,7 +49,6 @@ import org.springframework.security.web.authentication.rememberme.TokenBasedReme
  */
 
 @Slf4j
-@WithoutTenant
 @CompileStatic
 class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
@@ -124,7 +122,10 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         )
     }
 
-    void tenantInstall(String tenantId) {
+    @Transactional
+    @CurrentTenant
+    void tenantInstall() {
+        String tenantId = tenantService.currentTenantId
         createGroup(failOnError: true, ignoreGroupNameCollisions: true, tenantId: tenantId, name: GROUP_USERS, authorities: [ROLE_USER], deletable: false)
         createGroup(failOnError: true, ignoreGroupNameCollisions: true, tenantId: tenantId, name: GROUP_DEVELOPERS, authorities: [ROLE_DEVELOPER], deletable: false)
         createGroup(failOnError: true, ignoreGroupNameCollisions: true, tenantId: tenantId, name: GROUP_ADMINS, authorities: [ROLE_ADMIN], deletable: false)
