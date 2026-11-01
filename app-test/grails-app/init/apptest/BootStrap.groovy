@@ -152,21 +152,24 @@ class BootStrap {
         applicationService.onDevInstall { String tenantId ->
             println "'${tenantId}' INSTALLING STUFF ONLY WHEN IN DEVELOPMENT ENVIRONMENT"
 
-            applicationPropertyService.setBoolean('TEST_DENY_LOGIN', false)
+            // Application properties are global and must be installed only in the default tenant context.
+            if (tenantId == tenantService.defaultTenantId) {
+                applicationPropertyService.setBoolean('TEST_DENY_LOGIN', false)
 
-            applicationPropertyService.setNumber('TEST_NUMBER', 5 * 60)
-            applicationPropertyService.setString('TEST_STRING', 'This is a string', 'This is its default value')
-            applicationPropertyService.setDateTime('TEST_DATE_TIME', LocalDateTime.now())
-            applicationPropertyService.setDate('TEST_DATE', LocalDate.now())
-            applicationPropertyService.setTime('TEST_TIME', LocalTime.now())
-            applicationPropertyService.setBoolean('TEST_BOOLEAN', true)
-            applicationPropertyService.setDirectory('TEST_DIRECTORY', '', '/pippo/pluto')
-            applicationPropertyService.setFilename('TEST_FILENAME', '', '\\pippo\\pluto\\config.txt')
-            applicationPropertyService.setUrl('TEST_URL', 'http://www.dueuno.com', 'http://www.google.com/search')
-            applicationPropertyService.setDirectory('TEST_WRONG_DIRECTORY', '\\this\\directory\\doesnt\\exist', '')
-            applicationPropertyService.setFilename('TEST_WRONG_FILENAME', '\\this\\file\\doesnt\\exist.txt', '')
-            applicationPropertyService.setUrl('TEST_WRONG_URL', 'htp://www.wrong.url', '')
-            applicationPropertyService.setString('TEST_ON_CHANGE', 'Change me and check the console!', '')
+                applicationPropertyService.setNumber('TEST_NUMBER', 5 * 60)
+                applicationPropertyService.setString('TEST_STRING', 'This is a string', 'This is its default value')
+                applicationPropertyService.setDateTime('TEST_DATE_TIME', LocalDateTime.now())
+                applicationPropertyService.setDate('TEST_DATE', LocalDate.now())
+                applicationPropertyService.setTime('TEST_TIME', LocalTime.now())
+                applicationPropertyService.setBoolean('TEST_BOOLEAN', true)
+                applicationPropertyService.setDirectory('TEST_DIRECTORY', '', '/pippo/pluto')
+                applicationPropertyService.setFilename('TEST_FILENAME', '', '\\pippo\\pluto\\config.txt')
+                applicationPropertyService.setUrl('TEST_URL', 'http://www.dueuno.com', 'http://www.google.com/search')
+                applicationPropertyService.setDirectory('TEST_WRONG_DIRECTORY', '\\this\\directory\\doesnt\\exist', '')
+                applicationPropertyService.setFilename('TEST_WRONG_FILENAME', '\\this\\file\\doesnt\\exist.txt', '')
+                applicationPropertyService.setUrl('TEST_WRONG_URL', 'htp://www.wrong.url', '')
+                applicationPropertyService.setString('TEST_ON_CHANGE', 'Change me and check the console!', '')
+            }
 
             securityService.createAuthority('ROLE_1')
             securityService.createAuthority('ROLE_2')

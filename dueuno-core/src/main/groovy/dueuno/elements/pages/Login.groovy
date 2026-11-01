@@ -130,7 +130,7 @@ class Login extends Page {
                     displayLabel: false,
                 )
             }
-            for (Map provider in oidcProviders) {
+            for (provider in oidcProviders) {
                 AuthenticationProviderType providerType = provider.providerType as AuthenticationProviderType
                 addField(
                     class: Button,

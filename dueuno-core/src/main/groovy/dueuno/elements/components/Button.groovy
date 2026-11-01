@@ -117,7 +117,7 @@ class Button extends Component {
     @Override
     void setReadonly(Boolean value) {
         super.setReadonly(value)
-        for (Menu action in actionMenu?.items ?: []) {
+        for (action in actionMenu?.items ?: []) {
             action.readonly = readonly
         }
     }

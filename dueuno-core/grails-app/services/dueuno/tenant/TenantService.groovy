@@ -36,6 +36,7 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import jakarta.servlet.http.HttpServletRequest
 import org.grails.datastore.mapping.core.connections.ConnectionSource
+import org.grails.datastore.mapping.multitenancy.exceptions.TenantException
 
 /**
  * @author Gianluca Sartori
@@ -95,7 +96,7 @@ class TenantService {
             Tenants.withId(tenantId) {
                 closure.call(tenantId)
             }
-        } catch (Exception e) {
+        } catch (TenantException e) {
             log.warn "Cannot determine the tenant to execute for, executing for '${defaultTenantId}'. This is a BUG: ${e.message}"
 //            throw e
 
@@ -253,23 +254,22 @@ class TenantService {
         }
     }
 
-    @Transactional
     void provisionAllTenants() {
-        eachTenant { String tenantId ->
-            provisionTenant(tenantId)
+        List<TTenant> tenantList = list()
+        for (tenant in tenantList) {
+            provisionTenant(tenant.tenantId)
         }
     }
 
-    @Transactional
     private void provisionTenant(String tenantId) {
         applicationService.executeOnPluginTenantInstall(tenantId)
         applicationService.executeOnTenantInstall(tenantId)
     }
 
-    @Transactional
     void updateAllTenants() {
-        eachTenant { String tenantId ->
-            applicationService.executeOnUpdate(tenantId)
+        List<TTenant> tenantList = list()
+        for (tenant in tenantList) {
+            applicationService.executeOnUpdate(tenant.tenantId)
         }
     }
 

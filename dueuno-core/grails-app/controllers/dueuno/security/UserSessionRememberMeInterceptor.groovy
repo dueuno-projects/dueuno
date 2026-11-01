@@ -46,7 +46,7 @@ class UserSessionRememberMeInterceptor implements ElementsController {
             String cookieValue
             Cookie[] cookies = request.cookies
             if (cookies) {
-                for (Cookie cookie in cookies) {
+                for (cookie in cookies) {
                     if (cookie.name == cookieName) {
                         cookieValue = cookie.value
                         break

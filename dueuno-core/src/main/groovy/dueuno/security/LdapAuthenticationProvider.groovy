@@ -179,7 +179,7 @@ class LdapAuthenticationProvider implements AuthenticationProvider {
     }
 
     private String firstAttributeValue(Attributes attributes, String... names) {
-        for (String name in names) {
+        for (name in names) {
             String value = attributeValue(attributes, name)
             if (value) return value
         }

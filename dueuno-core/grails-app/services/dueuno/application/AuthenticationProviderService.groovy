@@ -27,21 +27,21 @@ import org.springframework.security.authentication.AuthenticationProvider
 /**
  * Manages tenant-specific authentication providers and their runtime order.
  */
-@Transactional
 @CompileStatic
 class AuthenticationProviderService implements WebRequestAware {
 
     TenantService tenantService
 
-    @CompileDynamic
-    void tenantInstall(String tenantId) {
-        TTenant tenant = TTenant.findByTenantId(tenantId)
-        if (!tenant) throw new IllegalArgumentException("Tenant '${tenantId}' does not exist")
-        installDefaults(tenant)
+    void install() {
+        for (tenant in tenantService.list()) {
+            installTenant(tenant.tenantId)
+        }
     }
 
+    @Transactional
     @CompileDynamic
-    private void installDefaults(TTenant tenant) {
+    void installTenant(String tenantId) {
+        TTenant tenant = TTenant.findByTenantId(tenantId)
         List<Map> defaults = [
             [
                 providerType: AuthenticationProviderType.LOCAL,
@@ -101,8 +101,7 @@ class AuthenticationProviderService implements WebRequestAware {
                 enabled     : true,
             ],
         ]
-
-        for (Map values in defaults) {
+        for (values in defaults) {
             AuthenticationProviderType providerType = values.providerType as AuthenticationProviderType
             TAuthenticationProvider provider = TAuthenticationProvider.findByTenantAndProviderType(tenant, providerType)
             if (!provider) {
@@ -158,7 +157,7 @@ class AuthenticationProviderService implements WebRequestAware {
 
     List<AuthenticationProvider> getEnabledProviders(Map<String, ?> beans) {
         List<AuthenticationProvider> providers = []
-        for (TAuthenticationProvider provider in list()) {
+        for (provider in list()) {
             if (!provider.enabled) continue
 
             Object bean = beans[provider.providerType.authenticationProviderBeanName]
@@ -169,6 +168,7 @@ class AuthenticationProviderService implements WebRequestAware {
         return providers
     }
 
+    @Transactional
     @CompileDynamic
     TAuthenticationProvider update(Map args, boolean superAdmin) {
         TAuthenticationProvider provider = superAdmin
@@ -182,7 +182,7 @@ class AuthenticationProviderService implements WebRequestAware {
             'retrieveDatabaseRoles', 'defaultRole', 'clientId', 'clientSecret', 'clientAuthenticationMethod', 'discoveryUri', 'issuerUri',
             'authorizationUri', 'tokenUri', 'jwksUri', 'userInfoUri', 'redirectUri', 'scopes',
         ]
-        for (String field in fields) {
+        for (field in fields) {
             if (!args.containsKey(field)) continue
             if (field == 'managerPassword' || field == 'clientSecret') {
                 if (args[field]) provider[field] = args[field]

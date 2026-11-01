@@ -114,7 +114,7 @@ class Menu extends Component {
     void setReadonly(Boolean value) {
         super.setReadonly(value)
         if (link) link.readonly = readonly
-        for (Menu item in items) {
+        for (item in items) {
             item.readonly = readonly
         }
     }

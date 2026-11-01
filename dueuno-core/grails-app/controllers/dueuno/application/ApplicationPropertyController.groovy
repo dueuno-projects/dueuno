@@ -50,7 +50,7 @@ class ApplicationPropertyController implements ElementsController {
                     text: message("applicationProperty.STRING"),
                     icon: 'fa-plus'
                 )
-                for (String type in PropertyType.values()*.name()) {
+                for (type in PropertyType.values()*.name()) {
                     if (type == 'STRING') continue
                     if (type == 'PASSWORD') continue
                     addAction(

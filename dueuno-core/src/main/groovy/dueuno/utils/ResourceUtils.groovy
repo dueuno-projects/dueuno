@@ -51,7 +51,7 @@ class ResourceUtils {
         log.trace " --> To Path:   ${toPath}"
         log.trace " --- "
 
-        for (Resource resource in resources) {
+        for (resource in resources) {
             Boolean isDeployedAsBootJar = resource.URL.protocol.equals('jar')
 
             String resourceDir

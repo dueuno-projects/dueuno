@@ -407,13 +407,13 @@ class TableRow extends Component {
         List<String> keyColumns = table.keys
 
         // Resolve nested keys before filling aliases, regardless of the position of 'id'.
-        for (String keyColumn in keyColumns) {
+        for (keyColumn in keyColumns) {
             if (keyColumn.contains('.') && !values.containsKey(keyColumn)) {
                 values[keyColumn] = ObjectUtils.getValue(values, keyColumn)
             }
         }
 
-        for (String keyColumn in keyColumns) {
+        for (keyColumn in keyColumns) {
             Object value
 
             try {

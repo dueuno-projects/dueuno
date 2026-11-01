@@ -309,7 +309,7 @@ abstract class Control extends Component {
     private String escapeSpecialChars(String chars) {
         String result = ''
 
-        for (String c in chars) {
+        for (c in chars) {
             if ('.^$*+-?()[]{}\\|'.contains(c)) {
                 result = result + '\\' + c
             } else {

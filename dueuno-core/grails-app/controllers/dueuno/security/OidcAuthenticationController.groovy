@@ -309,7 +309,7 @@ class OidcAuthenticationController implements ElementsController {
         if (userInfo.sub != claims.sub) throw new IllegalArgumentException('OIDC user information subject does not match the ID token')
 
         Map merged = new LinkedHashMap(claims)
-        for (String name in ['email', 'email_verified', 'given_name', 'family_name', 'preferred_username', 'upn']) {
+        for (name in ['email', 'email_verified', 'given_name', 'family_name', 'preferred_username', 'upn']) {
             if (userInfo.containsKey(name)) merged[name] = userInfo[name]
         }
         return merged
@@ -363,7 +363,7 @@ class OidcAuthenticationController implements ElementsController {
     private void logError(String message, List<Map> serverResponses = null) {
         log.warn(message)
         if (serverResponses && EnvUtils.isDevelopment()) {
-            for (Map serverResponse in serverResponses) {
+            for (serverResponse in serverResponses) {
                 log.warn('OIDC server response:\n{}', formatResponse(serverResponse))
             }
         }

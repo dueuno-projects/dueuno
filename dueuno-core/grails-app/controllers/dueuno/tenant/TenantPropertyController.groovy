@@ -51,7 +51,7 @@ class TenantPropertyController implements ElementsController {
                     text: message("tenantProperty.STRING"),
                     icon: 'fa-plus'
                 )
-                for (String type in PropertyType.values()*.name()) {
+                for (type in PropertyType.values()*.name()) {
                     if (type == 'STRING') continue
                     addAction(
                         action: 'create',

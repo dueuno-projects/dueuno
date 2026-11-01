@@ -98,7 +98,7 @@ class AuditService implements WebRequestAware {
 
     List<TAuditLog> listInvalidLogIntegrity() {
         List<TAuditLog> invalidLogs = []
-        for (TAuditLog obj in list()) {
+        for (obj in list()) {
             if (!verifyLogIntegrity(obj)) {
                 invalidLogs.add(obj)
             }

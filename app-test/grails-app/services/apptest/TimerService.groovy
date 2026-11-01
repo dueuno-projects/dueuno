@@ -77,7 +77,7 @@ class TimerService {
     Grid createGrid(Integer total) {
         Grid grid = Component.createInstance(Grid, 'grid1')
 
-        for (Map item in list(total)) {
+        for (item in list(total)) {
             grid.addColumn(sm: 2).with {
                 addComponent(Form, "formId${item.id}").with {
                     cssClass = 'ws2 formitem'

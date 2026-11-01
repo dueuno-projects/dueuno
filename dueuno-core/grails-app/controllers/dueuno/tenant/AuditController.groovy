@@ -221,7 +221,7 @@ class AuditController implements ElementsController {
         try {
             writer.write('\uFEFF')
             writer.write(toCsvRow(headers))
-            for (TAuditLog obj in invalidLogs) {
+            for (obj in invalidLogs) {
                 writer.write(toCsvRow([
                     obj.id,
                     obj.dateCreated,

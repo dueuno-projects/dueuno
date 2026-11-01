@@ -50,7 +50,7 @@ class LogUtils {
      */
     static String logStackTrace(List<String> errorArray) {
         StringBuilder builder = new StringBuilder()
-        for (String s : errorArray) {
+        for (s in errorArray) {
             builder.append(s + '\n')
         }
         return builder.toString()

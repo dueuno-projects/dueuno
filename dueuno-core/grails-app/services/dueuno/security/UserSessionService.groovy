@@ -107,7 +107,7 @@ class UserSessionService {
         long now = System.currentTimeMillis()
         List<Map<String, Object>> result = []
 
-        for (Session tomcatSession in currentManager.findSessions()) {
+        for (tomcatSession in currentManager.findSessions()) {
             try {
                 boolean valid = tomcatSession.valid
 
@@ -165,7 +165,7 @@ class UserSessionService {
         Manager currentManager = findManager()
         if (!currentManager) return
 
-        for (Session tomcatSession in currentManager.findSessions()) {
+        for (tomcatSession in currentManager.findSessions()) {
             try {
                 HttpSession httpSession = tomcatSession.session
                 if (httpSession.getAttribute(SESSION_KEY_ATTRIBUTE) != sessionKey) continue
@@ -212,7 +212,7 @@ class UserSessionService {
 
     private void removeExpiredRevocations() {
         long now = System.currentTimeMillis()
-        for (Map.Entry<String, Long> entry in revokedRememberMeTokens.entrySet()) {
+        for (entry in revokedRememberMeTokens.entrySet()) {
             if (entry.value <= now) {
                 revokedRememberMeTokens.remove(entry.key, entry.value)
             }

@@ -49,6 +49,7 @@ class ApplicationService implements LinkGeneratorAware {
     ServletContext servletContext
     ConnectionSourceService connectionSourceService
     TenantService tenantService
+    AuthenticationProviderService authenticationProviderService
     ApplicationPropertyService applicationPropertyService
 
     private static Map<String, List> credits = [:]
@@ -107,7 +108,6 @@ class ApplicationService implements LinkGeneratorAware {
         startApplication()
     }
 
-    @Transactional
     void performInstallation() {
         connectionSourceService.installOrConnect()
 
@@ -115,6 +115,8 @@ class ApplicationService implements LinkGeneratorAware {
             executeOnPluginInstall()
             executeOnInstall()
         }
+
+        authenticationProviderService.install()
 
         tenantService.provisionAllTenants()
         tenantService.updateAllTenants()
@@ -302,7 +304,6 @@ class ApplicationService implements LinkGeneratorAware {
         }
     }
 
-    @Transactional
     void executeOnPluginTenantInstall(String tenantId) {
         if (hasBootEvents('onPluginTenantInstall')) {
             log.info "-" * 78
@@ -313,7 +314,6 @@ class ApplicationService implements LinkGeneratorAware {
         }
     }
 
-    @Transactional
     void executeOnTenantInstall(String tenantId) {
         if (hasBootEvents('onTenantInstall') || hasBootEvents('onDevInstall')) {
             log.info "-" * 78
@@ -327,7 +327,6 @@ class ApplicationService implements LinkGeneratorAware {
         }
     }
 
-    @Transactional
     void executeOnUpdate(String tenantId) {
         if (hasBootEvents('onUpdate')) {
             log.info "-" * 78
@@ -338,19 +337,15 @@ class ApplicationService implements LinkGeneratorAware {
         }
     }
 
-    @Transactional
-    @CompileDynamic
     Boolean getApplicationInstalled() {
         return TApplicationInstall.count() > 0
     }
 
-    @Transactional
     @CompileDynamic
     Boolean isPluginInstalled(String pluginName) {
         return TApplicationInstall.where { plugin == pluginName }.count() > 0
     }
 
-    @Transactional
     @CompileDynamic
     private void executeInstall(String tenantId, String listName, Boolean isDev = false, Boolean sort = false) {
         Map<String, Closure> eventList = getBootEvents(listName)
@@ -361,8 +356,7 @@ class ApplicationService implements LinkGeneratorAware {
             Closure closure = revision.value
 
             String pluginName = closure.getClass().getPackage().getName()
-            Integer isInstalled = TApplicationInstall.countByPluginAndRevisionAndTenantIdAndDev(pluginName, revisionName, tenantId, isDev)
-
+            Integer isInstalled = TApplicationInstall.countByTenantIdAndPluginAndRevisionAndDev(tenantId, pluginName, revisionName, isDev)
             if (isInstalled) {
                 continue
             }
@@ -377,16 +371,21 @@ class ApplicationService implements LinkGeneratorAware {
                 }
             }
 
-            new TApplicationInstall(
-                plugin: pluginName,
-                revision: revisionName,
-                tenantId: tenantId,
-                dev: isDev,
-            ).save(flush: true, failOnError: true)
+            saveInstall(tenantId, pluginName, revisionName, isDev)
 
             log.info "...done."
             log.info ""
         }
+    }
+
+    @Transactional
+    private void saveInstall(String tenantId, String pluginName, String revisionName, Boolean isDev) {
+        new TApplicationInstall(
+            tenantId: tenantId,
+            plugin: pluginName,
+            revision: revisionName,
+            dev: isDev,
+        ).save(flush: true, failOnError: true)
     }
 
     /**
