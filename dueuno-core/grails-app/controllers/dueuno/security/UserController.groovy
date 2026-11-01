@@ -77,8 +77,9 @@ class UserController implements ElementsController {
                 if (isSuperAdmin) {
                     addField(
                         class: Select,
-                        id: 'tenant',
+                        id: 'tenantId',
                         optionsFromRecordset: tenantService.list(),
+                        keys: ['tenantId'],
                         cols: 2,
                     )
                 } else {
@@ -111,7 +112,7 @@ class UserController implements ElementsController {
                 tenant  : 'asc',
                 username: 'asc',
             ]
-            keys = ['username', 'tenant.id']
+            keys = ['username', 'tenant.tenantId']
             columns = cols
             labels = [
                 systemIcon: '',
@@ -157,7 +158,7 @@ class UserController implements ElementsController {
         }
 
         def filters = c.table.filterParams
-        if (filters.tenantNoFilter) filters.tenant = tenantService.currentTenant.id
+        if (filters.tenantNoFilter) filters.tenantId = tenantService.currentTenantId
         c.table.body = securityService.listAllUser(filters, params)
         c.table.paginate = securityService.countAllUser(filters)
 
@@ -547,7 +548,7 @@ class UserController implements ElementsController {
     }
 
     def edit() {
-        def user = securityService.getUserByTenantIdAndUsername(params.tenant.id, params.username)
+        def user = securityService.getUser(params.id)
         def c = buildForm(user)
 
         def isNotSuperAdmin = !securityService.isSuperAdmin()
@@ -584,7 +585,7 @@ class UserController implements ElementsController {
 
     def onDelete() {
         try {
-            securityService.deleteUser(params.username)
+            securityService.deleteUser(params.id)
             display action: 'index'
 
         } catch (e) {

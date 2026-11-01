@@ -59,8 +59,9 @@ class GroupController implements ElementsController {
                 if (isSuperAdmin) {
                     addField(
                         class: Select,
-                        id: 'tenant',
+                        id: 'tenantId',
                         optionsFromRecordset: tenantService.list(),
+                        keys: ['tenantId'],
                         cols: 2,
                     )
                 } else {
@@ -139,9 +140,10 @@ class GroupController implements ElementsController {
             if (isSuperAdmin) {
                 addField(
                     class: Select,
-                    id: 'tenant',
+                    id: 'tenantId',
                     optionsFromRecordset: tenantService.list(),
-                    defaultValue: tenantService.defaultTenant.id,
+                    keys: ['tenantId'],
+                    defaultValue: tenantService.defaultTenantId,
                     search: false,
                     noSelection: false,
                 )
@@ -197,7 +199,7 @@ class GroupController implements ElementsController {
     }
 
     def onCreate() {
-        params.tenant = tenantService.get(params.tenant) ?: tenantService.currentTenant
+        params.tenantId = tenantService.get(params.tenantId) ?: tenantService.currentTenantId
         def obj = securityService.createGroup(params)
         if (obj.hasErrors()) {
             display errors: obj
@@ -235,7 +237,7 @@ class GroupController implements ElementsController {
     }
 
     def onEdit() {
-        params.tenant = tenantService.get(params.tenant) ?: tenantService.currentTenant
+        params.tenantId = tenantService.get(params.tenantId) ?: tenantService.currentTenantId
         def obj = securityService.updateGroup(params)
         if (obj.hasErrors()) {
             display errors: obj
