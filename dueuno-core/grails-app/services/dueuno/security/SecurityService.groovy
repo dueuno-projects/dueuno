@@ -422,11 +422,14 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         Object principal = springSecurityService.principal
         String username = (principal['username'] as String).toLowerCase()
         Serializable userId = principal['id'] as Serializable
+
         // Usernames can repeat across tenants; the authenticated principal identifies the exact user by ID.
-        TUser user = userId ? getUser(userId) : getUserByUsername(username)
+        String tenantId = tenantService.currentTenantId
+        TUser user = userId ? getUser(userId) : getUserByTenantIdAndUsername(tenantId, username)
         if (!user) {
             user = createUser(
                 failOnError: true,
+                tenantId: tenantId,
                 username: username,
                 password: StringUtils.generateRandomToken(),
             )
@@ -448,7 +451,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * INTERNAL USE ONLY. Persists the current language for the currently logged in user.
      */
     void saveCurrentUserLanguage() {
-        TUser current = getUserByUsername(currentUsername)
+        String tenantId = tenantService.currentTenantId
+        TUser current = getUserByTenantIdAndUsername(tenantId, currentUsername)
         current.language = currentLanguage
         current.save(flush: true, failOnError: true)
     }
@@ -632,17 +636,10 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     @CompileDynamic
     TUser getUserByUsername(String username) {
         if (username?.equalsIgnoreCase(USERNAME_SUPERADMIN)) {
-            return getUserByTenantAndUsername(tenantService.defaultTenant, USERNAME_SUPERADMIN)
+            return getUserByTenantIdAndUsername(tenantService.defaultTenant.tenantId, USERNAME_SUPERADMIN)
         }
 
-        return getUserByTenantAndUsername(tenantService.currentTenant, username)
-    }
-
-    TUser getUserByTenantAndUsername(TTenant tenant, String username) {
-        TTenant tenantFilter = tenant
-        String usernameFilter = username
-        def query = TUser.where { tenant.id == tenantFilter.id && username == usernameFilter }
-        return query.get(fetch: fetchAll) as TUser
+        return getUserByTenantIdAndUsername(tenantService.currentTenant.tenantId, username)
     }
 
     TUser getUserByTenantIdAndUsername(String tenantId, String username) {
@@ -672,11 +669,12 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     }
 
     TUser getSuperAdminUser() {
-        return getUserByUsername(USERNAME_SUPERADMIN)
+        return getUserByTenantIdAndUsername(tenantService.defaultTenantId, USERNAME_SUPERADMIN)
     }
 
     TUser getAdminUser() {
-        return getUserByUsername(USERNAME_ADMIN)
+        String tenantId = tenantService.currentTenantId
+        return getUserByTenantIdAndUsername(tenantId, USERNAME_ADMIN)
     }
 
     List<TUser> listAllUser(Map filterParams = [:], Map fetchParams = [:]) {
