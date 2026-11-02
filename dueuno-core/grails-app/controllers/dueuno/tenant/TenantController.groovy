@@ -22,6 +22,7 @@ import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentCreate
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
+import dueuno.elements.controls.PasswordField
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
 import dueuno.elements.style.Color
@@ -81,17 +82,17 @@ class TenantController implements ElementsController {
 
         c.form.with {
             validate = TTenant
-            if (!obj && EnvUtils.isDevelopment()) {
-                addField(
-                    class: Label,
-                    id: 'info',
-                    html: 'tenant.info',
-                    color: Color.WARNING_TEXT,
-                    backgroundColor: Color.WARNING_BACKGROUND,
-                    displayLabel: false,
-                    tag: true,
-                )
-            }
+//            if (!obj && EnvUtils.isDevelopment()) {
+//                addField(
+//                    class: Label,
+//                    id: 'info',
+//                    html: 'tenant.info',
+//                    color: Color.WARNING_TEXT,
+//                    backgroundColor: Color.WARNING_BACKGROUND,
+//                    displayLabel: false,
+//                    tag: true,
+//                )
+//            }
             addField(
                 class: TextField,
                 id: 'tenantId',
@@ -136,7 +137,7 @@ class TenantController implements ElementsController {
                 cols: 6,
             )
             addField(
-                class: TextField,
+                class: PasswordField,
                 id: 'connectionSource.password',
                 cols: 6,
             )
