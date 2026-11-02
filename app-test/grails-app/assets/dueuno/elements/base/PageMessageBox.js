@@ -3,12 +3,18 @@
 // Temporary solutions until we get support for static fields
 // See: https://github.com/google/closure-compiler/issues/2731
 let PageMessageBox_isActive = false;
+let PageMessageBox_isHiding = false;
+let PageMessageBox_showPending = false;
 let PageMessageBox_dialog = null;
 
 class PageMessageBox extends Component {
 
     static get isActive() { return PageMessageBox_isActive }
     static set isActive(value) { PageMessageBox_isActive = value }
+    static get isHiding() { return PageMessageBox_isHiding }
+    static set isHiding(value) { PageMessageBox_isHiding = value }
+    static get showPending() { return PageMessageBox_showPending }
+    static set showPending(value) { PageMessageBox_showPending = value }
     static get dialog() { return PageMessageBox_dialog }
     static set dialog(value) { PageMessageBox_dialog = value }
 
@@ -16,6 +22,8 @@ class PageMessageBox extends Component {
 
     static initialize() {
         PageMessageBox.isActive = false;
+        PageMessageBox.isHiding = false;
+        PageMessageBox.showPending = false;
         PageMessageBox.dialog = new bootstrap.Modal('#page-messagebox', {
             backdrop: 'static',
         });
@@ -45,7 +53,13 @@ class PageMessageBox extends Component {
 
     static onHidden(event) {
         PageMessageBox.isActive = false;
+        PageMessageBox.isHiding = false;
         PageKeyPress.initializeKeyboardEvents();
+
+        if (PageMessageBox.showPending) {
+            PageMessageBox.showPending = false;
+            PageMessageBox.show();
+        }
     }
 
     static onKeyDown(event) {
@@ -57,6 +71,7 @@ class PageMessageBox extends Component {
     }
 
     static onHide(event) {
+        PageMessageBox.isHiding = true;
         document.activeElement.blur();
 
         if (PageModal.isActive) {
@@ -184,6 +199,13 @@ class PageMessageBox extends Component {
     }
 
     static show() {
+        LoadingScreen.show(false);
+
+        if (PageMessageBox.isHiding) {
+            PageMessageBox.showPending = true;
+            return;
+        }
+
         PageMessageBox.dialog.show('#page-messagebox');
         PageMessageBox.isActive = true;
         PageKeyPress.setHotkeysVisible(false);
@@ -191,6 +213,9 @@ class PageMessageBox extends Component {
     }
 
     static hide() {
+        if (PageMessageBox.isActive) {
+            PageMessageBox.isHiding = true;
+        }
         PageMessageBox.dialog.hide();
         PageMessageBox.isActive = false;
     }
