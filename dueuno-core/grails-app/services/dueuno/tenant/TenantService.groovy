@@ -35,6 +35,7 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import jakarta.servlet.http.HttpServletRequest
 import org.grails.datastore.mapping.core.connections.ConnectionSource
+import org.grails.datastore.mapping.multitenancy.exceptions.TenantException
 
 /**
  * @author Gianluca Sartori
@@ -93,7 +94,7 @@ class TenantService {
                 closure.call(tenantId)
             }
 
-        } catch (Exception e) {
+        } catch (TenantException e) {
             log.warn "Cannot determine the tenant to execute for, executing for '${defaultTenantId}'."
             Tenants.withId(defaultTenantId) {
                 closure.call(defaultTenantId)

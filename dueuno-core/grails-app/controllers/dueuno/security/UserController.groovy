@@ -16,6 +16,7 @@ package dueuno.security
 
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
+import dueuno.commons.utils.LogUtils
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Separator
 import dueuno.elements.components.TableRow
@@ -44,6 +45,11 @@ class UserController implements ElementsController {
     TenantService tenantService
     ApplicationPropertyService applicationPropertyService
     TenantPropertyService tenantPropertyService
+
+    def handleException(Exception e) {
+        log.error LogUtils.logStackTrace(e)
+        display exception: e
+    }
 
     def index() {
         Boolean isSuperAdmin = securityService.isSuperAdmin()
@@ -77,8 +83,9 @@ class UserController implements ElementsController {
                 if (isSuperAdmin) {
                     addField(
                         class: Select,
-                        id: 'tenant',
+                        id: 'tenantId',
                         optionsFromRecordset: tenantService.list(),
+                        keys: ['tenantId'],
                         cols: 2,
                     )
                 } else {
@@ -111,7 +118,6 @@ class UserController implements ElementsController {
                 tenant  : 'asc',
                 username: 'asc',
             ]
-            keys = ['username', 'tenant.id']
             columns = cols
             labels = [
                 systemIcon: '',
@@ -157,6 +163,7 @@ class UserController implements ElementsController {
         }
 
         def filters = c.table.filterParams
+        if (filters.tenantNoFilter) filters.tenantId = tenantService.currentTenantId
         c.table.body = securityService.listAllUser(filters, params)
         c.table.paginate = securityService.countAllUser(filters)
 
@@ -545,7 +552,7 @@ class UserController implements ElementsController {
     }
 
     def edit() {
-        def user = securityService.getUserByTenantIdAndUsername(params.tenant.id, params.username)
+        def user = securityService.getUser(params.id)
         def c = buildForm(user)
 
         def isNotSuperAdmin = !securityService.isSuperAdmin()
@@ -582,7 +589,7 @@ class UserController implements ElementsController {
 
     def onDelete() {
         try {
-            securityService.deleteUser(params.username)
+            securityService.deleteUser(params.id)
             display action: 'index'
 
         } catch (e) {

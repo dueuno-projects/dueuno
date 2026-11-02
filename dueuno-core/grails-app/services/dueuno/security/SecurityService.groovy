@@ -332,21 +332,6 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         }
     }
 
-
-    /**
-     * Returns true if the specified user has a local account (eg. returns false if the user
-     * can access with an LDAP account but cannot access if the LDAP server is not available).
-     *
-     * @param username a username to check
-     *
-     * @return true if the specified user has a local account
-     */
-
-    Boolean isLocalUser(String username) {
-        TUser user = getUserByUsername(username)
-        return user ? true : false
-    }
-
     /**
      * Returns true if the currently logged in user has admin authorities
      * @return true if the currently logged in user has admin authorities
@@ -388,7 +373,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @return true if the user with the specified username has admin authorities
      */
     Boolean isAdmin(String username) {
-        TUser user = getUserByUsername(username)
+        String tenantId = tenantService.currentTenantId
+        TUser user = getUserByTenantIdAndUsername(tenantId, username)
         return isAdmin(user)
     }
 
@@ -646,19 +632,23 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     @CompileDynamic
     TUser getUserByUsername(String username) {
         if (username?.equalsIgnoreCase(USERNAME_SUPERADMIN)) {
-            return getUserByTenantIdAndUsername(tenantService.defaultTenant?.id, USERNAME_SUPERADMIN)
+            return getUserByTenantAndUsername(tenantService.defaultTenant, USERNAME_SUPERADMIN)
         }
 
-        return getUserByTenantIdAndUsername(tenantService.currentTenant?.id, username)
+        return getUserByTenantAndUsername(tenantService.currentTenant, username)
     }
 
-    @CompileDynamic
-    TUser getUserByTenantIdAndUsername(Serializable tenantId, String username) {
-        if (!tenantId) return null
-
-        Long tenantIdFilter = tenantId
+    TUser getUserByTenantAndUsername(TTenant tenant, String username) {
+        TTenant tenantFilter = tenant
         String usernameFilter = username
-        def query = TUser.where { tenant.id == tenantIdFilter && username == usernameFilter }
+        def query = TUser.where { tenant.id == tenantFilter.id && username == usernameFilter }
+        return query.get(fetch: fetchAll) as TUser
+    }
+
+    TUser getUserByTenantIdAndUsername(String tenantId, String username) {
+        String tenantIdFilter = tenantId
+        String usernameFilter = username
+        def query = TUser.where { tenant.tenantId == tenantIdFilter && username == usernameFilter }
         return query.get(fetch: fetchAll) as TUser
     }
 
@@ -887,9 +877,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @return the modified user
      */
     @CompileDynamic
-    @Requires({ args.username })
+    @Requires({ args.id })
     TUser updateUserAndGroups(Map args) {
-        String username = args.username
         if (args.failOnError == null) args.failOnError = false
 
         TTenant tenant = args.tenant
@@ -912,7 +901,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             validateFontSize(args)
         }
 
-        TUser user = getUserByTenantIdAndUsername(tenant.id, username)
+        TUser user = getUser(args.id)
         user.properties = args
         user.save(flush: true, failOnError: args.failOnError)
 
@@ -945,9 +934,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @return the modified user
      */
     @CompileDynamic
-    @Requires({ args.username })
+    @Requires({ args.id })
     TUser updateUser(Map args) {
-        String username = args.username
         if (args.failOnError == null) args.failOnError = false
 
         if (args.password) {
@@ -960,7 +948,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             validateFontSize(args)
         }
 
-        TUser user = getUserByUsername(username)
+        TUser user = getUser(args.id)
         user.properties = args
         user.save(flush: true, failOnError: args.failOnError)
 
@@ -973,8 +961,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         if (fontSize > 42) args.fontSize = 42
     }
 
-    void changeUsername(String oldUsername, String newUsername) {
-        TUser user = getUserByUsername(oldUsername)
+    void changeUsername(String tenantId, String oldUsername, String newUsername) {
+        TUser user = getUserByTenantIdAndUsername(tenantId, oldUsername)
         user.username = newUsername
         user.save(flush: true, failOnError: true)
     }
@@ -985,8 +973,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @param username the username of the user to delete
      */
     @CompileDynamic
-    void deleteUser(String username) {
-        TUser user = getUserByUsername(username)
+    void deleteUser(Serializable id) {
+        TUser user = getUser(id)
         TUserRoleGroup.removeAll(user)
         user.delete(flush: true)
     }
@@ -1125,25 +1113,20 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @return the updated group
      */
     @CompileDynamic
-    @Requires({ args.id || args.tenantId })
+    @Requires({ args.id || (args.tenantId && args.name) })
     TRoleGroup updateGroup(Map args) {
-        Serializable id = args.id as Serializable
         if (args.failOnError == null) args.failOnError = false
-
-        if (args.tenantId && !args.name) {
-            throw new ElementsException("Please specify the 'name' of the group to update.")
-        }
 
         List authorities = (List) args.authorities ?: []
         if (authorities in String) authorities = [authorities]
 
         String groupName = (args.name as String).toUpperCase()
         TTenant tenant = TTenant.findByTenantId(args.tenantId)
-        TRoleGroup roleGroup = tenant
+        TRoleGroup roleGroup = args.tenantId
             ? TRoleGroup.findByTenantAndName(tenant, groupName)
-            : TRoleGroup.get(id as Serializable)
+            : TRoleGroup.get(args.id)
         if (!roleGroup) {
-            throw new ElementsException("Group '${id}' not found!")
+            throw new ElementsException("Group '${args.id}' not found!")
         }
 
         if (args.authorities != null) {
