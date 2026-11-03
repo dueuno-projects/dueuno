@@ -193,7 +193,7 @@ class GroupController implements ElementsController {
     }
 
     private String featureToText(Feature menu) {
-        String code = "shell.${menu.namespace ? menu.namespace + "." : ""}${menu.controller}"
+        String code = "shell.${menu.namespace ? menu.namespace + "." : ""}${menu.controller}.${menu.action}"
         String text = message(code)
         return "<i class='fa-fw fa-solid ${menu.icon} me-2'></i>${text}"
     }
