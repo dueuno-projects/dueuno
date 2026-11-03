@@ -156,6 +156,12 @@ class TenantService {
 
     @CompileDynamic
     @WithoutTenant
+    String getTenantIdByRequest(HttpServletRequest request) {
+        return getByRequest(request)?.tenantId
+    }
+
+    @CompileDynamic
+    @WithoutTenant
     TTenant getByRequest(HttpServletRequest request) {
         String host = request?.getHeader('host')
         return host ? getByHost(host) : null

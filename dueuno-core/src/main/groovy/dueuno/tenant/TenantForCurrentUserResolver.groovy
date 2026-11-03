@@ -53,7 +53,7 @@ class TenantForCurrentUserResolver implements TenantResolver, WebRequestAware {
                 return TenantService.defaultTenantId
             }
 
-            return tenantService.getByRequest(request)?.tenantId
+            return tenantService.getTenantIdByRequest(request)
                 ?: TenantService.defaultTenantId
 
         } catch (Exception ignore) {

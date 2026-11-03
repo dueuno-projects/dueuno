@@ -55,24 +55,26 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
         if (!firstname) firstname = null
         if (!lastname) lastname = null
 
-        TTenant tenant = tenantService.getByRequest(request) ?: tenantService.defaultTenant
-        if (!tenant) {
+        String tenantId = tenantService.getTenantIdByRequest(request) ?: tenantService.defaultTenantId
+        if (!tenantId) {
             throw new UsernameNotFoundException('Unable to resolve tenant for authenticated user')
         }
-        TUser user = TUser.findByTenantAndUsername(tenant, username)
+        TUser user = securityService.getUserByTenantIdAndUsername(tenantId, username)
         LocalDateTime lastAccess = LocalDateTime.now()
         if (!user) {
-            user = securityService.createUser(
-                tenant: tenant,
-                username: username,
-                password: securityService.generatePassword(),
-                firstname: firstname,
-                lastname: lastname,
-                email: email,
-                telephone: profile.telephone,
-                note: profile.note,
-                failOnError: true,
-            )
+            tenantService.withTenant(tenantId) {
+                user = securityService.createUser(
+                    tenantId: tenantId,
+                    username: username,
+                    password: securityService.generatePassword(),
+                    firstname: firstname,
+                    lastname: lastname,
+                    email: email,
+                    telephone: profile.telephone,
+                    note: profile.note,
+                    failOnError: true,
+                )
+            }
         }
 
         user.username = username

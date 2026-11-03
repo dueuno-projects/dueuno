@@ -64,7 +64,7 @@ class AuthenticationController implements ElementsController {
             return
         }
 
-        def tenantId = tenantService.getByRequest(request)?.tenantId
+        def tenantId = tenantService.getTenantIdByRequest(request)
             ?: tenantService.defaultTenantId
         List<TAuthenticationProvider> authenticationProviders = authenticationProviderService.list()
         List<Map> oidcProviders = authenticationProviders

@@ -14,6 +14,7 @@
  */
 package dueuno.security
 
+import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
 import dueuno.commons.utils.StringUtils
 import dueuno.elements.ElementsException
@@ -75,8 +76,9 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     TokenBasedRememberMeServices tokenBasedRememberMeServices
 
     SpringSecurityService springSecurityService
-    TenantPropertyService tenantPropertyService
     ApplicationService applicationService
+    ApplicationPropertyService applicationPropertyService
+    TenantPropertyService tenantPropertyService
     ShellService shellService
     TenantService tenantService
     AuditService auditService
@@ -290,11 +292,11 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             return
         }
 
-        TTenant tenant = tenantService.defaultTenant
+        String tenantId = tenantService.defaultTenantId
         if (!USERNAME_SUPERADMIN.equalsIgnoreCase(username)) {
-            tenant = tenantService.getByRequest(request) ?: tenant
+            tenantId = tenantService.getTenantIdByRequest(request) ?: tenantId
         }
-        TUser user = TUser.findByTenantAndUsername(tenant, username)
+        TUser user = getUserByTenantIdAndUsername(tenantId, username)
         if (user) configureRememberMe(user.rememberMeDuration)
     }
 
@@ -309,7 +311,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
     void initializeShell() {
         TUser user = getCurrentUser()
-        String lang = (user?.language in applicationService.languages) ? user.language : tenantPropertyService.getString('DEFAULT_LANGUAGE', true)
+        String lang = (user?.language in applicationService.languages) ? user.language : applicationPropertyService.getString('DEFAULT_LANGUAGE', true)
         currentLanguage = lang
         fontSize = user.fontSize
         guiStyle = user.guiStyle
@@ -818,7 +820,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             lastname: args.lastname,
             email: args.email,
             telephone: args.telephone,
-            language: args.language ?: 'en',
+            language: args.language ?: applicationPropertyService.getString('DEFAULT_LANGUAGE') ?: 'en',
             decimalFormat: args.decimalFormat ?: PrettyPrinterDecimalFormat.ISO_COM,
             prefixedUnit: args.prefixedUnit == null ? false : args.prefixedUnit,
             symbolicCurrency: args.symbolicCurrency == null ? true : args.symbolicCurrency,

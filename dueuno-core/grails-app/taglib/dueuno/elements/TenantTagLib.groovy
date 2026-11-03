@@ -26,7 +26,7 @@ class TenantTagLib implements WebRequestAware {
     TenantService tenantService
 
     def current(Map attrs) {
-        String tenantId = hasRequest() ? tenantService.getByRequest(request)?.tenantId : null
+        String tenantId = hasRequest() ? tenantService.getTenantIdByRequest(request) : null
         out << (tenantId ?: tenantService.currentTenantId ?: tenantService.defaultTenantId)
     }
 
