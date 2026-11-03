@@ -102,6 +102,7 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
         if (!tenant) {
             throw new UsernameNotFoundException('OIDC provider has no tenant')
         }
+
         TUserAuthenticationIdentity identity = TUserAuthenticationIdentity.where {
             issuer == issuer && subject == subject &&
                 provider.tenant.id == tenant.id && user.tenant.id == tenant.id
@@ -112,7 +113,7 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
 
         UserDetails details = loadOrCreateUser(
             username,
-            tenant,
+            tenant.tenantId,
             [
                 firstname: profile.given_name,
                 lastname : profile.family_name,
@@ -120,7 +121,7 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
             ],
         )
 
-        TUser user = TUser.findByTenantAndUsername(tenant, username)
+        TUser user = securityService.getUserByTenantIdAndUsername(tenant.tenantId, username)
         if (!user) {
             throw new UsernameNotFoundException('Unable to load the provisioned OIDC user')
         }
@@ -135,7 +136,7 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
     }
 
     @CompileDynamic
-    private UserDetails loadOrCreateUser(String username, TTenant tenant, Map profile) {
+    private UserDetails loadOrCreateUser(String username, String tenantId, Map profile) {
         if (!username) {
             throw new UsernameNotFoundException('Authenticated identity has no username')
         }
@@ -154,7 +155,7 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
             details = userDetailsService.loadUserByUsername(username)
         } catch (UsernameNotFoundException ignored) {
             securityService.createUser(
-                tenant: tenant,
+                tenantId: tenantId,
                 username: username,
                 password: securityService.generatePassword(),
                 firstname: firstname,
