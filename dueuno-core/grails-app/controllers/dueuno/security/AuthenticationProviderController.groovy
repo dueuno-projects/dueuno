@@ -61,7 +61,6 @@ class AuthenticationProviderController implements ElementsController {
                         class: Select,
                         id: 'tenant',
                         optionsFromRecordset: tenantService.list(),
-                        noSelection: true,
                         search: false,
                         cols: 3,
                     )

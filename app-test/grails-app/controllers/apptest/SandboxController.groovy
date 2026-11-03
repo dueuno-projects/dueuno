@@ -596,7 +596,6 @@ Grails application running at http://localhost:9992/test in environment: develop
 ////                    id: 'transformerSelect',
 ////                    optionsFromList: quantityService.listUnit(),
 ////                    defaultValue: 'KM',
-////                    noSelection: true,
 ////                    transformer: 'DB2UNIT',
 ////                    textPrefix: 'quantity.unit',
 ////            )
@@ -656,10 +655,10 @@ Grails application running at http://localhost:9992/test in environment: develop
 //            )
 //        }
 
-//        form['select1'].value = 1
-//        form['transformerSelect'].value = 'PZ'
-//        form['transformQta'].value = [3, 'M']
-//        form['transformQta'].value = new Quantity(3, Unit.M)
+//        form.controls.select1.value = 1
+//        form.controls.transformerSelect.value = 'PZ'
+//        form.controls.transformQta.value = [3, 'M']
+//        form.controls.transformQta.value = new Quantity(3, Unit.M)
 
         c.addComponent(
             before: 'formFail',

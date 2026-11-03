@@ -159,7 +159,7 @@ class Form extends Component {
         if (!args.primaryBackgroundColor) args.primaryBackgroundColor = primaryBackgroundColor
 
         // Add control/component. We add them to the components to be able to address
-        // them directly instead of passing through the FormField (Eg. form['controlName'])
+        // them directly instead of passing through the FormField (Eg. form.controls.controlName)
         Component component
         if (clazz in Control) {
             component = addControl(args)

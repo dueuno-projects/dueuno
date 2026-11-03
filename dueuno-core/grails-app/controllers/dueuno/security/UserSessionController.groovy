@@ -55,7 +55,6 @@ class UserSessionController implements ElementsController {
                         class: Select,
                         id: 'tenant',
                         optionsFromRecordset: tenantService.list(),
-                        noSelection: true,
                         cols: 3,
                     )
                 }

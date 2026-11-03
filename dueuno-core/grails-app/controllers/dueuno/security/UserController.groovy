@@ -67,7 +67,7 @@ class UserController implements ElementsController {
         ]
 
         def c = createContent(ContentTable)
-
+        c.header.nextButton.submit = ['table.filters']
         c.header.removeBackButton()
 
         c.table.actionbar.addAction(
@@ -109,7 +109,6 @@ class UserController implements ElementsController {
                     class: Select,
                     id: 'enabled',
                     options: [true: 'enabled', false: 'disabled'],
-                    noSelection: true,
                     search: false,
                     cols: 2,
                 )
@@ -187,7 +186,6 @@ class UserController implements ElementsController {
         def isCreatingNewUser = !obj
         def isSuperAdmin = securityService.isSuperAdmin()
         def isEditingUserButNotSuperAdmin = obj && obj.username != securityService.USERNAME_SUPERADMIN
-        def isTenantAdmin = obj && securityService.isAdmin(obj) && !obj.deletable
 
         c.form.with {
             validate = TUser
@@ -195,15 +193,16 @@ class UserController implements ElementsController {
             if (isSuperAdmin && (isCreatingNewUser || isEditingUserButNotSuperAdmin)) {
                 addField(
                     class: Select,
-                    id: 'tenant',
+                    id: 'tenant.tenantId',
                     optionsFromRecordset: tenantService.list(),
-                    defaultValue: tenantService.defaultTenant.id,
+                    keys: ['tenantId'],
+                    defaultValue: params.tenantId ?: tenantService.defaultTenantId,
                     search: false,
-                    noSelection: false,
-                    onLoad: 'onTenantChange',
-                    onChange: 'onTenantChange',
+                    allowClear: false,
+                    onLoad: 'onChangeTenant',
+                    onChange: 'onChangeTenant',
                     submit: ['form'],
-                    readonly: isTenantAdmin,
+                    readonly: obj,
                 )
             }
 
@@ -336,7 +335,7 @@ class UserController implements ElementsController {
 
         buildPreferencesForm(c)
 
-        c.form['language'].defaultValue = applicationPropertyService.getString('DEFAULT_LANGUAGE')
+        c.form.controls.language.defaultValue = applicationPropertyService.getString('DEFAULT_LANGUAGE')
 
         return c
     }
@@ -469,8 +468,8 @@ class UserController implements ElementsController {
         display transition: t
     }
 
-    def onTenantChange() {
-        def rs = securityService.listAllGroup(tenant: params.tenant, hideUsers: true)
+    def onChangeTenant() {
+        def rs = securityService.listAllGroup(tenantId: params.'tenant.tenantId', hideUsers: true)
         def tenantGroups = Select.optionsFromRecordset(recordset: rs)
 
         def t = createTransition()
@@ -483,7 +482,7 @@ class UserController implements ElementsController {
             t.setValue('groups', user.authorities*.id)
 
         } else {
-            def tenant = tenantService.get(params.tenant)
+            def tenant = tenantService.getByTenantId(params.'tenant.tenantId')
             if (tenant) {
                 tenantService.withTenant(tenant.tenantId) {
                     def sessionDuration = tenantPropertyService.getNumber('SESSION_DEFAULT_DURATION')
@@ -515,7 +514,7 @@ class UserController implements ElementsController {
     }
 
     private normalizeInput(Map params) {
-        params.tenant = tenantService.get(params.tenant) ?: tenantService.currentTenant
+        params.tenantId = params.'tenant.tenantId' ?: tenantService.currentTenantId
 
         List groups = []
         for (groupId in params.groups) {
@@ -558,18 +557,18 @@ class UserController implements ElementsController {
         def isNotSuperAdmin = !securityService.isSuperAdmin()
         def isEditingSuperAdminUser = user.username == securityService.USERNAME_SUPERADMIN
         if (isNotSuperAdmin || isEditingSuperAdminUser) {
-            c.form['username'].readonly = true
-            c.form['usernameField'].help = 'user.edit.username.help'
+            c.form.controls.username.readonly = true
+            c.form.fields.usernameField.help = 'user.edit.username.help'
         }
 
         c.form.values = user
-        c.form['password'].value = null
+        c.form.controls.password.value = null
 
         if (!isEditingSuperAdminUser) {
-            c.form['admin'].value = (user.authorities.find { it.name == SecurityService.GROUP_ADMINS } != null)
-            c.form['admin'].readonly = !user.deletable
-            c.form['enabled'].readonly = !user.deletable
-            c.form['groups'].value = user.authorities.collect { it.id }
+            c.form.controls.admin.value = (user.authorities.find { it.name == SecurityService.GROUP_ADMINS } != null)
+            c.form.controls.admin.readonly = !user.deletable
+            c.form.controls.enabled.readonly = !user.deletable
+            c.form.controls.groups.value = user.authorities.collect { it.id }
         }
 
         display content: c, modal: true, focus: 'note'

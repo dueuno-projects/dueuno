@@ -217,14 +217,14 @@ class TransitionsController implements ElementsController {
             addField(class: TextField, id: 'f2', value: 'Another value...', cols: 6)
         }
 
-        c.form['select2'].value = 'user3'
-        c.form['textfield'].value = 'My text'
-        c.form['moneyfield'].value = new Money(33)
-        c.form['numberfield'].value = 55.2
-        c.form['quantityfield'].value = new Quantity(12, QuantityUnit.L)
-//        c.form['datefield'].value = LocalDate.now()
-//        c.form['timefield'].value = LocalTime.now()
-        c.form['multiple'].value = ['admin', 'user']
+        c.form.controls.select2.value = 'user3'
+        c.form.controls.textfield.value = 'My text'
+        c.form.controls.moneyfield.value = new Money(33)
+        c.form.controls.numberfield.value = 55.2
+        c.form.controls.quantityfield.value = new Quantity(12, QuantityUnit.L)
+//        c.form.controls.datefield.value = LocalDate.now()
+//        c.form.controls.timefield.value = LocalTime.now()
+        c.form.controls.multiple.value = ['admin', 'user']
 
         // RENDERING
         //

@@ -77,7 +77,6 @@ class TenantPropertyController implements ElementsController {
                     class: Select,
                     id: 'type',
                     optionsFromEnum: PropertyType,
-                    noSelection: true,
                     cols: 2,
                 )
                 addField(
@@ -85,7 +84,6 @@ class TenantPropertyController implements ElementsController {
                     id: 'validation',
                     optionsFromList: ['error'],
                     search: false,
-                    noSelection: true,
                     cols: 2,
                 )
             }
@@ -346,9 +344,9 @@ class TenantPropertyController implements ElementsController {
         if (obj) {
             c.form.values = obj
             if (obj.type == PropertyType.PASSWORD) {
-                c.form['value'].value = tenantPropertyService.getPassword(obj.name, true)
+                c.form.controls.value.value = tenantPropertyService.getPassword(obj.name, true)
             } else {
-                c.form['value'].value = tenantPropertyService.getValue(obj.type, obj.name, true)
+                c.form.controls.value.value = tenantPropertyService.getValue(obj.type, obj.name, true)
             }
         }
 

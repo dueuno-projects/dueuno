@@ -59,6 +59,9 @@ class GroupController implements ElementsController {
         }
 
         def c = createContent(ContentTable)
+
+        c.header.nextButton.submit = ['table.filters']
+
         c.table.with {
             filters.with {
                 fold = false
@@ -146,12 +149,13 @@ class GroupController implements ElementsController {
             if (isSuperAdmin) {
                 addField(
                     class: Select,
-                    id: 'tenantId',
+                    id: 'tenant.tenantId',
                     optionsFromRecordset: tenantService.list(),
                     keys: ['tenantId'],
-                    defaultValue: tenantService.defaultTenantId,
+                    defaultValue: params.tenantId ?: tenantService.defaultTenantId,
                     search: false,
-                    noSelection: false,
+                    allowClear: false,
+                    readonly: obj,
                 )
             }
             addField(
@@ -205,7 +209,7 @@ class GroupController implements ElementsController {
     }
 
     def onCreate() {
-        params.tenantId = tenantService.getByTenantId(params.tenantId) ?: tenantService.currentTenantId
+        params.tenantId = params.'tenant.tenantId' ?: tenantService.currentTenantId
         def obj = securityService.createGroup(params)
         if (obj.hasErrors()) {
             display errors: obj
@@ -220,7 +224,7 @@ class GroupController implements ElementsController {
         def c = buildForm(obj)
 
         if (obj.name == SecurityService.GROUP_USERS) {
-            c.form['name'].readonly = true
+            c.form.controls.name.readonly = true
             c.form.addField(
                 class: MultipleCheckbox,
                 id: 'authorities',
@@ -238,12 +242,12 @@ class GroupController implements ElementsController {
         }
 
         c.form.values = obj
-        c.form['authorities'].value = obj.authorities.collect { it.authority }
+        c.form.controls.authorities.value = obj.authorities.collect { it.authority }
         display content: c, modal: true
     }
 
     def onEdit() {
-//        params.tenantId = tenantService.getByTenantId(params.tenantId) ?: tenantService.currentTenantId
+        params.tenantId = params.'tenant.tenantId' ?: tenantService.currentTenantId
         def obj = securityService.updateGroup(params)
         if (obj.hasErrors()) {
             display errors: obj

@@ -77,7 +77,6 @@ class ApplicationPropertyController implements ElementsController {
                     class: Select,
                     id: 'type',
                     optionsFromEnum: PropertyType,
-                    noSelection: true,
                     cols: 2,
                 )
                 addField(
@@ -85,7 +84,6 @@ class ApplicationPropertyController implements ElementsController {
                     id: 'validation',
                     optionsFromList: ['error'],
                     search: false,
-                    noSelection: true,
 //                        textPrefix: 'applicationProperty.validation',
                     cols: 2,
                 )
@@ -330,7 +328,7 @@ class ApplicationPropertyController implements ElementsController {
 
         if (obj) {
             c.form.values = obj
-            c.form['value'].value = applicationPropertyService.getValue(obj.type, obj.name, true)
+            c.form.controls.value.value = applicationPropertyService.getValue(obj.type, obj.name, true)
         }
 
         return c

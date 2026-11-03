@@ -309,18 +309,18 @@ class FormController implements ElementsController {
                 .addAction(action: 'anotherAction3')
                 .addAction(action: 'anotherAction4')
 
-            def buttonGroupField = addField(
+            def buttonGroup = addField(
                 class: Button,
                 id: 'buttonGroup',
                 stretch: true,
                 group: true,
                 backgroundColor: Color.DANGER_BACKGROUND,
                 textColor: Color.DANGER_TEXT,
-            )
-            buttonGroupField.component.addAction(action: 'anotherAction1', backgroundColor: Color.WARNING_BACKGROUND, textColor: Color.WARNING_TEXT)
-            buttonGroupField.component.addAction(action: 'anotherAction2', backgroundColor: Color.SUCCESS_BACKGROUND, textColor: Color.SUCCESS_TEXT)
-            buttonGroupField.component.addAction(action: 'anotherAction3', backgroundColor: Color.INFO_BACKGROUND, textColor: Color.INFO_TEXT)
-            buttonGroupField.component.addAction(action: 'anotherAction4', backgroundColor: mainBackgroundColor, textColor: Color.DISABLED_TEXT)
+            ).component as Button
+            buttonGroup.addAction(action: 'anotherAction1', backgroundColor: Color.WARNING_BACKGROUND, textColor: Color.WARNING_TEXT)
+            buttonGroup.addAction(action: 'anotherAction2', backgroundColor: Color.SUCCESS_BACKGROUND, textColor: Color.SUCCESS_TEXT)
+            buttonGroup.addAction(action: 'anotherAction3', backgroundColor: Color.INFO_BACKGROUND, textColor: Color.INFO_TEXT)
+            buttonGroup.addAction(action: 'anotherAction4', backgroundColor: mainBackgroundColor, textColor: Color.DISABLED_TEXT)
             addField(
                 class: Separator,
                 id: 'separator',
@@ -464,19 +464,19 @@ class FormController implements ElementsController {
             )
         }
 
-        c.form['datefield'].value = LocalDate.now()
-        c.form['timefield'].value = LocalTime.now()
-        c.form['datetimefield'].value = LocalDateTime.now()
-        c.form['label'].text = """
+        c.form.controls.datefield.value = LocalDate.now()
+        c.form.controls.timefield.value = LocalTime.now()
+        c.form.controls.datetimefield.value = LocalDateTime.now()
+        c.form.controls.label.text = """
             [label.text] Lorem ipsum
                     dolor sit amet
         """
-        c.form['label2'].text = """[label.text + TextAlign.END]"""
-        c.form['label3'].text = """[label.text + TextWrap.LINE_WRAP]
+        c.form.controls.label2.text = """[label.text + TextAlign.END]"""
+        c.form.controls.label3.text = """[label.text + TextWrap.LINE_WRAP]
             Lorem ipsum
             dolor sit amet"""
-        c.form['info'].text = '[label.text + tag] Lorem ipsum dolor sit amet'
-        c.form['paragraph'].html = '<em>[label.html]</em> <strong>Lorem ipsum dolor sit amet</strong>, <u>consectetur adipisci elit</u>, <a href="#">sed eiusmod tempor incidunt ut labore et dolore magna aliqua</a>. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+        c.form.controls.info.text = '[label.text + tag] Lorem ipsum dolor sit amet'
+        c.form.controls.paragraph.html = '<em>[label.html]</em> <strong>Lorem ipsum dolor sit amet</strong>, <u>consectetur adipisci elit</u>, <a href="#">sed eiusmod tempor incidunt ut labore et dolore magna aliqua</a>. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
 
         c.addComponent(Table, 'colorTable').with {
             columns = [

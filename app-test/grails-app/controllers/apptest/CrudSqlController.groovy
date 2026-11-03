@@ -231,7 +231,7 @@ class CrudSqlController implements ElementsController {
     def edit() {
         def c = buildForm(create: false)
         c.form.values = SqlUtils.get(dataSource, tblPerson, [id: params.id])
-        c.form['prezzo'].value = new Money(5.1)
+        c.form.controls.prezzo.value = new Money(5.1)
         display content: c, modal: true
     }
 

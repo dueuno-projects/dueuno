@@ -328,8 +328,8 @@ class CrudCustomController implements ElementsController {
 
     def create() {
         def c = buildForm(create: true)
-        c.form['name'].readonly = true
-        c.form['name'].value = 'Test Name'
+        c.form.controls.name.readonly = true
+        c.form.controls.name.value = 'Test Name'
 
         display content: c, modal: true, large: true
     }

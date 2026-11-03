@@ -131,7 +131,7 @@ class UserProfileController implements ElementsController {
         }
 
         if (devDisplayHints) {
-            c.form['authorities'].value = securityService.getCurrentUserAuthorities().join(',\n') + '.'
+            c.form.controls.authorities.value = securityService.getCurrentUserAuthorities().join(',\n') + '.'
         }
 
         display content: c, modal: true
