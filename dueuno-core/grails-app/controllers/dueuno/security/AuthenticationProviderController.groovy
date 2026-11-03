@@ -21,6 +21,7 @@ import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.Checkbox
+import dueuno.elements.controls.NumberField
 import dueuno.elements.controls.PasswordField
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
@@ -141,6 +142,36 @@ class AuthenticationProviderController implements ElementsController {
                 readonly: readonly,
                 cols: 12,
             )
+
+            if (obj.providerType == AuthenticationProviderType.LOCAL) {
+                addField(
+                    class: Separator,
+                    id: 'configuration',
+                    icon: 'fa-gear',
+                )
+                addField(
+                    class: NumberField,
+                    id: 'sessionDuration',
+                    prefix: 'min',
+                    decimals: 0,
+                    help: 'authenticationProvider.duration.help',
+                )
+            }
+
+            if (obj.providerType == AuthenticationProviderType.REMEMBERME) {
+                addField(
+                    class: Separator,
+                    id: 'configuration',
+                    icon: 'fa-gear',
+                )
+                addField(
+                    class: NumberField,
+                    id: 'rememberMeDuration',
+                    prefix: 'min',
+                    decimals: 0,
+                    help: 'authenticationProvider.duration.help',
+                )
+            }
 
             if (obj.providerType == AuthenticationProviderType.LDAP) {
                 addField(

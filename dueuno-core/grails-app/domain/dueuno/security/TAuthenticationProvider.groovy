@@ -31,6 +31,8 @@ class TAuthenticationProvider implements GormEntity, Serializable {
     AuthenticationProviderType providerType
     Integer sequence
     Boolean enabled
+    Integer sessionDuration
+    Integer rememberMeDuration
 
     String server
     String managerDn
@@ -67,6 +69,8 @@ class TAuthenticationProvider implements GormEntity, Serializable {
         providerType nullable: false, unique: ['tenant']
         sequence nullable: false
         enabled nullable: false
+        sessionDuration nullable: true, min: 1
+        rememberMeDuration nullable: true, min: 1
         managerDn nullable: true, blank: true
         managerPassword nullable: true, blank: true
         server nullable: true, blank: true

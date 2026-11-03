@@ -16,6 +16,7 @@ package dueuno.security
 
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
+import dueuno.application.AuthenticationProviderService
 import dueuno.commons.utils.StringUtils
 import dueuno.elements.ElementsException
 import dueuno.elements.LinkGeneratorAware
@@ -78,6 +79,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     SpringSecurityService springSecurityService
     ApplicationService applicationService
     ApplicationPropertyService applicationPropertyService
+    AuthenticationProviderService authenticationProviderService
     TenantPropertyService tenantPropertyService
     ShellService shellService
     TenantService tenantService
@@ -145,9 +147,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
         tenantPropertyService.setBoolean('USER_CAN_CHANGE_PASSWORD', true)
         tenantPropertyService.setString('SESSION_COOKIE_NAME', applicationService.applicationName.toUpperCase() + '-SESSION')
-        tenantPropertyService.setNumber('SESSION_DEFAULT_DURATION', 5)
         tenantPropertyService.setString('REMEMBER_ME_COOKIE_NAME', applicationService.applicationName.toUpperCase() + '-REMEMBER-ME')
-        tenantPropertyService.setNumber('REMEMBER_ME_DEFAULT_DURATION', 10080) // One week in minutes
 
         tenantPropertyService.setBoolean('REMEMBER_ME_ENABLED', true)
         tenantPropertyService.setString('LOGIN_LANDING_URL', '')
@@ -794,6 +794,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     @CompileDynamic
     private TUser createUserInTenant(Map args, TTenant tenant, List<String> groups, String defaultGroup) {
         log.info "'${tenant.tenantId.toUpperCase()}' TENANT - Creating user '${args.username}' in groups ${groups} (default '${defaultGroup}')"
+        TAuthenticationProvider localProvider = authenticationProviderService.getByTenantAndProviderType(tenant, AuthenticationProviderType.LOCAL)
+        TAuthenticationProvider rememberMeProvider = authenticationProviderService.getByTenantAndProviderType(tenant, AuthenticationProviderType.REMEMBERME)
 
         if (args.username == USERNAME_SUPERADMIN && tenant.tenantId != tenantService.defaultTenantId) {
             TUser user = new TUser(tenant: tenant, username: args.username as String)
@@ -828,8 +830,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             invertedMonth: args.invertedMonth == null ? false : args.invertedMonth,
             twelveHours: args.twelveHours == null ? false : args.twelveHours,
             firstDaySunday: args.firstDaySunday == null ? false : args.firstDaySunday,
-            sessionDuration: args.sessionDuration as Integer ?: tenantPropertyService.getNumber('SESSION_DEFAULT_DURATION') ?: 5,
-            rememberMeDuration: args.rememberMeDuration as Integer ?: tenantPropertyService.getNumber('REMEMBER_ME_DEFAULT_DURATION') ?: 10080, // One week in minutes
+            sessionDuration: args.sessionDuration as Integer ?: localProvider?.sessionDuration,
+            rememberMeDuration: args.rememberMeDuration as Integer ?: rememberMeProvider?.rememberMeDuration,
             fontSize: args.fontSize as Integer ?: tenantPropertyService.getNumber('FONT_SIZE') as Integer ?: 14,
             guiStyle: args.guiStyle ?: tenantPropertyService.getString('GUI_STYLE') ?: GuiStyle.ROUNDED,
             animations: args.animations as Boolean ?: true,

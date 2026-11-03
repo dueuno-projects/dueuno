@@ -44,9 +44,10 @@ class AuthenticationProviderService implements WebRequestAware {
     private void installDefaults(TTenant tenant) {
         List<Map> defaults = [
             [
-                providerType: AuthenticationProviderType.LOCAL,
-                sequence    : 1,
-                enabled     : true,
+                providerType   : AuthenticationProviderType.LOCAL,
+                sequence       : 1,
+                enabled        : true,
+                sessionDuration: 5,
             ],
             [
                 providerType: AuthenticationProviderType.PHYSICAL,
@@ -96,9 +97,10 @@ class AuthenticationProviderService implements WebRequestAware {
                 scopes                    : 'openid email profile',
             ],
             [
-                providerType: AuthenticationProviderType.REMEMBERME,
-                sequence    : 99,
-                enabled     : true,
+                providerType       : AuthenticationProviderType.REMEMBERME,
+                sequence           : 99,
+                enabled            : true,
+                rememberMeDuration: 10080,
             ],
         ]
 
@@ -114,6 +116,12 @@ class AuthenticationProviderService implements WebRequestAware {
                 }
                 if (!provider.clientAuthenticationMethod && values.clientAuthenticationMethod) {
                     provider.clientAuthenticationMethod = values.clientAuthenticationMethod as String
+                }
+                if (provider.sessionDuration == null && values.sessionDuration != null) {
+                    provider.sessionDuration = values.sessionDuration as Integer
+                }
+                if (provider.rememberMeDuration == null && values.rememberMeDuration != null) {
+                    provider.rememberMeDuration = values.rememberMeDuration as Integer
                 }
             }
             provider.save(flush: true, failOnError: true)
@@ -153,6 +161,12 @@ class AuthenticationProviderService implements WebRequestAware {
     TAuthenticationProvider getByProviderType(AuthenticationProviderType providerType) {
         TTenant tenant = getRequestTenant()
         if (!tenant) return null
+        return getByTenantAndProviderType(tenant, providerType)
+    }
+
+    @CompileDynamic
+    TAuthenticationProvider getByTenantAndProviderType(TTenant tenant, AuthenticationProviderType providerType) {
+        if (!tenant) return null
         return TAuthenticationProvider.findByTenantAndProviderType(tenant, providerType)
     }
 
@@ -177,7 +191,7 @@ class AuthenticationProviderService implements WebRequestAware {
         if (!provider) return null
 
         List<String> fields = [
-            'enabled', 'server', 'managerDn', 'managerPassword', 'searchBase', 'searchFilter', 'searchSubtree',
+            'enabled', 'sessionDuration', 'rememberMeDuration', 'server', 'managerDn', 'managerPassword', 'searchBase', 'searchFilter', 'searchSubtree',
             'retrieveGroupRoles', 'groupSearchBase', 'groupSearchFilter', 'groupRoleAttribute',
             'retrieveDatabaseRoles', 'defaultRole', 'clientId', 'clientSecret', 'clientAuthenticationMethod', 'discoveryUri', 'issuerUri',
             'authorizationUri', 'tokenUri', 'jwksUri', 'userInfoUri', 'redirectUri', 'scopes',

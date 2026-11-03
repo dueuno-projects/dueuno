@@ -16,6 +16,7 @@ package dueuno.security
 
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
+import dueuno.application.AuthenticationProviderService
 import dueuno.commons.utils.LogUtils
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Separator
@@ -28,7 +29,6 @@ import dueuno.elements.controls.*
 import dueuno.elements.core.PrettyPrinterDecimalFormat
 import dueuno.elements.style.GuiStyle
 import dueuno.elements.style.TextDefault
-import dueuno.tenant.TenantPropertyService
 import dueuno.tenant.TenantService
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -41,10 +41,10 @@ import grails.plugin.springsecurity.annotation.Secured
 class UserController implements ElementsController {
 
     ApplicationService applicationService
+    AuthenticationProviderService authenticationProviderService
     SecurityService securityService
     TenantService tenantService
     ApplicationPropertyService applicationPropertyService
-    TenantPropertyService tenantPropertyService
 
     def handleException(Exception e) {
         log.error LogUtils.logStackTrace(e)
@@ -276,7 +276,7 @@ class UserController implements ElementsController {
                     id: 'sessionDuration',
                     prefix: 'min',
                     decimals: 0,
-                    defaultValue: tenantPropertyService.getNumber('SESSION_DEFAULT_DURATION'),
+                    defaultValue: getSessionDurationDefault(params.tenantId as String),
                     cols: 6,
                 )
                 addField(
@@ -284,7 +284,7 @@ class UserController implements ElementsController {
                     id: 'rememberMeDuration',
                     prefix: 'min',
                     decimals: 0,
-                    defaultValue: tenantPropertyService.getNumber('REMEMBER_ME_DEFAULT_DURATION'),
+                    defaultValue: getRememberMeDurationDefault(params.tenantId as String),
                     cols: 6,
                 )
                 addField(
@@ -484,12 +484,8 @@ class UserController implements ElementsController {
         } else {
             def tenant = tenantService.getByTenantId(params.'tenant.tenantId')
             if (tenant) {
-                tenantService.withTenant(tenant.tenantId) {
-                    def sessionDuration = tenantPropertyService.getNumber('SESSION_DEFAULT_DURATION')
-                    def rememberMeDuration = tenantPropertyService.getNumber('REMEMBER_ME_DEFAULT_DURATION')
-                    t.setValue('sessionDuration', sessionDuration)
-                    t.setValue('rememberMeDuration', rememberMeDuration)
-                }
+                t.setValue('sessionDuration', getSessionDurationDefault(tenant.tenantId))
+                t.setValue('rememberMeDuration', getRememberMeDurationDefault(tenant.tenantId))
             }
         }
 
@@ -511,6 +507,16 @@ class UserController implements ElementsController {
 
         def mustRefresh = c in ContentCreate && controllerSession.createAndNew
         display content: c, modal: true, closeButton: !mustRefresh
+    }
+
+    private Integer getSessionDurationDefault(String tenantId) {
+        def tenant = tenantService.getByTenantId(tenantId ?: tenantService.currentTenantId ?: tenantService.defaultTenantId)
+        return authenticationProviderService.getByTenantAndProviderType(tenant, AuthenticationProviderType.LOCAL)?.sessionDuration
+    }
+
+    private Integer getRememberMeDurationDefault(String tenantId) {
+        def tenant = tenantService.getByTenantId(tenantId ?: tenantService.currentTenantId ?: tenantService.defaultTenantId)
+        return authenticationProviderService.getByTenantAndProviderType(tenant, AuthenticationProviderType.REMEMBERME)?.rememberMeDuration
     }
 
     private normalizeInput(Map params) {
