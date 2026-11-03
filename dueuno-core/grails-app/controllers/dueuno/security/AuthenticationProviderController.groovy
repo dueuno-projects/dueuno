@@ -108,11 +108,6 @@ class AuthenticationProviderController implements ElementsController {
     private buildForm(TAuthenticationProvider obj) {
         def c = createContent(ContentEdit)
 
-        def readonly = obj.providerType == AuthenticationProviderType.LOCAL
-        if (readonly) {
-            c.header.removeNextButton()
-        }
-
         c.form.with {
             validate = TAuthenticationProvider
             addField(
@@ -139,7 +134,7 @@ class AuthenticationProviderController implements ElementsController {
             addField(
                 class: Checkbox,
                 id: 'enabled',
-                readonly: readonly,
+                readonly: obj.providerType == AuthenticationProviderType.LOCAL,
                 cols: 12,
             )
 
@@ -176,8 +171,8 @@ class AuthenticationProviderController implements ElementsController {
             if (obj.providerType == AuthenticationProviderType.LDAP) {
                 addField(
                     class: Separator,
-                    id: 'ldap',
-                    icon: 'fa-plug',
+                    id: 'configuration',
+                    icon: 'fa-gear',
                 )
                 addField(
                     class: TextField,
@@ -198,6 +193,12 @@ class AuthenticationProviderController implements ElementsController {
                     class: TextField,
                     id: 'searchBase',
                     cols: 12,
+                )
+
+                addField(
+                    class: Separator,
+                    id: 'ldap',
+                    icon: 'fa-plug',
                 )
                 addField(
                     class: TextField,
@@ -244,8 +245,8 @@ class AuthenticationProviderController implements ElementsController {
             if (obj.providerType.isOidcProvider()) {
                 addField(
                     class: Separator,
-                    id: 'oidc',
-                    icon: 'fa-brands fa-openid',
+                    id: 'configuration',
+                    icon: 'fa-gear',
                 )
                 addField(
                     class: TextField,
@@ -279,8 +280,8 @@ class AuthenticationProviderController implements ElementsController {
                 )
                 addField(
                     class: Separator,
-                    id: 'configuration',
-                    icon: 'fa-gear',
+                    id: 'oidc',
+                    icon: 'fa-brands fa-openid',
                 )
                 addField(
                     class: TextField,

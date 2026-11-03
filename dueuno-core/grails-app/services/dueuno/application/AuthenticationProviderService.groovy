@@ -100,7 +100,7 @@ class AuthenticationProviderService implements WebRequestAware {
                 providerType       : AuthenticationProviderType.REMEMBERME,
                 sequence           : 99,
                 enabled            : true,
-                rememberMeDuration: 10080,
+                rememberMeDuration: 10080, // 7 days
             ],
         ]
 

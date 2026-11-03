@@ -60,7 +60,7 @@ class GroupController implements ElementsController {
 
         def c = createContent(ContentTable)
 
-        c.header.nextButton.submit = ['table.filters']
+        c.header.nextButton.submit = ['table.filters.tenantId']
 
         c.table.with {
             filters.with {
@@ -152,7 +152,7 @@ class GroupController implements ElementsController {
                     id: 'tenant.tenantId',
                     optionsFromRecordset: tenantService.list(),
                     keys: ['tenantId'],
-                    defaultValue: params.tenantId ?: tenantService.defaultTenantId,
+                    defaultValue: params.'table.filters.tenantId' ?: tenantService.defaultTenantId,
                     search: false,
                     allowClear: false,
                     readonly: obj,

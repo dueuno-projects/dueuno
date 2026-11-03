@@ -67,7 +67,7 @@ class UserController implements ElementsController {
         ]
 
         def c = createContent(ContentTable)
-        c.header.nextButton.submit = ['table.filters']
+        c.header.nextButton.submit = ['table.filters.tenantId']
         c.header.removeBackButton()
 
         c.table.actionbar.addAction(
@@ -196,7 +196,7 @@ class UserController implements ElementsController {
                     id: 'tenant.tenantId',
                     optionsFromRecordset: tenantService.list(),
                     keys: ['tenantId'],
-                    defaultValue: params.tenantId ?: tenantService.defaultTenantId,
+                    defaultValue: params.'table.filters.tenantId' ?: tenantService.defaultTenantId,
                     search: false,
                     allowClear: false,
                     onLoad: 'onChangeTenant',
