@@ -150,8 +150,6 @@ class AuthenticationProviderController implements ElementsController {
                     id: 'localConfigurationHelp',
                     html: 'authenticationProvider.localConfiguration.help',
                     displayLabel: false,
-                    tag: true,
-                    cols: 12,
                 )
                 addField(
                     class: NumberField,
@@ -174,11 +172,16 @@ class AuthenticationProviderController implements ElementsController {
                     icon: 'fa-gear',
                 )
                 addField(
+                    class: Label,
+                    id: 'rememberMeConfigurationHelp',
+                    html: 'authenticationProvider.localConfiguration.help',
+                    displayLabel: false,
+                )
+                addField(
                     class: NumberField,
                     id: 'rememberMeDuration',
                     prefix: 'min',
                     decimals: 0,
-                    help: 'authenticationProvider.duration.help',
                 )
             }
 
