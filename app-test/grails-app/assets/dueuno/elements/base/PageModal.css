@@ -6,57 +6,51 @@
     --bs-modal-width: 35.7143rem; /* 500px at 14px font size */
 }
 
+@media (max-width: 739.98px) {
+    #page-modal .modal-dialog:not(.modal-fullscreen):not(.modal-sm) {
+        --bs-modal-margin: .5rem;
+        width: calc(100% - 1rem);
+        max-width: calc(100% - 1rem);
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #page-modal .modal-dialog.modal-sm {
+        --bs-modal-margin: 1.75rem;
+        width: var(--bs-modal-width);
+        max-width: min(var(--bs-modal-width), calc(100% - 1rem));
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 319.98px) {
+    #page-modal .modal-dialog.modal-sm {
+        --bs-modal-margin: .5rem;
+    }
+}
+
 #page-modal .modal-sm {
     --bs-modal-width: 21.4286rem; /* 300px at 14px font size */
 }
 
-@media (min-width: 576px) {
-    #page-modal .modal-lg,
-    #page-modal .modal-xl {
-        --bs-modal-width: 57.1429rem; /* 800px at 14px font size */
-    }
-}
-
-@media (min-width: 650px) {
-    #page-modal .modal,
-    #page-modal .modal-lg,
-    #page-modal .modal-xl {
-        --bs-modal-width: 44.2857rem; /* 620px at 14px font size */
+@media (max-width: 753.98px) {
+    #page-modal .modal-dialog.modal-xl {
+        --bs-modal-margin: .5rem;
     }
 }
 
 @media (min-width: 740px) {
-    #page-modal .modal-lg,
-    #page-modal .modal-xl {
+    #page-modal .modal-dialog:not(.modal-fullscreen) {
+        max-width: min(var(--bs-modal-width), calc(100% - 1rem));
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #page-modal .modal-lg {
         --bs-modal-width: 50rem; /* 700px at 14px font size */
     }
-}
 
-@media (min-width: 840px) {
-    #page-modal .modal-xl {
-        --bs-modal-width: 57.1429rem; /* 800px at 14px font size */
-    }
-}
-
-@media (min-width: 940px) {
-    #page-modal .modal-xl {
-        --bs-modal-width: 64.2857rem; /* 900px at 14px font size */
-    }
-}
-
-@media (min-width: 1040px) {
-    #page-modal .modal-xl {
-        --bs-modal-width: 71.4286rem; /* 1000px at 14px font size */
-    }
-}
-
-@media (min-width: 1140px) {
-    #page-modal .modal-xl {
-        --bs-modal-width: 78.5714rem; /* 1100px at 14px font size */
-    }
-}
-
-@media (min-width: 1240px) {
     #page-modal .modal-xl {
         --bs-modal-width: 85.7143rem; /* 1200px at 14px font size */
     }
