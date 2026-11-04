@@ -182,6 +182,7 @@ class UserIdentityFetchSpec extends Specification implements DataTest {
             twelveHours: false,
             firstDaySunday: false,
             fontSize: 14,
+            mobileFontSize: 16,
             guiStyle: 'ROUNDED',
             animations: true,
         ).save(failOnError: true)

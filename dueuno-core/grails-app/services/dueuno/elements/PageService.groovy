@@ -48,11 +48,11 @@ class PageService implements WebRequestAware, LinkGeneratorAware {
     }
 
     Page getMainPage() {
-        return session['_main_page_'] as Page
+        return session['_21MainPage'] as Page
     }
 
     void setMainPage(Page page) {
-        session['_main_page_'] = page
+        session['_21MainPage'] = page
     }
 
     /**
@@ -64,6 +64,7 @@ class PageService implements WebRequestAware, LinkGeneratorAware {
     public <T> T createPage(Class<T> clazz, Map args = [:]) {
         if (!securityService.isLoggedIn()) {
             fontSize = tenantPropertyService.getNumber('FONT_SIZE', true) as Integer
+            mobileFontSize = tenantPropertyService.getNumber('MOBILE_FONT_SIZE', true) as Integer
             guiStyle = tenantPropertyService.getString('GUI_STYLE', true)
         }
         return Component.createInstance(clazz, clazz.simpleName.uncapitalize(), initialize(args))

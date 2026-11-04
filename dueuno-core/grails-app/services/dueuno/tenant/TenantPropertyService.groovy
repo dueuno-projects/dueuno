@@ -55,6 +55,7 @@ class TenantPropertyService extends PropertyService {
         // fa-solid, fa-regular, fa-light, fa-thin, fa-duotone, fa-brand
         // Other
         setNumber('FONT_SIZE', 14, 14)
+        setNumber('MOBILE_FONT_SIZE', 16, 16)
         setString('GUI_STYLE', GuiStyle.ROUNDED as String)
 
         // Colors

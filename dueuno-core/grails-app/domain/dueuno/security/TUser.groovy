@@ -77,6 +77,7 @@ class TUser implements GormEntity, Serializable {
 
     // UI preferences
     Integer fontSize
+    Integer mobileFontSize
     String guiStyle // 'ROUNDED' or 'SQUARED'
     Boolean animations
 
@@ -97,6 +98,7 @@ class TUser implements GormEntity, Serializable {
         rememberMeDuration nullable: false
 
         fontSize nullable: false
+        mobileFontSize nullable: false
         guiStyle nullable: false
     }
 

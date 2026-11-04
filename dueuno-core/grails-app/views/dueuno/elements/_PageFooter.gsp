@@ -25,6 +25,7 @@
             twelveHours: ${c.twelveHours},
             firstDaySunday: ${c.firstDaySunday},
             fontSize: ${c.fontSize},
+            mobileFontSize: ${c.mobileFontSize},
             animations: ${c.animations},
         },
         </g:if>

@@ -70,7 +70,8 @@ class Page {
 
     static initializePage() {
         if (Elements.isMobileDevice) {
-            $(':root').css('--elements-font-size', '16px');
+            let mobileFontSize = (_21_.user && _21_.user.mobileFontSize) || 16;
+            $(':root').css('--elements-font-size', mobileFontSize + 'px');
         }
 
         PageMessageBox.initialize();

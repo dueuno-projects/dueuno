@@ -125,6 +125,7 @@ class AuthenticationController implements ElementsController {
         twelveHours = user.twelveHours
         firstDaySunday = user.firstDaySunday
         fontSize = user.fontSize
+        mobileFontSize = user.mobileFontSize
         animations = user.animations
 
         // Executing custom after login code & check if we need to log the user out

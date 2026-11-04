@@ -221,7 +221,16 @@ class UserProfileController implements ElementsController {
                 optionsFromList: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
                 defaultValue: 14,
                 renderTextPrefix: false,
-                cols: 4,
+                cols: 3,
+                colsSmall: 6,
+            )
+            addField(
+                class: Select,
+                id: 'mobileFontSize',
+                optionsFromList: [14, 15, 16, 17, 18, 19, 20, 21],
+                defaultValue: 16,
+                renderTextPrefix: false,
+                cols: 3,
                 colsSmall: 6,
             )
             addField(
@@ -229,13 +238,11 @@ class UserProfileController implements ElementsController {
                 id: 'guiStyle',
                 optionsFromEnum: GuiStyle,
                 textPrefix: 'default',
-                cols: 4,
-                colsSmall: 6,
+                cols: 6,
             )
             addField(
                 class: Checkbox,
                 id: 'animations',
-                cols: 4,
             )
         }
     }
@@ -272,6 +279,7 @@ class UserProfileController implements ElementsController {
         twelveHours = (params.twelveHours == 'false') ? false : true
         firstDaySunday = (params.firstDaySunday == 'false') ? false : true
         fontSize = params.fontSize as Integer
+        mobileFontSize = params.mobileFontSize as Integer
         guiStyle = params.guiStyle as String
         animations = params.animations as Boolean
 

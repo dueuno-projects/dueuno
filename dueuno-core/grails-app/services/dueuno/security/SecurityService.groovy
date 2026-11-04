@@ -314,6 +314,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         String lang = (user?.language in applicationService.languages) ? user.language : applicationPropertyService.getString('DEFAULT_LANGUAGE', true)
         currentLanguage = lang
         fontSize = user.fontSize
+        mobileFontSize = user.mobileFontSize
         guiStyle = user.guiStyle
 
         Shell shell = shellService.shell
@@ -811,6 +812,14 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             return user
         }
 
+        if (args.fontSize == null) {
+            args.fontSize = tenantPropertyService.getNumber('FONT_SIZE') as Integer ?: 14
+        }
+        if (args.mobileFontSize == null) {
+            args.mobileFontSize = tenantPropertyService.getNumber('MOBILE_FONT_SIZE') as Integer ?: 16
+        }
+        validateFontSizes(args)
+
         user = new TUser(
             tenant: tenant,
             apiKey: args.apiKey,
@@ -834,7 +843,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             canChangePassword: args.canChangePassword == null ? localProvider?.canChangePassword : args.canChangePassword as Boolean,
             sessionDuration: args.sessionDuration as Integer ?: localProvider?.sessionDuration,
             rememberMeDuration: args.rememberMeDuration as Integer ?: rememberMeProvider?.rememberMeDuration,
-            fontSize: args.fontSize as Integer ?: tenantPropertyService.getNumber('FONT_SIZE') as Integer ?: 14,
+            fontSize: args.fontSize,
+            mobileFontSize: args.mobileFontSize,
             guiStyle: args.guiStyle ?: tenantPropertyService.getString('GUI_STYLE') ?: GuiStyle.ROUNDED,
             animations: args.animations as Boolean ?: true,
             defaultGroup: defaultGroup ? TRoleGroup.findByTenantAndName(tenant, defaultGroup) : null,
@@ -904,9 +914,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             args.defaultGroup = TRoleGroup.findByTenantAndName(tenantService.defaultTenant, GROUP_SUPERADMINS)
         }
 
-        if (args.fontSize) {
-            validateFontSize(args)
-        }
+        validateFontSizes(args)
 
         user.properties = args
         user.save(flush: true, failOnError: args.failOnError)
@@ -951,9 +959,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             args.remove('password')
         }
 
-        if (args.fontSize) {
-            validateFontSize(args)
-        }
+        validateFontSizes(args)
 
         TUser user = getUser(args.id)
         user.properties = args
@@ -962,10 +968,13 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         return user
     }
 
-    void validateFontSize(Map args) {
-        Integer fontSize = args.fontSize as Integer
-        if (fontSize < 12) args.fontSize = 12
-        if (fontSize > 42) args.fontSize = 42
+    private void validateFontSizes(Map args) {
+        if (args.fontSize != null) {
+            args.fontSize = Math.max(12, Math.min(42, args.fontSize as Integer))
+        }
+        if (args.mobileFontSize != null) {
+            args.mobileFontSize = Math.max(14, Math.min(42, args.mobileFontSize as Integer))
+        }
     }
 
     @Transactional

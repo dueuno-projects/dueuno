@@ -431,38 +431,31 @@ class UserController implements ElementsController {
                 id: 'appearance',
                 icon: 'fa-circle-half-stroke',
             )
-            if (securityService.isDeveloper()) {
-                addField(
-                    class: NumberField,
-                    id: 'fontSize',
-                    defaultValue: 14,
-                    cols: 4,
-                    colsSmall: 6,
-                )
-            } else {
-                addField(
-                    class: Select,
-                    id: 'fontSize',
-                    optionsFromList: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
-                    defaultValue: 14,
-                    renderTextPrefix: false,
-                    cols: 4,
-                    colsSmall: 6,
-                )
-            }
+            addField(
+                class: NumberField,
+                id: 'fontSize',
+                defaultValue: 14,
+                cols: 3,
+                colsSmall: 6,
+            )
+            addField(
+                class: NumberField,
+                id: 'mobileFontSize',
+                defaultValue: 16,
+                cols: 3,
+                colsSmall: 6,
+            )
             addField(
                 class: Select,
                 id: 'guiStyle',
                 optionsFromEnum: GuiStyle,
                 textPrefix: 'default',
-                cols: 4,
-                colsSmall: 6,
+                cols: 6,
             )
             addField(
                 class: Checkbox,
                 id: 'animations',
                 defaultValue: true,
-                cols: 4,
             )
         }
     }
