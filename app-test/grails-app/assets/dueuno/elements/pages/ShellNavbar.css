@@ -55,12 +55,13 @@
     top: 100%;
     z-index: 1;
     color: rgb(var(--elements-secondary-text));
-    background-color: rgb(var(--elements-frame-bg));
+    background-color: rgb(var(--elements-primary-bg));
     font-size: .75rem;
     line-height: 1;
     white-space: nowrap;
     padding: .25rem .75rem;
     transform: translate(-50%, -50%);
+    border: 2px solid white;
 }
 
 #shell-navbar-notifications-toggle button:hover,
