@@ -190,35 +190,6 @@ class UserController implements ElementsController {
         c.form.with {
             validate = TUser
 
-            if (isSuperAdmin && (isCreatingNewUser || isEditingUserButNotSuperAdmin)) {
-                addField(
-                    class: Select,
-                    id: 'tenant.tenantId',
-                    optionsFromRecordset: tenantService.list(),
-                    keys: ['tenantId'],
-                    defaultValue: params.'table.filters.tenantId' ?: tenantService.defaultTenantId,
-                    search: false,
-                    allowClear: false,
-                    onLoad: 'onChangeTenant',
-                    onChange: 'onChangeTenant',
-                    submit: ['form'],
-                    readonly: obj,
-                )
-            }
-
-            addField(
-                class: TextField,
-                id: 'username',
-                icon: 'fa-user',
-                cols: 6,
-            )
-            PasswordField password = addField(
-                class: PasswordField,
-                id: 'password',
-                nullable: obj,
-                cols: 6,
-            ).component
-            password.addAction(action: 'onGeneratePassword', submit: ['form'], tooltip: 'user.generatePassword', text: '', icon: 'fa-key')
             addField(
                 class: TextField,
                 id: 'firstname',
@@ -234,6 +205,7 @@ class UserController implements ElementsController {
                 id: 'note',
                 rows: 2,
             )
+
             addField(
                 class: Separator,
                 id: 'notifications',
@@ -247,6 +219,56 @@ class UserController implements ElementsController {
             addField(
                 class: TelephoneField,
                 id: 'telephone',
+                cols: 6,
+            )
+
+            addField(
+                class: Separator,
+                id: 'login',
+                icon: 'fa-right-to-bracket',
+            )
+            if (isSuperAdmin && (isCreatingNewUser || isEditingUserButNotSuperAdmin)) {
+                addField(
+                    class: Select,
+                    id: 'tenant.tenantId',
+                    optionsFromRecordset: tenantService.list(),
+                    keys: ['tenantId'],
+                    defaultValue: params.'table.filters.tenantId' ?: tenantService.defaultTenantId,
+                    search: false,
+                    allowClear: false,
+                    onLoad: 'onChangeTenant',
+                    onChange: 'onChangeTenant',
+                    submit: ['form'],
+                    readonly: obj,
+                )
+            }
+            addField(
+                class: TextField,
+                id: 'username',
+                icon: 'fa-user',
+                cols: 6,
+            )
+            PasswordField password = addField(
+                class: PasswordField,
+                id: 'password',
+                nullable: obj,
+                cols: 6,
+            ).component
+            password.addAction(action: 'onGeneratePassword', submit: ['form'], tooltip: 'user.generatePassword', text: '', icon: 'fa-key')
+            addField(
+                class: NumberField,
+                id: 'sessionDuration',
+                prefix: 'min',
+                decimals: 0,
+                defaultValue: getSessionDurationDefault(params.tenantId as String),
+                cols: 6,
+            )
+            addField(
+                class: NumberField,
+                id: 'rememberMeDuration',
+                prefix: 'min',
+                decimals: 0,
+                defaultValue: getRememberMeDurationDefault(params.tenantId as String),
                 cols: 6,
             )
         }
@@ -270,21 +292,6 @@ class UserController implements ElementsController {
                     id: 'defaultGroup',
                     optionsFromRecordset: securityService.listAllGroup(),
                     search: false,
-                )
-                addField(
-                    class: NumberField,
-                    id: 'sessionDuration',
-                    prefix: 'min',
-                    decimals: 0,
-                    defaultValue: getSessionDurationDefault(params.tenantId as String),
-                    cols: 6,
-                )
-                addField(
-                    class: NumberField,
-                    id: 'rememberMeDuration',
-                    prefix: 'min',
-                    decimals: 0,
-                    defaultValue: getRememberMeDurationDefault(params.tenantId as String),
                     cols: 6,
                 )
                 addField(
@@ -294,11 +301,18 @@ class UserController implements ElementsController {
                 )
                 addField(
                     class: Checkbox,
+                    id: 'canChangePassword',
+                    defaultValue: getCanChangePasswordDefault(params.'tenant.tenantId' as String ?: params.tenantId as String),
+                    cols: 6,
+                )
+                addField(
+                    class: Checkbox,
                     id: 'enabled',
                     defaultValue: true,
                     nullable: true,
                     cols: 6,
                 )
+
                 addField(
                     class: Separator,
                     id: 'integration',
@@ -486,6 +500,7 @@ class UserController implements ElementsController {
             if (tenant) {
                 t.setValue('sessionDuration', getSessionDurationDefault(tenant.tenantId))
                 t.setValue('rememberMeDuration', getRememberMeDurationDefault(tenant.tenantId))
+                t.setValue('canChangePassword', getCanChangePasswordDefault(tenant.tenantId))
             }
         }
 
@@ -517,6 +532,11 @@ class UserController implements ElementsController {
     private Integer getRememberMeDurationDefault(String tenantId) {
         def tenant = tenantService.getByTenantId(tenantId ?: tenantService.currentTenantId ?: tenantService.defaultTenantId)
         return authenticationProviderService.getByTenantAndProviderType(tenant, AuthenticationProviderType.REMEMBERME)?.rememberMeDuration
+    }
+
+    private Boolean getCanChangePasswordDefault(String tenantId) {
+        def tenant = tenantService.getByTenantId(tenantId ?: tenantService.currentTenantId ?: tenantService.defaultTenantId)
+        return authenticationProviderService.getByTenantAndProviderType(tenant, AuthenticationProviderType.LOCAL)?.canChangePassword
     }
 
     private normalizeInput(Map params) {
@@ -565,6 +585,7 @@ class UserController implements ElementsController {
         if (isNotSuperAdmin || isEditingSuperAdminUser) {
             c.form.controls.username.readonly = true
             c.form.fields.usernameField.help = 'user.edit.username.help'
+            c.form.fields.usernameField.helpCollapsed = true
         }
 
         c.form.values = user
@@ -573,6 +594,7 @@ class UserController implements ElementsController {
         if (!isEditingSuperAdminUser) {
             c.form.controls.admin.value = (user.authorities.find { it.name == SecurityService.GROUP_ADMINS } != null)
             c.form.controls.admin.readonly = !user.deletable
+            c.form.controls.canChangePassword.readonly = !user.deletable
             c.form.controls.enabled.readonly = !user.deletable
             c.form.controls.groups.value = user.authorities.collect { it.id }
         }

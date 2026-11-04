@@ -16,6 +16,7 @@ package dueuno.security
 
 import dueuno.application.AuthenticationProviderService
 import dueuno.elements.ElementsController
+import dueuno.elements.components.Label
 import dueuno.elements.components.Separator
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentEdit
@@ -145,11 +146,24 @@ class AuthenticationProviderController implements ElementsController {
                     icon: 'fa-gear',
                 )
                 addField(
+                    class: Label,
+                    id: 'localConfigurationHelp',
+                    html: 'authenticationProvider.localConfiguration.help',
+                    displayLabel: false,
+                    tag: true,
+                    cols: 12,
+                )
+                addField(
                     class: NumberField,
                     id: 'sessionDuration',
                     prefix: 'min',
                     decimals: 0,
-                    help: 'authenticationProvider.duration.help',
+                    cols: 6,
+                )
+                addField(
+                    class: Checkbox,
+                    id: 'canChangePassword',
+                    cols: 6,
                 )
             }
 

@@ -121,6 +121,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             lastname: 'Admin',
             username: USERNAME_SUPERADMIN,
             password: USERNAME_SUPERADMIN,
+            canChangePassword: true,
             sessionDuration: EnvUtils.isDevelopment() ? 60 : 5, // always 5 minutes in production for the SuperAdmin
             rememberMeDuration: EnvUtils.isDevelopment() ? 12 * 60 : 5, // always 5 minutes in production for the SuperAdmin
         )
@@ -145,11 +146,9 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             admin: true,
         )
 
-        tenantPropertyService.setBoolean('USER_CAN_CHANGE_PASSWORD', true)
         tenantPropertyService.setString('SESSION_COOKIE_NAME', applicationService.applicationName.toUpperCase() + '-SESSION')
         tenantPropertyService.setString('REMEMBER_ME_COOKIE_NAME', applicationService.applicationName.toUpperCase() + '-REMEMBER-ME')
 
-        tenantPropertyService.setBoolean('REMEMBER_ME_ENABLED', true)
         tenantPropertyService.setString('LOGIN_LANDING_URL', '')
         tenantPropertyService.setString('LOGOUT_LANDING_URL', '')
         tenantPropertyService.setString('LOGIN_REGISTRATION_URL', '')
@@ -759,6 +758,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @param invertedMonth the user's preference about the month format: true: MM/DD/AAAA, false: DD/MM/AAAA (defaults to false)
      * @param twelveHours the user's preference about the time format: true: 12:00 PM, false: 24:00 (defaults to false)
      * @param firstDaySunday the user's preference about the week format: true: Sunday, false: Monday (defaults to false)
+     * @param canChangePassword whether the user can change their password (defaults to the local authentication provider setting)
      * @param groups list of group names the users belongs to
      * @param defaultGroup default group name, used to identify the landing page
      * @param note textual user details or note
@@ -830,6 +830,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             invertedMonth: args.invertedMonth == null ? false : args.invertedMonth,
             twelveHours: args.twelveHours == null ? false : args.twelveHours,
             firstDaySunday: args.firstDaySunday == null ? false : args.firstDaySunday,
+            canChangePassword: args.canChangePassword == null ? localProvider?.canChangePassword : args.canChangePassword as Boolean,
             sessionDuration: args.sessionDuration as Integer ?: localProvider?.sessionDuration,
             rememberMeDuration: args.rememberMeDuration as Integer ?: rememberMeProvider?.rememberMeDuration,
             fontSize: args.fontSize as Integer ?: tenantPropertyService.getNumber('FONT_SIZE') as Integer ?: 14,

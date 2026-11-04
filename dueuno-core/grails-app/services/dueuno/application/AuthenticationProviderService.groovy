@@ -44,10 +44,11 @@ class AuthenticationProviderService implements WebRequestAware {
     private void installDefaults(TTenant tenant) {
         List<Map> defaults = [
             [
-                providerType   : AuthenticationProviderType.LOCAL,
-                sequence       : 1,
-                enabled        : true,
-                sessionDuration: 5,
+                providerType      : AuthenticationProviderType.LOCAL,
+                sequence          : 1,
+                enabled           : true,
+                sessionDuration   : 5,
+                canChangePassword : true,
             ],
             [
                 providerType: AuthenticationProviderType.PHYSICAL,
@@ -120,6 +121,9 @@ class AuthenticationProviderService implements WebRequestAware {
                 if (provider.sessionDuration == null && values.sessionDuration != null) {
                     provider.sessionDuration = values.sessionDuration as Integer
                 }
+                if (provider.canChangePassword == null && values.canChangePassword != null) {
+                    provider.canChangePassword = values.canChangePassword as Boolean
+                }
                 if (provider.rememberMeDuration == null && values.rememberMeDuration != null) {
                     provider.rememberMeDuration = values.rememberMeDuration as Integer
                 }
@@ -191,13 +195,14 @@ class AuthenticationProviderService implements WebRequestAware {
         if (!provider) return null
 
         List<String> fields = [
-            'enabled', 'sessionDuration', 'rememberMeDuration', 'server', 'managerDn', 'managerPassword', 'searchBase', 'searchFilter', 'searchSubtree',
+            'enabled', 'sessionDuration', 'rememberMeDuration', 'canChangePassword', 'server', 'managerDn', 'managerPassword', 'searchBase', 'searchFilter', 'searchSubtree',
             'retrieveGroupRoles', 'groupSearchBase', 'groupSearchFilter', 'groupRoleAttribute',
             'retrieveDatabaseRoles', 'defaultRole', 'clientId', 'clientSecret', 'clientAuthenticationMethod', 'discoveryUri', 'issuerUri',
             'authorizationUri', 'tokenUri', 'jwksUri', 'userInfoUri', 'redirectUri', 'scopes',
         ]
         for (String field in fields) {
             if (!args.containsKey(field)) continue
+            if (field == 'canChangePassword' && provider.providerType != AuthenticationProviderType.LOCAL) continue
             if (field == 'managerPassword' || field == 'clientSecret') {
                 if (args[field]) provider[field] = args[field]
             } else {

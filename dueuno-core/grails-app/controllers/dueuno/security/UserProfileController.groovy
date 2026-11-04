@@ -22,7 +22,6 @@ import dueuno.elements.controls.*
 import dueuno.elements.core.PrettyPrinterDecimalFormat
 import dueuno.elements.style.GuiStyle
 import dueuno.elements.style.TextDefault
-import dueuno.tenant.TenantPropertyService
 import dueuno.utils.EnvUtils
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -35,7 +34,6 @@ import grails.plugin.springsecurity.annotation.Secured
 class UserProfileController implements ElementsController {
 
     ApplicationService applicationService
-    TenantPropertyService tenantPropertyService
     SecurityService securityService
 
     def index() {
@@ -103,8 +101,8 @@ class UserProfileController implements ElementsController {
 
         buildPreferencesForm(c)
 
-        def canChangePassword = tenantPropertyService.getBoolean('USER_CAN_CHANGE_PASSWORD')
-        if (canChangePassword) {
+        def obj = securityService.getCurrentUser(true)
+        if (obj?.canChangePassword) {
             c.form.with {
                 addField(
                     class: Separator,
@@ -125,7 +123,6 @@ class UserProfileController implements ElementsController {
 
         }
 
-        def obj = securityService.getCurrentUser(true)
         if (obj) {
             c.form.values = obj
         }
@@ -244,15 +241,25 @@ class UserProfileController implements ElementsController {
     }
 
     def onSave(UserProfileValidator val) {
+        TUser user = securityService.getCurrentUser(true)
+        if ((params.newPassword || params.confirmNewPassword || params.password) && !user?.canChangePassword) {
+            val.errors.rejectValue('newPassword', 'userProfile.passwordChange.disabled')
+            display errors: val
+            return
+        }
+
         if (val.hasErrors()) {
             display errors: val
             return
         }
 
-        if (params.newPassword) {
+        if (user?.canChangePassword && params.newPassword) {
             params.password = params.newPassword
+        } else {
+            params.remove('password')
         }
 
+        params.remove('canChangePassword')
         securityService.updateUser(params)
         securityService.getCurrentUser(true) // We reload the 'currentUser'
 

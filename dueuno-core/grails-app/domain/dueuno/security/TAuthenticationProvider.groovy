@@ -33,6 +33,7 @@ class TAuthenticationProvider implements GormEntity, Serializable {
     Boolean enabled
     Integer sessionDuration
     Integer rememberMeDuration
+    Boolean canChangePassword
 
     String server
     String managerDn
@@ -69,31 +70,9 @@ class TAuthenticationProvider implements GormEntity, Serializable {
         providerType nullable: false, unique: ['tenant']
         sequence nullable: false
         enabled nullable: false
-        sessionDuration nullable: true, min: 1
-        rememberMeDuration nullable: true, min: 1
-        managerDn nullable: true, blank: true
-        managerPassword nullable: true, blank: true
-        server nullable: true, blank: true
-        searchBase nullable: true, blank: true
-        searchFilter nullable: true, blank: true
-        searchSubtree nullable: true
-        retrieveGroupRoles nullable: true
-        groupSearchBase nullable: true, blank: true
-        groupSearchFilter nullable: true, blank: true
-        groupRoleAttribute nullable: true, blank: true
-        retrieveDatabaseRoles nullable: true
-        defaultRole nullable: true, blank: true
-        clientId nullable: true, blank: true
-        clientSecret nullable: true, blank: true
-        clientAuthenticationMethod nullable: true, blank: true, inList: ['client_secret_basic', 'client_secret_post']
-        discoveryUri nullable: true, blank: true
-        issuerUri nullable: true, blank: true
-        authorizationUri nullable: true, blank: true
-        tokenUri nullable: true, blank: true
-        jwksUri nullable: true, blank: true
-        userInfoUri nullable: true, blank: true
-        redirectUri nullable: true, blank: true
-        scopes nullable: true, blank: true
+        sessionDuration min: 1
+        rememberMeDuration min: 1
+        clientAuthenticationMethod inList: ['client_secret_basic', 'client_secret_post']
     }
 
     static mapping = {

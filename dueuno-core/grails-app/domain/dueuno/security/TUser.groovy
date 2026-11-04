@@ -63,6 +63,7 @@ class TUser implements GormEntity, Serializable {
     // Session data
     Integer sessionDuration
     Integer rememberMeDuration
+    Boolean canChangePassword
 
     // Localization preferences
     String language
@@ -89,10 +90,7 @@ class TUser implements GormEntity, Serializable {
         username nullable: false, blank: false, unique: ['tenant']
         password nullable: false, blank: false, password: true
         physicalId unique: true
-        email nullable: true
         apiKey unique: true
-        ldapUid nullable: true, blank: true
-        ldapLastAccess nullable: true
         note maxSize: 500
 
         sessionDuration nullable: false
