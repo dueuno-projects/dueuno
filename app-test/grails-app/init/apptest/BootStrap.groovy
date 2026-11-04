@@ -97,6 +97,7 @@ class BootStrap {
             tenantPropertyService.setNumber('TEST_NUMBER', 5 * 60)
             tenantPropertyService.setString('TEST_STRING', 'This is a string', 'This is its default value')
             tenantPropertyService.setString('LOGO_TAG', tenantId.toUpperCase())
+            tenantPropertyService.setString('LOGIN_LOGO_TAG', tenantId.toUpperCase())
             tenantPropertyService.setDateTime('TEST_DATE_TIME', LocalDateTime.now())
             tenantPropertyService.setDate('TEST_DATE', LocalDate.now())
             tenantPropertyService.setTime('TEST_TIME', LocalTime.now())

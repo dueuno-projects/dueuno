@@ -90,6 +90,7 @@ class AuthenticationController implements ElementsController {
             def loginArgs = [
                 backgroundImage    : tenantPropertyService.getString('LOGIN_BACKGROUND_IMAGE', true),
                 logoImage          : tenantPropertyService.getString('LOGIN_LOGO', true),
+                logoTag            : tenantPropertyService.getString('LOGIN_LOGO_TAG', true),
                 copy               : tenantPropertyService.getString('LOGIN_COPY', true),
                 registerUrl        : tenantPropertyService.getString('LOGIN_REGISTRATION_URL', true),
                 passwordRecoveryUrl: tenantPropertyService.getString('LOGIN_PASSWORD_RECOVERY_URL', true),

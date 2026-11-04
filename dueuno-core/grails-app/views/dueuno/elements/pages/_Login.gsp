@@ -17,9 +17,16 @@
 <div id="page-content" class="page-login justify-content-center">
 
     <div class="page-login-box text-center p-3">
-        <img class="page-login-logo py-2"
-             src="${raw(c.logoImage)}"
-        />
+        <div class="page-login-logo-wrapper">
+            <img class="page-login-logo py-2"
+                 src="${raw(c.logoImage)}"
+            />
+            <g:if test="${c.logoTag}">
+                <span class="page-login-logo-tag badge rounded-pill">
+                    ${c.logoTag}
+                </span>
+            </g:if>
+        </div>
         <div class="page-login-error d-none">
             <render:message code="shell.auth.bad.credentials"/>
         </div>

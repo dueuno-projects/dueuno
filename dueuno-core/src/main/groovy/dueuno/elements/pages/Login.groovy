@@ -42,6 +42,7 @@ class Login extends Page {
 
     String backgroundImage
     String logoImage
+    String logoTag
 
     Boolean rememberMeEnabled
     Boolean phisicalIdEnabled
@@ -64,6 +65,7 @@ class Login extends Page {
         tenantId = args.tenantId as String
 
         logoImage = args.logoImage
+        logoTag = args.logoTag
         backgroundImage = args.backgroundImage
 
         form = createComponent(Form, 'loginForm')

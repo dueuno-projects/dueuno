@@ -36,6 +36,8 @@ From now on, each time we deploy the application for the first time, those files
 
 To display a label over the navbar logo for this tenant, set the `LOGO_TAG` tenant property in _Tenant Management -> Tenant Properties_ to the desired text. Leave it empty to hide the label. Log out and back in for the navbar to reload the shell configuration.
 
+To display a label over the login logo, set the `LOGIN_LOGO_TAG` tenant property. Leave it empty to hide the label.
+
 To see the results of our effort we need to remove the default branding already installed under the `~/demo/demo` folder.
 
 IMPORTANT: Delete the `~/demo/demo` folder

@@ -45,9 +45,28 @@ body, html {
     width: 100%;
 }
 
+.page-login-logo-wrapper {
+    position: relative;
+    width: 100%;
+}
+
 .page-login-logo img {
     height: 3.214286rem;
     width: auto;
+}
+
+.page-login-logo-tag {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    z-index: 1;
+    color: rgb(var(--elements-secondary-text));
+    background-color: rgb(var(--elements-frame-bg));
+    font-size: .75rem;
+    line-height: 1;
+    white-space: nowrap;
+    padding: .25rem .75rem;
+    transform: translate(-50%, -100%);
 }
 
 .page-login-error {

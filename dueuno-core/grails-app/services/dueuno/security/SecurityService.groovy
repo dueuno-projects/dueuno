@@ -157,6 +157,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
         tenantPropertyService.setString('LOGIN_BACKGROUND_IMAGE', linkPublicResource(tenantId, '/brand/login-background.jpg', false))
         tenantPropertyService.setString('LOGIN_LOGO', linkPublicResource(tenantId, '/brand/login-logo.png', false))
+        tenantPropertyService.setString('LOGIN_LOGO_TAG', '')
     }
 
     void registerFeatures() {
