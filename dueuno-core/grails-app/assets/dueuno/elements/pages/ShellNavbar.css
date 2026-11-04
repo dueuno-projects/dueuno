@@ -43,6 +43,23 @@
     height: 2rem;
 }
 
+#shell-navbar-logo {
+    position: relative;
+}
+
+#shell-navbar-logo-tag {
+    position: absolute;
+    right: .5rem;
+    bottom: -.5rem;
+    z-index: 1;
+    color: rgb(var(--elements-primary-text));
+    background-color: rgb(var(--elements-primary-bg));
+    font-size: .75rem;
+    line-height: 1;
+    white-space: nowrap;
+    padding: .25rem .75rem;
+}
+
 #shell-navbar:has(#shell-navbar-home) #shell-navbar-logo {
     /* Hack to optically (more or less) center the title,
      * we need to find the proper way of doing it

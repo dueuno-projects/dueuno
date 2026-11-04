@@ -36,4 +36,7 @@ class ShellConfigDisplay implements Serializable {
 
     /** Url to the application logo */
     String logo
+
+    /** Optional label displayed over the application logo */
+    String logoTag
 }

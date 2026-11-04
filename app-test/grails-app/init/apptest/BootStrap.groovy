@@ -24,6 +24,7 @@ import dueuno.security.SecurityService
 import dueuno.tenant.TenantPropertyService
 import dueuno.tenant.TenantService
 import dueuno.types.QuantityService
+import dueuno.utils.EnvUtils
 import grails.web.servlet.mvc.GrailsHttpSession
 import jakarta.servlet.ServletContext
 
@@ -95,6 +96,7 @@ class BootStrap {
         applicationService.onTenantInstall { String tenantId ->
             tenantPropertyService.setNumber('TEST_NUMBER', 5 * 60)
             tenantPropertyService.setString('TEST_STRING', 'This is a string', 'This is its default value')
+            tenantPropertyService.setString('LOGO_TAG', EnvUtils.currentEnvironment.toUpperCase())
             tenantPropertyService.setDateTime('TEST_DATE_TIME', LocalDateTime.now())
             tenantPropertyService.setDate('TEST_DATE', LocalDate.now())
             tenantPropertyService.setTime('TEST_TIME', LocalTime.now())

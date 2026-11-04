@@ -20,6 +20,11 @@
 
     <div id="shell-navbar-logo" class="mx-auto">
         <render:component instance="${c.logo}"/>
+        <g:if test="${c.shell.config.display.logoTag}">
+            <span id="shell-navbar-logo-tag" class="badge rounded-pill">
+                ${c.shell.config.display.logoTag}
+            </span>
+        </g:if>
     </div>
 
     <!--    <div class="shell-navbar-notifications-toggle">-->

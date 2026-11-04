@@ -43,6 +43,7 @@ class ShellService implements WebRequestAware, LinkGeneratorAware {
     void tenantInstall() {
         String tenantId = tenantService.currentTenantId
         tenantPropertyService.setString('LOGO', linkPublicResource(tenantId, '/brand/logo.png', false))
+        tenantPropertyService.setString('LOGO_TAG', '')
     }
 
     Shell getShell() {
@@ -79,6 +80,7 @@ class ShellService implements WebRequestAware, LinkGeneratorAware {
 
         // Tenant properties
         shellConfig.display.logo = tenantPropertyService.getString('LOGO', true)
+        shellConfig.display.logoTag = tenantPropertyService.getString('LOGO_TAG', true)
 
         return shellConfig
     }
