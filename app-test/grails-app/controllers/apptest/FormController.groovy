@@ -395,7 +395,7 @@ class FormController implements ElementsController {
 
             addField(
                 class: Label,
-                id: 'label',
+                id: 'label1',
                 label: 'The label of a label',
             )
             addField(
@@ -467,16 +467,16 @@ class FormController implements ElementsController {
         c.form.controls.datefield.value = LocalDate.now()
         c.form.controls.timefield.value = LocalTime.now()
         c.form.controls.datetimefield.value = LocalDateTime.now()
-        c.form.controls.label.text = """
+        c.form.fields.label1Field.component.text = """
             [label.text] Lorem ipsum
                     dolor sit amet
         """
-        c.form.controls.label2.text = """[label.text + TextAlign.END]"""
-        c.form.controls.label3.text = """[label.text + TextWrap.LINE_WRAP]
+        c.form.fields.label2Field.component.text = """[label.text + TextAlign.END]"""
+        c.form.fields.label3Field.component.text = """[label.text + TextWrap.LINE_WRAP]
             Lorem ipsum
             dolor sit amet"""
-        c.form.controls.info.text = '[label.text + tag] Lorem ipsum dolor sit amet'
-        c.form.controls.paragraph.html = '<em>[label.html]</em> <strong>Lorem ipsum dolor sit amet</strong>, <u>consectetur adipisci elit</u>, <a href="#">sed eiusmod tempor incidunt ut labore et dolore magna aliqua</a>. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+        c.form.fields.infoField.component.text = '[label.text + tag] Lorem ipsum dolor sit amet'
+        c.form.fields.paragraphField.component.html = '<em>[label.html]</em> <strong>Lorem ipsum dolor sit amet</strong>, <u>consectetur adipisci elit</u>, <a href="#">sed eiusmod tempor incidunt ut labore et dolore magna aliqua</a>. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
 
         c.addComponent(Table, 'colorTable').with {
             columns = [
