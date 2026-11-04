@@ -44,7 +44,9 @@
 }
 
 #shell-navbar-logo {
-    position: relative;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 #shell-navbar-logo-tag {
@@ -59,13 +61,6 @@
     white-space: nowrap;
     padding: .25rem .75rem;
     transform: translate(-50%, -50%);
-}
-
-#shell-navbar:has(#shell-navbar-home) #shell-navbar-logo {
-    /* Hack to optically (more or less) center the title,
-     * we need to find the proper way of doing it
-     */
-    transform: translateX(-.8rem);
 }
 
 #shell-navbar-notifications-toggle button:hover,
