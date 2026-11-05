@@ -184,8 +184,8 @@ class UserController implements ElementsController {
 
         def isCreatingNewUser = !obj
         def isSuperAdmin = securityService.isSuperAdmin()
-        def isSuperAdminUser = securityService.isSuperAdmin(obj)
-        def isAdminUser = securityService.isAdmin(obj)
+        def isSuperAdminUser = obj && securityService.isSuperAdmin(obj)
+        def isAdminUser = obj && securityService.isAdmin(obj)
         def isEditingUserButNotSuperAdmin = obj && obj.username != securityService.USERNAME_SUPERADMIN
 
         c.form.with {
