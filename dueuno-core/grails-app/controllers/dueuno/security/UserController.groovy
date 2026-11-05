@@ -329,6 +329,7 @@ class UserController implements ElementsController {
                     id: 'ldapLastAccess',
                     icon: 'fa-time',
                     readonly: true,
+                    renderSeconds: true,
                     cols: 4,
                 )
                 addField(
@@ -342,6 +343,7 @@ class UserController implements ElementsController {
                     id: 'physicalIdLastAccess',
                     icon: 'fa-time',
                     readonly: true,
+                    renderSeconds: true,
                     cols: 4,
                 )
                 TextField apiKey = addField(
@@ -356,6 +358,7 @@ class UserController implements ElementsController {
                     id: 'apiKeyLastAccess',
                     icon: 'fa-time',
                     readonly: true,
+                    renderSeconds: true,
                     cols: 4,
                 )
             }

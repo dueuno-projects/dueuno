@@ -834,6 +834,10 @@ c.form.with {
 |`Integer`
 |
 |The amount of minutes the user can select. For example if set to `15` the only available time selections are `00`, `15`, `30` and `45`.
+|`renderSeconds`
+|`Boolean`
+|`false`
+|If set to `true`, displays seconds in the time value.
 |`autoPopulate`
 |`Boolean`
 |`false`
@@ -883,6 +887,10 @@ c.form.with {
 |`Integer`
 |
 |The amount of minutes the user can select. For example if set to `15` the only available time selections are `00`, `15`, `30` and `45`.
+|`renderSeconds`
+|`Boolean`
+|`false`
+|If set to `true`, displays seconds in the date and time value.
 |`autoPopulate`
 |`Boolean`
 |`false`

@@ -46,9 +46,13 @@ class UserIdentityController implements ElementsController {
             ]
             columns = [
                 'provider.providerType',
-                'issuer',
-                'subject',
                 'lastAccess',
+                'subject',
+            ]
+            prettyPrinterProperties = [
+                lastAccess: [
+                    renderSeconds: true,
+                ],
             ]
             sortable = [
                 issuer : 'asc',

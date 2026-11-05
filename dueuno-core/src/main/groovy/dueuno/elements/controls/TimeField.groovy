@@ -22,7 +22,8 @@ import groovy.transform.CompileStatic
  * <p>
  * Extends {@link DateTimeField} with the value type fixed to {@link dueuno.types.Type#TIME}
  * and an input validation pattern that restricts entry to digits and colons
- * ({@code ^[0-9:]*$}), suitable for time input in the format {@code HH:mm}.
+ * ({@code ^[0-9:]*$}), suitable for time input in the format {@code HH:mm} or
+ * {@code HH:mm:ss} when {@code renderSeconds} is enabled.
  * </p>
  *
  * @author Gianluca Sartori

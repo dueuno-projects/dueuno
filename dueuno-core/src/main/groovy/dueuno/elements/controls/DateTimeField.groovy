@@ -65,6 +65,7 @@ class DateTimeField extends Control {
      * {@code max} ({@link LocalDateTime}/{@link LocalDate}/{@link LocalTime}),
      * {@code timeStep} ({@link Integer}),
      * {@code autoPopulate} ({@link Boolean}, default {@code false}),
+     * {@code renderSeconds} ({@link Boolean}, default {@code false}),
      *             plus all keys accepted by {@link Control#Control(Map)}
      */
     DateTimeField(Map args) {
@@ -81,6 +82,15 @@ class DateTimeField extends Control {
 
         timeStep = args.timeStep as Integer
         autoPopulate = args.autoPopulate as Boolean ?: false
+    }
+
+    /**
+     * Sets whether the field displays seconds in its date/time value.
+     *
+     * @param value {@code true} to display seconds
+     */
+    void setRenderSeconds(Boolean value) {
+        prettyPrinterProperties.renderSeconds = value
     }
 
     /**
@@ -151,11 +161,12 @@ class DateTimeField extends Control {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-            min         : min?.toString(),
-            max         : max?.toString(),
-            pattern     : properties.pattern ?: '^[0-9/: ]*$',
-            timeStep    : timeStep,
-            autoPopulate: autoPopulate,
+            min          : min?.toString(),
+            max          : max?.toString(),
+            pattern      : properties.pattern ?: '^[0-9/: ]*$',
+            timeStep     : timeStep,
+            autoPopulate : autoPopulate,
+            renderSeconds: prettyPrinterProperties.renderSeconds,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }

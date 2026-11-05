@@ -37,7 +37,14 @@ class UserSessionController implements ElementsController {
         Boolean isSuperAdmin = securityService.isSuperAdmin()
         List tableColumns = []
         if (isSuperAdmin) tableColumns += ['tenant']
-        tableColumns += ['username', 'firstname', 'lastname', 'lastAccessedTime', 'expirationTime', 'rememberMeExpirationTime']
+        tableColumns += [
+            'username',
+            'firstname',
+            'lastname',
+            'lastAccessedTime',
+            'expirationTime',
+            'rememberMeExpirationTime',
+        ]
 
         def c = createContent(ContentTable)
         c.header.removeNextButton()
@@ -61,13 +68,10 @@ class UserSessionController implements ElementsController {
             }
             columns = tableColumns
             keys = ['id']
-            labels = [
-                tenant   : 'user.tenant',
-                username : 'user.username',
-                firstname: 'user.firstname',
-                lastname : 'user.lastname',
-                expirationTime           : 'userSession.expirationTime',
-                rememberMeExpirationTime: 'userSession.rememberMeExpirationTime',
+            prettyPrinterProperties = [
+                lastAccessedTime: [
+                    renderSeconds: true,
+                ],
             ]
             actions.removeAllActions()
             actions.addDefaultAction(

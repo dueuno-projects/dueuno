@@ -48,10 +48,14 @@ class AuthenticationProviderIdentityController implements ElementsController {
             ]
             columns = [
                 'user',
-                'provider.providerType',
-                'issuer',
-                'subject',
                 'lastAccess',
+                'provider.providerType',
+                'subject',
+            ]
+            prettyPrinterProperties = [
+                lastAccess: [
+                    renderSeconds: true,
+                ],
             ]
 
             sortable = [

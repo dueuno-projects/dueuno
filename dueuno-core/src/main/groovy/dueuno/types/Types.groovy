@@ -333,6 +333,7 @@ class Types {
                         day   : (value as LocalDateTime).dayOfMonth,
                         hour  : (value as LocalDateTime).hour,
                         minute: (value as LocalDateTime).minute,
+                        second: (value as LocalDateTime).second,
                     ]
                 ]
 
@@ -352,6 +353,7 @@ class Types {
                     value: [
                         hour  : (value as LocalTime).hour,
                         minute: (value as LocalTime).minute,
+                        second: (value as LocalTime).second,
                     ]
                 ]
 
@@ -599,7 +601,8 @@ class Types {
 
     /**
      * Reconstructs a {@link LocalTime} from a typed-value map with type {@link Type#TIME}.
-     * The {@code value} entry must contain {@code hour} and {@code minute} keys.
+     * The {@code value} entry must contain {@code hour}, {@code minute}, and
+     * {@code second} keys.
      *
      * @param valueMap the typed-value map to deserialise
      * @return the reconstructed {@link LocalTime}, or {@code null} if any field is missing
@@ -612,9 +615,10 @@ class Types {
         Map time = valueMap.value as Map
         Byte hour = (Byte) time.hour
         Byte minute = (Byte) time.minute
+        Byte second = (Byte) time.second
 
-        if (hour != null && minute != null) {
-            return LocalTime.of(hour, minute)
+        if (hour != null && minute != null && second != null) {
+            return LocalTime.of(hour, minute, second)
         }
 
         return null
@@ -623,7 +627,7 @@ class Types {
     /**
      * Reconstructs a {@link LocalDateTime} from a typed-value map with type {@link Type#DATETIME}.
      * The {@code value} entry must contain {@code year}, {@code month}, {@code day},
-     * {@code hour}, and {@code minute} keys.
+     * {@code hour}, {@code minute}, and {@code second} keys.
      *
      * @param valueMap the typed-value map to deserialise
      * @return the reconstructed {@link LocalDateTime}, or {@code null} if any field is missing
@@ -639,9 +643,10 @@ class Types {
         Integer day = (Integer) date.day
         Byte hour = (Byte) date.hour
         Byte minute = (Byte) date.minute
+        Byte second = (Byte) date.second
 
-        if (day != null && month != null && year != null && hour != null && minute != null) {
-            return LocalDateTime.of(year, month, day, hour, minute)
+        if (day != null && month != null && year != null && hour != null && minute != null && second != null) {
+            return LocalDateTime.of(year, month, day, hour, minute, second)
         }
 
         return null

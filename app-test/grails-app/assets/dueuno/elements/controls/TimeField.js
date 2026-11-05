@@ -8,7 +8,8 @@ class TimeField extends DateTimeField {
 
     static initialize($element, $root) {
         let properties = Component.getProperties($element);
-        let timeFormat = _21_.user.twelveHours ? 'hh:mm' : 'HH:mm';
+        let secondsFormat = properties.renderSeconds ? ':ss' : '';
+        let timeFormat = _21_.user.twelveHours ? `hh:mm${secondsFormat}` : `HH:mm${secondsFormat}`;
         let hourCycle = _21_.user.twelveHours ? 'h12' : 'h23';
 
         let initOptions = {
@@ -29,11 +30,12 @@ class TimeField extends DateTimeField {
         };
 
         let td = new tempusDominus.TempusDominus($element.parent()[0], initOptions);
-        td.dates.parseInput = TimeField.parseInput;
+        td.dates.parseInput = value => TimeField.parseInput($element, value);
         $element.data('td', td);
     }
 
-    static parseInput(value) {
+    static parseInput($element, value) {
+        let properties = Component.getProperties($element);
         let hour;
         let minute;
 
@@ -52,12 +54,18 @@ class TimeField extends DateTimeField {
             minute = value.substring(2, 4);
         }
 
+        let second = value.length >= 6 ? value.substring(4, 6) : null;
+        if (properties.renderSeconds && second == null) return null;
+        if (second == null) second = '00';
+
         let intHour = parseInt(hour);
         let intMinute = parseInt(minute);
+        let intSecond = parseInt(second);
         if (isNaN(intHour) || intHour > 24) hour = '00';
         if (isNaN(intMinute) || intMinute > 59) minute = '00';
+        if (isNaN(intSecond) || intSecond > 59) second = '00';
 
-        let time = new tempusDominus.DateTime('1900-01-01T' + hour + ':' + minute);
+        let time = new tempusDominus.DateTime('1900-01-01T' + hour + ':' + minute + ':' + second);
         return time;
     }
 
@@ -99,10 +107,10 @@ class TimeField extends DateTimeField {
         }
 
         return TypedValue.of(Type.TIME, {
-                hour: time.hours,
-                minute: time.minutes,
-                second: time.seconds,
-            });
+            hour: time.hours,
+            minute: time.minutes,
+            second: time.seconds,
+        });
     }
 }
 

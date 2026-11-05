@@ -7,7 +7,8 @@ class DateTimeField extends Control {
     static initialize($element, $root) {
         let properties = Component.getProperties($element);
         let dateFormat = _21_.user.invertedMonth ? 'MM/dd/yyyy' : 'dd/MM/yyyy';
-        let timeFormat = _21_.user.twelveHours ? 'hh:mm' : 'HH:mm';
+        let secondsFormat = properties.renderSeconds ? ':ss' : '';
+        let timeFormat = _21_.user.twelveHours ? `hh:mm${secondsFormat}` : `HH:mm${secondsFormat}`;
         let hourCycle = _21_.user.twelveHours ? 'h12' : 'h23';
         let startOfTheWeek = _21_.user.firstDaySunday ? 0 : 1;
 
@@ -27,7 +28,7 @@ class DateTimeField extends Control {
         }
 
         let td = new tempusDominus.TempusDominus($element.parent()[0], initOptions);
-        td.dates.parseInput = DateTimeField.parseInput;
+        td.dates.parseInput = value => DateTimeField.parseInput($element, value);
         $element.data('td', td);
     }
 
@@ -63,7 +64,8 @@ class DateTimeField extends Control {
         );
     }
 
-    static parseInput(value) {
+    static parseInput($element, value) {
+        let properties = Component.getProperties($element);
         let year;
         let month;
         let day;
@@ -96,7 +98,6 @@ class DateTimeField extends Control {
             day = value.substring(2, 4);
             hour = value.substring(8, 10);
             minute = value.substring(10, 12);
-
         } else {
             year = value.substring(4, 8);
             month = value.substring(2, 4);
@@ -105,13 +106,17 @@ class DateTimeField extends Control {
             minute = value.substring(10, 12);
         }
 
+        let second = value.length >= 14 ? value.substring(12, 14) : null;
+        if (properties.renderSeconds && second == null) return null;
+        if (second == null) second = '00';
+
         // This hack is here to input the right date/hour in different timezones
         // We should find a better solution, I'm not investigating since this control
         // is mostly used as a readonly view. Usually the time input is decoupled into a TimeField.
         let date = new tempusDominus.DateTime(year + '-' + month + '-' + day);
         let utcDate = DateTimeField.dateToUTC(date);
         let utcDay = utcDate.date.toString().padStart(2, '0');
-        let dateTime = new tempusDominus.DateTime(year + '-' + month + '-' + utcDay + 'T' + hour + ':' + minute);
+        let dateTime = new tempusDominus.DateTime(year + '-' + month + '-' + utcDay + 'T' + hour + ':' + minute + ':' + second);
         return dateTime;
     }
 
@@ -209,13 +214,13 @@ class DateTimeField extends Control {
         }
 
         return TypedValue.of(Type.DATETIME, {
-                year: date.year,
-                month: date.month + 1,
-                day: date.date,
-                hour: date.hours,
-                minute: date.minutes,
-                second: date.seconds,
-            });
+            year: date.year,
+            month: date.month + 1,
+            day: date.date,
+            hour: date.hours,
+            minute: date.minutes,
+            second: date.seconds,
+        });
     }
 
     static setReadonly($element, value) {
