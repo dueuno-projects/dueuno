@@ -46,7 +46,7 @@ class AuthenticationProviderManager implements AuthenticationManager, Authentica
         // Add each built-in provider only when it is enabled for the current tenant.
         List<AuthenticationProvider> providers = []
         for (AuthenticationProviderType providerType in BUILT_IN_PROVIDER_TYPES) {
-            TAuthenticationProvider providerConfiguration = authenticationProviderService.getByProviderType(providerType)
+            TAuthenticationProvider providerConfiguration = authenticationProviderService.getByProviderTypeForCurrentTenant(providerType)
             if (!providerConfiguration?.enabled) continue
 
             String beanName = providerType.authenticationProviderBeanName

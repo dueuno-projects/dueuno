@@ -73,7 +73,7 @@ class UserController implements ElementsController {
             controller: 'userSession',
             action: 'index',
             text: 'shell.security.userSession.index',
-            icon: 'fa-tv',
+            icon: 'fa-users',
         )
 
         c.table.with {
@@ -335,14 +335,29 @@ class UserController implements ElementsController {
                     class: TextField,
                     id: 'physicalId',
                     icon: 'fa-barcode',
+                    cols: 8,
+                )
+                addField(
+                    class: DateTimeField,
+                    id: 'physicalIdLastAccess',
+                    icon: 'fa-time',
+                    readonly: true,
+                    cols: 4,
                 )
                 TextField apiKey = addField(
                     class: TextField,
                     id: 'apiKey',
                     icon: 'fa-globe',
-                    readonly: !securityService.isDeveloper() && !securityService.isAdmin(),
+                    cols: 8,
                 ).component
                 apiKey.addAction(action: 'onGenerateApiKey', submit: ['form'], text: 'user.generateApiKey', icon: 'fa-key')
+                addField(
+                    class: DateTimeField,
+                    id: 'apiKeyLastAccess',
+                    icon: 'fa-time',
+                    readonly: true,
+                    cols: 4,
+                )
             }
         }
 
@@ -517,18 +532,18 @@ class UserController implements ElementsController {
     }
 
     private Integer getSessionDurationDefault(String tenantId) {
-        def tenant = tenantService.getByTenantId(tenantId ?: tenantService.currentTenantId ?: tenantService.defaultTenantId)
-        return authenticationProviderService.getByTenantAndProviderType(tenant, AuthenticationProviderType.LOCAL)?.sessionDuration
+        def resolvedTenantId = tenantId ?: tenantService.currentTenantId ?: tenantService.defaultTenantId
+        return authenticationProviderService.getByTenantIdAndProviderType(resolvedTenantId, AuthenticationProviderType.LOCAL)?.sessionDuration
     }
 
     private Integer getRememberMeDurationDefault(String tenantId) {
-        def tenant = tenantService.getByTenantId(tenantId ?: tenantService.currentTenantId ?: tenantService.defaultTenantId)
-        return authenticationProviderService.getByTenantAndProviderType(tenant, AuthenticationProviderType.REMEMBERME)?.rememberMeDuration
+        def resolvedTenantId = tenantId ?: tenantService.currentTenantId ?: tenantService.defaultTenantId
+        return authenticationProviderService.getByTenantIdAndProviderType(resolvedTenantId, AuthenticationProviderType.REMEMBERME)?.rememberMeDuration
     }
 
     private Boolean getCanChangePasswordDefault(String tenantId) {
-        def tenant = tenantService.getByTenantId(tenantId ?: tenantService.currentTenantId ?: tenantService.defaultTenantId)
-        return authenticationProviderService.getByTenantAndProviderType(tenant, AuthenticationProviderType.LOCAL)?.canChangePassword
+        def resolvedTenantId = tenantId ?: tenantService.currentTenantId ?: tenantService.defaultTenantId
+        return authenticationProviderService.getByTenantIdAndProviderType(resolvedTenantId, AuthenticationProviderType.LOCAL)?.canChangePassword
     }
 
     private normalizeInput(Map params) {

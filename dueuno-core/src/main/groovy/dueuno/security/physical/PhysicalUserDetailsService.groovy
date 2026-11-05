@@ -16,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 
+import java.time.LocalDateTime
+
 @Slf4j
 class PhysicalUserDetailsService extends GormUserDetailsService implements WebRequestAware,
     AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
@@ -27,7 +29,7 @@ class PhysicalUserDetailsService extends GormUserDetailsService implements WebRe
     TenantService tenantService
 
     @Override
-    @Transactional(readOnly = true, noRollbackFor = [IllegalArgumentException, UsernameNotFoundException])
+    @Transactional(noRollbackFor = [IllegalArgumentException, UsernameNotFoundException])
     UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken authentication)
         throws UsernameNotFoundException {
         String physicalId = authentication.getPrincipal()?.toString()
@@ -50,6 +52,9 @@ class PhysicalUserDetailsService extends GormUserDetailsService implements WebRe
             log.warn 'User not found: {}', physicalId
             throw new NoStackUsernameNotFoundException()
         }
+
+        user.physicalIdLastAccess = LocalDateTime.now()
+        user.save(flush: true, failOnError: true)
 
         Collection<GrantedAuthority> authorities = loadAuthorities(user, user.username, true)
         return createUserDetails(user, authorities)

@@ -18,6 +18,7 @@ import dueuno.elements.WebRequestAware
 import dueuno.tenant.TTenant
 import dueuno.tenant.TenantService
 import grails.gorm.DetachedCriteria
+import grails.gorm.multitenancy.CurrentTenant
 import grails.gorm.transactions.Transactional
 import groovy.contracts.Requires
 import groovy.transform.CompileDynamic
@@ -27,19 +28,19 @@ import org.springframework.security.authentication.AuthenticationProvider
 /**
  * Manages tenant-specific authentication providers and their runtime order.
  */
-@Transactional
+@Transactional(readOnly = true)
 @CompileStatic
 class AuthenticationProviderService implements WebRequestAware {
 
     TenantService tenantService
 
+    @Transactional
     void tenantInstall(String tenantId) {
         TTenant tenant = tenantService.getByTenantId(tenantId)
         if (!tenant) throw new IllegalArgumentException("Tenant '${tenantId}' does not exist")
         installDefaults(tenant)
     }
 
-    @CompileDynamic
     private void installDefaults(TTenant tenant) {
         List<Map> defaults = [
             [
@@ -102,13 +103,15 @@ class AuthenticationProviderService implements WebRequestAware {
                 enabled            : true,
                 rememberMeDuration: 10080, // 7 days
             ],
-        ]
+        ] as List<Map>
 
         for (Map values in defaults) {
             AuthenticationProviderType providerType = values.providerType as AuthenticationProviderType
-            TAuthenticationProvider provider = TAuthenticationProvider.findByTenantAndProviderType(tenant, providerType)
+            TAuthenticationProvider provider = getByTenantIdAndProviderType(tenant.tenantId, providerType)
+
             if (!provider) {
-                provider = new TAuthenticationProvider(values + [tenant: tenant])
+                provider = create(values + [tenant: tenant, failOnError: true])
+
             } else {
                 provider.sequence = values.sequence as Integer
                 if (!provider.discoveryUri && values.discoveryUri) {
@@ -127,6 +130,7 @@ class AuthenticationProviderService implements WebRequestAware {
                     provider.rememberMeDuration = values.rememberMeDuration as Integer
                 }
             }
+
             provider.save(flush: true, failOnError: true)
         }
     }
@@ -137,6 +141,8 @@ class AuthenticationProviderService implements WebRequestAware {
 
         if (filterParams.containsKey('id')) query = query.where { id == filterParams.id }
         if (filterParams.containsKey('tenant')) query = query.where { tenant.id == filterParams.tenant }
+        if (filterParams.containsKey('tenantId')) query = query.where { tenant.tenantId == filterParams.tenantId }
+        if (filterParams.containsKey('providerType')) query = query.where { providerType == filterParams.providerType }
 
         return query
     }
@@ -153,19 +159,17 @@ class AuthenticationProviderService implements WebRequestAware {
     }
 
     List<TAuthenticationProvider> list(Map filterParams = [:], Map fetchParams = [:]) {
-        TTenant tenant = getRequestTenant()
+        TTenant tenant = getRequestOrCurrentTenant()
         if (!tenant) return []
 
         if (!fetchParams.sort) fetchParams.sort = [sequence: 'asc']
         if (!fetchParams.fetch) fetchParams.fetch = fetch
 
-        DetachedCriteria<TAuthenticationProvider> query = buildQuery(filterParams + [tenant: tenant.id])
+        DetachedCriteria<TAuthenticationProvider> query = buildQuery(filterParams + [tenantId: tenant.tenantId])
         return query.list(fetchParams)
     }
 
     List<TAuthenticationProvider> listAll(Map filterParams = [:], Map fetchParams = [:]) {
-        if (filterParams.tenant && !tenantService.get(filterParams.tenant as Serializable)) return []
-
         if (!fetchParams.sort) fetchParams.sort = [id: 'asc']
         if (!fetchParams.fetch) fetchParams.fetch = fetch
 
@@ -174,23 +178,25 @@ class AuthenticationProviderService implements WebRequestAware {
     }
 
     TAuthenticationProvider get(Serializable id) {
-        return buildQuery(id: id).get(fetch: fetchAll) as TAuthenticationProvider
+        return buildQuery(id: id).get(fetch: fetchAll)
     }
 
     TAuthenticationProvider getForCurrentTenant(Serializable id) {
-        TTenant tenant = getRequestTenant()
-        if (!tenant) return null
-        return buildQuery(id: id, tenant: tenant.id).get(fetch: fetchAll) as TAuthenticationProvider
+        TTenant tenant = getRequestOrCurrentTenant()
+        return buildQuery(id: id, tenantId: tenant?.tenantId).get(fetch: fetchAll)
     }
 
-    TAuthenticationProvider getByProviderType(AuthenticationProviderType providerType) {
-        TTenant tenant = getRequestTenant()
-        if (!tenant) return null
-        return getByTenantAndProviderType(tenant, providerType)
+    TAuthenticationProvider getByProviderTypeForCurrentTenant(AuthenticationProviderType providerType) {
+        TTenant tenant = getRequestOrCurrentTenant()
+        return getByTenantIdAndProviderType(tenant.tenantId, providerType)
     }
 
     @CompileDynamic
-    TAuthenticationProvider getByTenantAndProviderType(TTenant tenant, AuthenticationProviderType providerType) {
+    TAuthenticationProvider getByTenantIdAndProviderType(String tenantId, AuthenticationProviderType providerType) {
+        // Do not replace the code below wuth a call to buildQuery(), it does not work
+        // Eventually come back here after upgrading Grails to see if this is related to the following issue.
+        // See: https://github.com/apache/grails-core/issues/16801#event-35107216633
+        TTenant tenant = tenantService.getByTenantId(tenantId)
         if (!tenant) return null
         return TAuthenticationProvider.findByTenantAndProviderType(tenant, providerType)
     }
@@ -208,6 +214,7 @@ class AuthenticationProviderService implements WebRequestAware {
         return providers
     }
 
+    @Transactional
     TAuthenticationProvider create(Map args = [:]) {
         if (args.failOnError == null) args.failOnError = false
 
@@ -216,6 +223,7 @@ class AuthenticationProviderService implements WebRequestAware {
         return obj
     }
 
+    @Transactional
     @CompileDynamic
     @Requires({ args.id })
     TAuthenticationProvider update(Map args = [:]) {
@@ -242,6 +250,7 @@ class AuthenticationProviderService implements WebRequestAware {
         return obj
     }
 
+    @Transactional
     void delete(Serializable id) {
         TAuthenticationProvider obj = getForCurrentTenant(id)
         if (obj) {
@@ -249,7 +258,8 @@ class AuthenticationProviderService implements WebRequestAware {
         }
     }
 
-    private TTenant getRequestTenant() {
+    @CurrentTenant
+    private TTenant getRequestOrCurrentTenant() {
         if (hasRequest()) {
             String host = request.getHeader('host')
             TTenant tenant = tenantService.getByHost(host)

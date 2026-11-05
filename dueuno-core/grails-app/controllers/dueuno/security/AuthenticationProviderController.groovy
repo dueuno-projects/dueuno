@@ -25,6 +25,7 @@ import dueuno.elements.controls.NumberField
 import dueuno.elements.controls.PasswordField
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
+import dueuno.elements.controls.UrlField
 import dueuno.tenant.TenantService
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -191,7 +192,7 @@ class AuthenticationProviderController implements ElementsController {
                     icon: 'fa-gear',
                 )
                 addField(
-                    class: TextField,
+                    class: UrlField,
                     id: 'server',
                     cols: 12,
                 )
@@ -283,13 +284,13 @@ class AuthenticationProviderController implements ElementsController {
                     cols: 6,
                 )
                 addField(
-                    class: TextField,
+                    class: UrlField,
                     id: 'discoveryUri',
                     cols: 12,
                     help: 'authenticationProvider.discoveryUri.help',
                 )
                 addField(
-                    class: TextField,
+                    class: UrlField,
                     id: 'redirectUri',
                     cols: 12,
                     help: 'authenticationProvider.redirectUri.help',
@@ -305,27 +306,27 @@ class AuthenticationProviderController implements ElementsController {
                     cols: 12,
                 )
                 addField(
-                    class: TextField,
+                    class: UrlField,
                     id: 'issuerUri',
                     cols: 12,
                 )
                 addField(
-                    class: TextField,
+                    class: UrlField,
                     id: 'authorizationUri',
                     cols: 12,
                 )
                 addField(
-                    class: TextField,
+                    class: UrlField,
                     id: 'tokenUri',
                     cols: 12,
                 )
                 addField(
-                    class: TextField,
+                    class: UrlField,
                     id: 'jwksUri',
                     cols: 12,
                 )
                 addField(
-                    class: TextField,
+                    class: UrlField,
                     id: 'userInfoUri',
                     cols: 12,
                 )

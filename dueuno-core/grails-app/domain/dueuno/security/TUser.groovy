@@ -47,9 +47,11 @@ class TUser implements GormEntity, Serializable {
 
     // Integration
     String physicalId
+    LocalDateTime physicalIdLastAccess
     String ldapUid
     LocalDateTime ldapLastAccess
     String apiKey
+    LocalDateTime apiKeyLastAccess
 
     // User data
     String firstname

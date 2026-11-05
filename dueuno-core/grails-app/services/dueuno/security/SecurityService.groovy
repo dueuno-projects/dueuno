@@ -43,6 +43,8 @@ import jakarta.servlet.http.HttpSession
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices
 
+import java.time.LocalDateTime
+
 /**
  * Security API
  *
@@ -666,13 +668,20 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         return query.get(fetch: fetchAll) as TUser
     }
 
+    @Transactional
     TUser getUserByXAuthToken(HttpServletRequest request) {
         String apiKey = request.getHeader('X-Auth-Token')
         if (!apiKey) {
             return null
         }
 
-        return getUserByApiKey(apiKey)
+        TUser user = getUserByApiKey(apiKey)
+        if (user) {
+            user.apiKeyLastAccess = LocalDateTime.now()
+            user.save(flush: true, failOnError: true)
+        }
+
+        return user
     }
 
     TUser getSuperAdminUser() {
@@ -795,8 +804,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     @CompileDynamic
     private TUser createUserInTenant(Map args, TTenant tenant, List<String> groups, String defaultGroup) {
         log.info "'${tenant.tenantId.toUpperCase()}' TENANT - Creating user '${args.username}' in groups ${groups} (default '${defaultGroup}')"
-        TAuthenticationProvider localProvider = authenticationProviderService.getByTenantAndProviderType(tenant, AuthenticationProviderType.LOCAL)
-        TAuthenticationProvider rememberMeProvider = authenticationProviderService.getByTenantAndProviderType(tenant, AuthenticationProviderType.REMEMBERME)
+        TAuthenticationProvider localProvider = authenticationProviderService.getByTenantIdAndProviderType(tenant.tenantId, AuthenticationProviderType.LOCAL)
+        TAuthenticationProvider rememberMeProvider = authenticationProviderService.getByTenantIdAndProviderType(tenant.tenantId, AuthenticationProviderType.REMEMBERME)
 
         if (args.username == USERNAME_SUPERADMIN && tenant.tenantId != tenantService.defaultTenantId) {
             TUser user = new TUser(tenant: tenant, username: args.username as String)

@@ -111,7 +111,7 @@ class LdapAuthenticationProvider implements AuthenticationProvider {
     @Transactional(readOnly = true)
     @CompileDynamic
     private TAuthenticationProvider findLdapProvider() {
-        return authenticationProviderService.getByProviderType(AuthenticationProviderType.LDAP)
+        return authenticationProviderService.getByProviderTypeForCurrentTenant(AuthenticationProviderType.LDAP)
     }
 
     @Transactional

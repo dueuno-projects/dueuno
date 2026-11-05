@@ -60,7 +60,7 @@ class OidcAuthenticationController implements ElementsController {
             return
         }
         String providerTypeName = providerType.name()
-        TAuthenticationProvider provider = authenticationProviderService.getByProviderType(providerType)
+        TAuthenticationProvider provider = authenticationProviderService.getByProviderTypeForCurrentTenant(providerType)
         if (!configured(provider)) {
             rejectLogin('OIDC sign-in rejected: provider is disabled or its required configuration is incomplete.')
             return
@@ -122,7 +122,7 @@ class OidcAuthenticationController implements ElementsController {
             return
         }
         String providerTypeName = providerType.name()
-        TAuthenticationProvider provider = authenticationProviderService.getByProviderType(providerType)
+        TAuthenticationProvider provider = authenticationProviderService.getByProviderTypeForCurrentTenant(providerType)
         String code = params.code as String
         if (!configured(provider) || !code) {
             rejectLogin('OIDC callback rejected: provider configuration is incomplete or the authorization code is missing.')
