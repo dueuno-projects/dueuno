@@ -349,7 +349,7 @@ class AuthenticationProviderController implements ElementsController {
     }
 
     def onEdit() {
-        TAuthenticationProvider obj = authenticationProviderService.update(params, securityService.isSuperAdmin())
+        TAuthenticationProvider obj = authenticationProviderService.update(params + [superAdmin: securityService.isSuperAdmin()])
         if (!obj || obj.hasErrors()) {
             display errors: obj
         } else {

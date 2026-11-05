@@ -17,7 +17,9 @@ package dueuno.security
 import dueuno.elements.WebRequestAware
 import dueuno.tenant.TTenant
 import dueuno.tenant.TenantService
+import grails.gorm.DetachedCriteria
 import grails.gorm.transactions.Transactional
+import groovy.contracts.Requires
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.springframework.security.authentication.AuthenticationProvider
@@ -31,9 +33,8 @@ class AuthenticationProviderService implements WebRequestAware {
 
     TenantService tenantService
 
-    @CompileDynamic
     void tenantInstall(String tenantId) {
-        TTenant tenant = TTenant.findByTenantId(tenantId)
+        TTenant tenant = tenantService.getByTenantId(tenantId)
         if (!tenant) throw new IllegalArgumentException("Tenant '${tenantId}' does not exist")
         installDefaults(tenant)
     }
@@ -131,35 +132,57 @@ class AuthenticationProviderService implements WebRequestAware {
     }
 
     @CompileDynamic
-    List<TAuthenticationProvider> list() {
+    private DetachedCriteria<TAuthenticationProvider> buildQuery(Map filterParams = [:]) {
+        DetachedCriteria<TAuthenticationProvider> query = TAuthenticationProvider.where {}
+
+        if (filterParams.containsKey('id')) query = query.where { id == filterParams.id }
+        if (filterParams.containsKey('tenant')) query = query.where { tenant.id == filterParams.tenant }
+
+        return query
+    }
+
+    private Map getFetchAll() {
+        return [
+            tenant                  : 'join',
+            authenticationIdentities: 'join',
+        ]
+    }
+
+    private Map getFetch() {
+        return [tenant: 'join']
+    }
+
+    List<TAuthenticationProvider> list(Map filterParams = [:], Map fetchParams = [:]) {
         TTenant tenant = getRequestTenant()
         if (!tenant) return []
-        return TAuthenticationProvider.findAllByTenant(tenant, [sort: 'sequence', order: 'asc'])
+
+        if (!fetchParams.sort) fetchParams.sort = [sequence: 'asc']
+        if (!fetchParams.fetch) fetchParams.fetch = fetch
+
+        DetachedCriteria<TAuthenticationProvider> query = buildQuery(filterParams + [tenant: tenant.id])
+        return query.list(fetchParams)
     }
 
-    @CompileDynamic
-    List<TAuthenticationProvider> listAll(Map filters = [:]) {
-        if (filters.tenant) {
-            TTenant tenant = tenantService.get(filters.tenant as Serializable)
-            if (!tenant) return []
-            return TAuthenticationProvider.findAllByTenant(tenant, [sort: 'id', order: 'asc'])
-        }
-        return TAuthenticationProvider.list(sort: 'id', order: 'asc')
+    List<TAuthenticationProvider> listAll(Map filterParams = [:], Map fetchParams = [:]) {
+        if (filterParams.tenant && !tenantService.get(filterParams.tenant as Serializable)) return []
+
+        if (!fetchParams.sort) fetchParams.sort = [id: 'asc']
+        if (!fetchParams.fetch) fetchParams.fetch = fetch
+
+        DetachedCriteria<TAuthenticationProvider> query = buildQuery(filterParams)
+        return query.list(fetchParams)
     }
 
-    @CompileDynamic
     TAuthenticationProvider get(Serializable id) {
-        return TAuthenticationProvider.get(id) as TAuthenticationProvider
+        return buildQuery(id: id).get(fetch: fetchAll) as TAuthenticationProvider
     }
 
-    @CompileDynamic
     TAuthenticationProvider getForCurrentTenant(Serializable id) {
         TTenant tenant = getRequestTenant()
         if (!tenant) return null
-        return TAuthenticationProvider.findByIdAndTenant(id, tenant)
+        return buildQuery(id: id, tenant: tenant.id).get(fetch: fetchAll) as TAuthenticationProvider
     }
 
-    @CompileDynamic
     TAuthenticationProvider getByProviderType(AuthenticationProviderType providerType) {
         TTenant tenant = getRequestTenant()
         if (!tenant) return null
@@ -185,36 +208,49 @@ class AuthenticationProviderService implements WebRequestAware {
         return providers
     }
 
+    TAuthenticationProvider create(Map args = [:]) {
+        if (args.failOnError == null) args.failOnError = false
+
+        TAuthenticationProvider obj = new TAuthenticationProvider(args)
+        obj.save(flush: true, failOnError: args.failOnError)
+        return obj
+    }
+
     @CompileDynamic
-    TAuthenticationProvider update(Map args, boolean superAdmin) {
+    @Requires({ args.id })
+    TAuthenticationProvider update(Map args = [:]) {
+        if (args.failOnError == null) args.failOnError = false
+
+        Boolean superAdmin = args.superAdmin as Boolean
         TAuthenticationProvider provider = superAdmin
             ? get(args.id as Serializable)
             : getForCurrentTenant(args.id as Serializable)
         if (!provider) return null
 
-        List<String> fields = [
-            'enabled', 'sessionDuration', 'rememberMeDuration', 'canChangePassword', 'server', 'managerDn', 'managerPassword', 'searchBase', 'searchFilter', 'searchSubtree',
-            'retrieveGroupRoles', 'groupSearchBase', 'groupSearchFilter', 'groupRoleAttribute',
-            'retrieveDatabaseRoles', 'defaultRole', 'clientId', 'clientSecret', 'clientAuthenticationMethod', 'discoveryUri', 'issuerUri',
-            'authorizationUri', 'tokenUri', 'jwksUri', 'userInfoUri', 'redirectUri', 'scopes',
-        ]
-        for (String field in fields) {
-            if (!args.containsKey(field)) continue
-            if (field == 'canChangePassword' && provider.providerType != AuthenticationProviderType.LOCAL) continue
-            if (field == 'managerPassword' || field == 'clientSecret') {
-                if (args[field]) provider[field] = args[field]
-            } else {
-                provider[field] = args[field]
-            }
+        Map updateArgs = args.findAll { String name, Object value ->
+            provider.hasProperty(name) && name !in [
+                'id', 'tenant', 'providerType', 'sequence', 'authenticationIdentities',
+                'version', 'errors', 'class', 'metaClass', 'superAdmin', 'failOnError',
+            ]
         }
+        if (provider.providerType != AuthenticationProviderType.LOCAL) updateArgs.remove('canChangePassword')
+        if (!args.managerPassword) updateArgs.remove('managerPassword')
+        if (!args.clientSecret) updateArgs.remove('clientSecret')
+
+        provider.properties = updateArgs
 
         if (provider.providerType == AuthenticationProviderType.LOCAL) provider.enabled = true
-        provider.validate()
-        provider.save(flush: true)
+        provider.save(flush: true, failOnError: args.failOnError)
         return provider
     }
 
-    @CompileDynamic
+    void delete(Serializable id) {
+        TAuthenticationProvider obj = getForCurrentTenant(id)
+        if (obj) {
+            obj.delete(flush: true)
+        }
+    }
+
     private TTenant getRequestTenant() {
         if (hasRequest()) {
             String host = request.getHeader('host')
