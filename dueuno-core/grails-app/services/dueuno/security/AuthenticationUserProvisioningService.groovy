@@ -108,6 +108,8 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
                 provider.tenant.id == tenant.id && user.tenant.id == tenant.id
         }.get() as TUserAuthenticationIdentity
         if (identity) {
+            identity.lastAccess = LocalDateTime.now()
+            identity.save(flush: true, failOnError: true)
             return userDetailsService.loadUserByUsername(identity.user.username)
         }
 
@@ -131,6 +133,7 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
             provider: provider,
             issuer: issuer,
             subject: subject,
+            lastAccess: LocalDateTime.now(),
         ).save(flush: true, failOnError: true)
         return details
     }

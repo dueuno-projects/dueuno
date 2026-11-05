@@ -51,13 +51,9 @@ class AuthenticationProviderIdentityController implements ElementsController {
                 'provider.providerType',
                 'issuer',
                 'subject',
+                'lastAccess',
             ]
-            labels = [
-                user                   : 'authenticationIdentity.user',
-                'provider.providerType': 'authenticationIdentity.providerType',
-                issuer                 : 'authenticationIdentity.issuer',
-                subject                : 'authenticationIdentity.subject',
-            ]
+
             sortable = [
                 issuer : 'asc',
                 subject: 'asc',

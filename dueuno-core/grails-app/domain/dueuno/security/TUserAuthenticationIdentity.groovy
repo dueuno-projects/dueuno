@@ -19,6 +19,8 @@ package dueuno.security
 import grails.compiler.GrailsCompileStatic
 import org.grails.datastore.gorm.GormEntity
 
+import java.time.LocalDateTime
+
 /**
  * Links an external OpenID Connect subject to a local user.
  */
@@ -31,6 +33,7 @@ class TUserAuthenticationIdentity implements GormEntity, Serializable {
     TAuthenticationProvider provider
     String issuer
     String subject
+    LocalDateTime lastAccess
 
     TUser user
     static belongsTo = [
