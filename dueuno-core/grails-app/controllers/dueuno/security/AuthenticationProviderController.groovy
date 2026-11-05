@@ -278,8 +278,8 @@ class AuthenticationProviderController implements ElementsController {
                     class: Select,
                     id: 'clientAuthenticationMethod',
                     options: [
-                        client_secret_basic: 'clientAuthenticationMethod.basic',
-                        client_secret_post : 'clientAuthenticationMethod.post',
+                        (OidcAuthenticationMethod.CLIENT_SECRET_BASIC): 'clientAuthenticationMethod.basic',
+                        (OidcAuthenticationMethod.CLIENT_SECRET_POST): 'clientAuthenticationMethod.post',
                     ],
                     cols: 6,
                 )

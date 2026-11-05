@@ -72,7 +72,7 @@ class AuthenticationProviderService implements WebRequestAware {
                 sequence                  : 4,
                 enabled                   : false,
                 discoveryUri              : 'https://accounts.google.com/.well-known/openid-configuration',
-                clientAuthenticationMethod: 'client_secret_post',
+                clientAuthenticationMethod: OidcAuthenticationMethod.CLIENT_SECRET_POST,
                 scopes                    : 'openid email profile',
             ],
             [
@@ -80,21 +80,21 @@ class AuthenticationProviderService implements WebRequestAware {
                 sequence                  : 5,
                 enabled                   : false,
                 discoveryUri              : 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-                clientAuthenticationMethod: 'client_secret_post',
+                clientAuthenticationMethod: OidcAuthenticationMethod.CLIENT_SECRET_POST,
                 scopes                    : 'openid email profile',
             ],
             [
                 providerType              : AuthenticationProviderType.SAP_IAS,
                 sequence                  : 6,
                 enabled                   : false,
-                clientAuthenticationMethod: 'client_secret_basic',
+                clientAuthenticationMethod: OidcAuthenticationMethod.CLIENT_SECRET_BASIC,
                 scopes                    : 'openid email profile',
             ],
             [
                 providerType              : AuthenticationProviderType.OIDC,
                 sequence                  : 7,
                 enabled                   : false,
-                clientAuthenticationMethod: 'client_secret_basic',
+                clientAuthenticationMethod: OidcAuthenticationMethod.CLIENT_SECRET_BASIC,
                 scopes                    : 'openid email profile',
             ],
             [
@@ -118,7 +118,7 @@ class AuthenticationProviderService implements WebRequestAware {
                     provider.discoveryUri = values.discoveryUri as String
                 }
                 if (!provider.clientAuthenticationMethod && values.clientAuthenticationMethod) {
-                    provider.clientAuthenticationMethod = values.clientAuthenticationMethod as String
+                    provider.clientAuthenticationMethod = values.clientAuthenticationMethod as OidcAuthenticationMethod
                 }
                 if (provider.sessionDuration == null && values.sessionDuration != null) {
                     provider.sessionDuration = values.sessionDuration as Integer

@@ -31,10 +31,13 @@ class TAuthenticationProvider implements GormEntity, Serializable {
     AuthenticationProviderType providerType
     Integer sequence
     Boolean enabled
+
+    // LOCAL
     Integer sessionDuration
     Integer rememberMeDuration
     Boolean canChangePassword
 
+    // LDAP
     String server
     String managerDn
     String managerPassword
@@ -48,9 +51,10 @@ class TAuthenticationProvider implements GormEntity, Serializable {
     Boolean retrieveDatabaseRoles
     String defaultRole
 
+    // OIDC
     String clientId
     String clientSecret
-    String clientAuthenticationMethod
+    OidcAuthenticationMethod clientAuthenticationMethod
     String discoveryUri
     String issuerUri
     String authorizationUri
@@ -72,7 +76,6 @@ class TAuthenticationProvider implements GormEntity, Serializable {
         enabled nullable: false
         sessionDuration min: 1
         rememberMeDuration min: 1
-        clientAuthenticationMethod inList: ['client_secret_basic', 'client_secret_post']
     }
 
     static mapping = {

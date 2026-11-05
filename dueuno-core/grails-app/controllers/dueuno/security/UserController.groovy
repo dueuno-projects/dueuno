@@ -347,7 +347,7 @@ class UserController implements ElementsController {
                 TextField apiKey = addField(
                     class: TextField,
                     id: 'apiKey',
-                    icon: 'fa-globe',
+                    icon: 'fa-cloud',
                     cols: 8,
                 ).component
                 apiKey.addAction(action: 'onGenerateApiKey', submit: ['form'], text: 'user.generateApiKey', icon: 'fa-key')

@@ -206,12 +206,13 @@ class OidcAuthenticationController implements ElementsController {
             grant_type   : 'authorization_code',
             code_verifier: verifier,
         ]
-        String authenticationMethod = provider.clientAuthenticationMethod ?: 'client_secret_basic'
+        OidcAuthenticationMethod authenticationMethod = provider.clientAuthenticationMethod ?:
+            OidcAuthenticationMethod.CLIENT_SECRET_BASIC
         String authorizationHeader
-        if (authenticationMethod == 'client_secret_basic') {
+        if (authenticationMethod == OidcAuthenticationMethod.CLIENT_SECRET_BASIC) {
             String credentials = "${encode(provider.clientId)}:${encode(provider.clientSecret)}"
             authorizationHeader = "Basic ${Base64.encoder.encodeToString(credentials.getBytes(StandardCharsets.UTF_8))}"
-        } else if (authenticationMethod == 'client_secret_post') {
+        } else if (authenticationMethod == OidcAuthenticationMethod.CLIENT_SECRET_POST) {
             values.client_id = provider.clientId
             values.client_secret = provider.clientSecret
         } else {
