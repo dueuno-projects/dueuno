@@ -93,6 +93,8 @@ class CompanyService {
 
     void delete(Serializable id) {
         TCompany obj = get(id)
-        obj.delete(flush: true)
+        if (obj) {
+            obj.delete(flush: true)
+        }
     }
 }

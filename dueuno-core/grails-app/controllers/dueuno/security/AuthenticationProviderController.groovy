@@ -338,8 +338,8 @@ class AuthenticationProviderController implements ElementsController {
 
     def edit() {
         TAuthenticationProvider obj = securityService.isSuperAdmin()
-            ? authenticationProviderService.get(params.id as Serializable)
-            : authenticationProviderService.getForCurrentTenant(params.id as Serializable)
+            ? authenticationProviderService.get(params.id)
+            : authenticationProviderService.getForCurrentTenant(params.id)
         if (!obj) {
             display action: 'index'
             return
@@ -349,7 +349,7 @@ class AuthenticationProviderController implements ElementsController {
     }
 
     def onEdit() {
-        TAuthenticationProvider obj = authenticationProviderService.update(params + [superAdmin: securityService.isSuperAdmin()])
+        TAuthenticationProvider obj = authenticationProviderService.update(params)
         if (!obj || obj.hasErrors()) {
             display errors: obj
         } else {

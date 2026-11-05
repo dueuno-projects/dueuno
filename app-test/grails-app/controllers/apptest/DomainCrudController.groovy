@@ -24,6 +24,8 @@ import dueuno.elements.controls.TextField
 
 class DomainCrudController implements ElementsController {
 
+    CompanyService companyService
+
     def index() {
 
         def c = createContent(ContentTable)

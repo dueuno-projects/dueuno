@@ -221,27 +221,25 @@ class AuthenticationProviderService implements WebRequestAware {
     TAuthenticationProvider update(Map args = [:]) {
         if (args.failOnError == null) args.failOnError = false
 
-        Boolean superAdmin = args.superAdmin as Boolean
-        TAuthenticationProvider provider = superAdmin
-            ? get(args.id as Serializable)
-            : getForCurrentTenant(args.id as Serializable)
-        if (!provider) return null
+        TAuthenticationProvider obj = get(args.id)
+        if (!obj) {
+            return null
+        }
 
         Map updateArgs = args.findAll { String name, Object value ->
-            provider.hasProperty(name) && name !in [
-                'id', 'tenant', 'providerType', 'sequence', 'authenticationIdentities',
-                'version', 'errors', 'class', 'metaClass', 'superAdmin', 'failOnError',
+            obj.hasProperty(name) && name !in [
+                'tenant', 'providerType', 'sequence', 'authenticationIdentities',
             ]
         }
-        if (provider.providerType != AuthenticationProviderType.LOCAL) updateArgs.remove('canChangePassword')
+        if (obj.providerType != AuthenticationProviderType.LOCAL) updateArgs.remove('canChangePassword')
         if (!args.managerPassword) updateArgs.remove('managerPassword')
         if (!args.clientSecret) updateArgs.remove('clientSecret')
 
-        provider.properties = updateArgs
+        obj.properties = updateArgs
 
-        if (provider.providerType == AuthenticationProviderType.LOCAL) provider.enabled = true
-        provider.save(flush: true, failOnError: args.failOnError)
-        return provider
+        if (obj.providerType == AuthenticationProviderType.LOCAL) obj.enabled = true
+        obj.save(flush: true, failOnError: args.failOnError)
+        return obj
     }
 
     void delete(Serializable id) {
