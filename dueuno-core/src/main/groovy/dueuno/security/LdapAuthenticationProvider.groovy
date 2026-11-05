@@ -14,8 +14,6 @@
  */
 package dueuno.security
 
-import dueuno.application.AuthenticationProviderService
-
 import grails.gorm.transactions.Transactional
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic

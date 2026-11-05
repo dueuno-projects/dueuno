@@ -13,7 +13,6 @@
  */
 package dueuno.security
 
-import dueuno.application.AuthenticationProviderService
 import dueuno.elements.ElementsController
 import dueuno.utils.EnvUtils
 import grails.converters.JSON

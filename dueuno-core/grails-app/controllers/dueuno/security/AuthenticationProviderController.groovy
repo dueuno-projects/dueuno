@@ -14,7 +14,6 @@
  */
 package dueuno.security
 
-import dueuno.application.AuthenticationProviderService
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Label
 import dueuno.elements.components.Separator

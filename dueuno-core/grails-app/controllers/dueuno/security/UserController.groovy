@@ -16,7 +16,6 @@ package dueuno.security
 
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
-import dueuno.application.AuthenticationProviderService
 import dueuno.commons.utils.LogUtils
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Separator

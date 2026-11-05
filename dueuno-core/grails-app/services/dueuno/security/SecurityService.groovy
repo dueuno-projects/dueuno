@@ -16,7 +16,6 @@ package dueuno.security
 
 import dueuno.application.ApplicationPropertyService
 import dueuno.application.ApplicationService
-import dueuno.application.AuthenticationProviderService
 import dueuno.commons.utils.StringUtils
 import dueuno.elements.ElementsException
 import dueuno.elements.LinkGeneratorAware

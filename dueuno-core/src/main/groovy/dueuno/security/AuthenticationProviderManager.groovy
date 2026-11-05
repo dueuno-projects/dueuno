@@ -14,7 +14,6 @@
  */
 package dueuno.security
 
-import dueuno.application.AuthenticationProviderService
 import dueuno.elements.WebRequestAware
 import grails.core.GrailsApplication
 import groovy.transform.CompileStatic

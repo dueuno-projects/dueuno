@@ -12,11 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dueuno.application
+package dueuno.security
 
 import dueuno.elements.WebRequestAware
-import dueuno.security.AuthenticationProviderType
-import dueuno.security.TAuthenticationProvider
 import dueuno.tenant.TTenant
 import dueuno.tenant.TenantService
 import grails.gorm.transactions.Transactional

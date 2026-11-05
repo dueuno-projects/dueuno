@@ -18,7 +18,6 @@
  */
 package dueuno.security
 
-import dueuno.application.AuthenticationProviderService
 import dueuno.application.TConnectionSource
 import dueuno.elements.core.Elements
 import dueuno.tenant.TTenant

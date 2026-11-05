@@ -18,7 +18,6 @@
  */
 package dueuno.security
 
-import dueuno.application.AuthenticationProviderService
 import dueuno.tenant.TTenant
 import grails.gorm.DetachedCriteria
 import grails.gorm.transactions.Transactional

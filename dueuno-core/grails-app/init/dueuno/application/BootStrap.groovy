@@ -16,6 +16,7 @@ package dueuno.application
 
 import dueuno.elements.PageService
 import dueuno.elements.pages.ShellService
+import dueuno.security.AuthenticationProviderService
 import dueuno.security.CryptoService
 import dueuno.security.SecurityService
 import dueuno.tenant.TenantPropertyService
