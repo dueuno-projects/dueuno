@@ -76,6 +76,19 @@ class TAuthenticationProvider implements GormEntity, Serializable {
         enabled nullable: false
         sessionDuration min: 1
         rememberMeDuration min: 1
+
+        server url: true
+
+        discoveryUri url: true
+        issuerUri url: true
+        authorizationUri url: true
+        tokenUri url: true
+        jwksUri url: true
+        userInfoUri url: true
+
+        // Uncomment when the issue is fixed
+        // See: https://github.com/apache/grails-core/issues/16870
+        // redirectUri url: true
     }
 
     static mapping = {
