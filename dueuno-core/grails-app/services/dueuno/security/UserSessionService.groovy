@@ -34,9 +34,9 @@ import java.util.concurrent.ConcurrentMap
 @CompileStatic
 class UserSessionService {
 
-    private static final String SESSION_KEY_ATTRIBUTE = '_dueunoUserSessionKey'
-    private static final String REMEMBER_ME_EXPIRATION_ATTRIBUTE = '_dueunoRememberMeExpirationTime'
-    private static final String REMEMBER_ME_TOKEN_ATTRIBUTE = '_dueunoRememberMeToken'
+    private static final String SESSION_KEY_ATTRIBUTE = '_21UserSessionKey'
+    private static final String REMEMBER_ME_EXPIRATION_ATTRIBUTE = '_21ememberMeExpirationTime'
+    private static final String REMEMBER_ME_TOKEN_ATTRIBUTE = '_21RememberMeToken'
 
     private volatile Context tomcatContext
     private final ConcurrentMap<String, Long> revokedRememberMeTokens = new ConcurrentHashMap<>()
@@ -174,19 +174,48 @@ class UserSessionService {
                 String userTenantId = user?.tenant?.tenantId
                 if (!user || (!includeAllTenants && userTenantId != tenantId)) return
 
-                String rememberMeToken = httpSession.getAttribute(REMEMBER_ME_TOKEN_ATTRIBUTE) as String
-                Long rememberMeExpirationTime = httpSession.getAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE) as Long
-                if (rememberMeToken && rememberMeExpirationTime && rememberMeExpirationTime > System.currentTimeMillis()) {
-                    removeExpiredRevocations()
-                    revokedRememberMeTokens.put(rememberMeToken, rememberMeExpirationTime)
-                }
-
-                httpSession.invalidate()
+                invalidateSession(httpSession)
                 return
             } catch (IllegalStateException ignored) {
                 // The session may already have been invalidated or expired.
             }
         }
+    }
+
+    void disconnectOtherSessions(HttpSession currentHttpSession, TUser user) {
+        if (!currentHttpSession || !user) return
+
+        Manager currentManager = findManager()
+        if (!currentManager) return
+
+        for (Session tomcatSession in currentManager.findSessions()) {
+            try {
+                HttpSession httpSession = tomcatSession.session
+                if (httpSession.id == currentHttpSession.id) continue
+
+                TUser sessionUser = httpSession.getAttribute('_21CurrentUser') as TUser
+                if (!isSameUser(sessionUser, user)) continue
+
+                invalidateSession(httpSession)
+            } catch (IllegalStateException ignored) {
+                // The session may already have been invalidated or expired.
+            }
+        }
+    }
+
+    private boolean isSameUser(TUser left, TUser right) {
+        return left && right && left.id == right.id && left.tenant?.tenantId == right.tenant?.tenantId
+    }
+
+    private void invalidateSession(HttpSession httpSession) {
+        String rememberMeToken = httpSession.getAttribute(REMEMBER_ME_TOKEN_ATTRIBUTE) as String
+        Long rememberMeExpirationTime = httpSession.getAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE) as Long
+        if (rememberMeToken && rememberMeExpirationTime && rememberMeExpirationTime > System.currentTimeMillis()) {
+            removeExpiredRevocations()
+            revokedRememberMeTokens.put(rememberMeToken, rememberMeExpirationTime)
+        }
+
+        httpSession.invalidate()
     }
 
     private static String getOrCreateSessionKey(HttpSession httpSession) {

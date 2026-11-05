@@ -122,9 +122,10 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             lastname: 'Admin',
             username: USERNAME_SUPERADMIN,
             password: USERNAME_SUPERADMIN,
-            canChangePassword: true,
             sessionDuration: EnvUtils.isDevelopment() ? 60 : 5, // always 5 minutes in production for the SuperAdmin
             rememberMeDuration: EnvUtils.isDevelopment() ? 12 * 60 : 5, // always 5 minutes in production for the SuperAdmin
+            canChangePassword: true,
+            closeOtherSessions: true,
         )
     }
 
@@ -144,6 +145,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             lastname: 'Admin',
             sessionDuration: EnvUtils.isDevelopment() ? 60 : 15, // defaults to 15 minutes in production for the Admin
             rememberMeDuration: EnvUtils.isDevelopment() ? 12 * 60 : 15, // defaults to 15 minutes in production for the Admin
+            closeOtherSessions: true,
             admin: true,
         )
 
@@ -355,6 +357,18 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     }
 
     /**
+     * Returns true if the user with the specified username has superadmin authorities
+     * @return true if the user with the specified username has superadmin authorities
+     */
+    Boolean isSuperAdmin(TUser user) {
+        if (!user) {
+            return false
+        }
+
+        return user.authorities.find { it.name == GROUP_SUPERADMINS } != null
+    }
+
+    /**
      * Returns true if the currently logged in user has development authorities
      * @return true if the currently logged in user has development authorities
      */
@@ -486,9 +500,14 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      */
     @CurrentTenant
     void executeAfterLogin() {
+        TUser user = currentUser
+        if (user.closeOtherSessions) {
+            userSessionService.disconnectOtherSessions(request.getSession(false), user)
+        }
+
         initializeSessionDuration()
         initializeShell()
-        userSessionService.register(request.getSession(false), currentUser)
+        userSessionService.register(request.getSession(false), user)
 
         // Executes custom login code
         String tenantId = tenantService.currentTenantId
@@ -851,6 +870,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             canChangePassword: args.canChangePassword == null ? localProvider?.canChangePassword : args.canChangePassword as Boolean,
             sessionDuration: args.sessionDuration as Integer ?: localProvider?.sessionDuration,
             rememberMeDuration: args.rememberMeDuration as Integer ?: rememberMeProvider?.rememberMeDuration,
+            closeOtherSessions: args.closeOtherSessions == null ? false : args.closeOtherSessions as Boolean,
             fontSize: args.fontSize,
             mobileFontSize: args.mobileFontSize,
             guiStyle: args.guiStyle ?: tenantPropertyService.getString('GUI_STYLE') ?: GuiStyle.ROUNDED,

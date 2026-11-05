@@ -184,6 +184,8 @@ class UserController implements ElementsController {
 
         def isCreatingNewUser = !obj
         def isSuperAdmin = securityService.isSuperAdmin()
+        def isSuperAdminUser = securityService.isSuperAdmin(obj)
+        def isAdminUser = securityService.isAdmin(obj)
         def isEditingUserButNotSuperAdmin = obj && obj.username != securityService.USERNAME_SUPERADMIN
 
         c.form.with {
@@ -270,6 +272,27 @@ class UserController implements ElementsController {
                 defaultValue: getRememberMeDurationDefault(params.tenantId as String),
                 cols: 6,
             )
+            addField(
+                class: Checkbox,
+                id: 'canChangePassword',
+                defaultValue: getCanChangePasswordDefault(params.'tenant.tenantId' as String ?: params.tenantId as String),
+                readonly: isAdminUser || isSuperAdminUser,
+                cols: 6,
+            )
+            addField(
+                class: Checkbox,
+                id: 'closeOtherSessions',
+                defaultValue: false,
+                readonly: isAdminUser || isSuperAdminUser,
+                cols: 6,
+            )
+            addField(
+                class: Checkbox,
+                id: 'enabled',
+                defaultValue: true,
+                readonly: isAdminUser || isSuperAdminUser,
+            )
+
         }
 
         if (isCreatingNewUser || isEditingUserButNotSuperAdmin) {
@@ -296,19 +319,6 @@ class UserController implements ElementsController {
                 addField(
                     class: Checkbox,
                     id: 'admin',
-                    cols: 6,
-                )
-                addField(
-                    class: Checkbox,
-                    id: 'canChangePassword',
-                    defaultValue: getCanChangePasswordDefault(params.'tenant.tenantId' as String ?: params.tenantId as String),
-                    cols: 6,
-                )
-                addField(
-                    class: Checkbox,
-                    id: 'enabled',
-                    defaultValue: true,
-                    nullable: true,
                     cols: 6,
                 )
 

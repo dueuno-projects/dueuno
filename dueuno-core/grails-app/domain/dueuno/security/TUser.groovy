@@ -65,6 +65,7 @@ class TUser implements GormEntity, Serializable {
     // Session data
     Integer sessionDuration
     Integer rememberMeDuration
+    Boolean closeOtherSessions
     Boolean canChangePassword
 
     // Localization preferences
