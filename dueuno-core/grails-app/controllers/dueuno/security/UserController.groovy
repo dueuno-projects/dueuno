@@ -185,7 +185,7 @@ class UserController implements ElementsController {
         def isCreatingNewUser = !obj
         def isSuperAdmin = securityService.isSuperAdmin()
         def isSuperAdminUser = obj && securityService.isSuperAdmin(obj)
-        def isAdminUser = obj && securityService.isAdmin(obj)
+        def isAdminUser = obj && securityService.isAdmin(obj) && !obj.deletable
         def isEditingUserButNotSuperAdmin = obj && obj.username != securityService.USERNAME_SUPERADMIN
 
         c.form.with {
@@ -319,6 +319,7 @@ class UserController implements ElementsController {
                 addField(
                     class: Checkbox,
                     id: 'admin',
+                    readonly: isAdminUser || isSuperAdminUser,
                     cols: 6,
                 )
 
@@ -613,9 +614,6 @@ class UserController implements ElementsController {
 
         if (!isEditingSuperAdminUser) {
             c.form.controls.admin.value = (user.authorities.find { it.name == SecurityService.GROUP_ADMINS } != null)
-            c.form.controls.admin.readonly = !user.deletable
-            c.form.controls.canChangePassword.readonly = !user.deletable
-            c.form.controls.enabled.readonly = !user.deletable
             c.form.controls.groups.value = user.authorities.collect { it.id }
         }
 
