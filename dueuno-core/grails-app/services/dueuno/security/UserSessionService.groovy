@@ -391,8 +391,9 @@ class UserSessionService implements WebRequestAware {
     private static boolean matchesUser(String username, String firstname, String lastname, String filter) {
         if (!filter) return true
 
+        String normalizedFilter = filter.toLowerCase(Locale.ROOT)
         return [username, firstname, lastname].any { String value ->
-            value && value.toLowerCase(Locale.ROOT).contains(filter)
+            value && value.toLowerCase(Locale.ROOT).contains(normalizedFilter)
         }
     }
 
