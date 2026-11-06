@@ -38,9 +38,12 @@ class UserSessionController implements ElementsController {
         List tableColumns = []
         if (isSuperAdmin) tableColumns += ['tenant']
         tableColumns += [
-            'username',
-            'firstname',
             'lastname',
+            'firstname',
+            'username',
+            'userAgent',
+            'loginIpAddress',
+            'loginTime',
             'lastAccessedTime',
             'expirationTime',
             'rememberMeExpirationTime',
@@ -68,7 +71,13 @@ class UserSessionController implements ElementsController {
             }
             columns = tableColumns
             keys = ['id']
+            labels = [
+                userAgent: '',
+            ]
             prettyPrinterProperties = [
+                loginTime: [
+                    renderSeconds: true,
+                ],
                 lastAccessedTime: [
                     renderSeconds: true,
                 ],
@@ -87,10 +96,12 @@ class UserSessionController implements ElementsController {
             } else if (isSuperAdmin) {
                 tenantId = null
             }
-            body = userSessionService.list(tenantId, isSuperAdmin)
             body.eachRow { TableRow row, Map values ->
-                row.removeSelection()
+                row.cells.userAgent.icon = getBrowserIcon(values.userAgent)
+                row.cells.userAgent.tooltip = values.userAgent
+                values.userAgent = null
             }
+            body = userSessionService.list(tenantId, isSuperAdmin)
         }
 
         display content: c, modal: true, large: true, closeButton: true
@@ -101,5 +112,29 @@ class UserSessionController implements ElementsController {
         String tenantId = isSuperAdmin ? null : tenantService.currentTenantId
         userSessionService.disconnect(params.id as String, tenantId, isSuperAdmin)
         display action: 'index'
+    }
+
+    private String getBrowserIcon(String userAgent) {
+        if (!userAgent) return 'fa-solid fa-globe'
+
+        if (userAgent.contains('Edg/') || userAgent.contains('EdgA/') || userAgent.contains('EdgiOS/') || userAgent.contains('Edge/')) {
+            return 'fa-brands fa-edge'
+        }
+        if (userAgent.contains('OPR/') || userAgent.contains('OPiOS/') || userAgent.contains('Opera/')) {
+            return 'fa-brands fa-opera'
+        }
+        if (userAgent.contains('FxiOS/') || userAgent.contains('Firefox/')) {
+            return 'fa-brands fa-firefox-browser'
+        }
+        if (userAgent.contains('MSIE ') || userAgent.contains('Trident/')) {
+            return 'fa-brands fa-internet-explorer'
+        }
+        if (userAgent.contains('SamsungBrowser/')) return 'fa-solid fa-globe'
+        if (userAgent.contains('CriOS/') || userAgent.contains('Chrome/')) {
+            return 'fa-brands fa-chrome'
+        }
+        if (userAgent.contains('Safari/')) return 'fa-brands fa-safari'
+
+        return 'fa-solid fa-globe'
     }
 }

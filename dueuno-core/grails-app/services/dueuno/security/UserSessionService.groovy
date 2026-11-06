@@ -15,6 +15,7 @@
 package dueuno.security
 
 import groovy.transform.CompileStatic
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpSession
 import org.apache.catalina.Context
 import org.apache.catalina.Manager
@@ -37,6 +38,9 @@ class UserSessionService {
     private static final String SESSION_KEY_ATTRIBUTE = '_21UserSessionKey'
     private static final String REMEMBER_ME_EXPIRATION_ATTRIBUTE = '_21ememberMeExpirationTime'
     private static final String REMEMBER_ME_TOKEN_ATTRIBUTE = '_21RememberMeToken'
+    private static final String LOGIN_TIME_ATTRIBUTE = '_21LoginTime'
+    private static final String LOGIN_IP_ADDRESS_ATTRIBUTE = '_21LoginIpAddress'
+    private static final String USER_AGENT_ATTRIBUTE = '_21UserAgent'
 
     private volatile Context tomcatContext
     private final ConcurrentMap<String, Long> revokedRememberMeTokens = new ConcurrentHashMap<>()
@@ -45,9 +49,19 @@ class UserSessionService {
         tomcatContext = context
     }
 
-    void register(HttpSession httpSession, TUser user) {
+    void register(HttpSession httpSession, TUser user, HttpServletRequest request) {
         if (!httpSession || !user) return
         getOrCreateSessionKey(httpSession)
+
+        if (httpSession.getAttribute(LOGIN_TIME_ATTRIBUTE) == null) {
+            httpSession.setAttribute(LOGIN_TIME_ATTRIBUTE, System.currentTimeMillis())
+
+            String ipAddress = normalizeIpAddress(request?.remoteAddr)
+            if (ipAddress) httpSession.setAttribute(LOGIN_IP_ADDRESS_ATTRIBUTE, ipAddress)
+
+            String userAgent = request?.getHeader('User-Agent')
+            if (userAgent) httpSession.setAttribute(USER_AGENT_ATTRIBUTE, userAgent)
+        }
     }
 
     void updateRememberMeExpiration(HttpSession httpSession, String cookieValue) {
@@ -126,6 +140,7 @@ class UserSessionService {
                 if (!includeAllTenants && userTenantId != tenantId) continue
 
                 Long rememberMeExpirationTime = httpSession.getAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE) as Long
+                Long loginTime = httpSession.getAttribute(LOGIN_TIME_ATTRIBUTE) as Long
 
                 result.add([
                     id                       : getOrCreateSessionKey(httpSession),
@@ -133,6 +148,12 @@ class UserSessionService {
                     username                 : user.username,
                     firstname                : user.firstname,
                     lastname                 : user.lastname,
+                    loginTime                : loginTime ? LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(loginTime),
+                        ZoneId.systemDefault(),
+                    ) : null,
+                    loginIpAddress           : httpSession.getAttribute(LOGIN_IP_ADDRESS_ATTRIBUTE) as String,
+                    userAgent                : httpSession.getAttribute(USER_AGENT_ATTRIBUTE) as String,
                     lastAccessedTime         : LocalDateTime.ofInstant(
                         Instant.ofEpochMilli(lastAccessedTime),
                         ZoneId.systemDefault(),
@@ -205,6 +226,16 @@ class UserSessionService {
 
     private boolean isSameUser(TUser left, TUser right) {
         return left && right && left.id == right.id && left.tenant?.tenantId == right.tenant?.tenantId
+    }
+
+    private String normalizeIpAddress(String ipAddress) {
+        if (!ipAddress) return ipAddress
+
+        try {
+            return InetAddress.getByName(ipAddress).hostAddress
+        } catch (UnknownHostException ignored) {
+            return ipAddress
+        }
     }
 
     private void invalidateSession(HttpSession httpSession) {

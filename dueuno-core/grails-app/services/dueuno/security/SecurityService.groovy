@@ -281,10 +281,11 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     }
 
     @CurrentTenant
-    void initializeSessionDuration() {
+    void initializeUserSession() {
         TUser user = getCurrentUser()
         session.maxInactiveInterval = user.sessionDuration * 60 // minutes to seconds
         configureRememberMe(user.rememberMeDuration)
+        userSessionService.register(request.getSession(false), user, request)
     }
 
     @CurrentTenant
@@ -505,9 +506,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             userSessionService.disconnectOtherSessions(request.getSession(false), user)
         }
 
-        initializeSessionDuration()
+        initializeUserSession()
         initializeShell()
-        userSessionService.register(request.getSession(false), user)
 
         // Executes custom login code
         String tenantId = tenantService.currentTenantId
