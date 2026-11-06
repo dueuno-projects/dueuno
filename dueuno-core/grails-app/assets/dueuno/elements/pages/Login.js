@@ -58,6 +58,7 @@ class Login extends Page {
     }
 
     static onLogin($element, data) {
+        data._21IsMobileDevice = Elements.isMobileDevice;
 
         let call = {
             type: 'POST',
@@ -76,7 +77,7 @@ class Login extends Page {
         .done(function (data, textStatus, request) {
             if (data.success) {
                 let params = $.getQueryParameters();
-                let url = _21_.app.url.substr(0, _21_.app.url.length - 1);
+                let url = _21_.app.url.substring(0, _21_.app.url.length - 1);
                 if (params.landingPage) url = url + params.landingPage;
                 else if (data.redirect) url = url + data.redirect;
                 else url = url + '/';

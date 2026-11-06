@@ -222,7 +222,6 @@ class Transition {
 
             // Whether to display the whole page or the transition
             if (!componentEvent['direct']) {
-                params['_21IsMobileDevice'] = Elements.isMobileDevice;
                 params['_21Transition'] = true;
                 params['_21Event'] = componentEvent['event'];
             }
@@ -232,7 +231,11 @@ class Transition {
         _21Params.controls = controls;
         _21Params.params = params;
 
-        return {_21Params: JSON.stringify(_21Params)};
+        return {
+            _21Params: JSON.stringify(_21Params),
+            // Spring Security filters need this before the transition payload is unpacked.
+            _21IsMobileDevice: Elements.isMobileDevice,
+        };
     }
 
     static call(url, values, componentEvent, async, silentFail) {

@@ -47,7 +47,7 @@ class AuthenticationProviderService implements WebRequestAware {
                 providerType      : AuthenticationProviderType.LOCAL,
                 sequence          : 1,
                 enabled           : true,
-                sessionDuration   : 5,
+                sessionDuration   : 60, // 1 hour
                 canChangePassword : true,
             ],
             [

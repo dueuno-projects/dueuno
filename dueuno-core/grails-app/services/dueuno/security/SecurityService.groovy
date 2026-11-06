@@ -514,7 +514,6 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     /**
      * INTERNAL USE ONLY. Executes custom post-logout code.
      */
-    @Transactional
     @CurrentTenant
     void executeAfterLogout() {
         auditService.log(AuditOperation.LOGOUT, "-")

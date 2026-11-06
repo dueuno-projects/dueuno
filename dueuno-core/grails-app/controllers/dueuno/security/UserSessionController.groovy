@@ -41,7 +41,8 @@ class UserSessionController implements ElementsController {
             'lastname',
             'firstname',
             'username',
-            'userAgent',
+            'userAgentIcon',
+            'deviceIcon',
             'loginIpAddress',
             'loginTime',
             'lastAccessedTime',
@@ -72,7 +73,8 @@ class UserSessionController implements ElementsController {
             columns = tableColumns
             keys = ['id']
             labels = [
-                userAgent: '',
+                userAgentIcon: '',
+                deviceIcon: '',
             ]
             prettyPrinterProperties = [
                 loginTime: [
@@ -97,9 +99,16 @@ class UserSessionController implements ElementsController {
                 tenantId = null
             }
             body.eachRow { TableRow row, Map values ->
-                row.cells.userAgent.icon = getBrowserIcon(values.userAgent)
-                row.cells.userAgent.tooltip = values.userAgent
-                values.userAgent = null
+                row.cells.userAgentIcon.icon = getBrowserIcon(values.userAgent)
+                row.cells.userAgentIcon.tooltip = values.userAgent
+
+                if (values.isMobile) {
+                    row.cells.deviceIcon.icon = 'fa-mobile-screen-button'
+                    row.cells.deviceIcon.tooltip = 'userSession.device.mobile'
+                } else {
+                    row.cells.deviceIcon.icon = 'fa-desktop'
+                    row.cells.deviceIcon.tooltip = 'userSession.device.desktop'
+                }
             }
             body = userSessionService.list(tenantId, isSuperAdmin)
         }

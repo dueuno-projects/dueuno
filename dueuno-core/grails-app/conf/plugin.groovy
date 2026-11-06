@@ -20,6 +20,7 @@ grails.plugin.springsecurity.apf.filterProcessesUrl = '/authentication/authentic
 grails.plugin.springsecurity.successHandler.alwaysUseDefault = true
 grails.plugin.springsecurity.successHandler.defaultTargetUrl = '/authentication/afterLogin'
 grails.plugin.springsecurity.successHandler.ajaxSuccessUrl = '/authentication/afterLogin?ajax=true'
+grails.plugin.springsecurity.authenticationSuccessHandlerBeanClass = 'dueuno.security.ElementsAuthenticationSuccessHandler'
 grails.plugin.springsecurity.failureHandler.defaultFailureUrl = '/authentication/login?login_error=1'
 grails.plugin.springsecurity.logout.postOnly = false
 grails.plugin.springsecurity.logout.invalidateHttpSession = false

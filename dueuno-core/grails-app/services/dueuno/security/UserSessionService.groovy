@@ -48,6 +48,7 @@ class UserSessionService implements WebRequestAware {
     private static final String TENANT_ID_ATTRIBUTE = 'USER_SESSION_TENANT_ID'
     private static final String CURRENT_USER_ATTRIBUTE = 'CURRENT_USER'
     private static final String USER_AGENT_ATTRIBUTE = 'USER_AGENT'
+    private static final String MOBILE_DEVICE_ATTRIBUTE = 'MOBILE_DEVICE'
     private static final String REMEMBER_ME_EXPIRATION_ATTRIBUTE = 'REMEMBER_ME_EXPIRATION_TIME'
     private static final String REMEMBER_ME_TOKEN_ATTRIBUTE = 'REMEMBER_ME_TOKEN'
 
@@ -283,6 +284,7 @@ class UserSessionService implements WebRequestAware {
                     ) : null,
                     loginIpAddress           : httpSession.getAttribute(LOGIN_IP_ADDRESS_ATTRIBUTE) as String,
                     userAgent                : httpSession.getAttribute(USER_AGENT_ATTRIBUTE) as String,
+                    isMobile                 : httpSession.getAttribute(MOBILE_DEVICE_ATTRIBUTE) as Boolean,
                     lastAccessedTime         : LocalDateTime.ofInstant(
                         Instant.ofEpochMilli(lastAccessedTime),
                         ZoneId.systemDefault(),
