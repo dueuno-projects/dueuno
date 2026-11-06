@@ -61,6 +61,7 @@ class UserIdentityController implements ElementsController {
             actions.removeDefaultAction()
             body.eachRow { TableRow row, Map values ->
                 values.userId = user.id
+                row.cells.'provider.providerType'.tag = true
             }
             body = identities
         }

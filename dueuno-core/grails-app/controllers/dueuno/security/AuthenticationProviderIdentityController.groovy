@@ -65,6 +65,7 @@ class AuthenticationProviderIdentityController implements ElementsController {
             actions.removeDefaultAction()
             body.eachRow { TableRow row, Map values ->
                 values.providerId = provider.id
+                row.cells.'provider.providerType'.tag = true
             }
         }
 
