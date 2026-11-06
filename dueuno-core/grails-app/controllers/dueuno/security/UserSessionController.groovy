@@ -18,6 +18,7 @@ import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.Select
+import dueuno.elements.controls.TextField
 import dueuno.tenant.TenantService
 import grails.plugin.springsecurity.annotation.Secured
 import groovy.util.logging.Slf4j
@@ -42,6 +43,7 @@ class UserSessionController implements ElementsController {
             'firstname',
             'username',
             'userAgentIcon',
+            'osIcon',
             'deviceIcon',
             'loginIpAddress',
             'loginTime',
@@ -69,11 +71,17 @@ class UserSessionController implements ElementsController {
                         cols: 3,
                     )
                 }
+                addField(
+                    class: TextField,
+                    id: 'search',
+                    cols: 3,
+                )
             }
             columns = tableColumns
             keys = ['id']
             labels = [
                 userAgentIcon: '',
+                osIcon: '',
                 deviceIcon: '',
             ]
             prettyPrinterProperties = [
@@ -99,8 +107,15 @@ class UserSessionController implements ElementsController {
                 tenantId = null
             }
             body.eachRow { TableRow row, Map values ->
-                row.cells.userAgentIcon.icon = getBrowserIcon(values.userAgent)
-                row.cells.userAgentIcon.tooltip = values.userAgent
+                row.cells.tenant.tag = true
+
+                Map browserInfo = getBrowserInfo(values.userAgent as String)
+                row.cells.userAgentIcon.icon = browserInfo.icon
+                row.cells.userAgentIcon.tooltip = browserInfo.tooltip
+
+                Map operatingSystemInfo = getOperatingSystemInfo(values.userAgent as String)
+                row.cells.osIcon.icon = operatingSystemInfo.icon
+                row.cells.osIcon.tooltip = operatingSystemInfo.tooltip
 
                 if (values.isMobile) {
                     row.cells.deviceIcon.icon = 'fa-mobile-screen-button'
@@ -110,7 +125,7 @@ class UserSessionController implements ElementsController {
                     row.cells.deviceIcon.tooltip = 'userSession.device.desktop'
                 }
             }
-            body = userSessionService.list(tenantId, isSuperAdmin)
+            body = userSessionService.list(tenantId, isSuperAdmin, filterParams.search as String)
         }
 
         display content: c, modal: true, large: true, closeButton: true
@@ -123,27 +138,94 @@ class UserSessionController implements ElementsController {
         display action: 'index'
     }
 
-    private String getBrowserIcon(String userAgent) {
-        if (!userAgent) return 'fa-solid fa-globe'
+    private Map getBrowserInfo(String userAgent) {
+        String browserName = 'Unknown browser'
+        String browserVersion
+        String icon = 'fa-solid fa-globe'
 
-        if (userAgent.contains('Edg/') || userAgent.contains('EdgA/') || userAgent.contains('EdgiOS/') || userAgent.contains('Edge/')) {
-            return 'fa-brands fa-edge'
+        if (userAgent) {
+            def matcher = userAgent =~ /(?:EdgA?|EdgiOS|Edge)\/([\d.]+)/
+            if (matcher.find()) {
+                browserName = 'Microsoft Edge'
+                browserVersion = matcher.group(1)
+                icon = 'fa-brands fa-edge'
+            } else if ((matcher = userAgent =~ /(?:OPR|OPiOS|Opera)\/([\d.]+)/).find()) {
+                browserName = 'Opera'
+                browserVersion = matcher.group(1)
+                icon = 'fa-brands fa-opera'
+            } else if ((matcher = userAgent =~ /(?:FxiOS|Firefox)\/([\d.]+)/).find()) {
+                browserName = 'Firefox'
+                browserVersion = matcher.group(1)
+                icon = 'fa-brands fa-firefox-browser'
+            } else if ((matcher = userAgent =~ /MSIE ([\d.]+)/).find()) {
+                browserName = 'Internet Explorer'
+                browserVersion = matcher.group(1)
+                icon = 'fa-brands fa-internet-explorer'
+            } else if (userAgent.contains('Trident/')) {
+                matcher = userAgent =~ /rv:([\d.]+)/
+                if (matcher.find()) {
+                    browserName = 'Internet Explorer'
+                    browserVersion = matcher.group(1)
+                    icon = 'fa-brands fa-internet-explorer'
+                }
+            } else if ((matcher = userAgent =~ /SamsungBrowser\/([\d.]+)/).find()) {
+                browserName = 'Samsung Internet'
+                browserVersion = matcher.group(1)
+            } else if ((matcher = userAgent =~ /(?:CriOS|Chrome)\/([\d.]+)/).find()) {
+                browserName = 'Chrome'
+                browserVersion = matcher.group(1)
+                icon = 'fa-brands fa-chrome'
+            } else if (userAgent.contains('Safari/')) {
+                matcher = userAgent =~ /Version\/([\d.]+)/
+                if (matcher.find()) {
+                    browserName = 'Safari'
+                    browserVersion = matcher.group(1)
+                    icon = 'fa-brands fa-safari'
+                }
+            }
         }
-        if (userAgent.contains('OPR/') || userAgent.contains('OPiOS/') || userAgent.contains('Opera/')) {
-            return 'fa-brands fa-opera'
-        }
-        if (userAgent.contains('FxiOS/') || userAgent.contains('Firefox/')) {
-            return 'fa-brands fa-firefox-browser'
-        }
-        if (userAgent.contains('MSIE ') || userAgent.contains('Trident/')) {
-            return 'fa-brands fa-internet-explorer'
-        }
-        if (userAgent.contains('SamsungBrowser/')) return 'fa-solid fa-globe'
-        if (userAgent.contains('CriOS/') || userAgent.contains('Chrome/')) {
-            return 'fa-brands fa-chrome'
-        }
-        if (userAgent.contains('Safari/')) return 'fa-brands fa-safari'
 
-        return 'fa-solid fa-globe'
+        String tooltip = browserVersion ? "${browserName} ${browserVersion}" : browserName
+        return [icon: icon, tooltip: tooltip]
+    }
+
+    private Map getOperatingSystemInfo(String userAgent) {
+        String operatingSystemName = 'Unknown OS'
+        String operatingSystemVersion
+        String icon = 'fa-solid fa-gear'
+
+        if (userAgent) {
+            def matcher = userAgent =~ /(?:iPhone OS|CPU OS) ([\d_]+)/
+            if (matcher.find()) {
+                operatingSystemName = 'iOS'
+                operatingSystemVersion = matcher.group(1).replace('_', '.')
+                icon = 'fa-brands fa-apple fa-lg'
+            } else if ((matcher = userAgent =~ /Android[\s\/]([\d.]+)/).find()) {
+                operatingSystemName = 'Android'
+                operatingSystemVersion = matcher.group(1)
+                icon = 'fa-brands fa-android'
+            } else if ((matcher = userAgent =~ /Windows NT ([\d.]+)/).find()) {
+                String windowsVersion = matcher.group(1)
+                operatingSystemName = [
+                    '10.0': 'Windows 10/11',
+                    '6.3' : 'Windows 8.1',
+                    '6.2' : 'Windows 8',
+                    '6.1' : 'Windows 7',
+                    '6.0' : 'Windows Vista',
+                    '5.1' : 'Windows XP',
+                ].get(windowsVersion, "Windows ${windowsVersion}")
+                icon = 'fa-brands fa-windows'
+            } else if ((matcher = userAgent =~ /Mac OS X ([\d_]+)/).find()) {
+                operatingSystemName = 'macOS'
+                operatingSystemVersion = matcher.group(1).replace('_', '.')
+                icon = 'fa-brands fa-apple fa-lg'
+            } else if (userAgent.contains('Linux')) {
+                operatingSystemName = 'Linux'
+                icon = 'fa-brands fa-linux fa-lg'
+            }
+        }
+
+        String tooltip = operatingSystemVersion ? "${operatingSystemName} ${operatingSystemVersion}" : operatingSystemName
+        return [icon: icon, tooltip: tooltip]
     }
 }

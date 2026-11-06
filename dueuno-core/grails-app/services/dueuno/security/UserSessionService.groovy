@@ -242,12 +242,13 @@ class UserSessionService implements WebRequestAware {
         return false
     }
 
-    List<Map<String, Object>> list(String tenantId, Boolean includeAllTenants) {
+    List<Map<String, Object>> list(String tenantId, Boolean includeAllTenants, String search = null) {
         Manager currentManager = findManager()
         if (!currentManager) {
             return []
         }
 
+        String searchFilter = search?.trim()?.toLowerCase(Locale.ROOT)
         long now = System.currentTimeMillis()
         List<Map<String, Object>> result = []
 
@@ -264,6 +265,7 @@ class UserSessionService implements WebRequestAware {
                 long lastAccessedTime = httpSession.lastAccessedTime
                 boolean hasNotTimedOut = timeout <= 0 || now - lastAccessedTime < timeout * 1000L
                 if (!hasNotTimedOut) continue
+                if (!matchesUser(user.username, user.firstname, user.lastname, searchFilter)) continue
 
                 String userTenantId = resolveTenantId(httpSession, user)
                 if (tenantId && userTenantId != tenantId) continue
@@ -384,6 +386,14 @@ class UserSessionService implements WebRequestAware {
             if (tenantId) httpSession[TENANT_ID_ATTRIBUTE] = tenantId
         }
         return tenantId
+    }
+
+    private static boolean matchesUser(String username, String firstname, String lastname, String filter) {
+        if (!filter) return true
+
+        return [username, firstname, lastname].any { String value ->
+            value && value.toLowerCase(Locale.ROOT).contains(filter)
+        }
     }
 
     private void invalidateSession(HttpSession httpSession) {
