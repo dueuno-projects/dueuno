@@ -41,7 +41,9 @@ class UserSessionRememberMeInterceptor implements ElementsController {
 
         try {
             String cookieName = tenantPropertyService.getString('REMEMBER_ME_COOKIE_NAME')
-            if (!cookieName) return true
+            if (!cookieName) {
+                return true
+            }
 
             String cookieValue
             Cookie[] cookies = request.cookies
@@ -56,16 +58,21 @@ class UserSessionRememberMeInterceptor implements ElementsController {
 
             if (userSessionService.isRememberMeRevoked(cookieValue)) {
                 securityService.executeLogout()
-                response.sendRedirect(request.contextPath + '/authentication/login')
+                response.sendRedirect(request.contextPath + '/authentication/logout')
                 return false
             }
 
-            if (!httpSession) return true
+            if (!httpSession) {
+                return true
+            }
 
             TUser user = httpSession.getAttribute('_21CurrentUser') as TUser
-            if (!user) return true
+            if (!user) {
+                return true
+            }
 
             userSessionService.updateRememberMeExpiration(httpSession, cookieValue)
+
         } catch (IllegalStateException ignored) {
             // The session may be invalidated while the request is being processed.
         }

@@ -182,11 +182,11 @@ class UserController implements ElementsController {
             )
         }
 
-        def isCreatingNewUser = !obj
         def isSuperAdmin = securityService.isSuperAdmin()
         def isSuperAdminUser = obj && securityService.isSuperAdmin(obj)
         def isAdminUser = obj && securityService.isAdmin(obj) && !obj.deletable
-        def isEditingUserButNotSuperAdmin = obj && obj.username != securityService.USERNAME_SUPERADMIN
+        def isCreating = !obj
+        def isEditingAndIsNotSuperAdmin = obj && obj.username != securityService.USERNAME_SUPERADMIN
 
         c.form.with {
             validate = TUser
@@ -228,21 +228,19 @@ class UserController implements ElementsController {
                 id: 'login',
                 icon: 'fa-right-to-bracket',
             )
-            if (isSuperAdmin && (isCreatingNewUser || isEditingUserButNotSuperAdmin)) {
-                addField(
-                    class: Select,
-                    id: 'tenant.tenantId',
-                    optionsFromRecordset: tenantService.list(),
-                    keys: ['tenantId'],
-                    defaultValue: params.'table.filters.tenantId' ?: tenantService.defaultTenantId,
-                    search: false,
-                    allowClear: false,
-                    onLoad: 'onChangeTenant',
-                    onChange: 'onChangeTenant',
-                    submit: ['form'],
-                    readonly: obj,
-                )
-            }
+            addField(
+                class: Select,
+                id: 'tenant.tenantId',
+                optionsFromRecordset: tenantService.list(),
+                keys: ['tenantId'],
+                defaultValue: params.'table.filters.tenantId' ?: tenantService.currentTenantId,
+                search: false,
+                allowClear: false,
+                onLoad: 'onChangeTenant',
+                onChange: 'onChangeTenant',
+                submit: ['form'],
+                readonly: obj || !isSuperAdmin,
+            )
             addField(
                 class: TextField,
                 id: 'username',
@@ -295,7 +293,7 @@ class UserController implements ElementsController {
 
         }
 
-        if (isCreatingNewUser || isEditingUserButNotSuperAdmin) {
+        if (isCreating || isEditingAndIsNotSuperAdmin) {
             c.form.with {
                 addField(
                     class: Separator,
@@ -305,14 +303,12 @@ class UserController implements ElementsController {
                 addField(
                     class: Select,
                     id: 'groups',
-                    optionsFromRecordset: securityService.listAllGroup(hideUsers: true),
                     search: false,
                     multiple: true,
                 )
                 addField(
                     class: Select,
                     id: 'defaultGroup',
-                    optionsFromRecordset: securityService.listAllGroup(),
                     search: false,
                     cols: 6,
                 )
@@ -363,7 +359,7 @@ class UserController implements ElementsController {
                     icon: 'fa-cloud',
                     cols: 8,
                 ).component
-                apiKey.addAction(action: 'onGenerateApiKey', submit: ['form'], text: 'user.generateApiKey', icon: 'fa-key')
+                apiKey.addAction(action: 'onGenerateApiKey', submit: ['form'], text: '', tooltip: 'user.generateApiKey', icon: 'fa-key')
                 addField(
                     class: DateTimeField,
                     id: 'apiKeyLastAccess',
@@ -504,12 +500,12 @@ class UserController implements ElementsController {
     }
 
     def onChangeTenant() {
-        def rs = securityService.listAllGroup(tenantId: params.'tenant.tenantId', hideUsers: true)
+        def rs = securityService.listAllGroup(tenantId: params.'tenant.tenantId')
         def tenantGroups = Select.optionsFromRecordset(recordset: rs)
 
         def t = createTransition()
         t.set('defaultGroup', 'options', tenantGroups)
-        t.set('groups', 'options', tenantGroups)
+        t.set('groups', 'options', tenantGroups.findAll { it.label != 'USERS' })
 
         def user = securityService.getUserByUsername(params.username)
         if (user) {
@@ -518,11 +514,9 @@ class UserController implements ElementsController {
 
         } else {
             def tenant = tenantService.getByTenantId(params.'tenant.tenantId')
-            if (tenant) {
-                t.setValue('sessionDuration', getSessionDurationDefault(tenant.tenantId))
-                t.setValue('rememberMeDuration', getRememberMeDurationDefault(tenant.tenantId))
-                t.setValue('canChangePassword', getCanChangePasswordDefault(tenant.tenantId))
-            }
+            t.setValue('sessionDuration', getSessionDurationDefault(tenant.tenantId))
+            t.setValue('rememberMeDuration', getRememberMeDurationDefault(tenant.tenantId))
+            t.setValue('canChangePassword', getCanChangePasswordDefault(tenant.tenantId))
         }
 
         display transition: t
