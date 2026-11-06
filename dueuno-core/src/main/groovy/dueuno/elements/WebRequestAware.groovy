@@ -85,7 +85,11 @@ trait WebRequestAware {
      */
     Boolean isMobileDevice() {
         GrailsParameterMap params = getRequestParams()
-        return params.mobile || params._21IsMobileDevice ? true : false
+
+        // These parameters bypass ParamsInterceptor deserialization
+        // since they need to work across the whole application
+        return Boolean.parseBoolean(params.mobile?.toString()) ||
+            Boolean.parseBoolean(params._21IsMobileDevice?.toString())
     }
 
     /**

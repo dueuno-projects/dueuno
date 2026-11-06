@@ -107,7 +107,9 @@ class UserSessionController implements ElementsController {
                 tenantId = null
             }
             body.eachRow { TableRow row, Map values ->
-                row.cells.tenant.tag = true
+                if (isSuperAdmin) {
+                    row.cells.tenant.tag = true
+                }
 
                 Map browserInfo = getBrowserInfo(values.userAgent as String)
                 row.cells.userAgentIcon.icon = browserInfo.icon

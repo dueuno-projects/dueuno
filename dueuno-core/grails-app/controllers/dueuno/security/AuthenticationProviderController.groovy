@@ -85,7 +85,9 @@ class AuthenticationProviderController implements ElementsController {
 
             actions.removeTailAction()
             body.eachRow { TableRow row, Map values ->
-                row.cells.'tenant.tenantId'.tag = true
+                if (isSuperAdmin) {
+                    row.cells.'tenant.tenantId'.tag = true
+                }
 
                 if (values.authenticationIdentities) {
                     row.actions.addTailAction(
