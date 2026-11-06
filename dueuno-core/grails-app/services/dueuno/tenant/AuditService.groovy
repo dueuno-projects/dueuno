@@ -39,39 +39,44 @@ import java.time.LocalTime
  */
 
 @CurrentTenant
-@Transactional
 @CompileStatic
 class AuditService implements WebRequestAware {
 
     SecurityService securityService
     CryptoService cryptoService
 
+    @Transactional
     void log(AuditOperation operation, Object domainObject) {
         Map properties = Elements.toMap(domainObject)
         String message = prettyProperties(properties)
         log(operation, message, domainObject.toString(), null, null)
     }
 
+    @Transactional
     void log(AuditOperation operation, Class domainObject, Map stateBefore, Map stateAfter = null) {
         String prettyStateBefore = prettyProperties(stateBefore)
         String prettyStateAfter = prettyProperties(stateAfter)
         log(operation, domainObject.toString(), prettyStateBefore, prettyStateAfter)
     }
 
+    @Transactional
     void log(AuditOperation operation, Class domainObject, String stateBefore, String stateAfter = null) {
         log(operation, domainObject.toString(), stateBefore, stateAfter)
     }
 
+    @Transactional
     void log(AuditOperation operation, String objectName, String stateBefore, String stateAfter = null) {
         log(operation, null, objectName, stateBefore, stateAfter)
     }
 
+    @Transactional
     void log(AuditOperation operation, String message) {
         log(operation, message, null, null, null)
     }
 
+    @Transactional
     void log(AuditOperation operation, String message, String objectName, String stateBefore, String stateAfter) {
-        String username = securityService.currentUsername ?: 'super'
+        String username = securityService.currentUsername ?: SecurityService.USERNAME_SUPERADMIN
         LocalDateTime dateCreated = LocalDateTime.now()
 
         Map log = buildLog(dateCreated, username, operation, message, objectName, stateBefore, stateAfter, getClientIp(request), request.getHeader('User-Agent'))

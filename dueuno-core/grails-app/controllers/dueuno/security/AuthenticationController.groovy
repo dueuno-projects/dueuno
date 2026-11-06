@@ -154,10 +154,10 @@ class AuthenticationController implements ElementsController {
     }
 
     def afterLogout() {
-        // Serve a gestire il DENY_AUTHORIZATION_MESSAGE ovvero l'avviso da mostrare nel caso l'utente non sia autorizzato
-        // ad accedere per motivi legati all'applicazione
-        if (session[SecurityService.DENY_AUTHORIZATION_MESSAGE]) {
-            def message = [customError: session[SecurityService.DENY_AUTHORIZATION_MESSAGE]]
+        // Display the notice explaining why the user is not authorized to access the application.
+        String deniedMessage = securityService.loginDeniedMessage
+        if (deniedMessage) {
+            def message = [customError: deniedMessage]
             render message as JSON
 
         } else {

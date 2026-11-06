@@ -14,12 +14,18 @@
  */
 package dueuno.security
 
+import dueuno.elements.WebRequestAware
+import dueuno.tenant.TenantPropertyService
 import groovy.transform.CompileStatic
-import jakarta.servlet.http.HttpServletRequest
+import jakarta.inject.Inject
+import jakarta.servlet.ServletContext
+import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpSession
 import org.apache.catalina.Context
 import org.apache.catalina.Manager
 import org.apache.catalina.Session
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices
 
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
@@ -30,46 +36,163 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
 /**
- * Reads and invalidates authenticated sessions managed by the embedded Tomcat instance.
+ * Owns user session state and lifecycle for sessions managed by embedded Tomcat.
  */
 @CompileStatic
-class UserSessionService {
+class UserSessionService implements WebRequestAware {
 
-    private static final String SESSION_KEY_ATTRIBUTE = '_21UserSessionKey'
-    private static final String REMEMBER_ME_EXPIRATION_ATTRIBUTE = '_21ememberMeExpirationTime'
-    private static final String REMEMBER_ME_TOKEN_ATTRIBUTE = '_21RememberMeToken'
-    private static final String LOGIN_TIME_ATTRIBUTE = '_21LoginTime'
-    private static final String LOGIN_IP_ADDRESS_ATTRIBUTE = '_21LoginIpAddress'
-    private static final String USER_AGENT_ATTRIBUTE = '_21UserAgent'
+    private static final String LOGIN_TIME_ATTRIBUTE = 'LOGIN_TIME'
+    private static final String LOGIN_IP_ADDRESS_ATTRIBUTE = 'LOGIN_IP_ADDRESS'
+    private static final String LOGIN_DENIED_MESSAGE_ATTRIBUTE = 'LOGIN_DENIED_MESSAGE'
+    private static final String SESSION_KEY_ATTRIBUTE = 'USER_SESSION_KEY'
+    private static final String TENANT_ID_ATTRIBUTE = 'USER_SESSION_TENANT_ID'
+    private static final String CURRENT_USER_ATTRIBUTE = 'CURRENT_USER'
+    private static final String USER_AGENT_ATTRIBUTE = 'USER_AGENT'
+    private static final String REMEMBER_ME_EXPIRATION_ATTRIBUTE = 'REMEMBER_ME_EXPIRATION_TIME'
+    private static final String REMEMBER_ME_TOKEN_ATTRIBUTE = 'REMEMBER_ME_TOKEN'
 
     private volatile Context tomcatContext
     private final ConcurrentMap<String, Long> revokedRememberMeTokens = new ConcurrentHashMap<>()
+
+    TenantPropertyService tenantPropertyService
+
+    @Inject
+    SecurityContextLogoutHandler securityContextLogoutHandler
+
+    @Inject
+    TokenBasedRememberMeServices tokenBasedRememberMeServices
 
     void initializeTomcat(Context context) {
         tomcatContext = context
     }
 
-    void register(HttpSession httpSession, TUser user, HttpServletRequest request) {
-        if (!httpSession || !user) return
-        getOrCreateSessionKey(httpSession)
+    void configureServletContext(ServletContext servletContext) {
+        servletContext.sessionCookieConfig.name = tenantPropertyService.getString('SESSION_COOKIE_NAME')
+    }
 
-        if (httpSession.getAttribute(LOGIN_TIME_ATTRIBUTE) == null) {
-            httpSession.setAttribute(LOGIN_TIME_ATTRIBUTE, System.currentTimeMillis())
+    void initializeSession(TUser user) {
+        if (!user) {
+            return
+        }
 
-            String ipAddress = normalizeIpAddress(request?.remoteAddr)
-            if (ipAddress) httpSession.setAttribute(LOGIN_IP_ADDRESS_ATTRIBUTE, ipAddress)
+        session.maxInactiveInterval = user.sessionDuration * 60
+        configureRememberMe(user.rememberMeDuration)
+        register(user)
+    }
 
-            String userAgent = request?.getHeader('User-Agent')
-            if (userAgent) httpSession.setAttribute(USER_AGENT_ATTRIBUTE, userAgent)
+    TUser getCurrentUser() {
+        return session[CURRENT_USER_ATTRIBUTE] as TUser
+    }
+
+    String getTenantId() {
+        TUser user = resolveUser(session)
+        return user ? resolveTenantId(session, user) : null
+    }
+
+    void setCurrentUser(TUser user) {
+        if (!user) {
+            return
+        }
+
+        session[CURRENT_USER_ATTRIBUTE] =  user
+        session[TENANT_ID_ATTRIBUTE] = user.tenant?.tenantId
+    }
+
+    void setLoginDeniedMessage(String message) {
+        session[LOGIN_DENIED_MESSAGE_ATTRIBUTE] = message
+    }
+
+    String getLoginDeniedMessage() {
+        return session[LOGIN_DENIED_MESSAGE_ATTRIBUTE] as String
+    }
+
+    Boolean isLoginDenied() {
+        return getLoginDeniedMessage() != null
+    }
+
+    void configureRememberMe(Integer duration) {
+        tokenBasedRememberMeServices.cookieName = tenantPropertyService.getString('REMEMBER_ME_COOKIE_NAME', true)
+        tokenBasedRememberMeServices.alwaysRemember = false
+        if (duration != null) {
+            tokenBasedRememberMeServices.tokenValiditySeconds = duration * 60
         }
     }
 
-    void updateRememberMeExpiration(HttpSession httpSession, String cookieValue) {
-        if (!httpSession) return
+    void logout() {
+        if (!hasRequest()) {
+            return
+        }
+
+        configureRememberMe(null)
+        securityContextLogoutHandler.logout(request, response, null)
+        tokenBasedRememberMeServices.logout(request, response, null)
+        invalidateSession(session)
+    }
+
+    boolean handleRequest() {
+        if (!hasRequest()) {
+            return true
+        }
 
         try {
+            String cookieName = tenantPropertyService.getString('REMEMBER_ME_COOKIE_NAME')
+            if (!cookieName) {
+                return true
+            }
+
+            String cookieValue
+            Cookie[] cookies = request.cookies
+            if (cookies) {
+                for (Cookie cookie in cookies) {
+                    if (cookie.name == cookieName) {
+                        cookieValue = cookie.value
+                        break
+                    }
+                }
+            }
+
+            if (isRememberMeRevoked(cookieValue)) {
+                logout()
+                response.sendRedirect(request.contextPath + '/authentication/login')
+                return false
+            }
+
+            TUser user = resolveUser(session)
+            if (!user) {
+                return true
+            }
+
+            updateRememberMeExpiration(cookieValue)
+
+        } catch (IllegalStateException ignored) {
+            // The session may be invalidated while the request is being processed.
+        }
+
+        return true
+    }
+
+    private void register(TUser user) {
+        if (!user) {
+            return
+        }
+
+
+        getOrCreateSessionKey(session)
+        session.setAttribute(TENANT_ID_ATTRIBUTE, user.tenant?.tenantId)
+
+        if (session[LOGIN_TIME_ATTRIBUTE] == null) {
+            session[LOGIN_TIME_ATTRIBUTE] = System.currentTimeMillis()
+            session[LOGIN_IP_ADDRESS_ATTRIBUTE] = request?.remoteAddr
+
+            String userAgent = request?.getHeader('User-Agent')
+            if (userAgent) session[USER_AGENT_ATTRIBUTE] = userAgent
+        }
+    }
+
+    private void updateRememberMeExpiration(String cookieValue) {
+        try {
             if (!cookieValue) {
-                clearRememberMeAttributes(httpSession)
+                clearRememberMeAttributes(session)
                 return
             }
 
@@ -85,7 +208,7 @@ class UserSessionService {
             int firstDelimiter = cookieContents.indexOf(':')
             int secondDelimiter = cookieContents.indexOf(':', firstDelimiter + 1)
             if (firstDelimiter < 0 || secondDelimiter < 0) {
-                clearRememberMeAttributes(httpSession)
+                clearRememberMeAttributes(session)
                 return
             }
 
@@ -93,17 +216,21 @@ class UserSessionService {
                 cookieContents.substring(firstDelimiter + 1, secondDelimiter),
                 StandardCharsets.UTF_8,
             )
-            httpSession.setAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE, Long.parseLong(expirationValue))
-            httpSession.setAttribute(REMEMBER_ME_TOKEN_ATTRIBUTE, fingerprint(cookieValue))
+            session[REMEMBER_ME_EXPIRATION_ATTRIBUTE] = Long.parseLong(expirationValue)
+            session[REMEMBER_ME_TOKEN_ATTRIBUTE] = fingerprint(cookieValue)
+
         } catch (IllegalArgumentException ignored) {
-            clearRememberMeAttributes(httpSession)
+            clearRememberMeAttributes(session)
+
         } catch (IllegalStateException ignored) {
             // The session may be invalidated while the request is being processed.
         }
     }
 
     boolean isRememberMeRevoked(String cookieValue) {
-        if (!cookieValue) return false
+        if (!cookieValue) {
+            return false
+        }
 
         String tokenFingerprint = fingerprint(cookieValue)
         Long expirationTime = revokedRememberMeTokens.get(tokenFingerprint)
@@ -116,7 +243,9 @@ class UserSessionService {
 
     List<Map<String, Object>> list(String tenantId, Boolean includeAllTenants) {
         Manager currentManager = findManager()
-        if (!currentManager) return []
+        if (!currentManager) {
+            return []
+        }
 
         long now = System.currentTimeMillis()
         List<Map<String, Object>> result = []
@@ -126,7 +255,7 @@ class UserSessionService {
                 boolean valid = tomcatSession.valid
 
                 HttpSession httpSession = tomcatSession.session
-                TUser user = httpSession.getAttribute('_21CurrentUser') as TUser
+                TUser user = resolveUser(httpSession)
                 if (!valid) continue
                 if (!user) continue
 
@@ -135,7 +264,7 @@ class UserSessionService {
                 boolean hasNotTimedOut = timeout <= 0 || now - lastAccessedTime < timeout * 1000L
                 if (!hasNotTimedOut) continue
 
-                String userTenantId = user.tenant?.tenantId
+                String userTenantId = resolveTenantId(httpSession, user)
                 if (tenantId && userTenantId != tenantId) continue
                 if (!includeAllTenants && userTenantId != tenantId) continue
 
@@ -177,22 +306,27 @@ class UserSessionService {
             if (tenantComparison != 0) return tenantComparison
             return ((String) left.username).compareToIgnoreCase((String) right.username)
         }
+
         return result
     }
 
     void disconnect(String sessionKey, String tenantId, Boolean includeAllTenants) {
-        if (!sessionKey) return
+        if (!sessionKey) {
+            return
+        }
 
         Manager currentManager = findManager()
-        if (!currentManager) return
+        if (!currentManager) {
+            return
+        }
 
         for (Session tomcatSession in currentManager.findSessions()) {
             try {
                 HttpSession httpSession = tomcatSession.session
                 if (httpSession.getAttribute(SESSION_KEY_ATTRIBUTE) != sessionKey) continue
 
-                TUser user = httpSession.getAttribute('_21CurrentUser') as TUser
-                String userTenantId = user?.tenant?.tenantId
+                TUser user = resolveUser(httpSession)
+                String userTenantId = user ? resolveTenantId(httpSession, user) : null
                 if (!user || (!includeAllTenants && userTenantId != tenantId)) return
 
                 invalidateSession(httpSession)
@@ -203,44 +337,60 @@ class UserSessionService {
         }
     }
 
-    void disconnectOtherSessions(HttpSession currentHttpSession, TUser user) {
-        if (!currentHttpSession || !user) return
+    void disconnectOtherSessions(TUser user) {
+        if (!user) {
+            return
+        }
 
         Manager currentManager = findManager()
-        if (!currentManager) return
+        if (!currentManager) {
+            return
+        }
 
         for (Session tomcatSession in currentManager.findSessions()) {
             try {
                 HttpSession httpSession = tomcatSession.session
-                if (httpSession.id == currentHttpSession.id) continue
+                if (httpSession.id == session.id) continue
 
-                TUser sessionUser = httpSession.getAttribute('_21CurrentUser') as TUser
-                if (!isSameUser(sessionUser, user)) continue
+                TUser sessionUser = resolveUser(httpSession)
+                if (!isSameUser(httpSession, sessionUser, user)) {
+                    continue
+                }
 
                 invalidateSession(httpSession)
+
             } catch (IllegalStateException ignored) {
                 // The session may already have been invalidated or expired.
             }
         }
     }
 
-    private boolean isSameUser(TUser left, TUser right) {
-        return left && right && left.id == right.id && left.tenant?.tenantId == right.tenant?.tenantId
+    private TUser resolveUser(HttpSession httpSession) {
+        return httpSession[CURRENT_USER_ATTRIBUTE] as TUser
     }
 
-    private String normalizeIpAddress(String ipAddress) {
-        if (!ipAddress) return ipAddress
+    private boolean isSameUser(HttpSession httpSession, TUser sessionUser, TUser currentUser) {
+        return sessionUser && currentUser &&
+            sessionUser.id == currentUser.id &&
+            resolveTenantId(httpSession, sessionUser) == currentUser.tenant?.tenantId
+    }
 
-        try {
-            return InetAddress.getByName(ipAddress).hostAddress
-        } catch (UnknownHostException ignored) {
-            return ipAddress
+    private String resolveTenantId(HttpSession httpSession, TUser user) {
+        String tenantId = httpSession[TENANT_ID_ATTRIBUTE] as String
+        if (!tenantId) {
+            tenantId = user.tenant?.tenantId
+            if (tenantId) httpSession[TENANT_ID_ATTRIBUTE] = tenantId
         }
+        return tenantId
     }
 
     private void invalidateSession(HttpSession httpSession) {
-        String rememberMeToken = httpSession.getAttribute(REMEMBER_ME_TOKEN_ATTRIBUTE) as String
-        Long rememberMeExpirationTime = httpSession.getAttribute(REMEMBER_ME_EXPIRATION_ATTRIBUTE) as Long
+        if (!httpSession) {
+            return
+        }
+
+        String rememberMeToken = httpSession[REMEMBER_ME_TOKEN_ATTRIBUTE] as String
+        Long rememberMeExpirationTime = httpSession[REMEMBER_ME_EXPIRATION_ATTRIBUTE] as Long
         if (rememberMeToken && rememberMeExpirationTime && rememberMeExpirationTime > System.currentTimeMillis()) {
             removeExpiredRevocations()
             revokedRememberMeTokens.put(rememberMeToken, rememberMeExpirationTime)
@@ -251,10 +401,10 @@ class UserSessionService {
 
     private static String getOrCreateSessionKey(HttpSession httpSession) {
         synchronized (httpSession) {
-            String sessionKey = httpSession.getAttribute(SESSION_KEY_ATTRIBUTE) as String
+            String sessionKey = httpSession[SESSION_KEY_ATTRIBUTE] as String
             if (!sessionKey) {
                 sessionKey = UUID.randomUUID().toString()
-                httpSession.setAttribute(SESSION_KEY_ATTRIBUTE, sessionKey)
+                httpSession[SESSION_KEY_ATTRIBUTE] = sessionKey
             }
             return sessionKey
         }
@@ -283,4 +433,5 @@ class UserSessionService {
         Context context = tomcatContext
         return context?.manager
     }
+
 }

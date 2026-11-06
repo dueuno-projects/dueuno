@@ -15,69 +15,24 @@
 package dueuno.security
 
 import dueuno.elements.ElementsController
-import dueuno.tenant.TenantPropertyService
 import groovy.transform.CompileStatic
-import jakarta.servlet.http.Cookie
-import jakarta.servlet.http.HttpSession
 
 /**
- * Captures the expiry embedded in each authenticated user's remember-me cookie.
+ * Delegates user-session request handling to UserSessionService.
  */
 @CompileStatic
 class UserSessionRememberMeInterceptor implements ElementsController {
 
     int order = HIGHEST_PRECEDENCE + 20
 
-    TenantPropertyService tenantPropertyService
     UserSessionService userSessionService
-    SecurityService securityService
 
     UserSessionRememberMeInterceptor() {
         matchAll()
     }
 
     boolean before() {
-        HttpSession httpSession = request.getSession(false)
-
-        try {
-            String cookieName = tenantPropertyService.getString('REMEMBER_ME_COOKIE_NAME')
-            if (!cookieName) {
-                return true
-            }
-
-            String cookieValue
-            Cookie[] cookies = request.cookies
-            if (cookies) {
-                for (Cookie cookie in cookies) {
-                    if (cookie.name == cookieName) {
-                        cookieValue = cookie.value
-                        break
-                    }
-                }
-            }
-
-            if (userSessionService.isRememberMeRevoked(cookieValue)) {
-                securityService.executeLogout()
-                response.sendRedirect(request.contextPath + '/authentication/logout')
-                return false
-            }
-
-            if (!httpSession) {
-                return true
-            }
-
-            TUser user = httpSession.getAttribute('_21CurrentUser') as TUser
-            if (!user) {
-                return true
-            }
-
-            userSessionService.updateRememberMeExpiration(httpSession, cookieValue)
-
-        } catch (IllegalStateException ignored) {
-            // The session may be invalidated while the request is being processed.
-        }
-
-        return true
+        return userSessionService.handleRequest()
     }
 
     boolean after() {

@@ -37,11 +37,7 @@ import groovy.contracts.Requires
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
-import jakarta.inject.Inject
 import jakarta.servlet.http.HttpServletRequest
-import jakarta.servlet.http.HttpSession
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices
 
 import java.time.LocalDateTime
 
@@ -68,14 +64,6 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
     public static final String USERNAME_SUPERADMIN = 'super'
     public static final String USERNAME_ADMIN = 'admin'
-
-    public static final String DENY_AUTHORIZATION_MESSAGE = 'DENY_AUTHORIZATION_MESSAGE'
-
-    @Inject
-    SecurityContextLogoutHandler securityContextLogoutHandler
-
-    @Inject
-    TokenBasedRememberMeServices tokenBasedRememberMeServices
 
     SpringSecurityService springSecurityService
     ApplicationService applicationService
@@ -281,18 +269,10 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     }
 
     @CurrentTenant
-    void initializeUserSession() {
-        TUser user = getCurrentUser()
-        session.maxInactiveInterval = user.sessionDuration * 60 // minutes to seconds
-        configureRememberMe(user.rememberMeDuration)
-        userSessionService.register(request.getSession(false), user, request)
-    }
-
-    @CurrentTenant
     @CompileDynamic
     void initializeRememberMe(String username = null) {
         if (!username) {
-            configureRememberMe(null)
+            userSessionService.configureRememberMe(null)
             return
         }
 
@@ -300,16 +280,10 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         if (!USERNAME_SUPERADMIN.equalsIgnoreCase(username)) {
             tenantId = tenantService.getTenantIdByRequest(request) ?: tenantId
         }
-        TUser user = getUserByTenantIdAndUsername(tenantId, username)
-        if (user) configureRememberMe(user.rememberMeDuration)
-    }
 
-    @CurrentTenant
-    private void configureRememberMe(Integer duration) {
-        tokenBasedRememberMeServices.cookieName = tenantPropertyService.getString('REMEMBER_ME_COOKIE_NAME', true)
-        tokenBasedRememberMeServices.alwaysRemember = false
-        if (duration != null) {
-            tokenBasedRememberMeServices.tokenValiditySeconds = duration * 60
+        TUser user = getUserByTenantIdAndUsername(tenantId, username)
+        if (user) {
+            userSessionService.configureRememberMe(user.rememberMeDuration)
         }
     }
 
@@ -435,7 +409,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             return null
         }
 
-        TUser currentUser = session['_21CurrentUser'] as TUser
+        TUser currentUser = userSessionService.getCurrentUser()
         if (currentUser && !reload) {
             return currentUser
         }
@@ -456,7 +430,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             )
         }
 
-        session['_21CurrentUser'] = user
+        userSessionService.setCurrentUser(user)
         return user
     }
 
@@ -503,10 +477,10 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     void executeAfterLogin() {
         TUser user = currentUser
         if (user.closeOtherSessions) {
-            userSessionService.disconnectOtherSessions(request.getSession(false), user)
+            userSessionService.disconnectOtherSessions(user)
         }
 
-        initializeUserSession()
+        userSessionService.initializeSession(user)
         initializeShell()
 
         // Executes custom login code
@@ -526,36 +500,26 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             return
         }
 
-        session[DENY_AUTHORIZATION_MESSAGE] = message
+        userSessionService.setLoginDeniedMessage(message)
     }
 
     Boolean isLoginDenied() {
-        return session[DENY_AUTHORIZATION_MESSAGE]
+        return userSessionService.isLoginDenied()
     }
 
     String getLoginDeniedMessage() {
-        return session[DENY_AUTHORIZATION_MESSAGE]
-    }
-
-    void executeLogout() {
-        // Equivalent to -> redirect uri: '/springSecurityLogout'
-        securityContextLogoutHandler.logout(request, response, null)
-
-        // Handles remember-me cookie
-        tokenBasedRememberMeServices.logout(request, response, null)
-
-        // Session must be explicitly invalidated, default behaviour has been disabled, see 'plugin.groovy'
-        HttpSession session = request.getSession(false)
-        session?.invalidate()
+        return userSessionService.getLoginDeniedMessage()
     }
 
     /**
      * INTERNAL USE ONLY. Executes custom post-logout code.
      */
+    @Transactional
+    @CurrentTenant
     void executeAfterLogout() {
         auditService.log(AuditOperation.LOGOUT, "-")
-        applicationService.executeBootEvents(tenantService.defaultTenantId, 'afterLogout')
-        executeLogout()
+        applicationService.executeBootEvents(tenantService.currentTenantId, 'afterLogout')
+        userSessionService.logout()
     }
 
     /**

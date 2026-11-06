@@ -17,12 +17,13 @@ package dueuno.tenant
 import dueuno.elements.WebRequestAware
 import dueuno.security.SecurityService
 import dueuno.security.TUser
+import dueuno.security.UserSessionService
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import jakarta.inject.Inject
 import org.grails.datastore.mapping.multitenancy.TenantResolver
 import org.grails.datastore.mapping.multitenancy.exceptions.TenantNotFoundException
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
 /**
@@ -34,7 +35,13 @@ import org.springframework.stereotype.Component
 @CompileStatic
 class TenantForCurrentUserResolver implements TenantResolver, WebRequestAware {
 
+    @Lazy
+    @Inject
     TenantService tenantService
+
+    @Lazy
+    @Inject
+    UserSessionService userSessionService
 
     @Override
     Serializable resolveTenantIdentifier() throws TenantNotFoundException {
@@ -43,18 +50,18 @@ class TenantForCurrentUserResolver implements TenantResolver, WebRequestAware {
         }
 
         try {
-            TUser user = session['_21CurrentUser'] as TUser
-            if (user) {
+            TUser user = userSessionService.getCurrentUser()
+
+            if (!user) {
+                return tenantService.getTenantIdByRequest(request) ?: TenantService.defaultTenantId
+            }
+
+            if (SecurityService.USERNAME_SUPERADMIN.equalsIgnoreCase(user.username)) {
+                return TenantService.defaultTenantId
+
+            } else {
                 return user.tenant.tenantId
             }
-
-            Authentication authentication = SecurityContextHolder.context.authentication
-            if (authentication?.authenticated && SecurityService.USERNAME_SUPERADMIN.equalsIgnoreCase(authentication.name)) {
-                return TenantService.defaultTenantId
-            }
-
-            return tenantService.getTenantIdByRequest(request)
-                ?: TenantService.defaultTenantId
 
         } catch (Exception ignore) {
             return TenantService.defaultTenantId
