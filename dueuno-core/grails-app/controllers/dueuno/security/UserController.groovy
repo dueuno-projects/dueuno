@@ -78,7 +78,6 @@ class UserController implements ElementsController {
 
         c.table.with {
             filters.with {
-                fold = false
                 if (isSuperAdmin) {
                     addField(
                         class: Select,

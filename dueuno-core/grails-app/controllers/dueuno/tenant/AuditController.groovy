@@ -54,7 +54,6 @@ class AuditController implements ElementsController {
         )
         c.table.with {
             filters.with {
-                fold = false
                 addField(
                     class: TextField,
                     id: 'tenantNoFilter',

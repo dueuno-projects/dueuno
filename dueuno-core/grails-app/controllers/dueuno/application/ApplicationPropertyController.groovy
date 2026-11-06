@@ -66,7 +66,6 @@ class ApplicationPropertyController implements ElementsController {
 
         c.table.with {
             filters.with {
-                fold = false
                 addField(
                     class: TextField,
                     id: 'find',

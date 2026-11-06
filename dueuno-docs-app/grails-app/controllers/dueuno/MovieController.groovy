@@ -38,7 +38,6 @@ class MovieController implements ElementsController {
         ContentTable c = createContent(ContentTable)
         c.table.with {
             filters.with {
-                fold = false
                 addField(
                         class: TextField,
                         id: 'find',

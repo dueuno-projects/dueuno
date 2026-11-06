@@ -62,7 +62,6 @@ class UserSessionController implements ElementsController {
         )
         c.table.with {
             filters.with {
-                fold = false
                 if (isSuperAdmin) {
                     addField(
                         class: Select,
@@ -74,7 +73,7 @@ class UserSessionController implements ElementsController {
                 addField(
                     class: TextField,
                     id: 'search',
-                    cols: 3,
+                    cols: isSuperAdmin ? 9 : 12,
                 )
             }
             columns = tableColumns
