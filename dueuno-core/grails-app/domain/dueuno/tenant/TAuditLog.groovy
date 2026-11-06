@@ -56,6 +56,7 @@ class TAuditLog implements GormEntity, MultiTenant<TAuditLog> {
 
     static mapping = {
         table 'sys_audit_log'
+        autoTimestamp false
     }
 
 }
