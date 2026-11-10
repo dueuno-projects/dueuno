@@ -340,7 +340,7 @@ class TenantPropertyController implements ElementsController {
             }
         }
 
-        if (obj) {
+        if (obj.id) {
             c.form.values = obj
             if (obj.type == PropertyType.PASSWORD) {
                 c.form.controls.value.value = tenantPropertyService.getPassword(obj.name, true)
