@@ -244,10 +244,19 @@ class TablePagination extends Component {
     }
 
     /**
-     * Resets the pagination to the first page (offset = 0) unless an explicit
-     * {@code _21TableOffset} request parameter is already present.
+     * Resets the offset to zero and the page size to 20, preserving explicit
+     * {@code _21TableOffset} and {@code _21TableMax} request parameters respectively.
      */
     void reset() {
+        resetOffset()
+        resetMax()
+    }
+
+    /**
+     * Resets the offset to zero without changing the page size or filters.
+     * Preserves an explicit {@code _21TableOffset} request parameter.
+     */
+    void resetOffset() {
         if (requestParams._21TableOffset != null) {
             return
         }
@@ -255,11 +264,30 @@ class TablePagination extends Component {
         offset = 0
         actionSession[requestedOffsetName] = 0
         table.fetchParams.offset = 0
+        requestParams.offset = 0
         requestParams._21TableOffset = 0
+        goPrev.params = [
+            _21Table      : table.id,
+            _21TableOffset: offset - (max ?: 0),
+        ]
         goNext.params = [
             _21Table      : table.id,
             _21TableOffset: max ?: 0,
         ]
+    }
+
+    /**
+     * Restores the default page size (20) without changing the offset or filters.
+     * Preserves an explicit {@code _21TableMax} request parameter.
+     */
+    void resetMax() {
+        if (requestParams._21TableMax != null) {
+            return
+        }
+
+        actionSession[requestedMaxName] = 20
+        requestParams._21TableMax = 20
+        setMax(20)
     }
 
     /**

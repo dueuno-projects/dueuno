@@ -369,6 +369,21 @@ class Table extends Component {
     }
 
     /**
+     * Clears all filter values from the action session.
+     */
+    void resetFilters() {
+        filters.reset()
+    }
+
+    /**
+     * Resets pagination to the first page without clearing filter values.
+     * Preserves an explicit {@code _21TableOffset} request parameter.
+     */
+    void resetPagination() {
+        pagination.reset()
+    }
+
+    /**
      * Sets the current page offset for pagination.
      *
      * @param value the zero-based row offset
