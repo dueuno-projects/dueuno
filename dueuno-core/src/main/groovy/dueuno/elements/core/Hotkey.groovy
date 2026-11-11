@@ -19,10 +19,10 @@ import groovy.transform.CompileStatic
 /**
  * Hotkeys supported by {@link dueuno.elements.components.Link}.
  * <p>
- * Every hotkey must be used with at least one standard modifier key:
- * {@code Ctrl}/{@code Control} or {@code Meta}/{@code Command}, on either
- * platform. Left and right variants work identically. The {@code Shift},
- * {@code Alt}/{@code Option}, and {@code Fn} keys are not included.
+ * Every hotkey must be used with {@code Command} on macOS or {@code Meta}
+ * on Windows/Linux. Left and right variants work identically. The
+ * {@code Ctrl}/{@code Control}, {@code Shift}, {@code Alt}/{@code Option},
+ * and {@code Fn} keys do not activate hotkeys.
  * </p>
  *
  * @author Gianluca Sartori

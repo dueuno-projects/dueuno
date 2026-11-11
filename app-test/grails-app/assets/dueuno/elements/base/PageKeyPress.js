@@ -264,7 +264,7 @@ class PageKeyPress extends Component {
     }
 
     static isHotkeyModifierPressed(event) {
-        return event.ctrlKey || event.metaKey;
+        return event.metaKey;
     }
 
     static registerHotkey($element) {

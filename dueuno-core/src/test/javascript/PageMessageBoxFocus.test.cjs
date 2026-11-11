@@ -44,7 +44,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                     hotkeysVisible = visible;
                 },
                 isHotkeyModifierPressed(event) {
-                    return event.ctrlKey || event.metaKey;
+                    return event.metaKey;
                 },
                 initializeKeyboardEvents() {},
             },
@@ -68,7 +68,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
             ['Enter', root, false, false, true],
             ['Enter', {}, false, false, false],
             ['Enter', {}, true, false, true],
-            ['Enter', {}, false, true, true],
+            ['Enter', {}, false, true, false],
             ['Tab', root, false, false, false],
         ]) {
             let prevented = false;
@@ -76,6 +76,31 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                 preventDefault() { prevented = true; }, stopImmediatePropagation() {},
             });
             assert.equal(prevented, blocked);
+        }
+    });
+
+    test(`${moduleName}: only Meta activates hotkeys and their hints`, () => {
+        let hotkeysVisible;
+        const context = vm.createContext({
+            Component: class { static register() {} },
+            PageMessageBox: { isActive: false },
+            $: () => ({ toggleClass(name, visible) { hotkeysVisible = visible; } }),
+        });
+        const source = path.resolve(__dirname, '../../../..', moduleName,
+            'grails-app/assets/dueuno/elements/base/PageKeyPress.js');
+        vm.runInContext(fs.readFileSync(source, 'utf8'), context);
+        const PageKeyPress = vm.runInContext('PageKeyPress', context);
+
+        for (const key of ['F1', 'F12', 'Enter']) {
+            for (const modifiers of [
+                {}, { ctrlKey: true }, { shiftKey: true }, { altKey: true },
+                { metaKey: true }, { metaKey: true, ctrlKey: true },
+            ]) {
+                const event = { key, metaKey: false, ...modifiers };
+                assert.equal(PageKeyPress.matchesHotkey(key, event), event.metaKey);
+                PageKeyPress.onKeyUp(event);
+                assert.equal(hotkeysVisible, event.metaKey);
+            }
         }
     });
 
