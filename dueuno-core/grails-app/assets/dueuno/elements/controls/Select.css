@@ -153,11 +153,17 @@
 
 .control-select .vscomp-wrapper.show-as-popup .vscomp-dropbox {
     width: 100%;
+    padding: .3rem .5rem;
     background-color: rgba(var(--elements-main-fg), .95);
 }
 
 .control-select .vscomp-wrapper.show-as-popup .vscomp-option {
     height: 2.5rem; /* 40px at the 16px mobile font size */
+}
+
+.control-select .vscomp-wrapper.show-as-popup .vscomp-option-text {
+    padding-top: .3rem;
+    padding-bottom: .3rem;
 }
 
 .control-select .vscomp-dropbox-container.pop-comp-wrapper {

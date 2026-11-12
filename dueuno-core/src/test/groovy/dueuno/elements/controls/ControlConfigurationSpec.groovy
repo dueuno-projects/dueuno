@@ -78,6 +78,24 @@ class ControlConfigurationSpec extends Specification {
         []                       | []
     }
 
+    void 'multiple selection preserves the configured clear button'() {
+        given:
+        Select select = new Select(id: 'groups', multiple: true, allowClear: clearable)
+
+        expect:
+        select.allowClear == clearable
+
+        when:
+        select.multiple = false
+        select.multiple = true
+
+        then:
+        select.allowClear == clearable
+
+        where:
+        clearable << [true, false]
+    }
+
     void configuresDerivedPropertiesAfterConstruction() {
         given:
         DateTimeField dateTimeField = new DateTimeField(id: 'dateTime')

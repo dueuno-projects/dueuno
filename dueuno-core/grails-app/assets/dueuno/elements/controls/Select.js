@@ -20,7 +20,7 @@ class Select extends Control {
             multiple: properties.multiple,
             search: properties.search,
             placeholder: properties.multiple ? '' : properties.placeholder,
-            hideClearButton: properties.multiple || !properties.allowClear,
+            hideClearButton: !properties.allowClear,
             autoSelectFirstOption: false,
             disableSelectAll: true,
             searchPlaceholderText: properties.text.search,

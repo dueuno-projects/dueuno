@@ -196,14 +196,11 @@ class Select extends Control {
 
     /**
      * Sets whether multiple values can be selected.
-     * When {@code true}, {@code allowClear} is forced to {@code false} as it is
-     * incompatible with multiple selection mode.
      *
      * @param value {@code true} to enable multiple selection; {@code null} is treated as {@code false}
      */
     void setMultiple(Boolean value) {
         this.multiple = (value == null) ? false : value
-        if (multiple) allowClear = false
     }
 
     /**
