@@ -14,6 +14,7 @@
  */
 package dueuno
 
+import dueuno.elements.config.WebSocketConfiguration
 import dueuno.application.SessionInitializer
 import dueuno.security.AuthenticationProviderService
 import dueuno.security.AuthenticationUserProvisioningService
@@ -91,6 +92,7 @@ class DueunoGrailsPlugin extends Plugin {
     @CompileDynamic
     BeanRegistrar beanRegistrar() {
         { BeanRegistry registry, Environment environment ->
+            registry.registerBean('webSocketConfig', WebSocketConfiguration)
             registry.registerBean('tenantForCurrentUserResolver', TenantForCurrentUserResolver) { spec ->
                 spec.supplier { context ->
                     TenantForCurrentUserResolver bean = new TenantForCurrentUserResolver()

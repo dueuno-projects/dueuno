@@ -15,7 +15,8 @@ dependencies {
     api "org.apache.grails:grails-quartz:${grailsVersion}"
 
     // Websockets
-    api "io.github.zyro23:grails-spring-websocket:2.7.1"
+    api "org.springframework:spring-messaging"
+    implementation "org.springframework:spring-websocket"
 
     // System monitoring
     implementation "net.bull.javamelody:javamelody-spring-boot4-starter:2.8.0"

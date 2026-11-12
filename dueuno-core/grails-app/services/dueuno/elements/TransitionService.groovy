@@ -15,9 +15,10 @@
 package dueuno.elements
 
 import dueuno.elements.core.Transition
-import grails.plugin.springwebsocket.WebSocket
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import jakarta.inject.Inject
+import org.springframework.messaging.simp.SimpMessagingTemplate
 
 /**
  * @author Gianluca Sartori
@@ -25,7 +26,10 @@ import groovy.util.logging.Slf4j
 
 @Slf4j
 @CompileStatic
-class TransitionService implements WebSocket {
+class TransitionService {
+
+    @Inject
+    SimpMessagingTemplate brokerMessagingTemplate
 
     List<String> channels = []
 
@@ -43,12 +47,12 @@ class TransitionService implements WebSocket {
 
     void publish(String channel, Transition t) {
         String destination = "/queue/channel/${channel}"
-        convertAndSend(destination, t.commandsAsJSON)
+        brokerMessagingTemplate.convertAndSend(destination, t.commandsAsJSON)
     }
 
     void send(String username, Transition t) {
         String destination = "/queue/username/${username}"
-        convertAndSend(destination, t.commandsAsJSON)
+        brokerMessagingTemplate.convertAndSend(destination, t.commandsAsJSON)
     }
 
 }

@@ -14,14 +14,18 @@
  */
 package apptest
 
-import grails.plugin.springwebsocket.WebSocket
 import groovy.util.logging.Slf4j
+import jakarta.inject.Inject
+import org.springframework.messaging.simp.SimpMessagingTemplate
 
 @Slf4j
-class WebsocketService implements WebSocket {
+class WebsocketService {
+
+    @Inject
+    SimpMessagingTemplate brokerMessagingTemplate
 
     void send(Map data) {
-        convertAndSend "/queue/chat", data
+        brokerMessagingTemplate.convertAndSend("/queue/chat", data)
     }
 
 }
