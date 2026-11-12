@@ -60,8 +60,6 @@ tasks.withType(Test) {
 }
 
 assets {
-    minifyCss = true
-    minifyJs = true
     minifyOptions = [
             //SIMPLE (default) or ADVANCED or WHITESPACE_ONLY
             optimizationLevel: "SIMPLE",

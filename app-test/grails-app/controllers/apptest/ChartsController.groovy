@@ -31,7 +31,7 @@ class ChartsController implements ElementsController {
                     labels: ['FIAT', 'BMW', 'AUDI'],
                     values: [100, 133, 167],
                     colors: ['rgba(200, 0, 0, 0.6)', 'rgba(0, 200, 0, 0.6)', 'rgba(0, 0, 200, 0.6)'],
-                    cols: 12,
+                    cols: 4,
             )
             addField(
                     class: PieChart,
@@ -39,7 +39,7 @@ class ChartsController implements ElementsController {
                     labels: ['FIAT', 'BMW', 'AUDI'],
                     values: [100, 133, 167],
                     colors: ['rgba(200, 0, 0, 0.6)', 'rgba(0, 200, 0, 0.6)', 'rgba(0, 0, 200, 0.6)'],
-                    cols: 6,
+                    cols: 4,
             )
             addField(
                     class: BarChart,
@@ -47,7 +47,7 @@ class ChartsController implements ElementsController {
                     labels: ['FIAT', 'BMW', 'AUDI'],
                     values: [100, 133, 167],
                     colors: ['rgba(200, 0, 0, 0.6)', 'rgba(0, 200, 0, 0.6)', 'rgba(0, 0, 200, 0.6)'],
-                    cols: 6,
+                    cols: 4,
             )
         }
 

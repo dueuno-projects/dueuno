@@ -27,7 +27,7 @@ class BarChart extends Chart {
     BarChart(Map args) {
         super(args)
 
-        containerSpecs.acceptedCols = [3, 6, 12]
+//        containerSpecs.acceptedCols = [3, 6, 12]
         containerSpecs.rows = 8
     }
 

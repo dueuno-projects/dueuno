@@ -44,7 +44,7 @@ grails-app/assets/dueuno/elements/
     elements-extra.js
     elements-extra.css
 grails-app/assets/dueuno/libs/
-    chart-4.4.2.min.js
+    chart-4.6.1.min.js
 grails-app/init/dueuno/elements/extra/
     BootStrap.groovy
 ----
@@ -207,7 +207,7 @@ Create one JavaScript and one CSS manifest for the component library. Dependenci
 .Create `grails-app/assets/dueuno/elements/elements-extra.js`
 [source,javascript]
 ----
-//= require libs/chart-4.4.2.min
+//= require libs/chart-4.6.1.min
 //
 //= require components/PieChart
 ----

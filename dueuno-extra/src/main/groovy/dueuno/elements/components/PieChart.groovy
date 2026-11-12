@@ -27,7 +27,7 @@ class PieChart extends Chart {
     PieChart(Map args) {
         super(args)
 
-        containerSpecs.acceptedCols = [3, 6, 12]
+//        containerSpecs.acceptedCols = [3, 6, 12]
         containerSpecs.rows = 8
     }
 
