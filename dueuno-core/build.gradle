@@ -23,10 +23,10 @@ dependencies {
 
     // Database drivers
     runtimeOnly "com.h2database:h2:2.5.252"
-    runtimeOnly "com.mysql:mysql-connector-j:26.7.0"
-    runtimeOnly "org.postgresql:postgresql:42.7.13"
-    runtimeOnly "com.microsoft.sqlserver:mssql-jdbc:13.6.0.jre11"
-    runtimeOnly "com.oracle.database.jdbc:ojdbc11:23.26.3.0.0"
+    runtimeOnly "com.mysql:mysql-connector-j:26.10.0"
+    runtimeOnly "org.postgresql:postgresql:42.7.14"
+    runtimeOnly "com.microsoft.sqlserver:mssql-jdbc:13.6.2.jre11"
+    runtimeOnly "com.oracle.database.jdbc:ojdbc11:23.26.4.0.0"
     runtimeOnly "com.ibm.db2:jcc:12.1.5.0"
     runtimeOnly "com.sap.cloud.db.jdbc:ngdbc:2.30.11"
 }
