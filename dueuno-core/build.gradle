@@ -19,7 +19,7 @@ dependencies {
     implementation "org.springframework:spring-websocket"
 
     // System monitoring
-    implementation "net.bull.javamelody:javamelody-spring-boot4-starter:2.8.0"
+    implementation "net.bull.javamelody:javamelody-spring-boot4-starter:2.9.0"
 
     // Database drivers
     runtimeOnly "com.h2database:h2:2.5.252"
