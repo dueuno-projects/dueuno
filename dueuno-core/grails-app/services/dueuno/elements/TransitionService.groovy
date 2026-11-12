@@ -45,13 +45,13 @@ class TransitionService {
         channels.add(channel)
     }
 
-    void publish(String channel, Transition t) {
-        String destination = "/queue/channel/${channel}"
+    void publish(String tenantId, String channel, Transition t) {
+        String destination = "/queue/tenant/${tenantId}/channel/${channel}"
         brokerMessagingTemplate.convertAndSend(destination, t.commandsAsJSON)
     }
 
-    void send(String username, Transition t) {
-        String destination = "/queue/username/${username}"
+    void send(String tenantId, String username, Transition t) {
+        String destination = "/queue/tenant/${tenantId}/username/${username}"
         brokerMessagingTemplate.convertAndSend(destination, t.commandsAsJSON)
     }
 

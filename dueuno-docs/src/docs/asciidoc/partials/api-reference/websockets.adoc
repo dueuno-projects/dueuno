@@ -27,7 +27,7 @@ The framework provides two services for this purpose:
 * `TransitionService.createTransition()` creates a transition containing the
   commands to execute in the browser;
 * `TransitionService.publish()` sends a transition to all clients subscribed
-  to a channel, while `TransitionService.send()` sends it to one user.
+  to a channel within a specified tenant, while `TransitionService.send()` sends it to one user of a specified tenant.
 
 === Page
 
@@ -61,7 +61,7 @@ class LiveController implements ElementsController {
 ----
 
 When the page is loaded, the client connects to the `/stomp` endpoint. It
-automatically subscribes to the queue for the current username and to every
+automatically subscribes to the queue for the current tenant and username and to every
 channel registered through `TransitionService.subscribe()`.
 
 === Channels
@@ -89,8 +89,10 @@ class BootStrap {
 ----
 
 Only pages that are connected and subscribed to `orders` receive messages
-published on that channel. The registration is application-wide for the
-running server; it is not a tenant property.
+published on that channel. Channel names are registered application-wide for the running server. Each
+browser subscribes to these channels within its current tenant, and publishing
+requires an explicit tenant ID. Clients of other tenants do not receive the
+transition.
 
 === Publish
 
@@ -103,12 +105,12 @@ class OrderService {
 
     TransitionService transitionService
 
-    void notifyOrderStatus(String status) {
+    void notifyOrderStatus(String tenantId, String status) {
         def t = transitionService.createTransition()
         t.setValue('orderStatus', status)
         t.infoMessage('Order status updated')
 
-        transitionService.publish('orders', t)
+        transitionService.publish(tenantId, 'orders', t)
     }
 }
 ----
@@ -119,22 +121,22 @@ when the message arrives.
 
 === Send
 
-Use `send()` when a transition must be delivered to one username rather than
+Use `send()` when a transition must be delivered to one username within a tenant rather than
 to every subscriber of a channel:
 
 [source,groovy]
 ----
-void notifyUser(String username) {
+void notifyUser(String tenantId, String username) {
     def t = transitionService.createTransition()
     t.setValue('notificationCount', 1)
     t.infoMessage('You have a new notification')
 
-    transitionService.send(username, t)
+    transitionService.send(tenantId, username, t)
 }
 ----
 
-The username must match the authenticated user's username. The browser
-subscribes automatically to `/queue/username/<username>` when the WebSocket
+The tenant ID and username must match the recipient's tenant and username. The browser
+subscribes automatically to `/queue/tenant/<tenantId>/username/<username>` when the WebSocket
 connection is established.
 
 === Limitations
@@ -162,11 +164,11 @@ the following convention:
 |===
 |Destination |Meaning
 
-|`/queue/username/<username>`
-|Private queue for one authenticated user; used by `TransitionService.send()`.
+|`/queue/tenant/<tenantId>/username/<username>`
+|Queue for one user within a tenant; used by `TransitionService.send()`.
 
-|`/queue/channel/<channel>`
-|Application channel; used by `TransitionService.publish()`.
+|`/queue/tenant/<tenantId>/channel/<channel>`
+|Channel within one tenant; used by `TransitionService.publish()`.
 
 |===
 

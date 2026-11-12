@@ -23,11 +23,13 @@ import dueuno.elements.controls.Checkbox
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
 import dueuno.security.SecurityService
+import dueuno.tenant.TenantService
 
 class WebsocketController implements ElementsController {
 
     TransitionService transitionService
     SecurityService securityService
+    TenantService tenantService
 
     def index() {
         def c = createContent()
@@ -43,20 +45,34 @@ class WebsocketController implements ElementsController {
                 class: Select,
                 id: 'queue',
                 optionsFromList: ['channel', 'user'],
+                defaultValue: 'user',
                 renderTextPrefix: false,
+                cols: 3,
+            )
+            addField(
+                class: Select,
+                id: 'tenantId',
+                optionsFromRecordset: tenantService.list(),
+                keys: ['tenantId'],
+                renderTextPrefix: false,
+                defaultValue: tenantService.currentTenantId,
+                onChange: 'onChangeTenant',
+                cols: 3,
+            )
+            addField(
+                class: Select,
+                id: 'usr',
+                optionsFromRecordset: securityService.listAllUser(tenantId: tenantService.currentTenantId),
+                keys: ['username'],
+                renderTextPrefix: false,
+                defaultValue: securityService.currentUsername,
+                cols: 3,
             )
             addField(
                 class: TextField,
                 id: 'channel',
                 defaultValue: 'macchina-1',
-            )
-            addField(
-                class: Select,
-                id: 'usr',
-                optionsFromRecordset: securityService.listAllUser(),
-                keys: ['username'],
-                renderTextPrefix: false,
-                defaultValue: securityService.currentUsername,
+                cols: 3,
             )
             addField(
                 class: TextField,
@@ -84,6 +100,15 @@ class WebsocketController implements ElementsController {
         display content: c
     }
 
+    def onChangeTenant() {
+        def t = createTransition()
+        def users = securityService.listAllUser(tenantId: params.tenantId)
+        def options = Select.optionsFromRecordset(recordset: users, keys: ['username'])
+        t.set('usr', 'options', options)
+        t.setValue('usr', null)
+        display transition: t
+    }
+
     def onSend() {
         def t = transitionService.createTransition()
         t.redirect(
@@ -96,9 +121,9 @@ class WebsocketController implements ElementsController {
         t.setValue('form.closeButton', true)
 
         if (params.queue == 'user')
-            transitionService.send(params.usr, t)
+            transitionService.send(params.tenantId, params.usr, t)
         else
-            transitionService.publish(params.channel, t)
+            transitionService.publish(params.tenantId, params.channel, t)
 
         display
     }

@@ -24,7 +24,7 @@ import spock.lang.Specification
 
 class TransitionServiceSpec extends Specification {
 
-    void 'sends transition JSON to the existing channel and username destinations'() {
+    void 'sends transition JSON to the tenant-specific channel and username destinations'() {
         given:
         SimpMessagingTemplate template = Mock()
         TransitionService service = new TransitionService(brokerMessagingTemplate: template)
@@ -34,12 +34,16 @@ class TransitionServiceSpec extends Specification {
         }
 
         when:
-        service.publish('updates', transition)
-        service.send('alice', transition)
+        service.publish('tenant-a', 'updates', transition)
+        service.publish('tenant-b', 'updates', transition)
+        service.send('tenant-a', 'alice', transition)
+        service.send('tenant-b', 'alice', transition)
 
         then:
-        1 * template.convertAndSend('/queue/channel/updates', json)
-        1 * template.convertAndSend('/queue/username/alice', json)
+        1 * template.convertAndSend('/queue/tenant/tenant-a/channel/updates', json)
+        1 * template.convertAndSend('/queue/tenant/tenant-b/channel/updates', json)
+        1 * template.convertAndSend('/queue/tenant/tenant-a/username/alice', json)
+        1 * template.convertAndSend('/queue/tenant/tenant-b/username/alice', json)
         0 * template._
     }
 }
