@@ -53,6 +53,31 @@ class ControlConfigurationSpec extends Specification {
         applicationContext.close()
     }
 
+    void 'retains multiple select values and allows clearing the selection'() {
+        given:
+        Select select = new Select(id: 'groups', multiple: true)
+
+        when:
+        select.value = selection
+
+        then:
+        select.value == expected
+
+        when:
+        select.value = []
+
+        then:
+        select.value == []
+
+        where:
+        selection                | expected
+        ['6']                    | ['6']
+        ['6', '7']               | ['6', '7']
+        [6L, 7L]                 | [6L, 7L]
+        [[id: 6L], [id: 7L]]     | [6L, 7L]
+        []                       | []
+    }
+
     void configuresDerivedPropertiesAfterConstruction() {
         given:
         DateTimeField dateTimeField = new DateTimeField(id: 'dateTime')

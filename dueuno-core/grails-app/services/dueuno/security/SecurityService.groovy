@@ -587,6 +587,12 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         if (filterParams.containsKey('deletable')) query = query.where { deletable == filterParams.deletable }
         if (filterParams.containsKey('enabled')) query = query.where { enabled == filterParams.enabled }
 
+        if (filterParams.groups) {
+            List<Long> groupIds = (filterParams.groups as List).collect { it as Long }
+            def memberships = TUserRoleGroup.where { roleGroup.id in groupIds }.property('user')
+            query = query.where { id in memberships }
+        }
+
         if (filterParams.find) {
             query = query.where {
                 true

@@ -331,6 +331,8 @@ class Select extends Control {
             Collection collection = value as Collection
             if (ObjectUtils.hasId(collection[0])) {
                 super.setValue(value.collect { it['id'] })
+            } else {
+                super.setValue(value)
             }
 
         } else if (ObjectUtils.hasId(value)) {

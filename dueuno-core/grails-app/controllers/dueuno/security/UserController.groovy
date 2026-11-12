@@ -98,17 +98,25 @@ class UserController implements ElementsController {
                     )
                 }
                 addField(
+                    class: Select,
+                    id: 'groups',
+                    optionsFromRecordset: securityService.listAllGroup(tenantId: getFilter('tenantId')),
+                    label: 'user.groups',
+                    multiple: true,
+                    cols: 4,
+                )
+                addField(
                     class: TextField,
                     id: 'find',
                     label: TextDefault.FIND,
-                    cols: 8,
+                    cols: 3,
                 )
                 addField(
                     class: Select,
                     id: 'enabled',
                     options: [true: 'enabled', false: 'disabled'],
                     search: false,
-                    cols: 2,
+                    cols: 3,
                 )
             }
             sortable = [
@@ -161,6 +169,7 @@ class UserController implements ElementsController {
 
         def filters = c.table.filterParams
         if (filters.tenantNoFilter) filters.tenantId = tenantService.currentTenantId
+
         c.table.body = securityService.listAllUser(filters, params)
         c.table.paginate = securityService.countAllUser(filters)
 
