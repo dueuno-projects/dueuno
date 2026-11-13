@@ -34,6 +34,8 @@ import groovy.util.logging.Slf4j
 import jakarta.servlet.ServletContext
 import org.grails.io.support.PathMatchingResourcePatternResolver
 import org.grails.io.support.Resource
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.event.EventListener
 
 /**
  * Application API
@@ -52,6 +54,7 @@ class ApplicationService implements LinkGeneratorAware {
     ApplicationPropertyService applicationPropertyService
 
     private static Map<String, List> credits = [:]
+    private boolean initializationCompleted
 
     /**
      * Returns an application scoped variable
@@ -105,6 +108,32 @@ class ApplicationService implements LinkGeneratorAware {
         registerLanguages()
         registerOnInit(closure)
         startApplication()
+        initializationCompleted = true
+    }
+
+    @EventListener(ApplicationReadyEvent)
+    void verifyInitialization() {
+        if (!initializationCompleted) {
+            throw new IllegalStateException("""
+
+APPLICATION NOT INITIALIZED
+
+Add ApplicationService to grails-app/init/<your-package>/BootStrap.groovy
+and call applicationService.onInit() inside the init closure:
+
+class BootStrap {
+
+    ApplicationService applicationService
+
+    def init = {
+        applicationService.onInit {
+            // This can be left unimplemented
+        }
+    }
+
+}
+""")
+        }
     }
 
     @Transactional

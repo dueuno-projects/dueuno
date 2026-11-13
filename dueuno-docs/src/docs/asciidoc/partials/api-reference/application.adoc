@@ -102,6 +102,10 @@ class BootStrap {
 === onInit()
 Initializes the application. This closure gets called each time the application is executed.
 
+This call is required, even when the application has no custom initialization code.
+Call `applicationService.onInit()` once inside the application's `BootStrap.init`, after registering any lifecycle callbacks.
+If it is missing, Dueuno stops startup with a message showing the required `BootStrap.groovy` setup.
+
 .grails-app/init/BootStrap.groovy
 [source,groovy]
 ----
