@@ -72,3 +72,16 @@ assets {
             'webjars/**',
     ]
 }
+
+// Keep generated plugin assets outside processResources' output: its Sync step
+// otherwise removes the files produced by assetPluginPackage on a clean build.
+afterEvaluate {
+    def packageAssets = tasks.named("assetPluginPackage") {
+        destinationDirectory = layout.buildDirectory.dir("generated/plugin-assets/META-INF")
+    }
+    tasks.named("processResources") {
+        from(packageAssets) {
+            into "META-INF"
+        }
+    }
+}

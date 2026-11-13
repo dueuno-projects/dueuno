@@ -5,6 +5,10 @@ plugins {
 dependencies {
     api project(":commons-utils")
 
+    // Shared browser libraries, including production asset compilation.
+    runtimeOnly "org.webjars.npm:jquery"
+    runtimeOnly "org.webjars.npm:bootstrap"
+
     // Design by Contract support
     api "org.apache.groovy:groovy-contracts"
 
@@ -29,4 +33,23 @@ dependencies {
     runtimeOnly "com.oracle.database.jdbc:ojdbc11:23.26.4.0.0"
     runtimeOnly "com.ibm.db2:jcc:12.1.5.0"
     runtimeOnly "com.sap.cloud.db.jdbc:ngdbc:2.30.11"
+}
+
+// Browser tests use the same WebJars as the application, resolved by the Grails BOM.
+def javaScriptTestAssets = layout.buildDirectory.dir("javascript-test-assets")
+
+tasks.register("prepareJavaScriptTestAssets", Sync) {
+    from({
+        configurations.runtimeClasspath.findAll {
+            it.name ==~ /(?:jquery|bootstrap)-[0-9].*\.jar/
+        }.collect { zipTree(it) }
+    })
+    include "META-INF/resources/webjars/**"
+    into javaScriptTestAssets
+}
+
+tasks.register("javascriptWebjarTest", Exec) {
+    dependsOn "prepareJavaScriptTestAssets"
+    environment "DUEUNO_TEST_WEBJARS", javaScriptTestAssets.get().asFile.absolutePath
+    commandLine "node", "--test", "src/test/javascript/ButtonDropdown.test.cjs"
 }

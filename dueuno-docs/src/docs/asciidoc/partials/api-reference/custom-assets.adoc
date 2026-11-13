@@ -35,7 +35,6 @@ create a separate file for each functional area and include it from the
 [source,css,subs="attributes+"]
 ----
 /*
- *= require bootstrap
  *= require orders
  *= require_self
  */
@@ -92,9 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
 [source,javascript,subs="attributes+"]
 ----
 // Any JavaScript file within this directory can be referenced here.
-//= require jquery-3.5.1.min
-//= require popper.min
-//= require bootstrap
 //= require orders
 //= require_self
 ----
@@ -131,3 +127,18 @@ example `javascripts/orders/table.js` is loaded with
   `src/main/resources/deploy/public` are a separate mechanism; use the asset
   pipeline for CSS, JavaScript and other web assets that belong to the
   application bundle.
+
+=== Shared libraries and generated Grails assets
+
+Dueuno loads jQuery and Bootstrap from WebJars using the versions managed by the Grails BOM.
+They are runtime dependencies of `dueuno-core`, so they are also available when compiling production assets.
+Do not include jQuery or Bootstrap again in `application.js` or `application.css`: these manifests are loaded after Dueuno's libraries, and loading jQuery a second time removes Dueuno's jQuery extensions.
+
+When keeping the generated Grails welcome page, move its library imports into separate manifests loaded only by `grails-app/views/layouts/main.gsp`.
+Keep `grails.css` in that layout too, so its styles do not affect Dueuno pages.
+Application-specific code and styles can remain in `application.js` and `application.css`.
+
+Popper remains a separate asset because the date/time picker requires the global `Popper` object; Bootstrap's bundle contains a private copy.
+
+Run the WebJar browser regression tests with `./gradlew :dueuno-core:javascriptWebjarTest`.
+This task extracts the resolved WebJars for the browser tests; set `CHROME_BIN` if Chrome is installed at a nonstandard path.

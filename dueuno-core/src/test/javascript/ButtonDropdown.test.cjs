@@ -20,10 +20,18 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { test } = require('node:test');
 
+const webjars = path.join(process.env.DUEUNO_TEST_WEBJARS ||
+    path.resolve(__dirname, '../../../build/javascript-test-assets'), 'META-INF/resources/webjars');
+const readWebjar = (name, file) => {
+    const versions = fs.readdirSync(path.join(webjars, name));
+    assert.equal(versions.length, 1, `Expected one resolved version of ${name}`);
+    return fs.readFileSync(path.join(webjars, name, versions[0], file), 'utf8');
+};
+
 const chrome = process.env.CHROME_BIN || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
 for (const moduleName of ['dueuno-core', 'app-test']) {
-    test(`${moduleName}: detached dropdown keyboard navigation stays with its owner`, {
+    test(`${moduleName}: WebJars preserve jQuery extensions, calendar positioning and dropdown navigation`, {
         skip: !fs.existsSync(chrome) && 'Set CHROME_BIN to run the browser regression test',
     }, () => {
         const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dueuno-dropdown-'));
@@ -35,14 +43,18 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                 <li><a class="dropdown-item disabled" href="#">Disabled</a></li>
                 <li><a class="dropdown-item" style="display:none" href="#">Hidden</a></li>
                 <li><a class="dropdown-item" href="#" id="${id}-second">Second</a></li></ul></div>`;
-            const html = `<style>${read('libs/bootstrap-5.3.2-dist/css/bootstrap.min.css')}</style>
+            const html = `<style>${readWebjar('bootstrap', 'dist/css/bootstrap.css')}</style>
                 <style>${read('elements/components/Button.css')}
                 :root { --elements-secondary-bg: 210, 225, 240; --elements-secondary-text: 20, 30, 40; }
                 * { transition: none !important; }</style>
                 <div id="page">${button('back')}<table><tr><td>${button('row')}</td></tr></table></div>
-                <div id="modal">${button('modal-row')}</div><pre id="result">PENDING</pre>
-                <script>${read('libs/jquery-4.0.0.min.js')}</script>
-                <script>${read('libs/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js')}</script>
+                <div id="modal">${button('modal-row')}</div>
+                <div id="calendar"><input type="text"></div><pre id="result">PENDING</pre>
+                <script>${readWebjar('jquery', 'dist/jquery.js')}</script>
+                <script>${readWebjar('bootstrap', 'dist/js/bootstrap.bundle.js')}</script>
+                <script>${read('utils/utils-jquery.js')}</script>
+                <script>${read('libs/popper-2.11.8.min.js')}</script>
+                <script>${read('libs/tempus-dominus-6.9.4-dist/tempus-dominus.min.js')}</script>
                 <script>class Component { static register() {} }
                 const Page = { $self: $('#page') };
                 const PageModal = { isActive: false, $self: $('#modal') };</script>
@@ -51,6 +63,12 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                 window.addEventListener('load', () => {
                     try {
                         const check = (value, message) => { if (!value) throw new Error(message); };
+                        check($('<div>').exists(), 'Dueuno jQuery extensions must be available');
+                        const calendar = new tempusDominus.TempusDominus(document.getElementById('calendar'));
+                        calendar.show();
+                        check(document.querySelector('.tempus-dominus-widget.show'), 'Calendar must open with Popper available');
+                        calendar.hide();
+                        calendar.dispose();
                         const press = key => document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
                         const focused = id => check(document.activeElement.id === id, 'Expected focus on ' + id + ', got ' + document.activeElement.id);
                         $('.component-button').each(function () { Button.finalize($(this)); });
