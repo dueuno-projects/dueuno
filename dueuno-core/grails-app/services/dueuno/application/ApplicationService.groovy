@@ -116,10 +116,12 @@ class ApplicationService implements LinkGeneratorAware {
         if (!initializationCompleted) {
             throw new IllegalStateException("""
 
-APPLICATION NOT INITIALIZED
+DUEUNO NOT INITIALIZED
 
 Add ApplicationService to grails-app/init/<your-package>/BootStrap.groovy
 and call applicationService.onInit() inside the init closure:
+
+import dueuno.application.ApplicationService
 
 class BootStrap {
 
