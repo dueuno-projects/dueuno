@@ -270,12 +270,12 @@ class AuthenticationProviderController implements ElementsController {
                 addField(
                     class: TextField,
                     id: 'ibmSystemName',
-                    cols: 12,
+                    cols: 6,
                 )
                 addField(
                     class: Checkbox,
                     id: 'ibmUseSsl',
-                    cols: 12,
+                    cols: 6,
                 )
                 addField(
                     class: Checkbox,
