@@ -50,6 +50,8 @@ class TUser implements GormEntity, Serializable {
     LocalDateTime physicalIdLastAccess
     String ldapUid
     LocalDateTime ldapLastAccess
+    String ibmUid
+    LocalDateTime ibmLastAccess
     String apiKey
     LocalDateTime apiKeyLastAccess
 

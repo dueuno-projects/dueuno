@@ -51,6 +51,10 @@ class TAuthenticationProvider implements GormEntity, Serializable {
     Boolean retrieveDatabaseRoles
     String defaultRole
 
+    // IBM i
+    String ibmSystemName
+    Boolean ibmUseSsl
+
     // OIDC
     String clientId
     String clientSecret

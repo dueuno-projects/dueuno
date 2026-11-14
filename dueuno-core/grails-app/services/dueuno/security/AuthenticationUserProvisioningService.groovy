@@ -84,6 +84,31 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
 
     @Transactional
     @CompileDynamic
+    UserDetails ensureIbmUser(String ibmUid) {
+        if (!ibmUid?.trim()) throw new UsernameNotFoundException('Authenticated identity has no username')
+        String username = ibmUid.trim().toUpperCase(Locale.ROOT)
+        String tenantId = tenantService.getTenantIdByRequest(request) ?: tenantService.defaultTenantId
+        if (!tenantId) throw new UsernameNotFoundException('Unable to resolve tenant for authenticated user')
+
+        TUser user = securityService.getUserByTenantIdAndUsername(tenantId, username)
+        if (!user) {
+            tenantService.withTenant(tenantId) {
+                user = securityService.createUser(
+                    tenantId: tenantId,
+                    username: username,
+                    password: securityService.generatePassword(),
+                    failOnError: true,
+                )
+            }
+        }
+        user.ibmUid = username
+        user.ibmLastAccess = LocalDateTime.now()
+        user.save(flush: true, failOnError: true)
+        return userDetailsService.loadUserByUsername(user.username)
+    }
+
+    @Transactional
+    @CompileDynamic
     UserDetails ensureOidcUser(TAuthenticationProvider provider, String issuer, String subject, Map profile) {
         if (!provider?.providerType?.isOidcProvider() || !issuer || !subject) {
             throw new UsernameNotFoundException('OIDC identity has no provider, issuer or subject')

@@ -49,9 +49,9 @@ class AuthenticationProviderController implements ElementsController {
         }
 
         tableColumns.addAll([
-            'sequence',
-            'providerType',
             'enabled',
+            'providerType',
+            'sequence',
         ])
 
         c.table.with {
@@ -248,6 +248,34 @@ class AuthenticationProviderController implements ElementsController {
                     class: TextField,
                     id: 'groupRoleAttribute',
                     cols: 4,
+                )
+                addField(
+                    class: Checkbox,
+                    id: 'retrieveDatabaseRoles',
+                    cols: 6,
+                )
+                addField(
+                    class: TextField,
+                    id: 'defaultRole',
+                    cols: 6,
+                )
+            }
+
+            if (obj.providerType == AuthenticationProviderType.IBM) {
+                addField(
+                    class: Separator,
+                    id: 'configuration',
+                    icon: 'fa-gear',
+                )
+                addField(
+                    class: TextField,
+                    id: 'ibmSystemName',
+                    cols: 12,
+                )
+                addField(
+                    class: Checkbox,
+                    id: 'ibmUseSsl',
+                    cols: 12,
                 )
                 addField(
                     class: Checkbox,

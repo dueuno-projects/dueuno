@@ -34,6 +34,7 @@ class AuthenticationProviderManager implements AuthenticationManager, Authentica
         AuthenticationProviderType.LOCAL,
         AuthenticationProviderType.PHYSICAL,
         AuthenticationProviderType.LDAP,
+        AuthenticationProviderType.IBM,
         AuthenticationProviderType.REMEMBERME,
     ]
 

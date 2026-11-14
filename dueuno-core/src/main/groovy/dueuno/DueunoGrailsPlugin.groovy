@@ -24,6 +24,7 @@ import dueuno.security.UserSessionTomcatContextListener
 import dueuno.security.physical.PhysicalUserDetailsService
 import dueuno.security.physical.PhysicalAuthenticationFilter
 import dueuno.security.AuthenticationProviderManager
+import dueuno.security.IbmAuthenticationProvider
 import dueuno.security.LdapAuthenticationProvider
 import dueuno.tenant.TenantForCurrentUserResolver
 import grails.core.GrailsApplication
@@ -121,6 +122,15 @@ class DueunoGrailsPlugin extends Plugin {
             registry.registerBean('ldapAuthenticationProvider', LdapAuthenticationProvider) { spec ->
                 spec.supplier { context ->
                     LdapAuthenticationProvider bean = new LdapAuthenticationProvider()
+                    bean.authenticationProviderService = context.bean('authenticationProviderService', AuthenticationProviderService)
+                    bean.authenticationUserProvisioningService = context.bean('authenticationUserProvisioningService', AuthenticationUserProvisioningService)
+                    bean
+                }
+            }
+
+            registry.registerBean('ibmAuthenticationProvider', IbmAuthenticationProvider) { spec ->
+                spec.supplier { context ->
+                    IbmAuthenticationProvider bean = new IbmAuthenticationProvider()
                     bean.authenticationProviderService = context.bean('authenticationProviderService', AuthenticationProviderService)
                     bean.authenticationUserProvisioningService = context.bean('authenticationUserProvisioningService', AuthenticationUserProvisioningService)
                     bean

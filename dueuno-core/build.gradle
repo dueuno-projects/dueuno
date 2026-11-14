@@ -12,6 +12,9 @@ dependencies {
     // Design by Contract support
     api "org.apache.groovy:groovy-contracts"
 
+    // IBM i authentication (IBM Public License 1.0; distributed as an external binary).
+    implementation "net.sf.jt400:jt400:21.0.7"
+
     // Security (to use the @Secured annotation)
     api "org.apache.grails:grails-spring-security:${grailsVersion}"
 

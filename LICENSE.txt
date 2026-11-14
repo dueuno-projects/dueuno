@@ -200,3 +200,9 @@ Apache License
    See the License for the specific language governing permissions and
    limitations under the License.
 
+
+Third-party dependency: JTOpen / JT400 (net.sf.jt400:jt400:21.0.7)
+Copyright IBM Corp. and others.
+Distributed as an external binary under the IBM Public License Version 1.0.
+The full license is in licenses/JTOpen-license.html and in the dependency JAR.
+Source: https://github.com/IBM/JTOpen

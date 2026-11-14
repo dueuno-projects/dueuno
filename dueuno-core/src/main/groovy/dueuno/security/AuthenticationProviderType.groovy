@@ -23,6 +23,7 @@ enum AuthenticationProviderType {
     LOCAL('daoAuthenticationProvider'),
     PHYSICAL('physicalAuthenticationProvider'),
     LDAP('ldapAuthenticationProvider'),
+    IBM('ibmAuthenticationProvider'),
     GOOGLE('oidc'),
     MS_ENTRA('oidc'),
     SAP_IAS('oidc'),

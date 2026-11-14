@@ -68,8 +68,17 @@ class AuthenticationProviderService implements WebRequestAware {
                 defaultRole          : 'ROLE_USER',
             ],
             [
+                providerType         : AuthenticationProviderType.IBM,
+                sequence             : 4,
+                ibmSystemName        : 'https://pub400.com/',
+                enabled              : false,
+                ibmUseSsl            : true,
+                retrieveDatabaseRoles: true,
+                defaultRole          : 'ROLE_USER',
+            ],
+            [
                 providerType              : AuthenticationProviderType.GOOGLE,
-                sequence                  : 4,
+                sequence                  : 5,
                 enabled                   : false,
                 discoveryUri              : 'https://accounts.google.com/.well-known/openid-configuration',
                 clientAuthenticationMethod: OidcAuthenticationMethod.CLIENT_SECRET_POST,
@@ -77,7 +86,7 @@ class AuthenticationProviderService implements WebRequestAware {
             ],
             [
                 providerType              : AuthenticationProviderType.MS_ENTRA,
-                sequence                  : 5,
+                sequence                  : 6,
                 enabled                   : false,
                 discoveryUri              : 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
                 clientAuthenticationMethod: OidcAuthenticationMethod.CLIENT_SECRET_POST,
@@ -85,14 +94,14 @@ class AuthenticationProviderService implements WebRequestAware {
             ],
             [
                 providerType              : AuthenticationProviderType.SAP_IAS,
-                sequence                  : 6,
+                sequence                  : 7,
                 enabled                   : false,
                 clientAuthenticationMethod: OidcAuthenticationMethod.CLIENT_SECRET_BASIC,
                 scopes                    : 'openid email profile',
             ],
             [
                 providerType              : AuthenticationProviderType.OIDC,
-                sequence                  : 7,
+                sequence                  : 8,
                 enabled                   : false,
                 clientAuthenticationMethod: OidcAuthenticationMethod.CLIENT_SECRET_BASIC,
                 scopes                    : 'openid email profile',
@@ -114,6 +123,9 @@ class AuthenticationProviderService implements WebRequestAware {
 
             } else {
                 provider.sequence = values.sequence as Integer
+                if (!provider.ibmSystemName && values.ibmSystemName) {
+                    provider.ibmSystemName = values.ibmSystemName as String
+                }
                 if (!provider.discoveryUri && values.discoveryUri) {
                     provider.discoveryUri = values.discoveryUri as String
                 }

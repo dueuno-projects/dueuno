@@ -349,6 +349,21 @@ class UserController implements ElementsController {
                 )
                 addField(
                     class: TextField,
+                    id: 'ibmUid',
+                    icon: 'fa-user',
+                    readonly: true,
+                    cols: 8,
+                )
+                addField(
+                    class: DateTimeField,
+                    id: 'ibmLastAccess',
+                    icon: 'fa-time',
+                    readonly: true,
+                    renderSeconds: true,
+                    cols: 4,
+                )
+                addField(
+                    class: TextField,
                     id: 'physicalId',
                     icon: 'fa-barcode',
                     cols: 8,

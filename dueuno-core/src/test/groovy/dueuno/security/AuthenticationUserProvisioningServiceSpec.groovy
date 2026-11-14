@@ -79,6 +79,52 @@ class AuthenticationUserProvisioningServiceSpec extends Specification implements
         ' Alice@Example.org ' | 'alice@example.org'
     }
 
+    void 'updates IBM profile and access time without changing existing user data'() {
+        given:
+        TUser user = createTestUser()
+        String originalEmail = user.email
+        AuthenticationUserProvisioningService service = new AuthenticationUserProvisioningService(
+            tenantService: Stub(TenantService) { getTenantIdByRequest(_) >> 'TEST' },
+            securityService: Stub(SecurityService) { getUserByTenantIdAndUsername('TEST', 'ALICE') >> user },
+            userDetailsService: Stub(UserDetailsService),
+        )
+
+        when:
+        service.ensureIbmUser('alice')
+
+        then:
+        TUser.get(user.id).ibmUid == 'ALICE'
+        TUser.get(user.id).ibmLastAccess != null
+        TUser.get(user.id).username == 'alice@example.org'
+        TUser.get(user.id).email == originalEmail
+    }
+
+    void 'creates a local user after IBM i signon with a generated local password'() {
+        given:
+        TUser user = createTestUser()
+        TenantService tenants = Mock()
+        SecurityService security = Mock()
+        AuthenticationUserProvisioningService service = new AuthenticationUserProvisioningService(
+            tenantService: tenants,
+            securityService: security,
+            userDetailsService: Stub(UserDetailsService),
+        )
+
+        when:
+        service.ensureIbmUser('alice')
+
+        then:
+        1 * tenants.getTenantIdByRequest(_) >> 'TEST'
+        1 * security.getUserByTenantIdAndUsername('TEST', 'ALICE') >> null
+        1 * tenants.withTenant('TEST', _) >> { String tenantId, Closure work -> work.call() }
+        1 * security.generatePassword() >> 'generated-local-password'
+        1 * security.createUser([
+            tenantId: 'TEST', username: 'ALICE', password: 'generated-local-password', failOnError: true,
+        ]) >> user
+        user.ibmUid == 'ALICE'
+        user.ibmLastAccess != null
+    }
+
     void 'blocks OIDC provisioning when the identity has no email'() {
         given:
         AuthenticationUserProvisioningService service = new AuthenticationUserProvisioningService()
