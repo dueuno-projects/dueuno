@@ -31,7 +31,7 @@ const readWebjar = (name, file) => {
 const chrome = process.env.CHROME_BIN || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
 for (const moduleName of ['dueuno-core', 'app-test']) {
-    test(`${moduleName}: WebJars preserve jQuery extensions, calendar positioning and dropdown navigation`, {
+    test(`${moduleName}: WebJars preserve jQuery extensions, calendar positioning, user menu alignment and dropdown navigation`, {
         skip: !fs.existsSync(chrome) && 'Set CHROME_BIN to run the browser regression test',
     }, () => {
         const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dueuno-dropdown-'));
@@ -43,10 +43,15 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                 <li><a class="dropdown-item disabled" href="#">Disabled</a></li>
                 <li><a class="dropdown-item" style="display:none" href="#">Hidden</a></li>
                 <li><a class="dropdown-item" href="#" id="${id}-second">Second</a></li></ul></div>`;
+            const userMenuHeader = fs.readFileSync(path.resolve(assets, '../../views/dueuno/elements/pages/_ShellUserMenu.gsp'), 'utf8')
+                .match(/<div class="offcanvas-header">[\s\S]*?<\/div>/)[0]
+                .replace('${c.title}', 'Admin');
             const html = `<style>${readWebjar('bootstrap', 'dist/css/bootstrap.css')}</style>
                 <style>${read('elements/components/Button.css')}
+                ${read('elements/pages/ShellUserMenu.css')}
                 :root { --elements-secondary-bg: 210, 225, 240; --elements-secondary-text: 20, 30, 40; }
                 * { transition: none !important; }</style>
+                <div id="shell-user-menu" style="width:240px">${userMenuHeader}</div>
                 <div id="page">${button('back')}<table><tr><td>${button('row')}</td></tr></table></div>
                 <div id="modal">${button('modal-row')}</div>
                 <div id="calendar"><input type="text"></div><pre id="result">PENDING</pre>
@@ -63,6 +68,10 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                 window.addEventListener('load', () => {
                     try {
                         const check = (value, message) => { if (!value) throw new Error(message); };
+                        const header = document.querySelector('#shell-user-menu .offcanvas-header');
+                        const close = header.querySelector('button').getBoundingClientRect();
+                        const right = header.getBoundingClientRect().right - parseFloat(getComputedStyle(header).paddingRight);
+                        check(Math.abs(close.right - right) < 1, 'User menu close button must align with the right padding');
                         check($('<div>').exists(), 'Dueuno jQuery extensions must be available');
                         const calendar = new tempusDominus.TempusDominus(document.getElementById('calendar'));
                         calendar.show();

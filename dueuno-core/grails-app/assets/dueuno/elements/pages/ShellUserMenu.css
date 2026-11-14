@@ -12,6 +12,7 @@
 }
 
 #shell-user-menu .offcanvas-header {
+    justify-content: space-between;
     height: 3.3rem;
     padding-right: .75rem;
 }
