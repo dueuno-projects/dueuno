@@ -46,10 +46,7 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
         }
 
         String email = profile.email as String
-        String username = email?.trim()?.toLowerCase(Locale.ROOT)
-        if (!username) {
-            throw new UsernameNotFoundException('Authenticated identity has no email')
-        }
+        String username = email?.trim()?.toLowerCase(Locale.ROOT) ?: ldapUid
         String firstname = (profile.firstname as String)?.trim()
         String lastname = (profile.lastname as String)?.trim()
         if (!firstname) firstname = null
