@@ -2,7 +2,7 @@ class ShellMenu extends Component {
 
     static initialize($element, $root) {
         let $menu = $('#shell-menu-items');
-        mountSimpleBar($menu[0]);
+        Utils.mountSimpleBar($menu[0]);
     }
 
     static finalize($element, $root) {
@@ -163,7 +163,7 @@ class ShellMenu extends Component {
             }
         });
 
-        if (isEmpty(search)) $('.sidebar-nav li').removeClass('hide');
+        if (Utils.isEmpty(search)) $('.sidebar-nav li').removeClass('hide');
     }
 }
 

@@ -58,7 +58,7 @@ class Checkbox extends Control {
 
     static setText($element, value) {
         let $text = $element.closest('.input-group').find('.text-wrapper');
-        if ($text.exists()) {
+        if (JQuery.exists($text)) {
             $text.html(value);
         }
     }

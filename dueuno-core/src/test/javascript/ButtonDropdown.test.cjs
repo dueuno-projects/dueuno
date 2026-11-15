@@ -30,8 +30,9 @@ const readWebjar = (name, file) => {
 
 const chrome = process.env.CHROME_BIN || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
-for (const moduleName of ['dueuno-core', 'app-test']) {
-    test(`${moduleName}: WebJars preserve jQuery extensions, calendar positioning, user menu alignment and dropdown navigation`, {
+for (const [moduleName, reloadJQuery] of ['dueuno-core', 'app-test'].flatMap(
+    name => [false, true].map(reload => [name, reload]))) {
+    test(`${moduleName}${reloadJQuery ? ' after reloading jQuery' : ''}: WebJars preserve JQuery, calendar positioning, user menu alignment and dropdown navigation`, {
         skip: !fs.existsSync(chrome) && 'Set CHROME_BIN to run the browser regression test',
     }, () => {
         const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dueuno-dropdown-'));
@@ -57,6 +58,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                 <div id="calendar"><input type="text"></div><pre id="result">PENDING</pre>
                 <script>${readWebjar('jquery', 'dist/jquery.js')}</script>
                 <script>${readWebjar('bootstrap', 'dist/js/bootstrap.bundle.js')}</script>
+                <script>${read('utils/utils.js')}</script>
                 <script>${read('utils/utils-jquery.js')}</script>
                 <script>${read('libs/popper-2.11.8.min.js')}</script>
                 <script>${read('libs/tempus-dominus-6.9.4-dist/tempus-dominus.min.js')}</script>
@@ -65,6 +67,13 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                 const PageModal = { isActive: false, $self: $('#modal') };</script>
                 <script>${read('elements/components/Button.js')}</script>
                 <script>
+                const originalJQuery = $;
+                const originalUtils = JQuery;
+                const oldElement = $('<div class="fa-old keep" data-enabled="true" data-empty=""></div>');
+                oldElement.data('runtime', 'preserved');
+                </script>
+                ${reloadJQuery ? `<script>${readWebjar('jquery', 'dist/jquery.js')}</script>` : ''}
+                <script>
                 window.addEventListener('load', () => {
                     try {
                         const check = (value, message) => { if (!value) throw new Error(message); };
@@ -72,7 +81,29 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                         const close = header.querySelector('button').getBoundingClientRect();
                         const right = header.getBoundingClientRect().right - parseFloat(getComputedStyle(header).paddingRight);
                         check(Math.abs(close.right - right) < 1, 'User menu close button must align with the right padding');
-                        check($('<div>').exists(), 'Dueuno jQuery extensions must be available');
+                        check(JQuery === originalUtils, 'JQuery must survive jQuery reinitialization');
+                        check(($ !== originalJQuery) === ${reloadJQuery}, 'Expected a fresh jQuery instance on reload');
+                        check(typeof $.fn.exists === 'undefined' && typeof $.getQueryParameters === 'undefined',
+                            'Dueuno must not extend jQuery');
+                        const freshElement = $('<div class="fa-old keep" data-enabled="true" data-empty=""></div>');
+                        for (const element of [oldElement, freshElement]) {
+                            check(JQuery.exists(element), 'Nonempty selection must exist');
+                            check(!JQuery.exists($()), 'Empty selection must not exist');
+                            check(JQuery.attrIs(element, 'enabled', true), 'Data equality must work');
+                            check(JQuery.attrIsTrue(element, 'enabled'), 'True data must work');
+                            check(!JQuery.attrIsFalse(element, 'enabled'), 'True data must not be false');
+                            check(JQuery.attrIsFalse(element, 'missing'), 'Missing data must be false');
+                            check(JQuery.attrIsNot(element, 'enabled', false), 'Data inequality must work');
+                            check(JQuery.attrIsNot(element, 'missing', true), 'Missing data must be unequal');
+                            check(JQuery.attrExists(element, 'enabled'), 'Data attribute must exist');
+                            check(!JQuery.attrExists(element, 'empty'), 'Empty data attribute must not exist');
+                            check(!JQuery.attrExists(element, 'missing'), 'Missing data attribute must not exist');
+                            JQuery.removeClassesStartingWith(element, 'fa-');
+                            check(element.attr('class') === 'keep', 'Class prefix removal must work');
+                        }
+                        check(oldElement.data('runtime') === 'preserved', 'Old selections retain their data');
+                        check(Utils.getQueryParameters('/test?a=1&b=2').b === '2', 'Query parsing must work');
+                        check(Utils.getUriString('/test?a=1') === '/test', 'URI parsing must work');
                         const calendar = new tempusDominus.TempusDominus(document.getElementById('calendar'));
                         calendar.show();
                         check(document.querySelector('.tempus-dominus-widget.show'), 'Calendar must open with Popper available');

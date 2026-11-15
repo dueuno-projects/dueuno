@@ -18,7 +18,7 @@ class PageStickyBox {
     static get $self() { return $('#page-sticky-box') }
 
     static initialize() {
-        if (!PageContent.$self.exists()) {
+        if (!JQuery.exists(PageContent.$self)) {
             return;
         }
 
@@ -47,7 +47,7 @@ class PageStickyBox {
     }
 
     static finalize() {
-        if (!PageContent.$self.exists()) {
+        if (!JQuery.exists(PageContent.$self)) {
             return;
         }
 
@@ -60,7 +60,7 @@ class PageStickyBox {
         if (isNeeded && !isActive) {
             // First time or new sticky components have been provided
             let $stickyComponents = PageContent.$self.find('> [data-21-component][sticky]');
-            if ($stickyComponents.exists()) {
+            if (JQuery.exists($stickyComponents)) {
                 let $stickyBox = $('<div id="page-sticky-box"></div>');
                 PageContent.$self.before($stickyBox);
                 $stickyBox.append($stickyComponents);
@@ -95,18 +95,18 @@ class PageStickyBox {
             }
         }
 
-        if (PageContent.$self.exists() && hasStickyComponents) {
+        if (JQuery.exists(PageContent.$self) && hasStickyComponents) {
             PageContent.$self[0].setAttribute('sticky', '');
         }
     }
 
     static hasNewStickyComponents() {
         let $stickyComponents = PageContent.$self.find('> [data-21-component][sticky]');
-        return $stickyComponents.exists();
+        return JQuery.exists($stickyComponents);
     }
 
     static isStickyBoxNeeded() {
-        if (!PageContent.$self.exists()) {
+        if (!JQuery.exists(PageContent.$self)) {
             return false;
         }
 
@@ -114,7 +114,7 @@ class PageStickyBox {
     }
 
     static isStickyBoxActive() {
-        return PageStickyBox.$self.exists();
+        return JQuery.exists(PageStickyBox.$self);
     }
 
     static getContentStickyComponents() {

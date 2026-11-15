@@ -108,7 +108,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
 
         const context = vm.createContext({
             Component: class { static register() {} },
-            isEmpty: value => !value,
+            Utils: { isEmpty: value => !value },
             $: value => {
                 if (value === '#shell-menu-search input') return wrap([]);
                 if (value === '#shell-menu li.nav-item:has(a)') return wrap(rows.filter(row => row.type === 'item'));

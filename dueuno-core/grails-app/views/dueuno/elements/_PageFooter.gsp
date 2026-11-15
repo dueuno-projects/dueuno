@@ -53,6 +53,6 @@
 </asset:assetPathExists>
 
 <%-- Application Specific Javascript --%>
-<asset:assetPathExists src="application.js">
-    <asset:javascript src="application.js"/>
+<asset:assetPathExists src="dueuno.js">
+    <asset:javascript src="dueuno.js"/>
 </asset:assetPathExists>

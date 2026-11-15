@@ -17,7 +17,7 @@ class PageContent extends Component {
     static get $scrollbarBox() { return $('#page-content-scrollbar-box') }
 
     static finalize() {
-        if (!PageContent.$self.exists()) {
+        if (!JQuery.exists(PageContent.$self)) {
             return;
         }
 
@@ -33,7 +33,7 @@ class PageContent extends Component {
     }
 
     static onWindowResize(event) {
-        if (!PageContent.$self.exists()) {
+        if (!JQuery.exists(PageContent.$self)) {
             return;
         }
 
@@ -77,7 +77,7 @@ class PageContent extends Component {
     }
 
     static updateScrollbar() {
-        if (getOS() == 'iOS') {
+        if (Utils.getOS() == 'iOS') {
             // No scrollbars on iOS, it has a glitch that brakes smooth scrolling
             return;
         }

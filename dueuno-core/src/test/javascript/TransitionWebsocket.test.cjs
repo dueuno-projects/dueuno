@@ -27,7 +27,8 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         const context = {
             _21_: { app: { tenant: 'tenant-a', url: '/app/' } },
             log: { debug() {} },
-            $: { ajax({ url }) {
+            $: { ajax({ url, cache }) {
+                assert.equal(cache, false);
                 assert.equal(url, '/app/transition/channels');
                 return { done(callback) { callback(['updates']); } };
             } },

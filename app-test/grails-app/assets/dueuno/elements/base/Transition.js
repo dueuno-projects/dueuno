@@ -15,7 +15,7 @@ class Transition {
         let username = frame.headers['user-name'];
         Transition.wsSubscribe(wsClient, "/queue/tenant/" + _21_.app.tenant + "/username/" + username);
 
-        $.ajax({url: _21_.app.url + "transition/channels"})
+        $.ajax({cache: false, url: _21_.app.url + "transition/channels"})
         .done(function(channels) {
             for (let channel of channels) {
                 Transition.wsSubscribe(wsClient, "/queue/tenant/" + _21_.app.tenant + "/channel/" + channel);
@@ -250,6 +250,7 @@ class Transition {
     static ajaxCall(url, values, componentEvent, async, silentFail) {
         let call = {
             type: 'POST',
+            cache: false,
             url: url,
             data: values,
             async: async,

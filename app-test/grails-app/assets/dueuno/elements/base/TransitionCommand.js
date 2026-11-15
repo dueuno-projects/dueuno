@@ -17,7 +17,7 @@ class TransitionCommand {
     static async redirect(componentEvent) {
         if (PageModal.isActive && !componentEvent.renderProperties['modal']) {
             PageModal.close();
-            await sleep(100); // We give time for the animations to start
+            await Utils.sleep(100); // We give time for the animations to start
         }
 
         Transition.submit(componentEvent, false);
@@ -27,7 +27,7 @@ class TransitionCommand {
         LoadingScreen.show(false);
 
         let $newPage = $newPageContent.find('[data-21-component="PageContent"]');
-        if (!$newPage.exists()) {
+        if (!JQuery.exists($newPage)) {
             return;
         }
 
@@ -99,7 +99,7 @@ class TransitionCommand {
 
         } else { // Scroll to top of the specified component
             let $element = Elements.getElement(path);
-            if (!$element.exists()) {
+            if (!JQuery.exists($element)) {
                 return;
             }
             let position = $element.offset();
@@ -119,7 +119,7 @@ class TransitionCommand {
     }
 
     static async delay(milliseconds) {
-        await sleep(milliseconds);
+        await Utils.sleep(milliseconds);
     }
 
     static append($element, componentId, newComponentId, $components) {
@@ -129,7 +129,7 @@ class TransitionCommand {
             return;
         }
 
-        if (!$element.exists()) {
+        if (!JQuery.exists($element)) {
             log.error('Cannot append to component "' + componentId + '" (element not found)');
             return;
         }
@@ -146,7 +146,7 @@ class TransitionCommand {
             return;
         }
 
-        if (!$element.exists()) {
+        if (!JQuery.exists($element)) {
             log.error('Cannot replace component "' + componentId + '" (element not found)');
             return;
         }
@@ -160,13 +160,13 @@ class TransitionCommand {
     static getFocusPath() {
         let $pageContent = PageContent.$self;
         let $activeElement = $pageContent.find(':focus').addBack(':focus');
-        if (!$activeElement.exists()) {
+        if (!JQuery.exists($activeElement)) {
             return null;
         }
 
         let path = [];
         let $element = $activeElement.closest('[data-21-id]');
-        while ($element.exists()) {
+        while (JQuery.exists($element)) {
             if (!$pageContent.is($element[0]) && !$pageContent.has($element[0]).length) {
                 break;
             }
@@ -192,7 +192,7 @@ class TransitionCommand {
     }
 
     static remove($element, componentId) {
-        if (!$element.exists()) {
+        if (!JQuery.exists($element)) {
             log.error('Cannot remove component "' + componentId + '" (element not found)');
             return;
         }
@@ -201,7 +201,7 @@ class TransitionCommand {
     }
 
     static trigger($element, componentId, eventName) {
-        if (!$element.exists()) {
+        if (!JQuery.exists($element)) {
             log.error('Cannot trigger event "' + eventName + '" for component "' + componentId + '" (element not found)');
             return;
         }
@@ -210,7 +210,7 @@ class TransitionCommand {
     }
 
     static async call($element, componentId, component, property, value, $components) {
-        await sleep(100); // We give time for the animations to start
+        await Utils.sleep(100); // We give time for the animations to start
 
         let $component
         if ($components && value.component) {
@@ -225,7 +225,7 @@ class TransitionCommand {
     }
 
     static set($element, componentId, component, property, value, trigger) {
-        let methodName = 'set' + capitalize(property);
+        let methodName = 'set' + Utils.capitalize(property);
         if (!Elements.hasMethod(component, methodName)) {
             log.error('Cannot find method "' + componentId + '.' + methodName + '()"');
             return;

@@ -53,7 +53,7 @@ Each component extends the base class `Component`, so all components share the f
 |`cssClass`
 |`String`
 |
-|Custom CSS class to apply. The CSS class must be a https://getbootstrap.com/[Bootstrap,window=_blank] CSS class or a custom one declared in the `grails-app/assets/stylesheets/application.css` file. See <<custom-css>>.
+|Custom CSS class to apply. The CSS class must be a https://getbootstrap.com/[Bootstrap,window=_blank] CSS class or a custom one declared in the `grails-app/assets/stylesheets/dueuno.css` file. See <<custom-css>>.
 |===
 
 ==== Methods

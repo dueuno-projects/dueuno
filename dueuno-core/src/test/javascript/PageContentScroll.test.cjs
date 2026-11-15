@@ -23,8 +23,8 @@ function setup(moduleName) {
     const content = (controller, action) => ({
         0: {},
         properties: { controller, action },
-        exists: () => true,
-        find: () => ({ exists: () => false }),
+        length: 1,
+        find: () => ({ length: 0 }),
         replaceWith(next) { current = next; window.scrollY = 0; },
     });
     let current = content('book', 'index');
@@ -55,6 +55,10 @@ function setup(moduleName) {
             reinitializeContent() { window.scrollY = 0; },
         },
     });
+    for (const name of ['utils', 'utils-jquery']) {
+        vm.runInContext(fs.readFileSync(path.resolve(__dirname, '../../../..', moduleName,
+            `grails-app/assets/dueuno/utils/${name}.js`), 'utf8'), context);
+    }
     for (const name of ['PageContent', 'PageModal', 'TransitionCommand']) {
         const source = path.resolve(__dirname, '../../../..', moduleName,
             `grails-app/assets/dueuno/elements/base/${name}.js`);
@@ -107,7 +111,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
             PageContent.saveScrollPosition();
             current().find = selector => {
                 assert.equal(selector, '[data-21-id="table"]');
-                return { exists: () => true, position: () => ({ top: 250, left: 20 }) };
+                return { length: 1, position: () => ({ top: 250, left: 20 }) };
             };
             TransitionCommand.scrollTo({ renderProperties: { scroll } }, current());
             assert.deepEqual(scrollCalls, [{ top, left, behavior }]);

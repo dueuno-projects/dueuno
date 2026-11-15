@@ -63,7 +63,7 @@ class PageModal extends Component {
         PageModal.isReady = false;
 
         if (!PageModal.isActive) {
-            unmountSimpleBar(PageModal.$body[0]);
+            Utils.unmountSimpleBar(PageModal.$body[0]);
             PageModal.$body.empty();
 
         } else if (PageModal.isShowRequested && !PageMessageBox.isActive) {
@@ -102,7 +102,7 @@ class PageModal extends Component {
 
         PageModal.$header.children().not('[data-21-id="closeButton"]').remove();
         PageModal.$header.append($contentHeader);
-        unmountSimpleBar(PageModal.$body[0]);
+        Utils.unmountSimpleBar(PageModal.$body[0]);
         PageModal.$body.empty();
         PageModal.$body.append($contentBody);
     }
@@ -137,7 +137,7 @@ class PageModal extends Component {
         }
 
         // Scrollbar
-        mountSimpleBar(PageModal.$body[0]);
+        Utils.mountSimpleBar(PageModal.$body[0]);
         let $scrollableContent = PageModal.$body.find('.simplebar-content-wrapper');
         $scrollableContent.removeAttr('tabindex');
         $scrollableContent.off('scroll').on('scroll', PageModal.onScroll);

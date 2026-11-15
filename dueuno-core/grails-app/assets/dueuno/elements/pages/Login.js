@@ -62,6 +62,7 @@ class Login extends Page {
 
         let call = {
             type: 'POST',
+            cache: false,
             url: _21_.app.url + data.processUrl,
             data: data,
         }
@@ -76,7 +77,7 @@ class Login extends Page {
         $.ajax(call)
         .done(function (data, textStatus, request) {
             if (data.success) {
-                let params = $.getQueryParameters();
+                let params = Utils.getQueryParameters();
                 let url = _21_.app.url.substring(0, _21_.app.url.length - 1);
                 if (params.landingPage) url = url + params.landingPage;
                 else if (data.redirect) url = url + data.redirect;

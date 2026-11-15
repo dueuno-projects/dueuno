@@ -115,7 +115,7 @@ class Button extends Component {
 
     static setIcon($element, value) {
         let $icon = $element.find('i');
-        $icon.removeClassesStartingWith('fa-');
+        JQuery.removeClassesStartingWith($icon, 'fa-');
         $icon.addClass(value);
     }
 }

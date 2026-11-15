@@ -20,7 +20,7 @@ limitations under the License.
 Application-specific stylesheets can be added to the application's asset
 pipeline under `grails-app/assets/stylesheets`. The recommended approach is to
 create a separate file for each functional area and include it from the
-`application.css` manifest.
+`dueuno.css` manifest.
 
 .Create `~/demo/grails-app/assets/stylesheets/orders.css`
 [source,css,subs="attributes+"]
@@ -31,7 +31,7 @@ create a separate file for each functional area and include it from the
 }
 ----
 
-.Edit `~/demo/grails-app/assets/stylesheets/application.css`
+.Edit `~/demo/grails-app/assets/stylesheets/dueuno.css`
 [source,css,subs="attributes+"]
 ----
 /*
@@ -42,7 +42,7 @@ create a separate file for each functional area and include it from the
 
 The asset pipeline resolves `orders` to `orders.css`, compiles it together
 with the other application stylesheets and serves the resulting asset with
-the appropriate cache-busting URL. The Dueuno page includes `application.css`
+the appropriate cache-busting URL. The Dueuno page includes `dueuno.css`
 automatically when the file exists, so no extra HTML is needed for a global
 stylesheet.
 
@@ -73,7 +73,7 @@ example `stylesheets/orders/summary.css` is loaded with
 
 Custom JavaScript files are placed under
 `grails-app/assets/javascripts`. As with CSS, application-wide code should be
-kept in separate files and added to the `application.js` manifest.
+kept in separate files and added to the `dueuno.js` manifest.
 
 .Create `~/demo/grails-app/assets/javascripts/orders.js`
 [source,javascript,subs="attributes+"]
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ----
 
-.Edit `~/demo/grails-app/assets/javascripts/application.js`
+.Edit `~/demo/grails-app/assets/javascripts/dueuno.js`
 [source,javascript,subs="attributes+"]
 ----
 // Any JavaScript file within this directory can be referenced here.
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 The asset pipeline resolves `orders` to `orders.js`, compiles it into the
 application bundle and handles the cache-busting URL. Dueuno includes
-`application.js` automatically when the file exists, so application-wide
+`dueuno.js` automatically when the file exists, so application-wide
 JavaScript does not need to be added to a layout manually.
 
 For JavaScript used by only one custom GSP view or component, load the file
@@ -111,6 +111,21 @@ directly instead:
 JavaScript files in subdirectories use the same relative path convention, for
 example `javascripts/orders/table.js` is loaded with
 `src="orders/table.js"`.
+
+=== Loading order
+
+Dueuno loads assets in this order:
+
+* CSS: `includes.css`, registered component stylesheets, optional `plugin.css`,
+  optional `dueuno.css`, then the framework's `main.css` and inline theme values.
+* JavaScript: `includes.js` (shared libraries, utilities and built-in components),
+  registered component scripts, optional `plugin.js`, optional `dueuno.js`, then
+  `main.js`, which runs `Elements.main()` through `<page:initialize/>`.
+
+The `dueuno.js` and `dueuno.css` manifests are optional. The Asset Pipeline handles
+fingerprinted production URLs; reference the logical names in GSPs.
+Since the framework's `main.css` follows `dueuno.css`, normal CSS specificity
+and source order still determine which styles win.
 
 === Guidelines
 
@@ -132,11 +147,32 @@ example `javascripts/orders/table.js` is loaded with
 
 Dueuno loads jQuery and Bootstrap from WebJars using the versions managed by the Grails BOM.
 They are runtime dependencies of `dueuno-core`, so they are also available when compiling production assets.
-Do not include jQuery or Bootstrap again in `application.js` or `application.css`: these manifests are loaded after Dueuno's libraries, and loading jQuery a second time removes Dueuno's jQuery extensions.
+Dueuno's jQuery helpers are static methods of `JQuery`, rather than
+extensions of `$` or `$.fn`. For example, use `JQuery.exists($element)`
+and `JQuery.removeClassesStartingWith($element, 'fa-')`.
+These methods remain available if an application reloads jQuery, and accept
+selections created by either instance. Dueuno sets `cache: false` on its AJAX
+requests explicitly, without changing jQuery's global AJAX defaults.
+General helpers live in `Utils`, including `Utils.getQueryParameters()` and
+`Utils.getUriString()`, which do not depend on jQuery.
 
-When keeping the generated Grails welcome page, move its library imports into separate manifests loaded only by `grails-app/views/layouts/main.gsp`.
-Keep `grails.css` in that layout too, so its styles do not affect Dueuno pages.
-Application-specific code and styles can remain in `application.js` and `application.css`.
+Do not import jQuery or Bootstrap again in `dueuno.js` or `dueuno.css`,
+including indirectly through `require_tree` or another manifest.
+Reloading jQuery still creates separate event and data stores, and reloading
+Bootstrap can duplicate event handlers; `JQuery` does not prevent these
+library-level effects.
+
+The generated Grails welcome page can keep `application.js` and
+`application.css`, including their jQuery and Bootstrap imports, in its own
+`grails-app/views/layouts/main.gsp`. Dueuno pages do not load these manifests
+automatically. Keep `grails.css` in the Grails layout too, so its styles do not
+affect Dueuno pages. Put custom code and styles for Dueuno pages in `dueuno.js`
+and `dueuno.css`.
+
+A custom GSP layout can explicitly include `dueuno.js` and `dueuno.css` when
+it needs the same application assets, as the `app-test` layout does. Code in
+these manifests that uses Dueuno classes also requires the Dueuno libraries
+to be loaded by that layout.
 
 Popper remains a separate asset because the date/time picker requires the global `Popper` object; Bootstrap's bundle contains a private copy.
 

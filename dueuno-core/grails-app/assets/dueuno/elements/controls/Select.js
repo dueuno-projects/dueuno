@@ -295,6 +295,7 @@ class Select extends Control {
         };
 
         $.ajax({
+            cache: false,
             url: Transition.buildUrl(searchEvent),
             data: Transition.build21Params(searchEvent),
 

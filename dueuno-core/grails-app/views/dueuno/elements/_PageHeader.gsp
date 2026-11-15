@@ -24,8 +24,8 @@
 </asset:assetPathExists>
 
 <%-- Application Specific Stylesheet --%>
-<asset:assetPathExists src="application.css">
-    <asset:stylesheet src="application.css"/>
+<asset:assetPathExists src="dueuno.css">
+    <asset:stylesheet src="dueuno.css"/>
 </asset:assetPathExists>
 
 <%-- Main --%>

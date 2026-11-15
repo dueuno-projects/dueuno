@@ -18,7 +18,7 @@ class Elements {
         log.debug('Path: ' + _21_.app.path);
         log.debug('Tenant: ' + _21_.app.tenant);
 
-        let os = getOS();
+        let os = Utils.getOS();
         Elements_isMobileDevice = (os == 'iOS' || os == 'Android');
         log.debug('Operating System: ' + os);
         log.debug('Is Mobile Device: ' + Elements_isMobileDevice);

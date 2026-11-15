@@ -173,7 +173,7 @@ class PageMessageBox extends Component {
         PageMessageBox.$self.removeClass('modal-lg modal-xl modal-fullscreen');
 
         // Footer
-        $icon.removeClassesStartingWith('fa-');
+        JQuery.removeClassesStartingWith($icon, 'fa-');
         let $verify = PageMessageBox.$self.find('#page-messagebox-verify');
         $verify.addClass('d-none');
         $footer.removeClass('justify-content-between');
