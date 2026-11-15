@@ -290,6 +290,10 @@ class PageKeyPress extends Component {
         }
 
         PageKeyPress.hotkeys.set(hotkey, element);
+        let label = /^f(1[3-9]|2[0-4])$/.test(hotkey)
+            ? 'SHIFT + F' + (Number(hotkey.substring(1)) - 12)
+            : Component.getProperty($element, 'hotkey');
+        $element.attr('data-21-hotkey-label', label);
         $element.attr('data-21-hotkey-active', '');
     }
 
@@ -298,7 +302,7 @@ class PageKeyPress extends Component {
             return false;
         }
 
-        let hotkey = PageKeyPress.normalizeKey(event.key);
+        let hotkey = PageKeyPress.normalizeKey(event.key, event.shiftKey);
         let element = PageKeyPress.hotkeys.get(hotkey);
         if (!element) {
             return false;
@@ -331,12 +335,15 @@ class PageKeyPress extends Component {
             return false;
         }
 
-        let key = PageKeyPress.normalizeKey(event.key);
+        let key = PageKeyPress.normalizeKey(event.key, event.shiftKey);
         return PageKeyPress.isHotkeyModifierPressed(event) && key == hotkey.toLowerCase();
     }
 
-    static normalizeKey(key) {
+    static normalizeKey(key, shiftKey = false) {
         let normalized = key.toLowerCase();
+        if (shiftKey && /^f([1-9]|1[0-2])$/.test(normalized)) {
+            return 'f' + (Number(normalized.substring(1)) + 12);
+        }
         let aliases = {
             return: 'enter',
         };

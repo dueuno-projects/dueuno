@@ -104,6 +104,90 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         }
     });
 
+    test(`${moduleName}: labels F13–F24 as SHIFT + F1–F12`, () => {
+        let hotkey;
+        const attributes = {};
+        const element = {
+            0: {},
+            removeAttr(name) { delete attributes[name]; },
+            attr(name, value) { attributes[name] = value; },
+        };
+        const context = vm.createContext({
+            Component: class {
+                static register() {}
+                static getProperty() { return hotkey; }
+            },
+        });
+        const source = path.resolve(__dirname, '../../../..', moduleName,
+            'grails-app/assets/dueuno/elements/base/PageKeyPress.js');
+        vm.runInContext(fs.readFileSync(source, 'utf8'), context);
+        const PageKeyPress = vm.runInContext('PageKeyPress', context);
+        for (let i = 1; i <= 24; i++) {
+            hotkey = 'F' + i;
+            PageKeyPress.registerHotkey(element);
+            assert.equal(attributes['data-21-hotkey-label'],
+                i > 12 ? 'SHIFT + F' + (i - 12) : hotkey);
+            assert.equal(PageKeyPress.hotkeys.get(hotkey.toLowerCase()), element[0]);
+        }
+        hotkey = 'Enter';
+        PageKeyPress.registerHotkey(element);
+        assert.equal(attributes['data-21-hotkey-label'], 'Enter');
+        const css = path.resolve(__dirname, '../../../..', moduleName,
+            'grails-app/assets/dueuno/elements/components/Link.css');
+        assert.match(fs.readFileSync(css, 'utf8'), /content: attr\(data-21-hotkey-label\);/);
+    });
+
+    test(`${moduleName}: Meta + Shift + F1–F12 dispatches F13–F24`, () => {
+        let registeredHotkey;
+        let clicks = 0;
+        let prevented = 0;
+        const link = {
+            is() { return false; },
+            trigger(name) { assert.equal(name, 'click'); clicks++; },
+        };
+        const context = vm.createContext({
+            Component: class {
+                static register() {}
+                static getProperty(element, name) {
+                    return name == 'hotkey' ? registeredHotkey : false;
+                }
+                static getDisplay() { return true; }
+                static getVisible() { return true; }
+            },
+            PageMessageBox: { isActive: false },
+            document: { documentElement: { contains() { return true; } } },
+            $: () => link,
+        });
+        const source = path.resolve(__dirname, '../../../..', moduleName,
+            'grails-app/assets/dueuno/elements/base/PageKeyPress.js');
+        vm.runInContext(fs.readFileSync(source, 'utf8'), context);
+        const PageKeyPress = vm.runInContext('PageKeyPress', context);
+
+        for (let i = 1; i <= 12; i++) {
+            const event = { key: 'F' + i, metaKey: true, shiftKey: true,
+                preventDefault() { prevented++; }, stopPropagation() {},
+            };
+            registeredHotkey = 'F' + (i + 12);
+            PageKeyPress.hotkeys.clear();
+            PageKeyPress.hotkeys.set(registeredHotkey.toLowerCase(), {});
+            // Register both ranges so dispatch must select the shifted action.
+            PageKeyPress.hotkeys.set(event.key.toLowerCase(), {});
+            assert.equal(PageKeyPress.matchesHotkey(event.key, event), false);
+            assert.equal(PageKeyPress.matchesHotkey(registeredHotkey, event), true);
+            assert.equal(PageKeyPress.onHotkey(event), true);
+            assert.equal(PageKeyPress.onHotkey({ ...event, repeat: true }), true);
+            assert.equal(PageKeyPress.onHotkey({ ...event, metaKey: false }), false);
+            assert.equal(PageKeyPress.matchesHotkey(registeredHotkey,
+                { ...event, shiftKey: false }), false);
+            assert.equal(PageKeyPress.matchesHotkey(registeredHotkey,
+                { ...event, key: registeredHotkey, shiftKey: false }), true);
+        }
+        assert.equal(clicks, 12);
+        assert.equal(prevented, 24);
+        assert.equal(PageKeyPress.matchesHotkey('Enter',
+            { key: 'Enter', metaKey: true, shiftKey: true }), true);
+    });
+
     test(`${moduleName}: hides and disables page hotkeys while a messagebox is active`, () => {
         let hotkeysVisible;
         const context = vm.createContext({

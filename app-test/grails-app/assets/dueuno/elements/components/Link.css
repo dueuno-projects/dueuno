@@ -15,7 +15,7 @@
 }
 
 .component-link[data-21-hotkey-active]::after {
-    content: attr(data-21-hotkey);
+    content: attr(data-21-hotkey-label);
     display: none;
     position: absolute;
     right: .5rem;

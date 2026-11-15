@@ -50,8 +50,8 @@ class TabsController implements ElementsController {
                 stretch: true,
                 group: true,
                 loading: false,
-                hotkey: Hotkey.F11,
-            ).component.addAction(action: 'onHide', text: "Hide!", hotkey: Hotkey.F12)
+                hotkey: Hotkey.F12,
+            ).component.addAction(action: 'onHide', text: "Hide!", hotkey: Hotkey.F24)
         }
 
         Form f1 = c.addComponent(Form, 'f1')
