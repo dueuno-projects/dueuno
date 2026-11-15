@@ -79,24 +79,37 @@ class AuthenticationUserProvisioningServiceSpec extends Specification implements
         ' Alice@Example.org ' | 'alice@example.org'
     }
 
-    void 'updates IBM profile and access time without changing existing user data'() {
+    void 'uses IBM profile when email is missing and email when available'() {
         given:
         TUser user = createTestUser()
-        String originalEmail = user.email
+        SecurityService security = Mock()
+        UserDetailsService userDetails = Mock()
+        UserDetails expectedDetails = Stub()
         AuthenticationUserProvisioningService service = new AuthenticationUserProvisioningService(
             tenantService: Stub(TenantService) { getTenantIdByRequest(_) >> 'TEST' },
-            securityService: Stub(SecurityService) { getUserByTenantIdAndUsername('TEST', 'ALICE') >> user },
-            userDetailsService: Stub(UserDetailsService),
+            securityService: security,
+            userDetailsService: userDetails,
         )
 
         when:
-        service.ensureIbmUser('alice')
+        def details = service.ensureIbmUser(' alice ', [email: email])
 
         then:
+        1 * security.getUserByTenantIdAndUsername('TEST', expectedUsername) >> user
+        0 * security.createUser(_)
+        1 * userDetails.loadUserByUsername(expectedUsername) >> expectedDetails
+        details.is(expectedDetails)
         TUser.get(user.id).ibmUid == 'ALICE'
         TUser.get(user.id).ibmLastAccess != null
-        TUser.get(user.id).username == 'alice@example.org'
-        TUser.get(user.id).email == originalEmail
+        TUser.get(user.id).username == expectedUsername
+        TUser.get(user.id).email == email
+
+        where:
+        email                 | expectedUsername
+        null                  | 'ALICE'
+        ''                    | 'ALICE'
+        '   '                 | 'ALICE'
+        ' Alice@Example.org ' | 'alice@example.org'
     }
 
     void 'creates a local user after IBM i signon with a generated local password'() {
@@ -119,7 +132,7 @@ class AuthenticationUserProvisioningServiceSpec extends Specification implements
         1 * tenants.withTenant('TEST', _) >> { String tenantId, Closure work -> work.call() }
         1 * security.generatePassword() >> 'generated-local-password'
         1 * security.createUser([
-            tenantId: 'TEST', username: 'ALICE', password: 'generated-local-password', failOnError: true,
+            tenantId: 'TEST', username: 'ALICE', password: 'generated-local-password', email: null, failOnError: true,
         ]) >> user
         user.ibmUid == 'ALICE'
         user.ibmLastAccess != null

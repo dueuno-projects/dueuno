@@ -84,9 +84,11 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
 
     @Transactional
     @CompileDynamic
-    UserDetails ensureIbmUser(String ibmUid) {
+    UserDetails ensureIbmUser(String ibmUid, Map profile = [:]) {
         if (!ibmUid?.trim()) throw new UsernameNotFoundException('Authenticated identity has no username')
-        String username = ibmUid.trim().toUpperCase(Locale.ROOT)
+        String normalizedUid = ibmUid.trim().toUpperCase(Locale.ROOT)
+        String email = profile.email as String
+        String username = email?.trim()?.toLowerCase(Locale.ROOT) ?: normalizedUid
         String tenantId = tenantService.getTenantIdByRequest(request) ?: tenantService.defaultTenantId
         if (!tenantId) throw new UsernameNotFoundException('Unable to resolve tenant for authenticated user')
 
@@ -97,11 +99,14 @@ class AuthenticationUserProvisioningService implements WebRequestAware {
                     tenantId: tenantId,
                     username: username,
                     password: securityService.generatePassword(),
+                    email: email,
                     failOnError: true,
                 )
             }
         }
-        user.ibmUid = username
+        user.username = username
+        user.email = email
+        user.ibmUid = normalizedUid
         user.ibmLastAccess = LocalDateTime.now()
         user.save(flush: true, failOnError: true)
         return userDetailsService.loadUserByUsername(user.username)

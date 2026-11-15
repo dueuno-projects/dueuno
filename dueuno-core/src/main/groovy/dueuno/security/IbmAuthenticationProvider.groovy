@@ -19,6 +19,8 @@ package dueuno.security
 import com.ibm.as400.access.AS400
 import com.ibm.as400.access.AS400SecurityException
 import com.ibm.as400.access.SecureAS400
+import com.ibm.as400.access.DirectoryEntry
+import com.ibm.as400.access.DirectoryEntryList
 import groovy.transform.CompileStatic
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.AuthenticationServiceException
@@ -65,6 +67,7 @@ class IbmAuthenticationProvider implements AuthenticationProvider {
 
         AS400 system = createSystem(provider)
         char[] passwordChars = password.toCharArray()
+        String email
         try {
             system.setGuiAvailable(false)
             system.setUseDefaultUser(false)
@@ -72,6 +75,10 @@ class IbmAuthenticationProvider implements AuthenticationProvider {
             system.setSystemName(systemName)
             system.setUserId(username)
             if (!system.validateSignon(passwordChars)) throw new BadCredentialsException('Invalid credentials')
+            // Directory APIs need credentials on this instance; validateSignon only checks them.
+            system.setPassword(passwordChars)
+            email = retrieveEmail(system, username)
+
         } catch (AS400SecurityException e) {
             if (e.returnCode == AS400SecurityException.PASSWORD_EXPIRED) {
                 throw new CredentialsExpiredException('IBM i password has expired', e)
@@ -81,14 +88,16 @@ class IbmAuthenticationProvider implements AuthenticationProvider {
                 throw new DisabledException('IBM i user profile is disabled', e)
             }
             throw new BadCredentialsException('Invalid credentials', e)
+
         } catch (IOException | PropertyVetoException e) {
             throw new AuthenticationServiceException('Unable to authenticate against the IBM i system', e)
+
         } finally {
             Arrays.fill(passwordChars, (char) 0)
             system.disconnectAllServices()
         }
 
-        UserDetails details = authenticationUserProvisioningService.ensureIbmUser(username)
+        UserDetails details = authenticationUserProvisioningService.ensureIbmUser(username, [email: email])
         new AccountStatusUserDetailsChecker().check(details)
         Set<GrantedAuthority> authorities = new LinkedHashSet<>()
         if (provider.retrieveDatabaseRoles) authorities.addAll(details.authorities)
@@ -98,6 +107,30 @@ class IbmAuthenticationProvider implements AuthenticationProvider {
             authorities.add(new SimpleGrantedAuthority(role))
         }
         return new UsernamePasswordAuthenticationToken(details, password, authorities)
+    }
+
+    private String retrieveEmail(AS400 system, String username) {
+        try {
+            DirectoryEntryList directory = createDirectory(system)
+            directory.addSelection(DirectoryEntryList.USER_PROFILE, username)
+            for (DirectoryEntry entry in directory.getEntries()) {
+                String smtpUser = entry.getSMTPUserID()?.trim()
+                String smtpDomain = entry.getSMTPDomain()?.trim()
+                if (smtpUser && smtpDomain) return smtpUser + '@' + smtpDomain
+            }
+            return null
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt()
+            throw new AuthenticationServiceException('Unable to retrieve IBM i directory email', e)
+
+        } catch (Exception e) {
+            throw new AuthenticationServiceException('Unable to retrieve IBM i directory email', e)
+        }
+    }
+
+    protected DirectoryEntryList createDirectory(AS400 system) {
+        return new DirectoryEntryList(system)
     }
 
     protected AS400 createSystem(TAuthenticationProvider provider) {

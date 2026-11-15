@@ -18,6 +18,8 @@ package dueuno.security
 
 import com.ibm.as400.access.AS400
 import com.ibm.as400.access.AS400SecurityException
+import com.ibm.as400.access.DirectoryEntry
+import com.ibm.as400.access.DirectoryEntryList
 import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.DisabledException
@@ -27,6 +29,7 @@ import spock.lang.Specification
 
 class IbmAuthenticationProviderSpec extends Specification {
 
+    DirectoryEntryList directory = Mock()
     AS400 system = Mock()
     AuthenticationProviderService configurations = Mock()
     AuthenticationUserProvisioningService provisioning = Mock()
@@ -36,12 +39,18 @@ class IbmAuthenticationProviderSpec extends Specification {
     )
     IbmAuthenticationProvider provider = new IbmAuthenticationProvider() {
         @Override
+        protected DirectoryEntryList createDirectory(AS400 system) {
+            return IbmAuthenticationProviderSpec.this.directory
+        }
+
+        @Override
         protected AS400 createSystem(TAuthenticationProvider configuration) {
             return IbmAuthenticationProviderSpec.this.system
         }
     }
 
     void setup() {
+        directory.getEntries() >> ([] as DirectoryEntry[])
         provider.authenticationProviderService = configurations
         provider.authenticationUserProvisioningService = provisioning
         configurations.getByProviderTypeForCurrentTenant(AuthenticationProviderType.IBM) >> configuration
@@ -63,7 +72,7 @@ class IbmAuthenticationProviderSpec extends Specification {
         1 * system.setUserId('ALICE')
         1 * system.validateSignon({ char[] value -> new String(value) == 'secret' }) >> true
         1 * system.disconnectAllServices()
-        1 * provisioning.ensureIbmUser('ALICE') >> details
+        1 * provisioning.ensureIbmUser('ALICE', [email: null]) >> details
         result.authenticated
         result.principal.is(details)
         result.authorities*.authority == expectedRoles
@@ -72,6 +81,62 @@ class IbmAuthenticationProviderSpec extends Specification {
         databaseRoles | expectedRoles
         true          | ['ROLE_USER', 'ROLE_OPERATOR']
         false         | ['ROLE_OPERATOR']
+    }
+
+    void 'retrieves SMTP email for the authenticated IBM profile'() {
+        given:
+        DirectoryEntry entry = Stub() {
+            getSMTPUserID() >> ' Alice '
+            getSMTPDomain() >> ' Example.org '
+        }
+
+        when:
+        def result = provider.authenticate(new UsernamePasswordAuthenticationToken('alice', 'secret'))
+
+        then:
+        1 * system.validateSignon(_ as char[]) >> true
+        1 * system.setPassword(_ as char[])
+        1 * directory.addSelection(DirectoryEntryList.USER_PROFILE, 'ALICE')
+        1 * directory.getEntries() >> ([entry] as DirectoryEntry[])
+        1 * provisioning.ensureIbmUser('ALICE', [email: 'Alice@Example.org']) >>
+            User.withUsername('alice@example.org').password('').roles('USER').build()
+        1 * system.disconnectAllServices()
+        result.name == 'alice@example.org'
+    }
+
+    void 'falls back to the IBM profile when SMTP fields are incomplete'() {
+        given:
+        DirectoryEntry entry = Stub() {
+            getSMTPUserID() >> smtpUser
+            getSMTPDomain() >> smtpDomain
+        }
+
+        when:
+        def result = provider.authenticate(new UsernamePasswordAuthenticationToken('alice', 'secret'))
+
+        then:
+        1 * system.validateSignon(_ as char[]) >> true
+        1 * directory.getEntries() >> ([entry] as DirectoryEntry[])
+        1 * provisioning.ensureIbmUser('ALICE', [email: null]) >>
+            User.withUsername('ALICE').password('').roles('USER').build()
+        result.name == 'ALICE'
+
+        where:
+        smtpUser | smtpDomain
+        null     | 'example.org'
+        'alice'  | '   '
+    }
+
+    void 'reports directory failures and disconnects without provisioning'() {
+        when:
+        provider.authenticate(new UsernamePasswordAuthenticationToken('alice', 'secret'))
+
+        then:
+        1 * system.validateSignon(_ as char[]) >> true
+        1 * directory.getEntries() >> { throw new IOException('unavailable') }
+        1 * system.disconnectAllServices()
+        0 * provisioning._
+        thrown(AuthenticationServiceException)
     }
 
     void 'extracts the IBM hostname from the configured URL'() {
@@ -159,7 +224,7 @@ class IbmAuthenticationProviderSpec extends Specification {
 
         then:
         1 * system.validateSignon({ char[] value -> new String(value) == 'secret' }) >> true
-        1 * provisioning.ensureIbmUser('ALICE') >> User.withUsername('ALICE').password('').disabled(true).roles('USER').build()
+        1 * provisioning.ensureIbmUser('ALICE', [email: null]) >> User.withUsername('ALICE').password('').disabled(true).roles('USER').build()
         thrown(DisabledException)
     }
 
