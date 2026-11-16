@@ -100,7 +100,7 @@ class UserController implements ElementsController {
                 addField(
                     class: Select,
                     id: 'groups',
-                    optionsFromRecordset: securityService.listAllGroup(tenantId: getFilter('tenantId')),
+                    optionsFromRecordset: securityService.listAllGroup(tenantId: isSuperAdmin ? getFilter('tenantId') : tenantService.currentTenantId),
                     label: 'user.groups',
                     multiple: true,
                     cols: 4,
