@@ -18,6 +18,8 @@
  */
 package dueuno.application
 
+import dueuno.elements.core.Feature
+import dueuno.utils.LocaleUtils
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
@@ -46,6 +48,39 @@ class ApplicationServiceSpec extends Specification {
 
         cleanup:
         context.close()
+    }
+
+    void 'registers localized language entries with existing flag assets'() {
+        given:
+        List<Map> entries = []
+        ApplicationService service = new ApplicationService() {
+            @Override
+            List<String> getLanguages() { ['cs', 'cs_CZ', 'zh_TW'] }
+
+            @Override
+            Feature registerUserFeature(Map args) {
+                entries.add(args)
+                return null
+            }
+        }
+        Properties messages = new Properties()
+        new File('grails-app/i18n/dueuno.properties').withReader('UTF-8') {
+            messages.load(it)
+        }
+
+        when:
+        def registerLanguages = ApplicationService.getDeclaredMethod('registerUserMenuLanguages')
+        registerLanguages.accessible = true
+        registerLanguages.invoke(service)
+
+        then:
+        entries.findAll { it.image }.size() == 3
+        entries.findAll { it.image }.every {
+            new File('grails-app/assets/dueuno/' + it.image).isFile() && messages[it.text]
+        }
+        entries.find { it.params?.id == 'cs' }.image == 'libs/flags/cs_cz.svg'
+        entries.find { it.params?.id == 'zh_TW' }.image == 'libs/flags/tw.svg'
+        LocaleUtils.getFlagCode('zh_TW') == 'tw'
     }
 
 }

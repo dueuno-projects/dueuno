@@ -38,6 +38,7 @@ class LocaleUtils {
             pt_pt: 'pt',
             pt_br: 'br',
             zh_cn: 'cn',
+            zh_tw: 'tw',
             cs   : 'cs_cz',
             da   : 'dk',
             ja   : 'jp',

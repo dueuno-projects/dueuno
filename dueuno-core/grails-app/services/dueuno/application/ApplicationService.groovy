@@ -23,6 +23,7 @@ import dueuno.elements.core.Feature
 import dueuno.elements.core.PrettyPrinter
 import dueuno.elements.core.Transformer
 import dueuno.tenant.TenantService
+import dueuno.utils.LocaleUtils
 import dueuno.utils.EnvUtils
 import grails.core.GrailsApplication
 import grails.gorm.transactions.Transactional
@@ -519,7 +520,7 @@ class BootStrap {
         for (language in languages) {
             registerUserFeature(
                 text: 'default.language.' + language,
-                image: 'libs/flags/' + getFlagCode(language) + '.svg',
+                image: 'libs/flags/' + LocaleUtils.getFlagCode(language) + '.svg',
                 controller: 'shell',
                 action: 'switchLanguage',
                 params: [id: language],
@@ -717,25 +718,4 @@ class BootStrap {
         }
     }
 
-    private String getFlagCode(String lang) {
-        // Per riferimento:
-        // - Java Locale docs:                     https://docs.oracle.com/javase/7/docs/api/java/util/Locale.html
-        // - Icon library:                         https://www.flaticon.com/packs/countrys-flags
-        // - Locale uses ISO 639 Alpha 2 codes:    https://www.loc.gov/standards/iso639-2/php/English_list.php
-        // - Flags uses ISO 3166-1 Alpha 2 codes:  https://www.iso.org/obp/ui/
-        Map localeToFlag = [
-            en   : 'gb',    // defaults to UK (cause we're european ;-)
-            en_GB: 'gb',
-            en_US: 'us',
-            pt_PT: 'pt',
-            pt_BR: 'br',
-            zh_CN: 'cn',
-            cs   : 'cs_CZ',
-            da   : 'dk',
-            ja   : 'jp',
-            nb   : 'no',
-        ]
-        String flagLang = localeToFlag[lang] ?: lang
-        return flagLang
-    }
 }
