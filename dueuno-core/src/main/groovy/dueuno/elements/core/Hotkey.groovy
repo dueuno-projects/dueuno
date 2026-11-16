@@ -20,10 +20,9 @@ import groovy.transform.CompileStatic
  * Hotkeys supported by {@link dueuno.elements.components.Link}.
  * <p>
  * Every hotkey must be used with {@code Command} on macOS, {@code Meta}
- * on Windows, or {@code Ctrl + Alt} on Linux. Left and right variants work
- * identically. The {@code Shift} modifier maps F1–F12 to F13–F24. On Linux,
- * {@code Ctrl} or {@code Alt} alone does not activate hotkeys. The {@code Fn}
- * key alone does not activate hotkeys.
+ * on Windows, or {@code AltGr} on Linux. The {@code Shift} modifier maps
+ * F1–F12 to F13–F24. On Linux, {@code Ctrl} or {@code Alt} alone does not
+ * activate hotkeys. The {@code Fn} key alone does not activate hotkeys.
  * </p>
  *
  * @author Gianluca Sartori

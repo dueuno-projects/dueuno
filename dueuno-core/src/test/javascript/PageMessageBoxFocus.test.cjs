@@ -97,11 +97,18 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                 for (const modifiers of [
                     {}, { ctrlKey: true }, { altKey: true }, { shiftKey: true },
                     { metaKey: true }, { ctrlKey: true, altKey: true },
-                    { metaKey: true, ctrlKey: true, altKey: true },
+                    { altGraph: true }, { altGraph: true, ctrlKey: true, altKey: true },
                 ]) {
-                    const event = { key, metaKey: false, ctrlKey: false, altKey: false, ...modifiers };
+                    const event = {
+                        key, metaKey: false, ctrlKey: false, altKey: false, altGraph: false,
+                        ...modifiers,
+                        getModifierState(modifier) {
+                            assert.equal(modifier, 'AltGraph');
+                            return this.altGraph;
+                        },
+                    };
                     const expected = isLinux
-                        ? event.ctrlKey && event.altKey
+                        ? event.altGraph
                         : event.metaKey;
                     assert.equal(PageKeyPress.matchesHotkey(key, event), expected);
                     PageKeyPress.onKeyUp(event);
@@ -144,7 +151,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         assert.match(fs.readFileSync(css, 'utf8'), /content: attr\(data-21-hotkey-label\);/);
     });
 
-    test(`${moduleName}: Ctrl + Alt + Shift + F1–F12 dispatches F13–F24 on Linux`, () => {
+    test(`${moduleName}: AltGr + Shift + F1–F12 dispatches F13–F24 on Linux`, () => {
         let registeredHotkey;
         let clicks = 0;
         let prevented = 0;
@@ -172,7 +179,11 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         const PageKeyPress = vm.runInContext('PageKeyPress', context);
 
         for (let i = 1; i <= 12; i++) {
-            const event = { key: 'F' + i, ctrlKey: true, altKey: true, shiftKey: true,
+            const event = { key: 'F' + i, altGraph: true, shiftKey: true,
+                getModifierState(modifier) {
+                    assert.equal(modifier, 'AltGraph');
+                    return this.altGraph;
+                },
                 preventDefault() { prevented++; }, stopPropagation() {},
             };
             registeredHotkey = 'F' + (i + 12);
@@ -184,7 +195,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
             assert.equal(PageKeyPress.matchesHotkey(registeredHotkey, event), true);
             assert.equal(PageKeyPress.onHotkey(event), true);
             assert.equal(PageKeyPress.onHotkey({ ...event, repeat: true }), true);
-            assert.equal(PageKeyPress.onHotkey({ ...event, ctrlKey: false }), false);
+            assert.equal(PageKeyPress.onHotkey({ ...event, altGraph: false }), false);
             assert.equal(PageKeyPress.matchesHotkey(registeredHotkey,
                 { ...event, shiftKey: false }), false);
             assert.equal(PageKeyPress.matchesHotkey(registeredHotkey,
@@ -193,7 +204,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         assert.equal(clicks, 12);
         assert.equal(prevented, 24);
         assert.equal(PageKeyPress.matchesHotkey('Enter',
-            { key: 'Enter', ctrlKey: true, altKey: true, shiftKey: true }), true);
+            { key: 'Enter', getModifierState: () => true, shiftKey: true }), true);
     });
 
     test(`${moduleName}: hides and disables page hotkeys while a messagebox is active`, () => {
