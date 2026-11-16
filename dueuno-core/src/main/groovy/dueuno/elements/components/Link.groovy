@@ -119,10 +119,10 @@ class Link extends Label {
      * Sets the hotkey that triggers this link. Supported values are
      * {@link Hotkey#F1} through {@link Hotkey#F24} and
      * {@link Hotkey#ENTER}. Every hotkey requires
-     * {@code Command} on macOS or {@code Meta} on Windows/Linux. Left and
-     * right variants work identically. Meta + Shift + F1–F12 activates F13–F24.
-     * {@code Ctrl}/{@code Control}, {@code Alt}/{@code Option}, and {@code Fn}
-     * alone do not activate hotkeys.
+     * {@code Command} on macOS, {@code Meta} on Windows, or {@code Ctrl + Alt}
+     * on Linux. Left and right variants work identically. Shift + F1–F12
+     * activates F13–F24. On Linux, {@code Ctrl} or {@code Alt} alone does not
+     * activate hotkeys. The {@code Fn} key alone does not activate hotkeys.
      * {@code null} clears the hotkey.
      *
      * @param value the hotkey to register

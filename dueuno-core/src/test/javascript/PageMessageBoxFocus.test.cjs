@@ -79,27 +79,34 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         }
     });
 
-    test(`${moduleName}: only Meta activates hotkeys and their hints`, () => {
-        let hotkeysVisible;
-        const context = vm.createContext({
-            Component: class { static register() {} },
-            PageMessageBox: { isActive: false },
-            $: () => ({ toggleClass(name, visible) { hotkeysVisible = visible; } }),
-        });
-        const source = path.resolve(__dirname, '../../../..', moduleName,
-            'grails-app/assets/dueuno/elements/base/PageKeyPress.js');
-        vm.runInContext(fs.readFileSync(source, 'utf8'), context);
-        const PageKeyPress = vm.runInContext('PageKeyPress', context);
+    test(`${moduleName}: uses platform-specific hotkey modifiers`, () => {
+        for (const isLinux of [false, true]) {
+            let hotkeysVisible;
+            const context = vm.createContext({
+                Component: class { static register() {} },
+                PageMessageBox: { isActive: false },
+                Utils: { getOS: () => isLinux ? 'Linux' : 'Mac' },
+                $: () => ({ toggleClass(name, visible) { hotkeysVisible = visible; } }),
+            });
+            const source = path.resolve(__dirname, '../../../..', moduleName,
+                'grails-app/assets/dueuno/elements/base/PageKeyPress.js');
+            vm.runInContext(fs.readFileSync(source, 'utf8'), context);
+            const PageKeyPress = vm.runInContext('PageKeyPress', context);
 
-        for (const key of ['F1', 'F12', 'Enter']) {
-            for (const modifiers of [
-                {}, { ctrlKey: true }, { shiftKey: true }, { altKey: true },
-                { metaKey: true }, { metaKey: true, ctrlKey: true },
-            ]) {
-                const event = { key, metaKey: false, ...modifiers };
-                assert.equal(PageKeyPress.matchesHotkey(key, event), event.metaKey);
-                PageKeyPress.onKeyUp(event);
-                assert.equal(hotkeysVisible, event.metaKey);
+            for (const key of ['F1', 'F12', 'Enter']) {
+                for (const modifiers of [
+                    {}, { ctrlKey: true }, { altKey: true }, { shiftKey: true },
+                    { metaKey: true }, { ctrlKey: true, altKey: true },
+                    { metaKey: true, ctrlKey: true, altKey: true },
+                ]) {
+                    const event = { key, metaKey: false, ctrlKey: false, altKey: false, ...modifiers };
+                    const expected = isLinux
+                        ? event.ctrlKey && event.altKey
+                        : event.metaKey;
+                    assert.equal(PageKeyPress.matchesHotkey(key, event), expected);
+                    PageKeyPress.onKeyUp(event);
+                    assert.equal(hotkeysVisible, expected);
+                }
             }
         }
     });
@@ -137,7 +144,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         assert.match(fs.readFileSync(css, 'utf8'), /content: attr\(data-21-hotkey-label\);/);
     });
 
-    test(`${moduleName}: Meta + Shift + F1–F12 dispatches F13–F24`, () => {
+    test(`${moduleName}: Ctrl + Alt + Shift + F1–F12 dispatches F13–F24 on Linux`, () => {
         let registeredHotkey;
         let clicks = 0;
         let prevented = 0;
@@ -155,6 +162,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                 static getVisible() { return true; }
             },
             PageMessageBox: { isActive: false },
+            Utils: { getOS: () => 'Linux' },
             document: { documentElement: { contains() { return true; } } },
             $: () => link,
         });
@@ -164,7 +172,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         const PageKeyPress = vm.runInContext('PageKeyPress', context);
 
         for (let i = 1; i <= 12; i++) {
-            const event = { key: 'F' + i, metaKey: true, shiftKey: true,
+            const event = { key: 'F' + i, ctrlKey: true, altKey: true, shiftKey: true,
                 preventDefault() { prevented++; }, stopPropagation() {},
             };
             registeredHotkey = 'F' + (i + 12);
@@ -176,7 +184,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
             assert.equal(PageKeyPress.matchesHotkey(registeredHotkey, event), true);
             assert.equal(PageKeyPress.onHotkey(event), true);
             assert.equal(PageKeyPress.onHotkey({ ...event, repeat: true }), true);
-            assert.equal(PageKeyPress.onHotkey({ ...event, metaKey: false }), false);
+            assert.equal(PageKeyPress.onHotkey({ ...event, ctrlKey: false }), false);
             assert.equal(PageKeyPress.matchesHotkey(registeredHotkey,
                 { ...event, shiftKey: false }), false);
             assert.equal(PageKeyPress.matchesHotkey(registeredHotkey,
@@ -185,7 +193,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
         assert.equal(clicks, 12);
         assert.equal(prevented, 24);
         assert.equal(PageKeyPress.matchesHotkey('Enter',
-            { key: 'Enter', metaKey: true, shiftKey: true }), true);
+            { key: 'Enter', ctrlKey: true, altKey: true, shiftKey: true }), true);
     });
 
     test(`${moduleName}: hides and disables page hotkeys while a messagebox is active`, () => {
