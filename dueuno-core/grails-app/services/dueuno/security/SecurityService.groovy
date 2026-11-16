@@ -30,6 +30,7 @@ import dueuno.tenant.*
 import dueuno.utils.EnvUtils
 import grails.gorm.DetachedCriteria
 import grails.gorm.multitenancy.CurrentTenant
+import grails.gorm.multitenancy.WithoutTenant
 import grails.gorm.transactions.Transactional
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -404,6 +405,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * Returns the currently logged in user
      * @return the currently logged in user
      */
+    @CurrentTenant
     TUser getCurrentUser(Boolean reload = false) {
         if (!springSecurityService.isLoggedIn()) {
             return null
@@ -446,12 +448,10 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * INTERNAL USE ONLY. Persists the current language for the currently logged in user.
      */
     @Transactional
-    @CurrentTenant
     void saveCurrentUserLanguage() {
-        String tenantId = tenantService.currentTenantId
-        TUser current = getUserByTenantIdAndUsername(tenantId, currentUsername)
-        current.language = currentLanguage
-        current.save(flush: true, failOnError: true)
+        TUser currentUser = getUserByUsername(currentUsername)
+        currentUser.language = currentLanguage
+        currentUser.save(flush: true, failOnError: true)
     }
 
     /**
@@ -630,7 +630,6 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         return query.get(fetch: fetchAll) as TUser
     }
 
-    @CompileDynamic
     TUser getUserByUsername(String username) {
         if (username?.equalsIgnoreCase(USERNAME_SUPERADMIN)) {
             return getUserByTenantIdAndUsername(tenantService.defaultTenant.tenantId, USERNAME_SUPERADMIN)
