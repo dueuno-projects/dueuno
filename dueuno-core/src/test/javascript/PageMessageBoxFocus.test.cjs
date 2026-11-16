@@ -93,6 +93,26 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
             vm.runInContext(fs.readFileSync(source, 'utf8'), context);
             const PageKeyPress = vm.runInContext('PageKeyPress', context);
 
+            if (isLinux) {
+                PageKeyPress.onKeyDownCapture({ key: 'AltGraph', type: 'keydown' });
+                assert.equal(hotkeysVisible, true);
+                PageKeyPress.onKeyUp({
+                    originalEvent: { key: 'AltGraph', type: 'keyup' },
+                });
+                assert.equal(hotkeysVisible, false);
+
+                const altGraphDown = { originalEvent: { key: 'AltGraph', type: 'keydown' } };
+                const altGraphUp = { originalEvent: { key: 'AltGraph', type: 'keyup' } };
+                assert.equal(PageKeyPress.isHotkeyModifierPressed(altGraphDown), true);
+                assert.equal(PageKeyPress.isHotkeyModifierPressed(altGraphUp), false);
+                assert.equal(PageKeyPress.isHotkeyModifierPressed({
+                    originalEvent: {
+                        key: 'F1',
+                        getModifierState: modifier => modifier == 'AltGraph',
+                    },
+                }), true);
+            }
+
             for (const key of ['F1', 'F12', 'Enter']) {
                 for (const modifiers of [
                     {}, { ctrlKey: true }, { altKey: true }, { shiftKey: true },

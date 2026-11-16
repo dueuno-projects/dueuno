@@ -966,7 +966,7 @@ c.form.with {
 |`hotkey`
 |`Hotkey`
 |
-|Function key `F1`–`F24` or `Enter` assigned to the link. Press it with `Command` on macOS, `Meta` on Windows, or `AltGr` on Linux. `Shift` + `F1`–`F12` activates `F13`–`F24`.
+|Function key `F1`–`F24` or `Enter` assigned to the link. Press it with `Command` on macOS, `Meta` on Windows, or `AltGr` on Linux. Holding the modifier shows hotkey hints; releasing it hides them. `Shift` + `F1`–`F12` activates `F13`–`F24`.
 |`modal`
 |`Boolean`
 |
