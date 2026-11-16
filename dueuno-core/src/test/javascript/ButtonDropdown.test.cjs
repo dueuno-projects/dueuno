@@ -30,9 +30,8 @@ const readWebjar = (name, file) => {
 
 const chrome = process.env.CHROME_BIN || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
-for (const [moduleName, reloadJQuery] of ['dueuno-core', 'app-test'].flatMap(
-    name => [false, true].map(reload => [name, reload]))) {
-    test(`${moduleName}${reloadJQuery ? ' after reloading jQuery' : ''}: WebJars preserve JQuery, calendar positioning, user menu alignment and dropdown navigation`, {
+for (const moduleName of ['dueuno-core', 'app-test']) {
+    test(`${moduleName}: WebJars preserve jQuery extensions, calendar positioning, user menu alignment and dropdown navigation`, {
         skip: !fs.existsSync(chrome) && 'Set CHROME_BIN to run the browser regression test',
     }, () => {
         const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dueuno-dropdown-'));
@@ -67,12 +66,9 @@ for (const [moduleName, reloadJQuery] of ['dueuno-core', 'app-test'].flatMap(
                 const PageModal = { isActive: false, $self: $('#modal') };</script>
                 <script>${read('elements/components/Button.js')}</script>
                 <script>
-                const originalJQuery = $;
-                const originalUtils = JQuery;
                 const oldElement = $('<div class="fa-old keep" data-enabled="true" data-empty=""></div>');
                 oldElement.data('runtime', 'preserved');
                 </script>
-                ${reloadJQuery ? `<script>${readWebjar('jquery', 'dist/jquery.js')}</script>` : ''}
                 <script>
                 window.addEventListener('load', () => {
                     try {
@@ -81,24 +77,21 @@ for (const [moduleName, reloadJQuery] of ['dueuno-core', 'app-test'].flatMap(
                         const close = header.querySelector('button').getBoundingClientRect();
                         const right = header.getBoundingClientRect().right - parseFloat(getComputedStyle(header).paddingRight);
                         check(Math.abs(close.right - right) < 1, 'User menu close button must align with the right padding');
-                        check(JQuery === originalUtils, 'JQuery must survive jQuery reinitialization');
-                        check(($ !== originalJQuery) === ${reloadJQuery}, 'Expected a fresh jQuery instance on reload');
-                        check(typeof $.fn.exists === 'undefined' && typeof $.getQueryParameters === 'undefined',
-                            'Dueuno must not extend jQuery');
+                        check(typeof $.fn.exists === 'function', 'Dueuno jQuery extensions must be available');
                         const freshElement = $('<div class="fa-old keep" data-enabled="true" data-empty=""></div>');
                         for (const element of [oldElement, freshElement]) {
-                            check(JQuery.exists(element), 'Nonempty selection must exist');
-                            check(!JQuery.exists($()), 'Empty selection must not exist');
-                            check(JQuery.attrIs(element, 'enabled', true), 'Data equality must work');
-                            check(JQuery.attrIsTrue(element, 'enabled'), 'True data must work');
-                            check(!JQuery.attrIsFalse(element, 'enabled'), 'True data must not be false');
-                            check(JQuery.attrIsFalse(element, 'missing'), 'Missing data must be false');
-                            check(JQuery.attrIsNot(element, 'enabled', false), 'Data inequality must work');
-                            check(JQuery.attrIsNot(element, 'missing', true), 'Missing data must be unequal');
-                            check(JQuery.attrExists(element, 'enabled'), 'Data attribute must exist');
-                            check(!JQuery.attrExists(element, 'empty'), 'Empty data attribute must not exist');
-                            check(!JQuery.attrExists(element, 'missing'), 'Missing data attribute must not exist');
-                            JQuery.removeClassesStartingWith(element, 'fa-');
+                            check(element.exists(), 'Nonempty selection must exist');
+                            check(!$().exists(), 'Empty selection must not exist');
+                            check(element.attrIs('enabled', true), 'Data equality must work');
+                            check(element.attrIsTrue('enabled'), 'True data must work');
+                            check(!element.attrIsFalse('enabled'), 'True data must not be false');
+                            check(element.attrIsFalse('missing'), 'Missing data must be false');
+                            check(element.attrIsNot('enabled', false), 'Data inequality must work');
+                            check(element.attrIsNot('missing', true), 'Missing data must be unequal');
+                            check(element.attrExists('enabled'), 'Data attribute must exist');
+                            check(!element.attrExists('empty'), 'Empty data attribute must not exist');
+                            check(!element.attrExists('missing'), 'Missing data attribute must not exist');
+                            element.removeClassesStartingWith('fa-');
                             check(element.attr('class') === 'keep', 'Class prefix removal must work');
                         }
                         check(oldElement.data('runtime') === 'preserved', 'Old selections retain their data');

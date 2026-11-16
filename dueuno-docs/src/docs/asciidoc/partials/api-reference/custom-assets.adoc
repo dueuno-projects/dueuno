@@ -147,20 +147,18 @@ and source order still determine which styles win.
 
 Dueuno loads jQuery and Bootstrap from WebJars using the versions managed by the Grails BOM.
 They are runtime dependencies of `dueuno-core`, so they are also available when compiling production assets.
-Dueuno's jQuery helpers are static methods of `JQuery`, rather than
-extensions of `$` or `$.fn`. For example, use `JQuery.exists($element)`
-and `JQuery.removeClassesStartingWith($element, 'fa-')`.
-These methods remain available if an application reloads jQuery, and accept
-selections created by either instance. Dueuno sets `cache: false` on its AJAX
-requests explicitly, without changing jQuery's global AJAX defaults.
+Dueuno adds its jQuery helpers to `$.fn`. For example, use `$element.exists()`
+and `$element.removeClassesStartingWith('fa-')`.
+Dueuno sets `cache: false` on its AJAX requests explicitly, without changing
+jQuery's global AJAX defaults.
 General helpers live in `Utils`, including `Utils.getQueryParameters()` and
 `Utils.getUriString()`, which do not depend on jQuery.
 
 Do not import jQuery or Bootstrap again in `dueuno.js` or `dueuno.css`,
 including indirectly through `require_tree` or another manifest.
-Reloading jQuery still creates separate event and data stores, and reloading
-Bootstrap can duplicate event handlers; `JQuery` does not prevent these
-library-level effects.
+Reloading jQuery replaces the instance containing Dueuno's extensions and
+creates separate event and data stores. Reloading Bootstrap can duplicate
+event handlers.
 
 The generated Grails welcome page can keep `application.js` and
 `application.css`, including their jQuery and Bootstrap imports, in its own

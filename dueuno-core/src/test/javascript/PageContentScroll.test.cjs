@@ -24,7 +24,8 @@ function setup(moduleName) {
         0: {},
         properties: { controller, action },
         length: 1,
-        find: () => ({ length: 0 }),
+        exists: () => true,
+        find: () => ({ length: 0, exists: () => false }),
         replaceWith(next) { current = next; window.scrollY = 0; },
     });
     let current = content('book', 'index');
@@ -55,7 +56,7 @@ function setup(moduleName) {
             reinitializeContent() { window.scrollY = 0; },
         },
     });
-    for (const name of ['utils', 'utils-jquery']) {
+    for (const name of ['utils']) {
         vm.runInContext(fs.readFileSync(path.resolve(__dirname, '../../../..', moduleName,
             `grails-app/assets/dueuno/utils/${name}.js`), 'utf8'), context);
     }
@@ -111,7 +112,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
             PageContent.saveScrollPosition();
             current().find = selector => {
                 assert.equal(selector, '[data-21-id="table"]');
-                return { length: 1, position: () => ({ top: 250, left: 20 }) };
+                return { length: 1, exists: () => true, position: () => ({ top: 250, left: 20 }) };
             };
             TransitionCommand.scrollTo({ renderProperties: { scroll } }, current());
             assert.deepEqual(scrollCalls, [{ top, left, behavior }]);

@@ -7,7 +7,7 @@ class Label extends Component {
 
     static setIcon($element, value) {
         let $icon = $element.find('i');
-        JQuery.removeClassesStartingWith($icon, 'fa-');
+        $icon.removeClassesStartingWith('fa-');
         $icon.addClass(value);
     }
 

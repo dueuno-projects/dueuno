@@ -17,7 +17,7 @@ class PageContent extends Component {
     static get $scrollbarBox() { return $('#page-content-scrollbar-box') }
 
     static finalize() {
-        if (!JQuery.exists(PageContent.$self)) {
+        if (!PageContent.$self.exists()) {
             return;
         }
 
@@ -33,7 +33,7 @@ class PageContent extends Component {
     }
 
     static onWindowResize(event) {
-        if (!JQuery.exists(PageContent.$self)) {
+        if (!PageContent.$self.exists()) {
             return;
         }
 

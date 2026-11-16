@@ -27,7 +27,7 @@ class TransitionCommand {
         LoadingScreen.show(false);
 
         let $newPage = $newPageContent.find('[data-21-component="PageContent"]');
-        if (!JQuery.exists($newPage)) {
+        if (!$newPage.exists()) {
             return;
         }
 
@@ -99,7 +99,7 @@ class TransitionCommand {
 
         } else { // Scroll to top of the specified component
             let $element = Elements.getElement(path);
-            if (!JQuery.exists($element)) {
+            if (!$element.exists()) {
                 return;
             }
             let position = $element.offset();
@@ -129,7 +129,7 @@ class TransitionCommand {
             return;
         }
 
-        if (!JQuery.exists($element)) {
+        if (!$element.exists()) {
             log.error('Cannot append to component "' + componentId + '" (element not found)');
             return;
         }
@@ -146,7 +146,7 @@ class TransitionCommand {
             return;
         }
 
-        if (!JQuery.exists($element)) {
+        if (!$element.exists()) {
             log.error('Cannot replace component "' + componentId + '" (element not found)');
             return;
         }
@@ -160,13 +160,13 @@ class TransitionCommand {
     static getFocusPath() {
         let $pageContent = PageContent.$self;
         let $activeElement = $pageContent.find(':focus').addBack(':focus');
-        if (!JQuery.exists($activeElement)) {
+        if (!$activeElement.exists()) {
             return null;
         }
 
         let path = [];
         let $element = $activeElement.closest('[data-21-id]');
-        while (JQuery.exists($element)) {
+        while ($element.exists()) {
             if (!$pageContent.is($element[0]) && !$pageContent.has($element[0]).length) {
                 break;
             }
@@ -192,7 +192,7 @@ class TransitionCommand {
     }
 
     static remove($element, componentId) {
-        if (!JQuery.exists($element)) {
+        if (!$element.exists()) {
             log.error('Cannot remove component "' + componentId + '" (element not found)');
             return;
         }
@@ -201,7 +201,7 @@ class TransitionCommand {
     }
 
     static trigger($element, componentId, eventName) {
-        if (!JQuery.exists($element)) {
+        if (!$element.exists()) {
             log.error('Cannot trigger event "' + eventName + '" for component "' + componentId + '" (element not found)');
             return;
         }

@@ -10,7 +10,7 @@ class QuantityField extends NumberField {
         NumberField.finalize($element, $root);
 
         let $dropdownItem = $element.closest('.input-group').find('li a');
-        if (JQuery.exists($dropdownItem)) {
+        if ($dropdownItem.exists()) {
             $dropdownItem.off('click').on('click', QuantityField.onSelectUnit);
         }
      }
@@ -65,7 +65,7 @@ class QuantityField extends NumberField {
 
         // Set label
         let $unitListItem = $element.closest('.input-group').find('li a[data-21-unit="' + value + '"]');
-        if (JQuery.exists($unitListItem)) {
+        if ($unitListItem.exists()) {
             let unitLabel = $unitListItem.html();
             $unit.html(unitLabel);
         } else {
@@ -139,7 +139,7 @@ class QuantityField extends NumberField {
 
         // If we can select the unit we need to disable the dropdown button as well
         let $button = $element.siblings('button');
-        if (!JQuery.exists($button)) {
+        if (!$button.exists()) {
             return;
         }
 

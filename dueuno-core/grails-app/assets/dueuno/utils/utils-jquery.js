@@ -13,36 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class JQuery {
+$.fn.exists = function() {
+    return this.length !== 0;
+};
 
-    static exists($element) {
-        return $element.length !== 0;
-    }
+$.fn.attrIs = function(name, value) {
+    return (typeof this.data(name) != 'undefined' && this.data(name) == value);
+};
 
-    static attrIs($element, name, value) {
-        return (typeof $element.data(name) != 'undefined' && $element.data(name) == value);
-    }
+$.fn.attrIsTrue = function(name) {
+    return (typeof this.data(name) != 'undefined' && this.data(name) == true);
+};
 
-    static attrIsTrue($element, name) {
-        return (typeof $element.data(name) != 'undefined' && $element.data(name) == true);
-    }
+$.fn.attrIsFalse = function(name) {
+    return (typeof this.data(name) == 'undefined' || this.data(name) == false);
+};
 
-    static attrIsFalse($element, name) {
-        return (typeof $element.data(name) == 'undefined' || $element.data(name) == false);
-    }
+$.fn.attrIsNot = function(name, value) {
+    return (typeof this.data(name) == 'undefined' || this.data(name) != value);
+};
 
-    static attrIsNot($element, name, value) {
-        return (typeof $element.data(name) == 'undefined' || $element.data(name) != value);
-    }
+$.fn.attrExists = function(name) {
+    return (typeof this.data(name) != 'undefined' && this.data(name) != '');
+};
 
-    static attrExists($element, name) {
-        return (typeof $element.data(name) != 'undefined' && $element.data(name) != '');
-    }
-
-    static removeClassesStartingWith($element, string) {
-        $element.removeClass (function (index, className) {
-            return (className.match ( new RegExp("\\b"+ string +"\\S+", "g") ) || []).join(' ');
-        });
-    }
-
-}
+$.fn.removeClassesStartingWith = function(string) {
+    this.removeClass (function (index, className) {
+        return (className.match ( new RegExp("\\b"+ string +"\\S+", "g") ) || []).join(' ');
+    });
+};
