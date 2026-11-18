@@ -53,6 +53,8 @@
 #shell-user-menu button {
     border: 0;
     padding: var(--elements-spacing-y) var(--elements-spacing-x);
+    padding-right: .3rem;
+    padding-top: .35rem;
     background: none;
     color: rgb(var(--elements-main-text));
 }

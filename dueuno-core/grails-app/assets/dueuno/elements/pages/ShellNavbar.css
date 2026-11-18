@@ -38,6 +38,16 @@
     color: rgb(var(--elements-main-text));
 }
 
+#shell-navbar-menu-toggle i,
+#shell-navbar-home i {
+    font-size: 1.1rem;
+}
+
+#shell-navbar-menu-close i,
+#shell-user-menu .offcanvas-header button i {
+    font-size: 1.3rem;
+}
+
 #shell-navbar-logo img {
     border-radius: 0;
     height: 2rem;
@@ -86,4 +96,8 @@
     padding: var(--elements-spacing-y) var(--elements-spacing-x);
     background: none;
     color: rgb(var(--elements-main-text));
+}
+
+#shell-navbar-user-menu-toggle .image-icon {
+    height: 1.5rem;
 }
