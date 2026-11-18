@@ -24,6 +24,7 @@ import dueuno.elements.contents.ContentEdit
 import dueuno.elements.contents.ContentForm
 import dueuno.elements.contents.ContentTable
 import dueuno.elements.controls.*
+import dueuno.elements.core.Hotkey
 import dueuno.elements.style.Color
 import dueuno.elements.style.TextDefault
 import dueuno.elements.style.TextWrap
@@ -80,6 +81,8 @@ class CrudController implements ElementsController {
             header.nextButton.addAction(controller: 'crudCompany', modal: true)
             header.nextButton.addAction(controller: 'crudPOGO', modal: true)
             header.nextButton.defaultAction.tooltip = 'default.create'
+            header.nextButton.primary = false
+            header.nextButton.hotkey = Hotkey.F1
 
             def form = c.addComponentBefore('table', Form)
             form.with {

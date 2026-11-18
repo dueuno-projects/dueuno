@@ -73,16 +73,6 @@ class Header extends Component {
 
         hasBackButton = false
         hasNextButton = false
-
-        backButton = createControl(
-            class: Button,
-            id: 'backButton',
-        )
-        nextButton = createControl(
-            class: Button,
-            id: 'nextButton',
-            primary: true,
-        )
     }
 
     /**
@@ -96,13 +86,16 @@ class Header extends Component {
     Button addNextButton(Map args = [:]) {
         args.controller = args.controller ?: controllerName
         args.action = args.action ?: 'onConfirm'
+        args.primary = (args.primary == null) ? true : args.primary
         args.submit = (args.submit == null) ? 'form' : args.submit
         args.text = (args.text == null) ? TextDefault.CONFIRM : args.text
         args.icon = (args.icon == null) ? 'fa-solid fa-check' : args.icon
         if (args.group) nextButton.group = args.group
 
-        nextButton.removeDefaultAction()
-        nextButton.addDefaultAction(args)
+        nextButton = createControl(args + [
+            class: Button,
+            id: 'nextButton',
+        ])
         hasNextButton = true
 
         return nextButton
@@ -170,8 +163,11 @@ class Header extends Component {
         args.icon = (args.icon == null) ? 'fa-angle-left' : args.icon
         if (args.group) nextButton.group = args.group
 
-        backButton.removeDefaultAction()
-        backButton.addDefaultAction(args)
+        backButton = createControl(args + [
+            class: Button,
+            id: 'backButton',
+        ])
+
         hasBackButton = true
 
         return backButton
