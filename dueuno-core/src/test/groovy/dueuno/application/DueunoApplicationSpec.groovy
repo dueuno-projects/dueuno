@@ -27,12 +27,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.time.Duration
 import spock.lang.Specification
 
-class ApplicationServiceSpec extends Specification {
+class DueunoApplicationSpec extends Specification {
 
     void 'explains the required bootstrap setup when onInit is missing'() {
         given:
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()
-        context.registerBean('applicationService', ApplicationService)
+        context.registerBean('dueunoApplication', DueunoApplication)
         context.refresh()
 
         when:
@@ -42,9 +42,9 @@ class ApplicationServiceSpec extends Specification {
         then:
         IllegalStateException error = thrown()
         error.message.contains('BootStrap.groovy')
-        error.message.contains('import dueuno.application.ApplicationService')
-        error.message.contains('ApplicationService applicationService')
-        error.message.contains('applicationService.onInit()')
+        error.message.contains('import dueuno.application.DueunoApplication')
+        error.message.contains('DueunoApplication dueunoApplication')
+        error.message.contains('dueunoApplication.onInit()')
 
         cleanup:
         context.close()
@@ -53,7 +53,7 @@ class ApplicationServiceSpec extends Specification {
     void 'registers localized language entries with existing flag assets'() {
         given:
         List<Map> entries = []
-        ApplicationService service = new ApplicationService() {
+        DueunoApplication service = new DueunoApplication() {
             @Override
             List<String> getLanguages() { ['cs', 'cs_CZ', 'zh_TW'] }
 
@@ -69,7 +69,7 @@ class ApplicationServiceSpec extends Specification {
         }
 
         when:
-        def registerLanguages = ApplicationService.getDeclaredMethod('registerUserMenuLanguages')
+        def registerLanguages = DueunoApplication.getDeclaredMethod('registerUserMenuLanguages')
         registerLanguages.accessible = true
         registerLanguages.invoke(service)
 

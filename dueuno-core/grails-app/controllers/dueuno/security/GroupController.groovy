@@ -14,7 +14,7 @@
  */
 package dueuno.security
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.commons.utils.LogUtils
 import dueuno.elements.ElementsController
 import dueuno.elements.components.TableRow
@@ -37,7 +37,7 @@ import grails.plugin.springsecurity.annotation.Secured
 @Secured(['ROLE_SECURITY'])
 class GroupController implements ElementsController {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     SecurityService securityService
     TenantService tenantService
 
@@ -177,7 +177,7 @@ class GroupController implements ElementsController {
     private List<Map> getLandingPages() {
         List<Map> results = []
 
-        for (feature in applicationService.mainFeatures.features) {
+        for (feature in dueunoApplication.mainFeatures.features) {
             List<Feature> subFeatures = feature.features
             if (subFeatures) {
                 for (subFeature in subFeatures) {

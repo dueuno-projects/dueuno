@@ -14,7 +14,7 @@
  */
 package dueuno.elements.pages
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Label
 import dueuno.elements.contents.ContentForm
@@ -32,7 +32,7 @@ import grails.plugin.springsecurity.annotation.Secured
 @Secured(['isAuthenticated()'])
 class ShellController implements ElementsController {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     TenantPropertyService tenantPropertyService
     ShellService shellService
     SecurityService securityService
@@ -66,7 +66,7 @@ class ShellController implements ElementsController {
             )
 
             Integer i = 0
-            for (item in applicationService.credits) {
+            for (item in dueunoApplication.credits) {
                 addField(
                     class: Label,
                     id: "credits${i}",

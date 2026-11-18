@@ -14,16 +14,16 @@
  */
 package dueuno.elements.extra
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import groovy.transform.CompileStatic
 
 @CompileStatic
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
-        applicationService.registerComponents('elements/elements-extra')
+        dueunoApplication.registerComponents('elements/elements-extra')
     }
 
     def destroy = {

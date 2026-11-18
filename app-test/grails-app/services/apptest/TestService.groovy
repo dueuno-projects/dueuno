@@ -14,7 +14,7 @@
  */
 package apptest
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.types.Money
 import grails.gorm.multitenancy.CurrentTenant
 import grails.gorm.transactions.Transactional
@@ -25,10 +25,10 @@ import groovy.util.logging.Slf4j
 @Transactional
 class TestService {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     void printTestString() {
-        log.info "*** TestService.printTestString() -> shell.name = '${applicationService.shell.id}' ***"
+        log.info "*** TestService.printTestString() -> shell.name = '${dueunoApplication.shell.id}' ***"
     }
 
     void installDemo() {

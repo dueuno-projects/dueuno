@@ -33,7 +33,7 @@ import groovy.transform.CompileStatic
 class BootStrap {
 
 //    GroovyPagesTemplateEngine groovyPagesTemplateEngine
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     SecurityService securityService
     AuthenticationProviderService authenticationProviderService
     CryptoService cryptoService
@@ -43,13 +43,13 @@ class BootStrap {
 
     def init = {
 
-        applicationService.onPluginInstall {
+        dueunoApplication.onPluginInstall {
             applicationPropertyService.install()
             tenantService.install()
             securityService.install()
         }
 
-        applicationService.onPluginTenantInstall { String tenantId ->
+        dueunoApplication.onPluginTenantInstall { String tenantId ->
             authenticationProviderService.tenantInstall(tenantId)
             securityService.tenantInstall()
             cryptoService.tenantInstall()
@@ -58,7 +58,7 @@ class BootStrap {
             shellService.tenantInstall()
         }
 
-        applicationService.beforeInit {
+        dueunoApplication.beforeInit {
             securityService.init()
 
             // It works only from the 'app-test' within this project
@@ -69,16 +69,16 @@ class BootStrap {
             Types.register(Quantity)
         }
 
-        applicationService.afterInit {
+        dueunoApplication.afterInit {
             applicationPropertyService.validateAll()
             securityService.registerFeatures()
         }
 
-        applicationService.beforeTenantInit { String tenantId ->
+        dueunoApplication.beforeTenantInit { String tenantId ->
             cryptoService.tenantInit()
         }
 
-        applicationService.afterTenantInit { String tenantId ->
+        dueunoApplication.afterTenantInit { String tenantId ->
             tenantPropertyService.validateAll()
         }
 

@@ -18,15 +18,15 @@ We create features in the application initialization method.
 ----
 package com.example
 
-import dueuno.core.ApplicationService
+import dueuno.core.DueunoApplication
 
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             registerFeature(
                     controller: 'person',
                     icon: 'fa-user',
@@ -41,7 +41,7 @@ class BootStrap {
 }
 ----
 
-The object in charge of creating a feature, and other application-wide stuff, is the `ApplicationService`.
+The object in charge of creating a feature, and other application-wide stuff, is the `DueunoApplication`.
 
 To register a feature, we need to specify the name of the controller that implements it. For example, in our case, the feature will be available at the following URL:
 

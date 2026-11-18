@@ -14,7 +14,7 @@
  */
 package apptest
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.elements.ElementsController
 import dueuno.elements.components.*
 import dueuno.elements.contents.ContentForm
@@ -29,7 +29,7 @@ import java.time.LocalTime
 
 class FormController implements ElementsController {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     QuantityService quantityService
     PersonService personService
 
@@ -113,14 +113,14 @@ class FormController implements ElementsController {
         def isReadonly = requireParam('isReadonly')
         def animate = requireParam('animate')
 
-        applicationService.registerTransformer('PERSON') {
+        dueunoApplication.registerTransformer('PERSON') {
             return "PERSON_TRANS [${it.id}] - ${it.id}"
         }
-        applicationService.registerTransformer('CUSTOM_TRANSFORMER') {
+        dueunoApplication.registerTransformer('CUSTOM_TRANSFORMER') {
             return "CUSTOM_TRANS [${it.key}] - ${it.id} ${it.lastname}"
         }
 
-        applicationService.registerPrettyPrinter('OBJ2TEXT', '${it.name}')
+        dueunoApplication.registerPrettyPrinter('OBJ2TEXT', '${it.name}')
 
         setReturnPoint()
 

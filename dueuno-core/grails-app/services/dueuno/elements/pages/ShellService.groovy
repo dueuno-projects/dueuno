@@ -15,7 +15,7 @@
 package dueuno.elements.pages
 
 import dueuno.application.ApplicationPropertyService
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.commons.utils.LogUtils
 import dueuno.elements.ElementsException
 import dueuno.elements.LinkGeneratorAware
@@ -34,7 +34,7 @@ import groovy.util.logging.Slf4j
 @CompileStatic
 class ShellService implements WebRequestAware, LinkGeneratorAware {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     TenantService tenantService
     ApplicationPropertyService applicationPropertyService
     TenantPropertyService tenantPropertyService
@@ -69,8 +69,8 @@ class ShellService implements WebRequestAware, LinkGeneratorAware {
         ShellConfig shellConfig = new ShellConfig()
 
         // These are not cloned, we will have direct access to the servletContext objects
-        shellConfig.features.user = applicationService.userFeatures
-        shellConfig.features.main = applicationService.mainFeatures
+        shellConfig.features.user = dueunoApplication.userFeatures
+        shellConfig.features.main = dueunoApplication.mainFeatures
 
         // System properties
         shellConfig.display.menu = applicationPropertyService.getBoolean('DISPLAY_MENU', true)

@@ -32,11 +32,11 @@ import jakarta.annotation.PostConstruct
 @CompileStatic
 class ApplicationPropertyService extends PropertyService {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     void install() {
         // System
-        String root = "${FileUtils.workingDirectory}${applicationService.applicationName}/"
+        String root = "${FileUtils.workingDirectory}${dueunoApplication.applicationName}/"
         setDirectory('APPLICATION_HOME_DIR', root)
         setDirectory('NEW_TENANT_DIR', "${root}tenants")
 

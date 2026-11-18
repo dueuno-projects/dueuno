@@ -16,7 +16,7 @@ package dueuno.tenant
 
 import dueuno.DueunoGrailsPlugin
 import dueuno.application.ApplicationPropertyService
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.database.ConnectionSourceService
 import dueuno.application.TApplicationInstall
 import dueuno.commons.utils.FileUtils
@@ -45,7 +45,7 @@ import org.grails.datastore.mapping.multitenancy.exceptions.TenantException
 @CompileStatic
 class TenantService {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     ConnectionSourceService connectionSourceService
     ApplicationPropertyService applicationPropertyService
 
@@ -253,14 +253,14 @@ class TenantService {
 
     @Transactional
     private void provisionTenant(String tenantId) {
-        applicationService.executeOnPluginTenantInstall(tenantId)
-        applicationService.executeOnTenantInstall(tenantId)
+        dueunoApplication.executeOnPluginTenantInstall(tenantId)
+        dueunoApplication.executeOnTenantInstall(tenantId)
     }
 
     @Transactional
     void updateAllTenants() {
         eachTenant { String tenantId ->
-            applicationService.executeOnUpdate(tenantId)
+            dueunoApplication.executeOnUpdate(tenantId)
         }
     }
 

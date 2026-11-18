@@ -42,15 +42,15 @@ Copy the following code in `BootStrap.groovy`:
 ----
 package com.example
 
-import dueuno.core.ApplicationService
+import dueuno.core.DueunoApplication
 
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             // It's fine to leave this empty at the moment
         }
 

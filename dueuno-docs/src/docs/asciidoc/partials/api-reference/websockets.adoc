@@ -77,11 +77,11 @@ import dueuno.elements.TransitionService
 
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     TransitionService transitionService
 
     def init = {
-        applicationService.onInit {
+        dueunoApplication.onInit {
             transitionService.subscribe('orders')
         }
     }

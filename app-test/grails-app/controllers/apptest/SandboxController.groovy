@@ -14,7 +14,7 @@
  */
 package apptest
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.commons.utils.DateUtils
 import dueuno.elements.ElementsController
 import dueuno.elements.components.*
@@ -36,7 +36,7 @@ class MyType {
 class SandboxController implements ElementsController {
 
     ServletContext servletContext
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     QuantityService quantityService
     SecurityService securityService
     PersonService personService
@@ -49,16 +49,16 @@ class SandboxController implements ElementsController {
 
         println params
 
-        applicationService.registerTransformer('DB2UNIT') { value ->
+        dueunoApplication.registerTransformer('DB2UNIT') { value ->
             if (value == 'PZ') value = 'PCS'
             return value
         }
 
-        applicationService.registerTransformer('DB2QUANTITY') { List value ->
+        dueunoApplication.registerTransformer('DB2QUANTITY') { List value ->
             return new Quantity(value[0] as BigDecimal, value[1] as QuantityUnit)
         }
 
-        applicationService.registerTransformer('DB2DATE') { value ->
+        dueunoApplication.registerTransformer('DB2DATE') { value ->
             if (!value || value == 'null') return null
             return DateUtils.parseLocalDate(value, 'yyyyMMdd')
         }

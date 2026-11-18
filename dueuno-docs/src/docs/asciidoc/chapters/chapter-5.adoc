@@ -51,16 +51,16 @@ The _mock-up_ code uses the `PersonService` we are going to create in a minute.
 ----
 package com.example
 
-import dueuno.core.ApplicationService
+import dueuno.core.DueunoApplication
 import java.time.LocalDate
 
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     PersonService personService
 
     def init = {
-        applicationService.onDevInstall { String tenantId ->
+        dueunoApplication.onDevInstall { String tenantId ->
             personService.create(
                     firstname: 'Felicity',
                     lastname: 'Green',
@@ -78,7 +78,7 @@ class BootStrap {
             )
         }
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             registerFeature(
                     controller: 'person',
                     icon: 'fa-user',

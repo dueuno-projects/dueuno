@@ -575,26 +575,26 @@ We need to let the users access the newly created `CompanyController`. We do so 
 ----
 package com.example
 
-import dueuno.elements.core.ApplicationService
+import dueuno.elements.core.DueunoApplication
 import dueuno.elements.tenants.TenantPropertyService
 import java.time.LocalDate
 
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     TenantPropertyService tenantPropertyService
     PersonService personService
     CompanyService companyService
 
     def init = {
 
-        applicationService.onTenantInstall { String tenantId ->
+        dueunoApplication.onTenantInstall { String tenantId ->
             tenantPropertyService.setString('PRIMARY_BACKGROUND_COLOR', '#018B84')
             tenantPropertyService.setNumber('PRIMARY_BACKGROUND_COLOR_ALPHA', 0.25)
             tenantPropertyService.setString('LOGIN_COPY', '2024 &copy; <a href="https://my-company.com" target="_blank">My Company</a><br/>Made in Italy')
         }
 
-        applicationService.onDevInstall { String tenantId ->
+        dueunoApplication.onDevInstall { String tenantId ->
 
             def yourCompany = companyService.create(name: 'Your Company', failOnError: true)
             def theirCompany = companyService.create(name: 'Their Company', failOnError: true)
@@ -622,7 +622,7 @@ class BootStrap {
             )
         }
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             registerPrettyPrinter(TCompany, '${it.name}')
             registerFeature(
                     controller: 'person',

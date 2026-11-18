@@ -14,14 +14,14 @@
  */
 package dueuno
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
-        applicationService.init {
+        dueunoApplication.init {
 
             registerPrettyPrinter('BOOK', '${it.title} - ${it.author}')
 

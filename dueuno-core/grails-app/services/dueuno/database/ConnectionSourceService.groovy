@@ -14,7 +14,7 @@
  */
 package dueuno.database
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.application.TConnectionSource
 import grails.gorm.DetachedCriteria
 import grails.gorm.transactions.Transactional
@@ -40,10 +40,10 @@ import java.sql.DriverManager
 class ConnectionSourceService {
 
     HibernateDatastore hibernateDatastore
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     void installOrConnect() {
-        applicationService.registerPrettyPrinter(TConnectionSource, '${it.tenant ? "TENANT " : "DATASOURCE "}"${it.name}" (${it.driverClassName})')
+        dueunoApplication.registerPrettyPrinter(TConnectionSource, '${it.tenant ? "TENANT " : "DATASOURCE "}"${it.name}" (${it.driverClassName})')
 
         if (!connectionSourceAlreadyInstalled()) {
             for (connectionSource in listDatastoreConnectionSource()) {

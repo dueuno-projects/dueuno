@@ -14,7 +14,7 @@
  */
 package dueuno.security
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.commons.utils.CryptoUtils
 import dueuno.tenant.TenantService
 import grails.gorm.multitenancy.CurrentTenant
@@ -29,7 +29,7 @@ import groovy.util.logging.Slf4j
 @CompileStatic
 class CryptoService {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     TenantService tenantService
 
     @CurrentTenant
@@ -37,14 +37,14 @@ class CryptoService {
         String tenantId = tenantService.currentTenantId
         byte[] password = CryptoUtils.generateAESKey()
         CryptoUtils.saveAESKey(password, tenantAESKeyPathname)
-        applicationService.setAttribute(getTenantAESKeyAttributeName(tenantId), password)
+        dueunoApplication.setAttribute(getTenantAESKeyAttributeName(tenantId), password)
     }
 
     @CurrentTenant
     void tenantInit() {
         String tenantId = tenantService.currentTenantId
         byte[] password = CryptoUtils.loadAESKey(tenantAESKeyPathname)
-        applicationService.setAttribute(getTenantAESKeyAttributeName(tenantId), password)
+        dueunoApplication.setAttribute(getTenantAESKeyAttributeName(tenantId), password)
     }
 
     @CurrentTenant
@@ -59,11 +59,11 @@ class CryptoService {
 
     @CurrentTenant
     byte[] getTenantAESKey() {
-        return applicationService.getAttribute(getTenantAESKeyAttributeName(tenantService.currentTenantId)) as byte[]
+        return dueunoApplication.getAttribute(getTenantAESKeyAttributeName(tenantService.currentTenantId)) as byte[]
     }
 
     private String getTenantAESKeyPathname() {
-        return tenantService.privateDir + applicationService.applicationName + '.key'
+        return tenantService.privateDir + dueunoApplication.applicationName + '.key'
     }
 
     private String getTenantAESKeyAttributeName(String tenantId) {

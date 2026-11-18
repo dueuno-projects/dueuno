@@ -229,16 +229,16 @@ Register the bundle during application or plugin startup:
 ----
 package dueuno.elements.extra
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import groovy.transform.CompileStatic
 
 @CompileStatic
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
-        applicationService.registerComponents('elements/elements-extra')
+        dueunoApplication.registerComponents('elements/elements-extra')
     }
 
     def destroy = {
@@ -296,7 +296,7 @@ Before considering a new component complete, verify that:
 * the Groovy and JavaScript class names match exactly;
 * the JavaScript class calls `Component.register(...)`;
 * the manifests load third-party libraries before dependent code and include the CSS file;
-* the asset bundle is registered with `applicationService.registerComponents(...)`;
+* the asset bundle is registered with `dueunoApplication.registerComponents(...)`;
 * two instances can appear on the same page without sharing DOM state;
 * empty, missing, and representative property values are handled; and
 * server-side tests cover property/default behaviour, while a browser or integration test covers JavaScript initialization and interaction where practical.

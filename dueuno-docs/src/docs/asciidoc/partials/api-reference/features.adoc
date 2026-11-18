@@ -13,11 +13,11 @@ Registers a Feature.
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             registerFeature(
                     controller: 'book', // <1>
                     action: 'index', // <2>
@@ -138,11 +138,11 @@ Registers a Feature in the _User Menu_. For the available options see: <<registe
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             registerUserFeature(
                     controller: 'manual',
                     icon: 'fa-book',
@@ -162,11 +162,11 @@ Registers a string template to render an instance of a specific _Class_. A prett
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             registerPrettyPrinter(TProject, '${it.name}') //<1>
             registerPrettyPrinter('PROJECT_ID', '${it.padLeft(4, "0")}') // <2>
         }
@@ -191,12 +191,12 @@ IMPORTANT: Be careful when using transformers since it may impact performances w
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     SecurityService securityService
 
     def init = {
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             registerTransformer('USER_FULLNAME') { Object value ->
                 return securityService.getUserByUsername(value).fullname
             }
@@ -214,11 +214,11 @@ Registers a role along with the people who took that role during the development
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             registerCredits('Application Development', 'Francesco Piceghello', 'Gianluca Sartori')
         }
 

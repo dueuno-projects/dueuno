@@ -64,11 +64,11 @@ To finish it up we register a Pretty Printer for the book record and tell the 'S
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             registerPrettyPrinter('BOOK', '${it.title} - ${it.author}') // <1>
         }
 

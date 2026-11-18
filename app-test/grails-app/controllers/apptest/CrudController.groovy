@@ -14,7 +14,7 @@
  */
 package apptest
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Form
 import dueuno.elements.components.Label
@@ -40,7 +40,7 @@ class CrudController implements ElementsController {
 
     TenantService tenantService
     AuditService auditService
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     QuantityService quantityService
     PersonService personService
     CompanyService companyService
@@ -49,11 +49,11 @@ class CrudController implements ElementsController {
 
 //        sleep(2000)
 
-        applicationService.registerTransformer('TRANSFORM_ME') { TCompany value ->
+        dueunoApplication.registerTransformer('TRANSFORM_ME') { TCompany value ->
             return "<i class='fa-fw fa-solid fa-building me-1'></i>${value.name.toUpperCase()}"
         }
 
-        applicationService.registerPrettyPrinter('PRETTY_MAP', '${it.a} ${it.b} ${it.c} ${it.d}')
+        dueunoApplication.registerPrettyPrinter('PRETTY_MAP', '${it.a} ${it.b} ${it.c} ${it.d}')
 
 //        throw new Exception("ATTENZIONE!!!")
 

@@ -33,7 +33,7 @@ import groovy.transform.CompileStatic
  * </p>
  * <p>
  * In normal usage, menu items are registered through
- * {@code ApplicationService.registerFeature(Map)} rather than being constructed directly.
+ * {@code DueunoApplication.registerFeature(Map)} rather than being constructed directly.
  * </p>
  *
  * @author Gianluca Sartori
@@ -84,7 +84,7 @@ class Menu extends Component {
      * Creates a {@code Menu} item from the given argument map.
      * <p>
      * <strong>Internal use only.</strong> Prefer
-     * {@code ApplicationService.registerFeature(Map)} for registering menu items at
+     * {@code DueunoApplication.registerFeature(Map)} for registering menu items at
      * application startup.
      * </p>
      *

@@ -15,7 +15,7 @@
 package dueuno.security
 
 import dueuno.application.ApplicationPropertyService
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.commons.utils.StringUtils
 import dueuno.elements.ElementsException
 import dueuno.elements.LinkGeneratorAware
@@ -67,7 +67,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     public static final String USERNAME_ADMIN = 'admin'
 
     SpringSecurityService springSecurityService
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     ApplicationPropertyService applicationPropertyService
     AuthenticationProviderService authenticationProviderService
     TenantPropertyService tenantPropertyService
@@ -77,19 +77,19 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     UserSessionService userSessionService
 
     void init() {
-        applicationService.registerPrettyPrinter(TTenant, '${it.tenantId}')
-        applicationService.registerPrettyPrinter(TUser, '${it.fullname}')
-        applicationService.registerPrettyPrinter(TRoleGroup, '${it.name}')
-        applicationService.registerPrettyPrinter('LANDING_PAGE', '${it.text}')
+        dueunoApplication.registerPrettyPrinter(TTenant, '${it.tenantId}')
+        dueunoApplication.registerPrettyPrinter(TUser, '${it.fullname}')
+        dueunoApplication.registerPrettyPrinter(TRoleGroup, '${it.name}')
+        dueunoApplication.registerPrettyPrinter('LANDING_PAGE', '${it.text}')
 
-        applicationService.registerFeature(
+        dueunoApplication.registerFeature(
             namespace: 'security',
             controller: 'superadmin',
             icon: 'fa-cog',
             order: 10000000,
             authorities: [ROLE_SUPERADMIN],
         )
-        applicationService.registerFeature(
+        dueunoApplication.registerFeature(
             namespace: 'security',
             controller: 'admin',
             icon: 'fa-cog',
@@ -138,8 +138,8 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             admin: true,
         )
 
-        tenantPropertyService.setString('SESSION_COOKIE_NAME', applicationService.applicationName.toUpperCase() + '-SESSION')
-        tenantPropertyService.setString('REMEMBER_ME_COOKIE_NAME', applicationService.applicationName.toUpperCase() + '-REMEMBER-ME')
+        tenantPropertyService.setString('SESSION_COOKIE_NAME', dueunoApplication.applicationName.toUpperCase() + '-SESSION')
+        tenantPropertyService.setString('REMEMBER_ME_COOKIE_NAME', dueunoApplication.applicationName.toUpperCase() + '-REMEMBER-ME')
 
         tenantPropertyService.setString('LOGIN_LANDING_URL', '')
         tenantPropertyService.setString('LOGOUT_LANDING_URL', '')
@@ -159,24 +159,24 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     }
 
     private void registerSuperadminFeatures() {
-        applicationService.registerSuperadminFeature(
+        dueunoApplication.registerSuperadminFeature(
             controller: 'tenant',
             icon: 'fa-house-user',
         )
-        applicationService.registerSuperadminFeature(
+        dueunoApplication.registerSuperadminFeature(
             controller: 'connectionSource',
             icon: 'fa-plug',
         )
-        applicationService.registerSuperadminFeature(
+        dueunoApplication.registerSuperadminFeature(
             controller: 'applicationProperty',
             icon: 'fa-tools',
         )
-        applicationService.registerSuperadminFeature(
+        dueunoApplication.registerSuperadminFeature(
             controller: 'monitoring',
             icon: 'fa-chart-simple',
             targetNew: true,
         )
-        applicationService.registerSuperadminFeature(
+        dueunoApplication.registerSuperadminFeature(
             controller: 'sysinfo',
             icon: 'fa-info-circle',
         )
@@ -191,28 +191,28 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             controller: 'group',
             icon: 'fa-user-shield',
         )
-        applicationService.registerAdminFeature(
+        dueunoApplication.registerAdminFeature(
             controller: 'authenticationProvider',
             icon: 'fa-shield-halved',
         )
-        applicationService.registerAdminFeature(
+        dueunoApplication.registerAdminFeature(
             controller: 'audit',
             icon: 'fa-book',
         )
-        applicationService.registerAdminFeature(
+        dueunoApplication.registerAdminFeature(
             controller: 'tenantProperty',
             icon: 'fa-tools',
         )
     }
 
     private void registerSecurityUserFeatures() {
-        applicationService.registerUserFeature(
+        dueunoApplication.registerUserFeature(
             namespace: 'security',
             controller: 'userProfile',
             icon: 'fa-user-circle',
             order: 10000010,
         )
-        applicationService.registerUserFeature(
+        dueunoApplication.registerUserFeature(
             namespace: 'security',
             controller: 'authentication',
             action: 'logout',
@@ -222,22 +222,22 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
             order: 10000020,
         )
 
-        applicationService.registerDeveloperUserFeature(
+        dueunoApplication.registerDeveloperUserFeature(
             order: 10000030,
         )
-        applicationService.registerDeveloperUserFeature(
+        dueunoApplication.registerDeveloperUserFeature(
             controller: 'shell',
             action: 'toggleClientLogs',
             icon: 'fa-bug',
             order: 10000040,
         )
-        applicationService.registerDeveloperUserFeature(
+        dueunoApplication.registerDeveloperUserFeature(
             controller: 'shell',
             action: 'toggleDevHints',
             icon: 'fa-key',
             order: 10000050,
         )
-        applicationService.registerDeveloperUserFeature(
+        dueunoApplication.registerDeveloperUserFeature(
             controller: 'gormExplorer',
             icon: 'fa-table',
             targetNew: true,
@@ -245,7 +245,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
         )
 
         if (EnvUtils.isDevelopment()) {
-            applicationService.registerDeveloperUserFeature(
+            dueunoApplication.registerDeveloperUserFeature(
                 controller: 'connectionSource',
                 action: 'h2Console',
                 icon: 'fa-database',
@@ -260,12 +260,12 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * To be used when creating features accessible only by users with the ROLE_SECURITY authority.
      */
     void registerSecurityFeature(Map args) {
-        Feature newFeature = applicationService.getFeature(args.controller as String)
+        Feature newFeature = dueunoApplication.getFeature(args.controller as String)
         if (!newFeature) {
             args.parent = 'admin'
             args.namespace = 'security'
             args.authorities = [ROLE_SECURITY]
-            applicationService.registerFeature(args)
+            dueunoApplication.registerFeature(args)
         }
     }
 
@@ -290,7 +290,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
     void initializeShell() {
         TUser user = getCurrentUser()
-        String lang = (user?.language in applicationService.languages) ? user.language : applicationPropertyService.getString('DEFAULT_LANGUAGE', true)
+        String lang = (user?.language in dueunoApplication.languages) ? user.language : applicationPropertyService.getString('DEFAULT_LANGUAGE', true)
         currentLanguage = lang
         fontSize = user.fontSize
         mobileFontSize = user.mobileFontSize
@@ -459,7 +459,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @param closure a closure to be executed after the user has logged in
      */
     void afterLogin(@DelegatesTo(SecurityService) Closure closure = { /* No setup */ }) {
-        applicationService.registerBootEvent('afterLogin', closure)
+        dueunoApplication.registerBootEvent('afterLogin', closure)
     }
 
     /**
@@ -467,7 +467,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
      * @param closure a closure to be executed after the user has logged out
      */
     void afterLogout(@DelegatesTo(SecurityService) Closure closure) {
-        applicationService.registerBootEvent('afterLogout', closure)
+        dueunoApplication.registerBootEvent('afterLogout', closure)
     }
 
     /**
@@ -485,7 +485,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
 
         // Executes custom login code
         String tenantId = tenantService.currentTenantId
-        applicationService.executeBootEvents(tenantId, 'afterLogin', session)
+        dueunoApplication.executeBootEvents(tenantId, 'afterLogin', session)
 
         log.info "'${tenantId.toUpperCase()}' TENANT - Login '${currentUsername}', language '${currentLanguage}', authorised for ${currentUserAuthorities}"
         auditService.log(AuditOperation.LOGIN, currentUserAuthorities.join(', '))
@@ -517,7 +517,7 @@ class SecurityService implements WebRequestAware, LinkGeneratorAware {
     @CurrentTenant
     void executeAfterLogout() {
         auditService.log(AuditOperation.LOGOUT, "-")
-        applicationService.executeBootEvents(tenantService.currentTenantId, 'afterLogout')
+        dueunoApplication.executeBootEvents(tenantService.currentTenantId, 'afterLogout')
         userSessionService.logout()
     }
 

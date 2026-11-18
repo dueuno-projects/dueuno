@@ -1,6 +1,6 @@
 [[application]]
 == Application
-`ApplicationService` is the main component in charge of the application setup, mainly used in `BootStrap.groovy`.
+`DueunoApplication` is the main component in charge of the application setup, mainly used in `BootStrap.groovy`.
 
 === onInstall()
 Gets executed only the first time the application is run.
@@ -10,11 +10,11 @@ Gets executed only the first time the application is run.
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.onInstall {
+        dueunoApplication.onInstall {
             // ...
         }
 
@@ -30,11 +30,11 @@ Installs the tenant. This closure gets called only once when the application is 
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.onTenantInstall { String tenantId -> //<1>
+        dueunoApplication.onTenantInstall { String tenantId -> //<1>
             // ...
         }
 
@@ -53,11 +53,11 @@ This closure will NOT be executed when the application is run as JAR, WAR or whe
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.onDevInstall { String tenantId ->
+        dueunoApplication.onDevInstall { String tenantId ->
             // ...
         }
 
@@ -75,23 +75,23 @@ These closures get executed only once when the application starts up. The execut
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = { // <1>
 
-        applicationService.onUpdate('2021-01-03') { String tenantId ->
+        dueunoApplication.onUpdate('2021-01-03') { String tenantId ->
             println "${tenantId}: UPDATE N.2"
         }
 
-        applicationService.onUpdate('2021-01-02') { String tenantId ->
+        dueunoApplication.onUpdate('2021-01-02') { String tenantId ->
             println "${tenantId}: UPDATE N.1"
         }
 
-        applicationService.onUpdate('2021-01-05') { String tenantId ->
+        dueunoApplication.onUpdate('2021-01-05') { String tenantId ->
             println "${tenantId}: UPDATE N.4"
         }
 
-        applicationService.onUpdate('2021-01-04') { String tenantId ->
+        dueunoApplication.onUpdate('2021-01-04') { String tenantId ->
             println "${tenantId}: UPDATE N.3"
         }
     }
@@ -103,7 +103,7 @@ class BootStrap {
 Initializes the application. This closure gets called each time the application is executed.
 
 This call is required, even when the application has no custom initialization code.
-Call `applicationService.onInit()` once inside the application's `BootStrap.init`, after registering any lifecycle callbacks.
+Call `dueunoApplication.onInit()` once inside the application's `BootStrap.init`, after registering any lifecycle callbacks.
 If it is missing, Dueuno stops startup with a message showing the required `BootStrap.groovy` setup.
 
 .grails-app/init/BootStrap.groovy
@@ -111,18 +111,18 @@ If it is missing, Dueuno stops startup with a message showing the required `Boot
 ----
 class BootStrap {
 
-    ApplicationService applicationService // <1>
+    DueunoApplication dueunoApplication // <1>
 
     def init = {
 
-        applicationService.onInit { // <2>
+        dueunoApplication.onInit { // <2>
             // ...
         }
 
     }
 }
 ----
-<1> Injects an instance of the `ApplicationService`
+<1> Injects an instance of the `DueunoApplication`
 <2> The `onInit { ... }` closure is executed each time the application starts up
 
 === afterLogin()

@@ -189,11 +189,11 @@ To configure the application Features we register them in the `BootStrap.groovy`
 ----
 class BootStrap {
 
-    ApplicationService applicationService // <1>
+    DueunoApplication dueunoApplication // <1>
 
     def init = {
 
-        applicationService.onInit { // <2>
+        dueunoApplication.onInit { // <2>
             registerFeature( // <3>
                     controller: 'person',
                     icon: 'fa-user',
@@ -203,9 +203,9 @@ class BootStrap {
     }
 }
 ----
-<1> `ApplicationService` is the object in charge of the application setup
+<1> `DueunoApplication` is the object in charge of the application setup
 <2> The `init = { ... }` Grails closure is executed each time the application starts up
-<3> Within the `applicationService.onInit { ... }` closure, you can call any `applicationService` method. In this case, the method is xref:z.api-reference.adoc#registerFeature[`registerFeature()`].
+<3> Within the `dueunoApplication.onInit { ... }` closure, you can call any `dueunoApplication` method. In this case, the method is xref:z.api-reference.adoc#registerFeature[`registerFeature()`].
 
 === Controllers
 
@@ -321,12 +321,12 @@ Each application has a `DEFAULT` database connection defined in the `grails-app/
 ----
 class BootStrap {
 
-    ApplicationService applicationService // <1>
+    DueunoApplication dueunoApplication // <1>
     ConnectionSourceService connectionSourceService // <2>
 
     def init = {
 
-        applicationService.onTenantInstall { String tenantId -> // <3>
+        dueunoApplication.onTenantInstall { String tenantId -> // <3>
             connectionSourceService.create( // <4>
                     name: 'runtimeDatasource',
                     driverClassName: 'org.h2.Driver',
@@ -340,7 +340,7 @@ class BootStrap {
 
 }
 ----
-<1> `ApplicationService` is the object in charge of the application setup
+<1> `DueunoApplication` is the object in charge of the application setup
 <2> `ConnectionSourceService` service injection
 <3> The `onInstall { ... }` closure is called only the first time the application runs for the DEFAULT Tenant and each time a new Tenant is created
 <4> The `create()` method creates a new connection and connects to it. Once created the application will automatically connect to it each time it boots up. Connection details can be changed via GUI accessing as `super` from the menu `System Configuration -> Connection Sources`
@@ -379,11 +379,11 @@ Applications are made of features. We register one to work with movies (see xref
 ----
 class BootStrap {
 
-    ApplicationService applicationService // <1>
+    DueunoApplication dueunoApplication // <1>
 
     def init = {
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             registerFeature( // <2>
                     controller: 'movie',
                     icon: 'fa-film',

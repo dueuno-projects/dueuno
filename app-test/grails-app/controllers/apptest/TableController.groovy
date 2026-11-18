@@ -14,7 +14,7 @@
  */
 package apptest
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.elements.ElementsController
 import dueuno.elements.components.ProgressBar
 import dueuno.elements.components.Table
@@ -28,18 +28,18 @@ import jakarta.annotation.PostConstruct
 
 class TableController implements ElementsController {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     PersonService personService
 
     @PostConstruct
     void init() {
-        applicationService.registerPrettyPrinter(TCompany, 'Dipendente in \'${it.name}\'')
-        applicationService.registerPrettyPrinter('NOME_FIGO', '${it} sei un figo!')
+        dueunoApplication.registerPrettyPrinter(TCompany, 'Dipendente in \'${it.name}\'')
+        dueunoApplication.registerPrettyPrinter('NOME_FIGO', '${it} sei un figo!')
 
-        applicationService.registerTransformer('MAIUSCOLO') { value ->
+        dueunoApplication.registerTransformer('MAIUSCOLO') { value ->
             return value.toString().toUpperCase()
         }
-        applicationService.registerTransformer('MULTIPLY') { value ->
+        dueunoApplication.registerTransformer('MULTIPLY') { value ->
             println 'BEFORE ' + value
             Object result = value ? value * 100 : new Money(1000)
             println 'AFTER ' + result

@@ -14,7 +14,7 @@
  */
 package dueuno.database
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.application.TConnectionSource
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Label
@@ -36,11 +36,11 @@ import java.sql.Driver
 @Secured(['ROLE_DEVELOPER'])
 class ConnectionSourceController implements ElementsController {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     ConnectionSourceService connectionSourceService
 
     def index() {
-        applicationService.registerPrettyPrinter(Driver, '${it.class.name}')
+        dueunoApplication.registerPrettyPrinter(Driver, '${it.class.name}')
 
         def c = createContent(ContentTable)
         c.table.with {

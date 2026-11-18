@@ -10,11 +10,11 @@ Gets executed only the first time the application is run or when a new Dueuno Pl
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.onPluginInstall { String tenantId ->
+        dueunoApplication.onPluginInstall { String tenantId ->
             // ...
         }
 
@@ -32,11 +32,11 @@ NOTE: This method is executed only when configured in a plugin, it does not get 
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.beforeInit {
+        dueunoApplication.beforeInit {
             // ...
         }
 
@@ -54,11 +54,11 @@ NOTE: This method is executed only when configured in a plugin, it does not get 
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.afterInit {
+        dueunoApplication.afterInit {
             // ...
         }
 

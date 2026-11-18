@@ -15,7 +15,7 @@
 package dueuno.security
 
 import dueuno.application.ApplicationPropertyService
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.commons.utils.LogUtils
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Separator
@@ -39,7 +39,7 @@ import grails.plugin.springsecurity.annotation.Secured
 @Secured(['ROLE_SECURITY'])
 class UserController implements ElementsController {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     AuthenticationProviderService authenticationProviderService
     SecurityService securityService
     TenantService tenantService
@@ -411,7 +411,7 @@ class UserController implements ElementsController {
             addField(
                 class: Select,
                 id: 'language',
-                optionsFromList: applicationService.languages,
+                optionsFromList: dueunoApplication.languages,
                 textPrefix: 'default.language',
                 search: true,
                 cols: 6,

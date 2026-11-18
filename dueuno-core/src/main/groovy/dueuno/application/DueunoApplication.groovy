@@ -35,6 +35,7 @@ import groovy.util.logging.Slf4j
 import jakarta.servlet.ServletContext
 import org.grails.io.support.PathMatchingResourcePatternResolver
 import org.grails.io.support.Resource
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 
@@ -46,12 +47,17 @@ import org.springframework.context.event.EventListener
 
 @Slf4j
 @CompileStatic
-class ApplicationService implements LinkGeneratorAware {
+class DueunoApplication implements LinkGeneratorAware {
 
+    @Autowired
     GrailsApplication grailsApplication
+    @Autowired
     ServletContext servletContext
+    @Autowired
     ConnectionSourceService connectionSourceService
+    @Autowired
     TenantService tenantService
+    @Autowired
     ApplicationPropertyService applicationPropertyService
 
     private static Map<String, List> credits = [:]
@@ -104,7 +110,7 @@ class ApplicationService implements LinkGeneratorAware {
      *
      * @param closure a closure containing specific application initialisation directives
      */
-    void onInit(@DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    void onInit(@DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         performInstallation()
         registerLanguages()
         registerOnInit(closure)
@@ -119,17 +125,17 @@ class ApplicationService implements LinkGeneratorAware {
 
 DUEUNO NOT INITIALIZED
 
-Add ApplicationService to grails-app/init/<your-package>/BootStrap.groovy
-and call applicationService.onInit() inside the init closure:
+Add DueunoApplication to grails-app/init/<your-package>/BootStrap.groovy
+and call dueunoApplication.onInit() inside the init closure:
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
-        applicationService.onInit {
+        dueunoApplication.onInit {
             // This can be left unimplemented
         }
     }
@@ -222,7 +228,7 @@ class BootStrap {
      * Used by plugins to register a System setup closure. The closure will be executed only once.
      * @param closure a closure containing specific setup code
      */
-    void onInstall(@DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    void onInstall(@DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         registerBootEvent('onInstall', closure)
     }
 
@@ -230,7 +236,7 @@ class BootStrap {
      * Used by plugins to register a setup closure. The closure will be executed only once.
      * @param closure a closure containing specific setup code
      */
-    void onPluginInstall(@DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    void onPluginInstall(@DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         registerBootEvent('onPluginInstall', closure)
     }
 
@@ -238,7 +244,7 @@ class BootStrap {
      * Used by the application to register a setup closure. The closure will be executed only once.
      * @param closure a closure containing specific setup code
      */
-    void onPluginTenantInstall(@DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    void onPluginTenantInstall(@DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         registerBootEvent('onPluginTenantInstall', closure)
     }
 
@@ -246,7 +252,7 @@ class BootStrap {
      * Used by the application to register a setup closure. The closure will be executed only once.
      * @param closure a closure containing specific setup code
      */
-    void onTenantInstall(@DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    void onTenantInstall(@DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         registerBootEvent('onTenantInstall', closure)
     }
 
@@ -254,7 +260,7 @@ class BootStrap {
      * Same as onTenantInstall() but only executed when in development environment
      * @param closure a closure containing specific setup code
      */
-    void onDevInstall(@DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    void onDevInstall(@DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         registerBootEvent('onDevInstall', closure)
     }
 
@@ -262,7 +268,7 @@ class BootStrap {
      * Used by applications to register an update closure. The closure will be executed only once.
      * @param closure a closure containing specific update code
      */
-    void onUpdate(String version, @DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    void onUpdate(String version, @DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         registerBootEvent('onUpdate', version, closure)
     }
 
@@ -270,7 +276,7 @@ class BootStrap {
      * Used by plugins to register a closure containing tenant pre-initialisation
      * @param closure a closure containing tenant initialisation
      */
-    void beforeTenantInit(@DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    void beforeTenantInit(@DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         registerBootEvent('beforeTenantInit', closure)
     }
 
@@ -278,7 +284,7 @@ class BootStrap {
      * Used by plugins to register a closure containing tenant post-initialisation
      * @param closure a closure containing tenant initialisation
      */
-    void afterTenantInit(@DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    void afterTenantInit(@DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         registerBootEvent('afterTenantInit', closure)
     }
 
@@ -286,7 +292,7 @@ class BootStrap {
  * Used by the application to register a closure containing tenant initialisation
  * @param closure a closure containing tenant initialisation
  */
-    void onTenantInit(@DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    void onTenantInit(@DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         registerBootEvent('onTenantInit', closure)
     }
 
@@ -294,7 +300,7 @@ class BootStrap {
  * Used by plugins to register a closure containing initialisation scripts.
  * @param closure a closure containing specific application pre-initialisation directives
  */
-    void beforeInit(@DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    void beforeInit(@DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         registerBootEvent('beforeInit', closure)
     }
 
@@ -302,7 +308,7 @@ class BootStrap {
      * Used by plugins to register a closure containing initialisation scripts.
      * @param closure a closure containing specific application post-initialisation directives
      */
-    void afterInit(@DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    void afterInit(@DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         registerBootEvent('afterInit', closure)
     }
 
@@ -310,7 +316,7 @@ class BootStrap {
      * Used by plugins to register a closure containing their initialisation scripts.
      * @param closure a closure containing specific application initialisation directives
      */
-    private void registerOnInit(@DelegatesTo(ApplicationService) Closure closure = { /* No setup */ }) {
+    private void registerOnInit(@DelegatesTo(DueunoApplication) Closure closure = { /* No setup */ }) {
         registerBootEvent('onInit', closure)
     }
 

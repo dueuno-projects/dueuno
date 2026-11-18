@@ -21,11 +21,11 @@ Add the following code to initialize the application:
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
 
     def init = {
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             // no-op // <1>
         }
 
@@ -59,12 +59,12 @@ We can set up our application to be accessible from a specific URL path. For exa
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     TenantPropertyService tenantPropertyService
 
     def init = {
 
-        applicationService.onTenantInstall { String tenantId ->
+        dueunoApplication.onTenantInstall { String tenantId ->
             tenantPropertyService.setString('SHELL_URL_MAPPING', '/admin')
             tenantPropertyService.setString('LOGIN_LANDING_URL', '/') // <1>
             tenantPropertyService.setString('LOGOUT_LANDING_URL', '/') // <2>

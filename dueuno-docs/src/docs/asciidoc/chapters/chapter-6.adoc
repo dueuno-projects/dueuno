@@ -105,14 +105,14 @@ We are also adding some copy under the login form with a link to our website to 
 ----
 class BootStrap {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     TenantPropertyService tenantPropertyService
 
     ...
 
     def init = {
 
-        applicationService.onTenantInstall { String tenantId ->
+        dueunoApplication.onTenantInstall { String tenantId ->
             tenantPropertyService.setString('PRIMARY_BACKGROUND_COLOR', '#018B84')
             tenantPropertyService.setNumber('PRIMARY_BACKGROUND_COLOR_ALPHA', 0.25)
             tenantPropertyService.setString('LOGIN_COPY', '2024 &copy; <a href="https://my-company.com" target="_blank">My Company</a><br/>Made in Italy')
@@ -162,18 +162,18 @@ $ ./gradlew bootRun
 Configuring Spring Security Core ...
 ... finished configuring Spring Security Core
 
-18:47:36.979 INFO  [restartedMain] d.elements.core.ApplicationService       : Available languages [en, it]
-18:47:36.982 INFO  [restartedMain] d.elements.core.ApplicationService       :
-18:47:36.982 INFO  [restartedMain] d.elements.core.ApplicationService       : --------------------------------------------------------------------------------
-18:47:36.982 INFO  [restartedMain] d.elements.core.ApplicationService       : APPLICATION: STARTING UP...
-18:47:36.982 INFO  [restartedMain] d.elements.core.ApplicationService       : --------------------------------------------------------------------------------
-18:47:36.987 INFO  [restartedMain] d.elements.core.ApplicationService       : Executing 'dueuno.elements.core.beforeInit'...
-18:47:37.029 INFO  [restartedMain] d.elements.core.ApplicationService       : Executing 'com.example.init'...
-18:47:37.030 INFO  [restartedMain] d.elements.core.ApplicationService       : Executing 'dueuno.elements.core.afterInit'...
-18:47:37.042 INFO  [restartedMain] d.elements.core.ApplicationService       : --------------------------------------------------------------------------------
-18:47:37.042 INFO  [restartedMain] d.elements.core.ApplicationService       : APPLICATION: STARTED.
-18:47:37.042 INFO  [restartedMain] d.elements.core.ApplicationService       : --------------------------------------------------------------------------------
-18:47:37.042 INFO  [restartedMain] d.elements.core.ApplicationService       :
+18:47:36.979 INFO  [restartedMain] d.elements.core.DueunoApplication       : Available languages [en, it]
+18:47:36.982 INFO  [restartedMain] d.elements.core.DueunoApplication       :
+18:47:36.982 INFO  [restartedMain] d.elements.core.DueunoApplication       : --------------------------------------------------------------------------------
+18:47:36.982 INFO  [restartedMain] d.elements.core.DueunoApplication       : APPLICATION: STARTING UP...
+18:47:36.982 INFO  [restartedMain] d.elements.core.DueunoApplication       : --------------------------------------------------------------------------------
+18:47:36.987 INFO  [restartedMain] d.elements.core.DueunoApplication       : Executing 'dueuno.elements.core.beforeInit'...
+18:47:37.029 INFO  [restartedMain] d.elements.core.DueunoApplication       : Executing 'com.example.init'...
+18:47:37.030 INFO  [restartedMain] d.elements.core.DueunoApplication       : Executing 'dueuno.elements.core.afterInit'...
+18:47:37.042 INFO  [restartedMain] d.elements.core.DueunoApplication       : --------------------------------------------------------------------------------
+18:47:37.042 INFO  [restartedMain] d.elements.core.DueunoApplication       : APPLICATION: STARTED.
+18:47:37.042 INFO  [restartedMain] d.elements.core.DueunoApplication       : --------------------------------------------------------------------------------
+18:47:37.042 INFO  [restartedMain] d.elements.core.DueunoApplication       :
 Grails application running at http://localhost:8080 in environment: development
 ----
 

@@ -14,7 +14,7 @@
  */
 package dueuno.security
 
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.elements.ElementsController
 import dueuno.elements.components.Separator
 import dueuno.elements.contents.ContentForm
@@ -33,7 +33,7 @@ import grails.plugin.springsecurity.annotation.Secured
 @Secured(['isAuthenticated()'])
 class UserProfileController implements ElementsController {
 
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     SecurityService securityService
 
     def index() {
@@ -144,7 +144,7 @@ class UserProfileController implements ElementsController {
             addField(
                 class: Select,
                 id: 'language',
-                optionsFromList: applicationService.languages,
+                optionsFromList: dueunoApplication.languages,
                 textPrefix: 'default.language',
                 search: true,
                 cols: 6,

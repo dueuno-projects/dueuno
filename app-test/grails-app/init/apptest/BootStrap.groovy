@@ -15,7 +15,7 @@
 package apptest
 
 import dueuno.application.ApplicationPropertyService
-import dueuno.application.ApplicationService
+import dueuno.application.DueunoApplication
 import dueuno.database.ConnectionSourceService
 import dueuno.commons.utils.FileUtils
 import dueuno.elements.TransitionService
@@ -35,7 +35,7 @@ import java.time.LocalTime
 class BootStrap {
 
     ServletContext servletContext
-    ApplicationService applicationService
+    DueunoApplication dueunoApplication
     TestService testService
     QuantityService quantityService
     ApplicationPropertyService applicationPropertyService
@@ -48,23 +48,23 @@ class BootStrap {
 
     def init = {
 
-        applicationService.onUpdate('2021-10-03') { String tenantId ->
+        dueunoApplication.onUpdate('2021-10-03') { String tenantId ->
             println "'${tenantId}' UPDATE N.2"
         }
 
-        applicationService.onUpdate('2021-10-02') { String tenantId ->
+        dueunoApplication.onUpdate('2021-10-02') { String tenantId ->
             println "'${tenantId}' UPDATE N.1"
         }
 
-        applicationService.onUpdate('2021-10-05') { String tenantId ->
+        dueunoApplication.onUpdate('2021-10-05') { String tenantId ->
             println "'${tenantId}' UPDATE N.4"
         }
 
-        applicationService.onUpdate('2021-10-04') { String tenantId ->
+        dueunoApplication.onUpdate('2021-10-04') { String tenantId ->
             println "'${tenantId}' UPDATE N.3"
         }
 
-        applicationService.onInstall {
+        dueunoApplication.onInstall {
             applicationPropertyService.setBoolean('DISPLAY_MENU', true)
             applicationPropertyService.setString('DEFAULT_LANGUAGE', 'it')
             applicationPropertyService.setString('EXCLUDED_LANGUAGES', 'de,pi')
@@ -93,7 +93,7 @@ class BootStrap {
             )
         }
 
-        applicationService.onTenantInstall { String tenantId ->
+        dueunoApplication.onTenantInstall { String tenantId ->
             tenantPropertyService.setNumber('TEST_NUMBER', 5 * 60)
             tenantPropertyService.setString('TEST_STRING', 'This is a string', 'This is its default value')
             tenantPropertyService.setString('LOGO_TAG', tenantId.toUpperCase())
@@ -152,7 +152,7 @@ class BootStrap {
             testService.installDemo()
         }
 
-        applicationService.onDevInstall { String tenantId ->
+        dueunoApplication.onDevInstall { String tenantId ->
             println "'${tenantId}' INSTALLING STUFF ONLY WHEN IN DEVELOPMENT ENVIRONMENT"
 
             applicationPropertyService.setBoolean('TEST_DENY_LOGIN', false)
@@ -232,18 +232,18 @@ class BootStrap {
             println "${tenantId}: Arrivederci ${securityService.currentUsername}!"
         }
 
-        applicationService.onTenantInit { String tenantId ->
+        dueunoApplication.onTenantInit { String tenantId ->
             println "INITIALIZING ${tenantId} Tenant"
         }
 
-        applicationService.onInit {
+        dueunoApplication.onInit {
             log.info "This is an INFO log."
             log.warn "This is a WARN log."
             log.error "This is an ERROR log."
 
-            applicationService.registerPrettyPrinter(TPerson, '${it.name}')
-            applicationService.registerPrettyPrinter(TCompany, '${it.name}')
-            applicationService.registerPrettyPrinter('customCompanyPrinter', '${it.name} (${it.dateCreated})')
+            registerPrettyPrinter(TPerson, '${it.name}')
+            registerPrettyPrinter(TCompany, '${it.name}')
+            registerPrettyPrinter('customCompanyPrinter', '${it.name} (${it.dateCreated})')
 
             transitionService.subscribe('macchina-1')
             transitionService.subscribe('macchina-2')
@@ -258,173 +258,173 @@ class BootStrap {
 
             // APPLICATION CONFIGURATION
             //
-            applicationService.registerCredits('Created by', 'Gianluca Sartori', 'Francesco Piceghello')
-            applicationService.registerCredits('Tested by', 'Gianluca Sartori', 'Francesco Piceghello')
-            applicationService.registerCredits('Sponsored by', 'Gianluca Sartori', 'Francesco Piceghello')
-            applicationService.registerCredits('Dreamed by', 'Gianluca Sartori', 'Francesco Piceghello')
+            registerCredits('Created by', 'Gianluca Sartori', 'Francesco Piceghello')
+            registerCredits('Tested by', 'Gianluca Sartori', 'Francesco Piceghello')
+            registerCredits('Sponsored by', 'Gianluca Sartori', 'Francesco Piceghello')
+            registerCredits('Dreamed by', 'Gianluca Sartori', 'Francesco Piceghello')
 
             //
             // FEATURES
             //
 
-            applicationService.registerUserFeature(
+            registerUserFeature(
                 controller: 'sandbox',
                 icon: 'fa-book',
                 text: 'Manual...',
             )
 
-            applicationService.registerFeature(
+            registerFeature(
                 controller: 'crud',
                 icon: 'fa-file',
                 favourite: true,
             )
-            applicationService.registerFeature(
+            registerFeature(
                 controller: 'crudCustom',
                 icon: 'fa-regular fa-file',
             )
-            applicationService.registerFeature(
+            registerFeature(
                 controller: 'crudDataServices',
                 icon: 'fa-file-circle-check',
             )
-            applicationService.registerFeature(
+            registerFeature(
                 controller: 'crudSql',
                 icon: 'fa-database',
             )
-//            applicationService.registerFeature(
+//            registerFeature(
 //                    controller: 'crudRest',
 //                    icon: 'fa-cloud',
 //                    authorities: ['ROLE_USER']
 //            )
 
-            applicationService.registerFeature(
+            registerFeature(
                 controller: 'elements',
                 favourite: true,
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'sandbox',
                 icon: 'fa-umbrella-beach',
                 favourite: true,
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'table',
                 icon: 'fa-table',
                 favourite: true,
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'tableStressTest',
                 icon: 'fa-table',
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'form',
                 icon: 'fa-check-square',
                 favourite: true,
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'select',
                 icon: 'fa-table-list',
                 favourite: true,
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'grid',
                 icon: 'fa-border-none',
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'tabs',
                 icon: 'fa-ellipsis-h',
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'timer',
                 icon: 'fa-hourglass',
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'transitions',
                 icon: 'fa-wand-sparkles',
                 favourite: true,
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'websocket',
                 icon: 'fa-envelope',
                 favourite: true,
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'charts',
                 icon: 'fa-chart-pie',
                 favourite: true,
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'upload',
                 icon: 'fa-upload',
                 favourite: true,
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'staticResources',
                 icon: 'fa-images',
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'elements',
                 controller: 'customPage',
                 icon: 'fa-palette',
                 direct: true,
             )
 
-            applicationService.registerFeature(
+            registerFeature(
                 controller: 'errorMessages',
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'errorMessages',
                 controller: 'handledException',
                 icon: 'fa-regular fa-comment',
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'errorMessages',
                 controller: 'denied',
                 icon: 'fa-user-lock',
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'errorMessages',
                 controller: 'notFound',
                 icon: 'fa-search-location',
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'errorMessages',
                 controller: 'exception',
                 icon: 'fa-solid fa-bug',
             )
 
-            applicationService.registerFeature(
+            registerFeature(
                 controller: 'authDemo',
                 icon: 'fa-group',
                 favourite: true,
                 authorities: ['ROLE_1', 'ROLE_2', 'ROLE_3']
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'authDemo',
                 controller: 'user1',
                 icon: 'fa-users',
                 favourite: true,
                 authorities: ['ROLE_1']
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'authDemo',
                 controller: 'user2',
                 icon: 'fa-users',
                 favourite: true,
                 authorities: ['ROLE_2']
             )
-            applicationService.registerFeature(
+            registerFeature(
                 parent: 'authDemo',
                 controller: 'user3',
                 icon: 'fa-users',
