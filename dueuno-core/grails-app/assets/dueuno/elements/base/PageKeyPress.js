@@ -264,13 +264,15 @@ class PageKeyPress extends Component {
     }
 
     static isHotkeyModifierPressed(event) {
-        if (Utils.getOS() == 'Linux') {
+        let os = Utils.getOS();
+        if (os == 'Linux' || os == 'Windows') {
             let keyboardEvent = event.originalEvent || event;
             if (keyboardEvent.key == 'AltGraph') {
                 return keyboardEvent.type == 'keydown';
             }
             return keyboardEvent.getModifierState?.('AltGraph') === true;
         }
+
         return event.metaKey;
     }
 

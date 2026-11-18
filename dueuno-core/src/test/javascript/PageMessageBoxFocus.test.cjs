@@ -80,12 +80,12 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
     });
 
     test(`${moduleName}: uses platform-specific hotkey modifiers`, () => {
-        for (const isLinux of [false, true]) {
+        for (const os of ['Mac', 'Windows', 'Linux']) {
             let hotkeysVisible;
             const context = vm.createContext({
                 Component: class { static register() {} },
                 PageMessageBox: { isActive: false },
-                Utils: { getOS: () => isLinux ? 'Linux' : 'Mac' },
+                Utils: { getOS: () => os },
                 $: () => ({ toggleClass(name, visible) { hotkeysVisible = visible; } }),
             });
             const source = path.resolve(__dirname, '../../../..', moduleName,
@@ -93,7 +93,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
             vm.runInContext(fs.readFileSync(source, 'utf8'), context);
             const PageKeyPress = vm.runInContext('PageKeyPress', context);
 
-            if (isLinux) {
+            if (os != 'Mac') {
                 PageKeyPress.onKeyDownCapture({ key: 'AltGraph', type: 'keydown' });
                 assert.equal(hotkeysVisible, true);
                 PageKeyPress.onKeyUp({
@@ -127,7 +127,7 @@ for (const moduleName of ['dueuno-core', 'app-test']) {
                             return this.altGraph;
                         },
                     };
-                    const expected = isLinux
+                    const expected = os == 'Windows' || os == 'Linux'
                         ? event.altGraph
                         : event.metaKey;
                     assert.equal(PageKeyPress.matchesHotkey(key, event), expected);
