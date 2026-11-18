@@ -46,5 +46,6 @@ class ContentHeader extends ContentBlank {
 
         header = addComponent(Header)
         header.addNextButton()
+        header.sticky = true
     }
 }

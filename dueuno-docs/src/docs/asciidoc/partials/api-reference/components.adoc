@@ -132,7 +132,7 @@ A `Header` can have a `backButton` on the left and a `nextButton` on the right. 
 |`sticky`
 |`Boolean`
 |
-|When set to `true` the header will stick on top. When a `backButton` or `nextButton` is added to the header than `sticky` is automatically set to `true` to let the user reach the buttons even if the content has been scrolled down. To force the header to scroll with the content explicitly set sticky to `false`.
+|When set to `true` the header will stick on top. Adding a `backButton` or `nextButton` does not change this property. Set `sticky` explicitly to `true` to keep the header and its buttons visible while scrolling, or to `false` to make the header scroll with the content.
 |`title`
 |`String`
 |

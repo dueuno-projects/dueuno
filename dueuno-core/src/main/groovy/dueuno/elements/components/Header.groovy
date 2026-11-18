@@ -22,18 +22,14 @@ import groovy.transform.CompileStatic
  * A page-header component that displays a title and optionally a "next" (primary action)
  * button and a "back" (secondary navigation) button.
  * <p>
- * The header becomes sticky automatically when either the next or back button is present,
- * unless the {@code sticky} property has been set explicitly. The sticky state is serialised
- * to JSON and consumed by the client-side renderer.
+ * The presence of next or back buttons does not affect whether the header is sticky. Set the
+ * {@code sticky} property explicitly to control its sticky state.
  * </p>
  *
  * @author Gianluca Sartori
  */
 @CompileStatic
 class Header extends Component {
-
-    /** Internal sticky flag set automatically when buttons are added/removed; {@code null} means "not yet decided". */
-    private Boolean isSticky
 
     /** The i18n message key or literal title text displayed in the header. */
     String text
@@ -93,7 +89,6 @@ class Header extends Component {
      * Adds or replaces the primary action button in this header.
      * Defaults to {@code action: "onConfirm"}, {@code submit: "form"},
      * label {@link TextDefault#CONFIRM}, and icon {@code "fa-solid fa-check"}.
-     * Also makes the header sticky unless {@code sticky} was set explicitly.
      *
      * @param args button configuration; all keys are optional and override the defaults above
      * @return the {@code nextButton} instance
@@ -109,20 +104,16 @@ class Header extends Component {
         nextButton.removeDefaultAction()
         nextButton.addDefaultAction(args)
         hasNextButton = true
-        if (sticky == null) isSticky = true
 
         return nextButton
     }
 
     /**
      * Removes the primary action (next) button from this header.
-     * If no back button is present and {@code sticky} was not set explicitly,
-     * the header becomes non-sticky.
      *
      * @return the {@code nextButton} instance (with its default action removed)
      */
     Button removeNextButton() {
-        if (sticky == null && !hasBackButton) isSticky = false
         nextButton.removeDefaultAction()
         hasNextButton = false
         return nextButton
@@ -158,7 +149,7 @@ class Header extends Component {
      * Adds or replaces the secondary navigation (back) button in this header.
      * If a return-point is available and no explicit {@code controller}/{@code action} is given,
      * the return-point destination is used. Defaults to label {@link TextDefault#BACK} and icon
-     * {@code "fa-angle-left"}. Also makes the header sticky unless {@code sticky} was set explicitly.
+     * {@code "fa-angle-left"}.
      *
      * @param args button configuration; all keys are optional and override the defaults above
      * @return the {@code backButton} instance
@@ -182,20 +173,16 @@ class Header extends Component {
         backButton.removeDefaultAction()
         backButton.addDefaultAction(args)
         hasBackButton = true
-        if (sticky == null) isSticky = true
 
         return backButton
     }
 
     /**
      * Removes the secondary navigation (back) button from this header.
-     * If no next button is present and {@code sticky} was not set explicitly,
-     * the header becomes non-sticky.
      *
      * @return the {@code backButton} instance (with its default action removed)
      */
     Button removeBackButton() {
-        if (sticky == null && !hasNextButton) isSticky = false
         backButton.removeDefaultAction()
         hasBackButton = false
         return backButton
@@ -212,9 +199,7 @@ class Header extends Component {
     }
 
     /**
-     * Serialises this header's properties to JSON, adding the resolved {@code sticky} state.
-     * The sticky value is determined by the explicit {@code sticky} property if set, otherwise
-     * by the internal {@code isSticky} flag.
+     * Serialises this header's properties to JSON.
      *
      * @param properties additional properties to merge before serialisation
      * @return the JSON string representation of this header's properties
@@ -222,7 +207,7 @@ class Header extends Component {
     @Override
     String getPropertiesAsJSON(Map properties = [:]) {
         Map thisProperties = [
-            sticky: sticky == null ? isSticky : sticky,
+            sticky: sticky,
         ]
         return super.getPropertiesAsJSON(thisProperties + properties)
     }
