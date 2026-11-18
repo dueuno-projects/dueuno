@@ -48,6 +48,10 @@
     font-size: 1.3rem;
 }
 
+#shell-navbar-menu-close i {
+    padding-top: .3rem;
+}
+
 #shell-navbar-logo img {
     border-radius: 0;
     height: 2rem;
