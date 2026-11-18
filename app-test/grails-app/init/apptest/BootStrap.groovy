@@ -237,6 +237,10 @@ class BootStrap {
         }
 
         applicationService.onInit {
+            log.info "This is an INFO log."
+            log.warn "This is a WARN log."
+            log.error "This is an ERROR log."
+
             applicationService.registerPrettyPrinter(TPerson, '${it.name}')
             applicationService.registerPrettyPrinter(TCompany, '${it.name}')
             applicationService.registerPrettyPrinter('customCompanyPrinter', '${it.name} (${it.dateCreated})')
