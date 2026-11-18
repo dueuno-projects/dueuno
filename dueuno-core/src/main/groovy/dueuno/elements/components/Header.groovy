@@ -96,20 +96,21 @@ class Header extends Component {
             class: Button,
             id: 'nextButton',
         ])
-        hasNextButton = true
 
+        hasNextButton = true
         return nextButton
     }
 
     /**
      * Removes the primary action (next) button from this header.
-     *
-     * @return the {@code nextButton} instance (with its default action removed)
      */
-    Button removeNextButton() {
+    void removeNextButton() {
+        if (!nextButton) {
+            return
+        }
+
         nextButton.removeDefaultAction()
         hasNextButton = false
-        return nextButton
     }
 
     /**
@@ -169,19 +170,19 @@ class Header extends Component {
         ])
 
         hasBackButton = true
-
         return backButton
     }
 
     /**
      * Removes the secondary navigation (back) button from this header.
-     *
-     * @return the {@code backButton} instance (with its default action removed)
      */
-    Button removeBackButton() {
+    void removeBackButton() {
+        if (!backButton) {
+            return
+        }
+
         backButton.removeDefaultAction()
         hasBackButton = false
-        return backButton
     }
 
     /**

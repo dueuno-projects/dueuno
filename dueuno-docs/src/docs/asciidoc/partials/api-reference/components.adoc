@@ -171,11 +171,11 @@ A `Header` can have a `backButton` on the left and a `nextButton` on the right. 
 |`addBackButton(Map)`
 |Add the backButton. Accepts the arguments of <<button>>
 |`removeBackButton()`
-|Removes the backButton.
+|Removes the backButton. Does nothing if no backButton has been added.
 |`addNextButton(Map)`
 |Add the nextButton. Accepts the arguments of <<button>>
 |`removeNextButton()`
-|Removes the nextButton.
+|Removes the nextButton. Does nothing if no nextButton has been added.
 |===
 
 [[table]]
