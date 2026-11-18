@@ -14,10 +14,10 @@ dependencies {
 
     // Apache HttpClient 5
     // Keep aligned with the versions provided by the Spring Boot version used by Grails
-    api 'org.apache.httpcomponents.client5:httpclient5:5.5.2'
-    implementation 'org.apache.httpcomponents.client5:httpclient5-fluent:5.5.2'
-    implementation 'org.apache.httpcomponents.core5:httpcore5:5.3.6'
-    implementation 'org.apache.httpcomponents.core5:httpcore5-h2:5.3.6'
+    api 'org.apache.httpcomponents.client5:httpclient5:5.6.4'
+    implementation 'org.apache.httpcomponents.client5:httpclient5-fluent:5.6.4'
+    implementation 'org.apache.httpcomponents.core5:httpcore5:5.4.3'
+    implementation 'org.apache.httpcomponents.core5:httpcore5-h2:5.4.3'
 
     // SSH
     implementation "com.jcraft:jsch:0.1.55"
