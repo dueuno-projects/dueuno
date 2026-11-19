@@ -1,36 +1,49 @@
-.progress {
+.component-progress-bar {
+    --bs-progress-height: calc(1.5rem + var(--elements-spacing-y) + var(--elements-spacing-y));
+    --bs-progress-bg: rgb(var(--elements-primary-bg-shaded));
+    --bs-progress-bar-bg: rgb(var(--elements-primary-bg));
+    --bs-progress-bar-color: rgb(var(--elements-primary-text));
+    font-size: inherit;
     position: relative;
+    width: 100%;
     margin-bottom: 0;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
-.progress.indefinite .progress-bar, .progress.indefinite .progress-label {
+.input-group > .component-progress-bar {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.component-progress-bar.indefinite .progress-bar, .component-progress-bar.indefinite .progress-label {
     display: none;
 }
 
-.progress.definite .progress-line, .progress.definite .progress-subline {
+.component-progress-bar.definite .progress-line, .component-progress-bar.definite .progress-subline {
     display: none;
 }
 
-.progress .progress-line{
+.component-progress-bar .progress-line {
     position: absolute;
     opacity: .4;
     background: rgb(var(--elements-primary-bg));
     width: 150%;
-    height: 1.428571rem;
+    height: var(--bs-progress-height);
+    top: 0;
 }
 
-.progress .progress-subline{
+.component-progress-bar .progress-subline {
     position: absolute;
     background: rgb(var(--elements-primary-bg));
-    height: 1.428571rem;
+    height: var(--bs-progress-height);
+    top: 0;
 }
 
-.progress .progress-inc{
+.component-progress-bar .progress-inc {
     animation: increase 2s infinite;
 }
 
-.progress .progress-dec{
+.component-progress-bar .progress-dec {
     animation: decrease 2s .5s infinite;
 }
 

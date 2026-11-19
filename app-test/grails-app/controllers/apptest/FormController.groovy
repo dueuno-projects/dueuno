@@ -290,6 +290,31 @@ class FormController implements ElementsController {
                 cols: 6,
             )
             addField(
+                class: ProgressBar,
+                id: 'progress',
+                now: 70,
+                max: 100,
+                cols: 9,
+            )
+            addField(
+                class: Button,
+                id: 'progressButton',
+                text: 'Progress',
+                cols: 3,
+            )
+            addField(
+                class: ProgressBar,
+                id: 'progress2',
+                now: 70,
+                cols: 9,
+            )
+            addField(
+                class: Button,
+                id: 'progressButton2',
+                text: 'Progress',
+                cols: 3,
+            )
+            addField(
                 class: Upload,
                 id: 'upload1',
             )
