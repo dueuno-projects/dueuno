@@ -1,4 +1,4 @@
-//= require TableStickyHeaders
+//= require TableStickyHeader
 
 class Table extends Component {
 
@@ -32,7 +32,7 @@ class Table extends Component {
         }
 
         let $table = $element.find('table');
-        TableStickyHeaders.initialize($table, stickyHeaderOffset, stickyHeaderZIndex);
+        TableStickyHeader.initialize($table, stickyHeaderOffset, stickyHeaderZIndex);
     }
 
     static onScroll(event) {
@@ -123,7 +123,7 @@ class Table extends Component {
 
         Component.setDisplay($groupActions, value);
         Component.setDisplay($actionsLabel, !value);
-        TableStickyHeaders.refresh($element.closest('table'));
+        TableStickyHeader.refresh($element.closest('table'));
     }
 
     static displaySelectAllRows($element, value) {

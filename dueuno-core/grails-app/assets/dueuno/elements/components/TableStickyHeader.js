@@ -17,25 +17,25 @@
  * under the License.
  */
 
-let TableStickyHeaders_states = new Set();
-let TableStickyHeaders_observer = null;
+let TableStickyHeader_states = new Set();
+let TableStickyHeader_observer = null;
 
-class TableStickyHeaders {
+class TableStickyHeader {
 
-    static get states() { return TableStickyHeaders_states }
-    static get observer() { return TableStickyHeaders_observer }
-    static set observer(value) { TableStickyHeaders_observer = value }
+    static get states() { return TableStickyHeader_states }
+    static get observer() { return TableStickyHeader_observer }
+    static set observer(value) { TableStickyHeader_observer = value }
 
     static initialize($table, fixedOffset, zIndex) {
         zIndex = zIndex == 0 ? 1 : zIndex;
 
         for (let i = 0; i < $table.length; i++) {
-            TableStickyHeaders.initializeTable($($table[i]), fixedOffset, zIndex);
+            TableStickyHeader.initializeTable($($table[i]), fixedOffset, zIndex);
         }
     }
 
     static initializeTable($table, fixedOffset, zIndex) {
-        TableStickyHeaders.destroy($table);
+        TableStickyHeader.destroy($table);
 
         let table = $table[0];
         let header = table ? table.querySelector('thead') : null;
@@ -89,19 +89,19 @@ class TableStickyHeaders {
                 let forceSizeSync = state.forceSizeSync;
                 state.forceSizeSync = false;
                 if (!document.documentElement.contains(state.table)) {
-                    TableStickyHeaders.destroy(state.$table);
+                    TableStickyHeader.destroy(state.$table);
                     return;
                 }
-                TableStickyHeaders.update(state, forceSizeSync);
+                TableStickyHeader.update(state, forceSizeSync);
             });
         };
 
         state.update = function () {
-            TableStickyHeaders.update(state, false);
+            TableStickyHeader.update(state, false);
         };
 
         state.destroy = function () {
-            TableStickyHeaders.destroy($table);
+            TableStickyHeader.destroy($table);
         };
 
         $(window).on('scroll', state.scheduleUpdate);
@@ -109,22 +109,22 @@ class TableStickyHeaders {
         if (state.dataset && !state.useScrollTimeline) {
             $(state.dataset).on('scroll', state.update);
         }
-        $table.on('destroyed.TableStickyHeaders', state.destroy);
-        $table.data('tableStickyHeaders', state);
-        TableStickyHeaders.states.add(state);
+        $table.on('destroyed.TableStickyHeader', state.destroy);
+        $table.data('tableStickyHeader', state);
+        TableStickyHeader.states.add(state);
 
-        if (!TableStickyHeaders.observer) {
-            TableStickyHeaders.observer = new MutationObserver(function () {
-                Array.from(TableStickyHeaders.states).forEach(function (instance) {
+        if (!TableStickyHeader.observer) {
+            TableStickyHeader.observer = new MutationObserver(function () {
+                Array.from(TableStickyHeader.states).forEach(function (instance) {
                     if (!document.documentElement.contains(instance.table)) {
-                        TableStickyHeaders.destroy(instance.$table);
+                        TableStickyHeader.destroy(instance.$table);
                     }
                 });
             });
-            TableStickyHeaders.observer.observe(document.documentElement, {childList: true, subtree: true});
+            TableStickyHeader.observer.observe(document.documentElement, {childList: true, subtree: true});
         }
 
-        TableStickyHeaders.update(state, true);
+        TableStickyHeader.update(state, true);
     }
 
     static update(state, forceSizeSync) {
@@ -135,7 +135,7 @@ class TableStickyHeaders {
 
         if (!shouldStick) {
             if (state.isSticky) {
-                TableStickyHeaders.unstick(state);
+                TableStickyHeader.unstick(state);
             }
             return;
         }
@@ -143,7 +143,7 @@ class TableStickyHeaders {
         let isFirstStickyUpdate = !state.isSticky;
         state.placeholder.style.display = '';
         if (isFirstStickyUpdate) {
-            TableStickyHeaders.syncPlaceholderDisplay(state);
+            TableStickyHeader.syncPlaceholderDisplay(state);
         }
         state.header.style.position = 'fixed';
         state.header.style.top = state.fixedOffset + 'px';
@@ -158,25 +158,25 @@ class TableStickyHeaders {
         state.header.classList.add('sticky-header');
         if (state.useScrollTimeline) {
             state.header.classList.add('table-sticky-header-scroll-timeline');
-            TableStickyHeaders.updateScrollDistance(state);
+            TableStickyHeader.updateScrollDistance(state);
         }
         state.isSticky = true;
 
         if (isFirstStickyUpdate || forceSizeSync) {
-            TableStickyHeaders.syncCellWidths(state);
+            TableStickyHeader.syncCellWidths(state);
         }
     }
 
     static refresh($table) {
-        let state = $table.data('tableStickyHeaders');
+        let state = $table.data('tableStickyHeader');
         if (!state || !state.isSticky) {
             return;
         }
 
-        TableStickyHeaders.syncPlaceholderDisplay(state);
-        TableStickyHeaders.syncCellWidths(state);
+        TableStickyHeader.syncPlaceholderDisplay(state);
+        TableStickyHeader.syncCellWidths(state);
         if (state.useScrollTimeline) {
-            TableStickyHeaders.updateScrollDistance(state);
+            TableStickyHeader.updateScrollDistance(state);
         }
     }
 
@@ -215,7 +215,7 @@ class TableStickyHeaders {
         state.placeholder.style.display = 'none';
         state.header.classList.remove('sticky-header');
         state.header.classList.remove('table-sticky-header-scroll-timeline');
-        TableStickyHeaders.restoreStyles(state);
+        TableStickyHeader.restoreStyles(state);
         state.isSticky = false;
     }
 
@@ -237,7 +237,7 @@ class TableStickyHeaders {
     }
 
     static destroy($table) {
-        let state = $table.data('tableStickyHeaders');
+        let state = $table.data('tableStickyHeader');
         if (!state) {
             return;
         }
@@ -247,20 +247,20 @@ class TableStickyHeaders {
         if (state.dataset && !state.useScrollTimeline) {
             $(state.dataset).off('scroll', state.update);
         }
-        $table.off('destroyed.TableStickyHeaders', state.destroy);
+        $table.off('destroyed.TableStickyHeader', state.destroy);
 
         if (state.frame) {
             window.cancelAnimationFrame(state.frame);
         }
         if (state.isSticky) {
-            TableStickyHeaders.unstick(state);
+            TableStickyHeader.unstick(state);
         }
         state.placeholder.remove();
-        $table.removeData('tableStickyHeaders');
-        TableStickyHeaders.states.delete(state);
-        if (!TableStickyHeaders.states.size && TableStickyHeaders.observer) {
-            TableStickyHeaders.observer.disconnect();
-            TableStickyHeaders.observer = null;
+        $table.removeData('tableStickyHeader');
+        TableStickyHeader.states.delete(state);
+        if (!TableStickyHeader.states.size && TableStickyHeader.observer) {
+            TableStickyHeader.observer.disconnect();
+            TableStickyHeader.observer = null;
         }
     }
 }

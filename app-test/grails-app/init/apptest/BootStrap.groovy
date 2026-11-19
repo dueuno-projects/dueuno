@@ -237,9 +237,12 @@ class BootStrap {
         }
 
         dueunoApplication.onInit {
+            log.trace "This is a TRACE log."
+            log.debug "This is a DEBUG log."
             log.info "This is an INFO log."
             log.warn "This is a WARN log."
             log.error "This is an ERROR log."
+            log.fatal "This is a FATAL log."
 
             registerPrettyPrinter(TPerson, '${it.name}')
             registerPrettyPrinter(TCompany, '${it.name}')
