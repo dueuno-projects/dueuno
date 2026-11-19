@@ -64,7 +64,7 @@ When modifying this template, please update also:
         <g:if test="${!cell.isColumnSpanned()}">
             <g:if test="${cell.row.isHeader}">
                 <th colspan="${cell.colspan}"
-                    class="component-table-header ${cell.column} ${cell.id} ${cell.textAlign} ${cell.verticalAlign}"
+                    class="component-table-header col-${cell.column} ${cell.id} ${cell.textAlign} ${cell.verticalAlign}"
                     data-21-component="${cell.getClassName()}"
                     data-21-id="${cell.getId()}"
                     data-21-properties="${cell.propertiesAsJSON}"
@@ -73,7 +73,7 @@ When modifying this template, please update also:
             </g:if>
 
             <g:else>
-                <td class="component-table-cell ${cell.column} ${cell.id} ${cell.textAlign} ${cell.verticalAlign} ${cell.cssClass}"
+                <td class="component-table-cell col-${cell.column} ${cell.id} ${cell.textAlign} ${cell.verticalAlign} ${cell.cssClass}"
                     colspan="${cell.colspan}"
                     data-21-component="${cell.getClassName()}"
                     data-21-id="${cell.getId()}"
