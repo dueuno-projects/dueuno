@@ -20,24 +20,16 @@ package dueuno.application
 
 import dueuno.elements.core.Feature
 import dueuno.utils.LocaleUtils
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.annotation.AnnotationConfigApplicationContext
-
-import java.time.Duration
 import spock.lang.Specification
 
 class DueunoApplicationSpec extends Specification {
 
     void 'explains the required bootstrap setup when onInit is missing'() {
         given:
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()
-        context.registerBean('dueunoApplication', DueunoApplication)
-        context.refresh()
+        DueunoApplication service = new DueunoApplication()
 
         when:
-        context.publishEvent(new ApplicationReadyEvent(new SpringApplication(Object),
-            [] as String[], context, Duration.ZERO))
+        service.verifyInitialization()
 
         then:
         IllegalStateException error = thrown()
@@ -45,9 +37,6 @@ class DueunoApplicationSpec extends Specification {
         error.message.contains('import dueuno.application.DueunoApplication')
         error.message.contains('DueunoApplication dueunoApplication')
         error.message.contains('dueunoApplication.onInit()')
-
-        cleanup:
-        context.close()
     }
 
     void 'registers localized language entries with existing flag assets'() {
