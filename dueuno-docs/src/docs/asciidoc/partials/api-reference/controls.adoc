@@ -251,7 +251,7 @@ Displays a list of options to choose from.
 |Displays a text when no option is selected
 |`allowClear`
 |`Boolean`
-|
+|`true` when `multiple` is `true`; otherwise depends on the option source
 |If `true` the selection can be cleared
 |`autoSelect`
 |`Boolean`

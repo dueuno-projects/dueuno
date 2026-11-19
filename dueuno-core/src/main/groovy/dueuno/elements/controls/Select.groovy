@@ -92,7 +92,7 @@ class Select extends Control {
      * {@code autoSelect} ({@link Boolean}, default {@code true}),
      * {@code multiple} ({@link Boolean}, default {@code false}),
      * {@code search} ({@link Boolean}),
-     * {@code allowClear} ({@link Boolean}),
+     * {@code allowClear} ({@link Boolean}, defaults to {@code true} for multiple selection),
      * {@code placeholder} ({@link String}),
      * {@code searchMinInputLength} ({@link Integer}, default {@code 0}),
      * {@code optionsFromRecordset}, {@code optionsFromList}, {@code optionsFromEnum},
@@ -172,6 +172,10 @@ class Select extends Control {
                 renderTextPrefix: args.renderTextPrefix == null ? true : args.renderTextPrefix,
                 locale: locale,
             )
+        }
+
+        if (multiple && args.allowClear == null) {
+            allowClear = true
         }
 
         // Automatically selects the first element if it's the only choice

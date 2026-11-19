@@ -78,6 +78,13 @@ class ControlConfigurationSpec extends Specification {
         []                       | []
     }
 
+    void 'multiple selection allows clearing by default'() {
+        expect:
+        new Select(id: 'fromList', multiple: true, optionsFromList: ['admin', 'user']).allowClear
+        new Select(id: 'fromOptions', multiple: true, options: [admin: 'Admin', user: 'User']).allowClear
+        !new Select(id: 'single', optionsFromList: ['admin', 'user']).allowClear
+    }
+
     void 'multiple selection preserves the configured clear button'() {
         given:
         Select select = new Select(id: 'groups', multiple: true, allowClear: clearable)
