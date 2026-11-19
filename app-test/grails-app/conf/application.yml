@@ -29,8 +29,8 @@ logging:
       max-file-size: 10MB
       total-size-cap: 100GB
   pattern:
-    # Logback uses its default foreground for TRACE and DEBUG; map it to dark gray and keep INFO default.
-    console: "\u001B[90m%d{HH:mm:ss.SSS}\u001B[39m %replace(%replace(%replace(%highlight(%-5level)){'\\u001B\\[31m','\u001B[33m'}){'\\u001B\\[(0;)?39m','\u001B[90m'}){'\\u001B\\[34m','\u001B[39m'} \u001B[90m[%thread]\u001B[39m \u001B[90m%-40.40logger{36}\u001B[39m \u001B[90m:\u001B[39m %replace(%replace(%replace(%highlight(%msg%n)){'\\u001B\\[31m','\u001B[33m'}){'\\u001B\\[(0;)?39m','\u001B[90m'}){'\\u001B\\[34m','\u001B[39m'}"
+    # Use a balanced neutral gray for TRACE/DEBUG on light and dark console backgrounds; keep INFO default.
+    console: "\u001B[38;5;243m%d{HH:mm:ss.SSS}\u001B[39m %replace(%replace(%replace(%highlight(%-5level)){'\\u001B\\[31m','\u001B[33m'}){'\\u001B\\[(0;)?39m','\u001B[0;38;5;243m'}){'\\u001B\\[34m','\u001B[39m'} \u001B[38;5;243m[%thread]\u001B[39m \u001B[38;5;243m%-40.40logger{36}\u001B[39m \u001B[38;5;243m:\u001B[39m %replace(%replace(%replace(%highlight(%msg%n)){'\\u001B\\[31m','\u001B[33m'}){'\\u001B\\[(0;)?39m','\u001B[0;38;5;243m'}){'\\u001B\\[34m','\u001B[39m'}"
     file: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %-40.40logger{36} : %msg%n'
 
 # ===================================================
