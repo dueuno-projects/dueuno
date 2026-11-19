@@ -464,13 +464,13 @@ Grails application running at http://localhost:9992/test in environment: develop
 
                 row.cells.postcode.tag = true
 
-                row.cells.input.component = [
+                row.cells.input.setComponent(
                     class    : NumberField,
                     id       : "number${values.id}",
                     min      : -2,
                     max      : 10,
                     textAlign: TextAlign.END,
-                ]
+                )
                 row.cells.input.component.addAction(
                     action: 'onDecrement',
                     submit: "tableTest-${row.index}",

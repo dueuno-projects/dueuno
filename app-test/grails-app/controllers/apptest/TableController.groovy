@@ -192,16 +192,16 @@ class TableController implements ElementsController {
                     class: TimeField,
                     id: 'TimeField1',
             ]*/
-            row.cells.address.component = [
+            row.cells.address.setComponent(
                 class: ProgressBar,
                 id   : 'progress1',
                 max  : 100,
                 now  : 20,
-            ]
-            row.cells.company.component = [
+            )
+            row.cells.company.setComponent(
                 class: ProgressBar,
                 id   : 'progress2',
-            ]
+            )
         }
 
         if (row.values.name == 'user1') {
@@ -210,10 +210,10 @@ class TableController implements ElementsController {
 
             row.actions.addSeparator()
             row.actions.addAction(action: 'rowAction')
-            row.cells.postcode.component = [
+            row.cells.postcode.setComponent(
                 class: TextField,
                 id   : 'TextField1',
-            ]
+            )
             row.cells.postcode.colspan = 2
         }
 
