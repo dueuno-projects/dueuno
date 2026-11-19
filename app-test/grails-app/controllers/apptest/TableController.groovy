@@ -198,6 +198,10 @@ class TableController implements ElementsController {
                 max  : 100,
                 now  : 20,
             ]
+            row.cells.company.component = [
+                class: ProgressBar,
+                id   : 'progress2',
+            ]
         }
 
         if (row.values.name == 'user1') {

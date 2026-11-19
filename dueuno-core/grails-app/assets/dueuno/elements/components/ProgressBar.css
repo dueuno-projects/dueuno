@@ -6,6 +6,7 @@
     font-size: inherit;
     position: relative;
     width: 100%;
+    height: var(--bs-progress-height);
     margin-bottom: 0;
     overflow: hidden;
 }

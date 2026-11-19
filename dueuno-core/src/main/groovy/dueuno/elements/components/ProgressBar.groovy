@@ -38,7 +38,7 @@ class ProgressBar extends Component {
         min = args.min as Integer ?: 0.0
         max = args.max as Integer ?: 100.0
         now = args.now as Integer ?: 0.0
-        decimals = args.decimals as Integer ?: 1
+        decimals = args.decimals as Integer ?: 0
 
         skipFocus = true
     }
