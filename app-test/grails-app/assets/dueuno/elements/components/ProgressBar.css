@@ -3,12 +3,17 @@
     --bs-progress-bg: rgb(var(--elements-primary-bg-shaded));
     --bs-progress-bar-bg: rgb(var(--elements-primary-bg));
     --bs-progress-bar-color: rgb(var(--elements-primary-text));
-    font-size: inherit;
+    font-size: .9rem;
     position: relative;
     width: 100%;
     height: var(--bs-progress-height);
     margin-bottom: 0;
     overflow: hidden;
+}
+
+.component-progress-bar .progress-bar {
+    min-width: fit-content;
+    padding: .3rem;
 }
 
 .input-group > .component-progress-bar {
