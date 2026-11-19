@@ -132,7 +132,9 @@ class Table extends Component {
 
     static displaySelectAllRows($element, value) {
         let $tableSelectAllRows = $element.closest('table').find('.component-table-selection-header input');
-        Checkbox.setValue($tableSelectAllRows, TypedValue.bool(value));
+        if ($tableSelectAllRows.prop('checked') !== value) {
+            Checkbox.setValue($tableSelectAllRows, TypedValue.bool(value));
+        }
     }
 }
 

@@ -108,6 +108,10 @@
     height: 100%;
 }
 
+.component-table-dataset .component-table-selection .checkbox.simple::after {
+    transition-duration: 0s;
+}
+
 .component-table-dataset :is(.component-table-selection, .component-table-selection-header) .checkbox.simple:has(.form-check-input:checked)::after {
     transform: rotate(90deg) translate(0, -.25rem);
     border-color: rgb(var(--elements-primary-bg));
