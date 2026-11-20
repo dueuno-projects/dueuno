@@ -1137,7 +1137,21 @@ c.form.with {
 
 [[image]]
 === Image
-An `Image` displays an SVG image from the Grails assets.
+An `Image` displays an image from a browser-readable URL or path. Inside a form, `rows` sets the field height. By default, the image keeps its aspect ratio; set `keepAspectRatio` to `false` to stretch it to fill the field.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: Image,
+        id: 'loginBackground',
+        image: linkPublicResource('brand/login-background.jpg', false),
+        keepAspectRatio: false,
+        cols: 12,
+        rows: 3,
+    )
+}
+----
 
 ==== Properties
 [cols="1,1,1,7a"]
@@ -1147,7 +1161,11 @@ An `Image` displays an SVG image from the Grails assets.
 |`image`
 |`String`
 |
-|The SVG image to display. The corresponding file must exist in the `grails-app/assets` folder.
+|The browser-readable URL or path of the image to display. For a tenant public resource, use `linkPublicResource(...)`.
+|`keepAspectRatio`
+|`Boolean`
+|`true`
+|When `true`, preserves the image's aspect ratio within the form field. When `false`, stretches the image to fill the field's width and height, including the height set by `rows`.
 |===
 
 [[timer]]

@@ -981,7 +981,20 @@ c.form.with {
 
 [[progress-bar]]
 === ProgressBar
-A `ProgressBar` displays progress for a bounded value or an indefinite progress indicator.
+A `ProgressBar` is a numeric control that displays a value as a progress bar. It can show either a determinate value or an animated indefinite indicator.
+
+[source,groovy]
+----
+c.form.with {
+    addField(
+        class: ProgressBar,
+        id: 'progress',
+        min: 0,
+        max: 140,
+        value: 70,
+    )
+}
+----
 
 ==== Properties
 [cols="1,1,1,7a"]
@@ -991,32 +1004,40 @@ A `ProgressBar` displays progress for a bounded value or an indefinite progress 
 |`min`
 |`BigDecimal`
 |`0`
-|The minimum value.
+|The lower bound used to calculate the filled portion of the bar.
 |`max`
 |`BigDecimal`
 |`100`
-|The maximum value. If not specified, the progress bar is indefinite.
+|The upper bound used to calculate the filled portion. If omitted when creating the control, `indefinite` defaults to `true`.
 |`value`
 |`BigDecimal`
 |`0`
-|The current value between `min` and `max`.
+|The current numeric value. Its position is calculated relative to `min` and `max`; the filled portion is limited to the range from 0% to 100%.
 |`decimals`
 |`Integer`
 |`0`
-|Decimal digits used to render the displayed value.
+|Number of decimal digits shown in the displayed value.
 |`percentage`
 |`Boolean`
 |`true`
-|When `true`, displays the value as a percentage; otherwise, displays the raw value.
+|When `true`, displays the normalized percentage, followed by `%`. When `false`, displays the raw value.
 |`indefinite`
 |`Boolean`
-|
-|`true` when no `max` value is specified.
+|Defaults to `true` if `max` is omitted, otherwise `false`.
+|When `true`, displays the animated indefinite indicator. Set it to `false` to show the determinate bar. Changing `max` does not change this property.
 |===
 
-Update the current value through a `Transition` with `t.setValue(progressId, value)`.
-Update `min`, `max`, `indefinite`, and `percentage` with `t.set(progressId, property, value)`.
-Changing `min`, `max`, or `value` recalculates the bar width.
+Set the control's initial `value` when adding the field. Update it later with `t.setValue(progressId, value)`. Update `min`, `max`, `indefinite`, or `percentage` with `t.set(progressId, property, value)`. Changes to `min`, `max`, or `value` recalculate the filled portion.
+
+[source,groovy]
+----
+def updateProgress() {
+    def t = createTransition()
+    t.setValue('progress', 90)
+    t.set('progress', 'percentage', false)
+    display transition: t
+}
+----
 ////
 Licensed to the Apache Software Foundation (ASF) under one or more
 contributor license agreements. See the NOTICE file distributed with

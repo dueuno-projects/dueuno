@@ -329,6 +329,15 @@ class FormController implements ElementsController {
                 cols: 3,
             )
             addField(
+                class: Image,
+                id: 'loginBackground',
+                image: linkPublicResource('brand/login-background.jpg', false),
+                keepAspectRatio: false,
+                displayLabel: false,
+                cols: 12,
+                rows: 6,
+            )
+            addField(
                 class: Upload,
                 id: 'upload1',
             )
