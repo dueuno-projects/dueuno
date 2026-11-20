@@ -331,8 +331,38 @@ class FormController implements ElementsController {
             addField(
                 class: Image,
                 id: 'loginBackground',
-                image: linkPublicResource('brand/login-background.jpg', false),
+                image: linkPublicResource('brand/login-background.jpg'),
+                fitWidth: false,
+                backgroundColor: 'black',
+                displayLabel: false,
+                cols: 6,
+                rows: 6,
+            )
+            addField(
+                class: Image,
+                id: 'logo',
+                image: linkPublicResource('brand/logo.png'),
+                fitWidth: false,
+                padding: 1,
+                backgroundColor: 'black',
+                displayLabel: false,
+                cols: 6,
+                rows: 6,
+            )
+            addField(
+                class: Image,
+                id: 'loginBackground2',
+                image: linkPublicResource('brand/login-background.jpg'),
                 keepAspectRatio: false,
+                displayLabel: false,
+                cols: 12,
+                rows: 6,
+            )
+            addField(
+                class: Image,
+                id: 'loginBackground3',
+                image: linkPublicResource('brand/login-background.jpg'),
+                fitWidth: true,
                 displayLabel: false,
                 cols: 12,
                 rows: 6,

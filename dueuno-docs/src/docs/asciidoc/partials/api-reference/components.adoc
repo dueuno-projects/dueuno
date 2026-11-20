@@ -1137,7 +1137,7 @@ c.form.with {
 
 [[image]]
 === Image
-An `Image` displays an image from a browser-readable URL or path. Inside a form, `rows` sets the field height. By default, the image keeps its aspect ratio; set `keepAspectRatio` to `false` to stretch it to fill the field.
+An `Image` displays an image from a browser-readable URL or path. Inside a form, `rows` sets the field height unless both `keepAspectRatio` and `fitWidth` are `true`. In that case, the image fills the available width, keeps its aspect ratio, and determines its own height. Set `keepAspectRatio` to `false` to stretch the image to fill the field. When preserving the aspect ratio and `fitWidth` is `false`, unused space is transparent by default; set the inherited `backgroundColor` property to fill it with a color.
 
 [source,groovy]
 ----
@@ -1146,7 +1146,9 @@ c.form.with {
         class: Image,
         id: 'loginBackground',
         image: linkPublicResource('brand/login-background.jpg', false),
-        keepAspectRatio: false,
+        keepAspectRatio: true,
+        fitWidth: false,
+        padding: 1,
         cols: 12,
         rows: 3,
     )
@@ -1166,6 +1168,14 @@ c.form.with {
 |`Boolean`
 |`true`
 |When `true`, preserves the image's aspect ratio within the form field. When `false`, stretches the image to fill the field's width and height, including the height set by `rows`.
+|`fitWidth`
+|`Boolean`
+|`false`
+|When `keepAspectRatio` is `true` and `fitWidth` is `true`, sizes the image to the full field width and keeps its natural aspect ratio; the field height follows the image and ignores `rows`. When `keepAspectRatio` is `true` and `fitWidth` is `false`, the image fits within the field height and any unused space is transparent by default. This property has no effect when `keepAspectRatio` is `false`.
+|`padding`
+|`Double`
+|`0`
+|Inner spacing between the image and its edge, in `rem`. For example, `padding: 1` adds `1rem` on each side. Negative values are treated as `0`.
 |===
 
 [[timer]]

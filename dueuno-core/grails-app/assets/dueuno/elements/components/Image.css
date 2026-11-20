@@ -10,3 +10,8 @@
 .component-form-field .component-image.image-stretch {
     object-fit: fill;
 }
+
+.component-form-field .component-image.image-fit-width {
+    height: auto;
+    align-self: flex-start;
+}

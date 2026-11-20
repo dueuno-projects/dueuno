@@ -140,8 +140,8 @@ abstract class Component implements WebRequestAware, Serializable {
         this.@skipFocus = args.skipFocus
         this.@sticky = args.sticky
 
-        textColor = args.textColor ?: ''
-        backgroundColor = args.backgroundColor ?: ''
+        textColor = args.textColor
+        backgroundColor = args.backgroundColor
 
         mainTextColor = args.mainTextColor ?: '#333030'
         mainTextColorInt = Color.hexToIntColor(mainTextColor) ?: warnColorError(mainTextColor)
@@ -345,7 +345,12 @@ abstract class Component implements WebRequestAware, Serializable {
 
     private void initializeComponent(Map args) {
         args.textColor = args.textColor ?: this.textColor
-        args.backgroundColor = args.backgroundColor ?: this.backgroundColor
+        // Keep explicit null as an override; only propagate a non-empty parent background.
+        if (!args.containsKey('backgroundColor') && backgroundColor) {
+            args.backgroundColor = backgroundColor
+        } else if (args.backgroundColor == '') {
+            args.backgroundColor = backgroundColor
+        }
 
         args.mainTextColor = this.mainTextColor
         args.mainForegroundColor = this.mainForegroundColor
