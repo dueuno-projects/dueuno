@@ -292,26 +292,40 @@ class FormController implements ElementsController {
             addField(
                 class: ProgressBar,
                 id: 'progress',
-                now: 70,
-                max: 100,
+                value: 70,
+                max: 140,
                 cols: 9,
             )
             addField(
                 class: Button,
                 id: 'progressButton',
-                text: 'Progress',
+                text: '-',
+                action: 'decrementProgress',
+                submit: 'progress',
+                group: true,
+                loading: false,
                 cols: 3,
+            ).component.addAction(
+                action: 'incrementProgress',
+                text: '+',
+                submit: 'progress',
+                loading: false,
+            ).addAction(
+                action: 'togglePercentage',
+                text: '%',
+                loading: false,
             )
             addField(
                 class: ProgressBar,
                 id: 'progress2',
-                now: 70,
+                value: 70,
                 cols: 9,
             )
             addField(
                 class: Button,
                 id: 'progressButton2',
-                text: 'Progress',
+                text: 'Indefinite',
+                readonly: true,
                 cols: 3,
             )
             addField(
@@ -578,6 +592,26 @@ class FormController implements ElementsController {
         Integer n = params.numberfield ?: 0
         if (n > 0) n--
         t.setValue('numberfield', [value: n])
+        display transition: t
+    }
+
+    def decrementProgress() {
+        BigDecimal value = params.progress as BigDecimal ?: 0.0
+        def t = createTransition()
+        t.setValue('progress', (value - 10.0).max(0.0))
+        display transition: t
+    }
+
+    def incrementProgress() {
+        BigDecimal value = params.progress as BigDecimal ?: 0.0
+        def t = createTransition()
+        t.setValue('progress', (value + 10.0).min(140.0))
+        display transition: t
+    }
+
+    def togglePercentage() {
+        def t = createTransition()
+        t.call('progress', 'togglePercentage')
         display transition: t
     }
 }

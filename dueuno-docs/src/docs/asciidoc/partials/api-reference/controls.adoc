@@ -978,6 +978,45 @@ c.form.with {
     )
 }
 ----
+
+[[progress-bar]]
+=== ProgressBar
+A `ProgressBar` displays progress for a bounded value or an indefinite progress indicator.
+
+==== Properties
+[cols="1,1,1,7a"]
+|===
+|Name|Type|Default|Description
+
+|`min`
+|`BigDecimal`
+|`0`
+|The minimum value.
+|`max`
+|`BigDecimal`
+|`100`
+|The maximum value. If not specified, the progress bar is indefinite.
+|`value`
+|`BigDecimal`
+|`0`
+|The current value between `min` and `max`.
+|`decimals`
+|`Integer`
+|`0`
+|Decimal digits used to render the displayed value.
+|`percentage`
+|`Boolean`
+|`true`
+|When `true`, displays the value as a percentage; otherwise, displays the raw value.
+|`indefinite`
+|`Boolean`
+|
+|`true` when no `max` value is specified.
+|===
+
+Update the current value through a `Transition` with `t.setValue(progressId, value)`.
+Update `min`, `max`, `indefinite`, and `percentage` with `t.set(progressId, property, value)`.
+Changing `min`, `max`, or `value` recalculates the bar width.
 ////
 Licensed to the Apache Software Foundation (ASF) under one or more
 contributor license agreements. See the NOTICE file distributed with

@@ -1150,37 +1150,6 @@ An `Image` displays an SVG image from the Grails assets.
 |The SVG image to display. The corresponding file must exist in the `grails-app/assets` folder.
 |===
 
-[[progress-bar]]
-=== ProgressBar
-A `ProgressBar` displays progress for a bounded value or an indefinite progress indicator.
-
-==== Properties
-[cols="1,1,1,7a"]
-|===
-|Name|Type|Default|Description
-
-|`min`
-|`BigDecimal`
-|`0`
-|The minimum value.
-|`max`
-|`BigDecimal`
-|`100`
-|The maximum value. If not specified, the progress bar is indefinite.
-|`now`
-|`BigDecimal`
-|`0`
-|The current value.
-|`decimals`
-|`Integer`
-|`1`
-|Decimal digits used to render the percentage value.
-|`indefinite`
-|`Boolean`
-|
-|`true` when no `max` value is specified.
-|===
-
 [[timer]]
 === Timer
 A `Timer` is a link that triggers an `interval` event at a fixed interval.

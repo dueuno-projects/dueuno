@@ -16,9 +16,9 @@ package apptest
 
 import dueuno.application.DueunoApplication
 import dueuno.elements.ElementsController
-import dueuno.elements.components.ProgressBar
 import dueuno.elements.components.Table
 import dueuno.elements.components.TableRow
+import dueuno.elements.controls.ProgressBar
 import dueuno.elements.controls.Select
 import dueuno.elements.controls.TextField
 import dueuno.elements.style.TextAlign
@@ -196,7 +196,7 @@ class TableController implements ElementsController {
                 class: ProgressBar,
                 id   : 'progress1',
                 max  : 100,
-                now  : 20,
+                value: 20,
             )
             row.cells.company.setComponent(
                 class: ProgressBar,

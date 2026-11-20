@@ -1,0 +1,55 @@
+.control-progress-bar {
+    --bs-progress-height: calc(1.5rem + var(--elements-spacing-y) + var(--elements-spacing-y));
+    --bs-progress-bg: rgb(var(--elements-primary-bg-shaded));
+    --bs-progress-bar-bg: rgb(var(--elements-primary-bg));
+    --bs-progress-bar-color: rgb(var(--elements-primary-text));
+    font-size: .9rem;
+    position: relative;
+    width: 100%;
+    height: var(--bs-progress-height);
+    margin-bottom: 0;
+    overflow: hidden;
+}
+
+.control-progress-bar .progress-bar {
+    min-width: fit-content;
+    padding: .3rem;
+}
+
+.input-group > .control-progress-bar {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.control-progress-bar.indefinite .progress-bar, .control-progress-bar.indefinite .progress-label {
+    display: none;
+}
+
+.control-progress-bar.definite .progress-line, .control-progress-bar.definite .progress-subline {
+    display: none;
+}
+
+.control-progress-bar .progress-line {
+    position: absolute;
+    background: rgb(var(--elements-primary-bg-shaded));
+    width: 150%;
+    height: var(--bs-progress-height);
+    top: 0;
+}
+
+.control-progress-bar .progress-subline {
+    position: absolute;
+    background-color: rgb(var(--elements-primary-bg));
+    height: var(--bs-progress-height);
+    top: 0;
+}
+
+.control-progress-bar .progress-inc {
+    width: 30%;
+    animation: progress-bar-motion 2s ease-in-out infinite alternate;
+}
+
+@keyframes progress-bar-motion {
+    from { left: 0; }
+    to { left: 70%; }
+}
