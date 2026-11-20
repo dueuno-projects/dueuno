@@ -31,7 +31,7 @@
 
 .control-progress-bar .progress-line {
     position: absolute;
-    background: rgb(var(--elements-primary-bg-shaded));
+    background: none;
     width: 150%;
     height: var(--bs-progress-height);
     top: 0;
